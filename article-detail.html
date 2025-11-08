@@ -1091,6 +1091,258 @@ async function getShareUrl(articleId) {
         }
     }
 }
+
+// ========================================
+// 🎯 FONCTION fallbackShare MANQUANTE
+// ========================================
+function fallbackShare(shareUrl) {
+    try {
+        // Récupérer les données de l'article SANS ERREUR
+        const articleTitle = document.querySelector('.article-title')?.textContent?.trim() || 'Article intéressant';
+        
+        // Créer un modal de partage stylisé
+        const shareModal = document.createElement('div');
+        shareModal.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            backdrop-filter: blur(10px);
+        `;
+        
+        shareModal.innerHTML = `
+            <div style="
+                background: white;
+                padding: 30px;
+                border-radius: 20px;
+                max-width: 500px;
+                width: 90%;
+                text-align: center;
+                box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            ">
+                <h3 style="margin: 0 0 20px 0; color: var(--dark);">
+                    <i class="fas fa-share-alt" style="color: var(--primary-solid);"></i>
+                    Partager cet article
+                </h3>
+                
+                <div style="
+                    background: #f8fafc;
+                    padding: 15px;
+                    border-radius: 12px;
+                    margin: 20px 0;
+                    border: 2px dashed #e2e8f0;
+                    word-break: break-all;
+                    font-size: 0.9rem;
+                    color: var(--dark);
+                ">
+                    ${shareUrl}
+                </div>
+                
+                <button onclick="copyShareLink('${shareUrl}')" style="
+                    width: 100%;
+                    padding: 14px;
+                    background: var(--primary);
+                    color: white;
+                    border: none;
+                    border-radius: 12px;
+                    font-weight: 600;
+                    font-size: 1rem;
+                    cursor: pointer;
+                    margin-bottom: 12px;
+                    transition: all 0.3s ease;
+                " onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 24px rgba(102,126,234,0.4)'" 
+                   onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                    <i class="fas fa-copy"></i>
+                    Copier le lien
+                </button>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px;">
+                    <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}" 
+                       target="_blank" style="
+                        padding: 12px;
+                        background: #1877F2;
+                        color: white;
+                        border-radius: 10px;
+                        text-decoration: none;
+                        font-weight: 600;
+                        transition: all 0.3s ease;
+                    " onmouseover="this.style.transform='translateY(-2px)'" 
+                       onmouseout="this.style.transform='translateY(0)'">
+                        <i class="fab fa-facebook-f"></i> Facebook
+                    </a>
+                    
+                    <a href="https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(articleTitle)}" 
+                       target="_blank" style="
+                        padding: 12px;
+                        background: #1DA1F2;
+                        color: white;
+                        border-radius: 10px;
+                        text-decoration: none;
+                        font-weight: 600;
+                        transition: all 0.3s ease;
+                    " onmouseover="this.style.transform='translateY(-2px)'" 
+                       onmouseout="this.style.transform='translateY(0)'">
+                        <i class="fab fa-twitter"></i> Twitter
+                    </a>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <a href="https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}" 
+                       target="_blank" style="
+                        padding: 12px;
+                        background: #0A66C2;
+                        color: white;
+                        border-radius: 10px;
+                        text-decoration: none;
+                        font-weight: 600;
+                        transition: all 0.3s ease;
+                    " onmouseover="this.style.transform='translateY(-2px)'" 
+                       onmouseout="this.style.transform='translateY(0)'">
+                        <i class="fab fa-linkedin-in"></i> LinkedIn
+                    </a>
+                    
+                    <a href="#" onclick="shareOnWhatsApp('${shareUrl}', '${articleTitle.replace(/'/g, "\\'")}')" style="
+                        padding: 12px;
+                        background: #25D366;
+                        color: white;
+                        border-radius: 10px;
+                        text-decoration: none;
+                        font-weight: 600;
+                        transition: all 0.3s ease;
+                        border: none;
+                        cursor: pointer;
+                    " onmouseover="this.style.transform='translateY(-2px)'" 
+                       onmouseout="this.style.transform='translateY(0)'">
+                        <i class="fab fa-whatsapp"></i> WhatsApp
+                    </a>
+                </div>
+                
+                <button onclick="this.closest('div').parentElement.remove()" style="
+                    width: 100%;
+                    padding: 12px;
+                    background: transparent;
+                    color: var(--muted);
+                    border: 2px solid #e2e8f0;
+                    border-radius: 10px;
+                    font-weight: 600;
+                    cursor: pointer;
+                    margin-top: 15px;
+                    transition: all 0.3s ease;
+                " onmouseover="this.style.borderColor='var(--secondary)'; this.style.color='var(--secondary)'" 
+                   onmouseout="this.style.borderColor='#e2e8f0'; this.style.color='var(--muted)'">
+                    Fermer
+                </button>
+            </div>
+        `;
+        
+        document.body.appendChild(shareModal);
+        
+        // Fermer en cliquant en dehors
+        shareModal.addEventListener('click', function(e) {
+            if (e.target === shareModal) {
+                shareModal.remove();
+            }
+        });
+        
+    } catch (error) {
+        console.error('❌ Erreur fallbackShare:', error);
+        // Fallback ultra-simple
+        copyShareLink(shareUrl);
+    }
+}
+
+// ========================================
+// 🎯 FONCTION shareOnWhatsApp MANQUANTE
+// ========================================
+function shareOnWhatsApp(shareUrl, articleTitle) {
+    try {
+        // Méthode sécurisée pour WhatsApp
+        const shareText = `${articleTitle} ${shareUrl}`;
+        const encodedText = encodeURIComponent(shareText);
+        
+        // URL WhatsApp sécurisée
+        const whatsappUrl = `https://api.whatsapp.com/send?text=${encodedText}`;
+        
+        // Ouvrir dans un nouvel onglet
+        window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
+        
+        // Fermer le modal
+        const modal = document.querySelector('div[style*="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8)"]');
+        if (modal) {
+            modal.remove();
+        }
+        
+    } catch (error) {
+        console.error('❌ Erreur WhatsApp:', error);
+        // Fallback : copier le lien
+        copyShareLink(shareUrl);
+        showNotification('✅ Lien copié ! Collez-le dans WhatsApp');
+    }
+}
+
+// ========================================
+// 🎯 FONCTION copyShareLink MANQUANTE
+// ========================================
+function copyShareLink(url) {
+    navigator.clipboard.writeText(url).then(() => {
+        // Afficher une notification de succès
+        showNotification('✅ Lien copié dans le presse-papier !');
+    }).catch(() => {
+        // Fallback pour les anciens navigateurs
+        const textArea = document.createElement('textarea');
+        textArea.value = url;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+        showNotification('✅ Lien copié !');
+    });
+}
+
+// ========================================
+// 🎯 FONCTION showNotification MANQUANTE
+// ========================================
+function showNotification(message) {
+    const notification = document.createElement('div');
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: var(--primary);
+        color: white;
+        padding: 16px 24px;
+        border-radius: 12px;
+        font-weight: 600;
+        z-index: 10001;
+        box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+        transform: translateX(400px);
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    `;
+    notification.textContent = message;
+    
+    document.body.appendChild(notification);
+    
+    // Animation d'entrée
+    setTimeout(() => {
+        notification.style.transform = 'translateX(0)';
+    }, 10);
+    
+    // Animation de sortie après 3 secondes
+    setTimeout(() => {
+        notification.style.transform = 'translateX(400px)';
+        setTimeout(() => {
+            if (notification.parentElement) {
+                notification.parentElement.removeChild(notification);
+            }
+        }, 300);
+    }, 3000);
+}
       
 async function chargerArticle() {
     try {
@@ -2732,5 +2984,6 @@ function handleSwipe() {
 </body>
 
 </html>
+
 
 
