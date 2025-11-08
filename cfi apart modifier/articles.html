@@ -1,0 +1,2243 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tous les Articles - Camer Flash Infos</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+       <!-- ====== FAVICONS (voir section suivante) ====== -->
+<link rel="icon" type="image/png" href="img/favicon-96x96.png" sizes="96x96" />
+<link rel="icon" type="image/svg+xml" href="img/favicon.svg" />
+<link rel="shortcut icon" href="img/favicon.ico" />
+<link rel="apple-touch-icon" sizes="180x180" href="img/apple-touch-icon.png" />
+<meta name="apple-mobile-web-app-title" content="CFI 237" />
+    
+    <style>
+        :root {
+            --primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --primary-solid: #667eea;
+            --secondary: #ff6b6b;
+            --accent: #ffd93d;
+            --dark: #1a1a2e;
+            --muted: #94a3b8;
+            --glass: rgba(255,255,255,0.95);
+            --shadow-sm: 0 2px 8px rgba(0,0,0,0.06);
+            --shadow: 0 8px 30px rgba(0,0,0,0.12);
+            --shadow-lg: 0 20px 60px rgba(0,0,0,0.15);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(to bottom, #f8fafc 0%, #e2e8f0 100%);
+            color: #1e293b;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* Header Styles */
+        header {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            color: var(--dark);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: var(--shadow);
+            border-bottom: 1px solid rgba(255,255,255,0.3);
+        }
+        
+        .top-bar {
+            background: var(--primary);
+            font-size: 0.875rem;
+            color: #fff;
+        }
+        
+        .top-bar .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 24px;
+        }
+        
+        .logo-section {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 24px;
+        }
+        
+        .logo .logo-icon {
+            font-size: 36px;
+            background: var(--primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .search-bar {
+            display: flex;
+            background: #fff;
+            border-radius: 12px;
+            overflow: hidden;
+            width: 360px;
+            box-shadow: var(--shadow-sm);
+            border: 2px solid transparent;
+            transition: var(--transition);
+        }
+        
+        .search-bar:focus-within {
+            border-color: var(--primary-solid);
+            box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .search-bar input {
+            border: none;
+            padding: 12px 16px;
+            outline: none;
+            flex: 1;
+            font-size: 0.95rem;
+        }
+        
+        .search-bar button {
+            background: var(--primary);
+            border: none;
+            color: #fff;
+            padding: 12px 20px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        nav {
+            background: var(--dark);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        nav::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--primary);
+        }
+        
+        .nav-menu {
+            display: flex;
+            gap: 4px;
+            padding: 0 24px;
+        }
+        
+        .nav-menu li {
+            list-style: none;
+        }
+        
+        .nav-menu a {
+            display: block;
+            padding: 16px 20px;
+            color: #fff;
+            font-weight: 600;
+            position: relative;
+            transition: var(--transition);
+        }
+        
+        .mobile-menu-btn {
+            display: none;
+            background: var(--primary);
+            border: none;
+            color: white;
+            font-size: 22px;
+            padding: 10px 14px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        /* Page Header */
+        .page-header {
+            text-align: center;
+            padding: 60px 0 40px;
+            background: linear-gradient(135deg, rgba(102,126,234,0.1) 0%, rgba(118,75,162,0.1) 100%);
+            margin-bottom: 40px;
+        }
+        
+        .page-title {
+            font-size: 3rem;
+            font-weight: 800;
+            background: var(--primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 16px;
+        }
+        
+        .page-subtitle {
+            font-size: 1.2rem;
+            color: var(--muted);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Filter System */
+        .filter-system {
+            background: #fff;
+            border-radius: 20px;
+            padding: 32px;
+            margin-bottom: 40px;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        .filter-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        
+        .filter-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .filter-controls {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .filter-label {
+            font-weight: 600;
+            color: var(--dark);
+            font-size: 0.9rem;
+        }
+        
+        .filter-select {
+            padding: 12px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            background: #fff;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: var(--transition);
+            min-width: 200px;
+        }
+        
+        .filter-select:focus {
+            outline: none;
+            border-color: var(--primary-solid);
+            box-shadow: 0 0 0 3px rgba(102,126,234,0.1);
+        }
+        
+        .filter-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #e2e8f0;
+        }
+        
+        .filter-tag {
+            background: var(--primary);
+            color: #fff;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .filter-tag:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+        
+        .active-filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 16px;
+        }
+        
+        .active-filter {
+            background: var(--secondary);
+            color: #fff;
+            padding: 6px 12px;
+            border-radius: 16px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .clear-filters {
+            background: var(--muted);
+            color: #fff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: var(--transition);
+        }
+        
+        .clear-filters:hover {
+            background: #64748b;
+        }
+
+        /* Articles Grid */
+        .articles-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 24px;
+            margin-bottom: 60px;
+        }
+        
+        .article-card {
+            background: #fff;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .article-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .article-image {
+            height: 220px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .article-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s ease;
+        }
+        
+        .article-card:hover .article-image img {
+            transform: scale(1.1);
+        }
+        
+        .article-badge {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            background: var(--secondary);
+            color: #fff;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            z-index: 2;
+        }
+        
+        .video-badge {
+            background: var(--primary-solid);
+        }
+        
+        .article-content {
+            padding: 24px;
+        }
+        
+        .article-category {
+            color: var(--primary-solid);
+            font-weight: 700;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+        
+        .article-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            line-height: 1.4;
+            margin-bottom: 12px;
+            color: var(--dark);
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .article-excerpt {
+            color: var(--muted);
+            font-size: 0.95rem;
+            line-height: 1.5;
+            margin-bottom: 16px;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .article-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+            color: var(--muted);
+        }
+        
+        .article-date {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .article-author {
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        .video-play {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 255, 255, 0.95);
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-solid);
+            font-size: 24px;
+            z-index: 3;
+            transition: var(--transition);
+            border: 3px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+        
+        .article-card:hover .video-play {
+            transform: translate(-50%, -50%) scale(1.15);
+            background: #fff;
+            color: var(--secondary);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 80px 20px;
+            grid-column: 1 / -1;
+        }
+        
+        .empty-state i {
+            font-size: 4rem;
+            color: var(--muted);
+            margin-bottom: 20px;
+        }
+        
+        .empty-state h3 {
+            font-size: 1.5rem;
+            color: var(--dark);
+            margin-bottom: 12px;
+        }
+        
+        .empty-state p {
+            color: var(--muted);
+            margin-bottom: 24px;
+        }
+        
+        .btn {
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        /* Loading State */
+        .loading {
+            text-align: center;
+            padding: 60px 20px;
+            grid-column: 1 / -1;
+        }
+        
+        .loading i {
+            font-size: 3rem;
+            color: var(--primary-solid);
+            animation: spin 1s linear infinite;
+            margin-bottom: 16px;
+        }
+        
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Footer */
+        footer {
+            background: var(--dark);
+            color: #fff;
+            padding: 60px 24px 20px;
+            margin-top: 60px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--primary);
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 40px;
+            position: relative;
+            z-index: 1;
+            margin-bottom: 40px;
+            max-width: 1280px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .footer-content h4 {
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+            background: var(--primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .footer-content ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .footer-content li {
+            padding: 8px 0;
+            opacity: 0.8;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+        
+        .footer-content li:hover {
+            opacity: 1;
+            padding-left: 8px;
+            color: var(--accent);
+        }
+
+        /* Responsive */
+        @media(max-width: 1024px) {
+            .articles-container {
+                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            }
+            
+            .footer-content {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media(max-width: 768px) {
+            .container {
+                padding: 0 16px;
+            }
+            
+            .page-title {
+                font-size: 2.5rem;
+            }
+            
+            .filter-system {
+                padding: 24px;
+            }
+            
+            .filter-controls {
+                flex-direction: column;
+                width: 100%;
+            }
+            
+            .filter-select {
+                min-width: 100%;
+            }
+            
+            .articles-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-menu {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: var(--dark);
+                padding: 20px;
+                box-shadow: var(--shadow-lg);
+                z-index: 999;
+            }
+            
+            .nav-menu.open {
+                display: flex;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+            }
+            
+            .search-bar {
+                width: 100%;
+                max-width: 280px;
+            }
+        }
+        
+        @media(max-width: 480px) {
+            .page-title {
+                font-size: 2rem;
+            }
+            
+            .filter-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .footer-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ===== HEADER RESPONSIVE & MENU MOBILE PROFESSIONNEL ===== */
+
+/* Corrections globales */
+html, body {
+    overflow-x: hidden;
+    max-width: 100vw;
+    position: relative;
+}
+
+/* Top bar hover effects */
+.top-bar a {
+    transition: var(--transition);
+}
+
+.top-bar a:hover {
+    transform: translateY(-2px);
+    opacity: 0.8;
+}
+
+/* Logo animation */
+.logo .logo-icon {
+    animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+/* Navigation hover effects pour desktop */
+.nav-menu a::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    height: 3px;
+    background: var(--accent);
+    transition: var(--transition);
+    transform: translateX(-50%);
+}
+
+.nav-menu a:hover {
+    background: rgba(255,255,255,0.1);
+    color: var(--accent);
+}
+
+.nav-menu a:hover::after {
+    width: 60%;
+}
+
+/* ===== RESPONSIVE MOBILE ===== */
+
+@media(max-width: 992px) {
+    /* MENU MOBILE DÉROULANT PROFESSIONNEL */
+    .mobile-menu-btn {
+        display: block;
+        position: relative;
+        z-index: 1001;
+    }
+    
+    .nav-menu {
+        display: none;
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 320px;
+        max-width: 85%;
+        height: 100vh;
+        background: var(--dark);
+        padding: 0;
+        box-shadow: -5px 0 25px rgba(0,0,0,0.3);
+        z-index: 1000;
+        overflow-y: auto;
+        transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        flex-direction: column;
+    }
+    
+    .nav-menu.open {
+        display: flex;
+        right: 0;
+    }
+    
+    /* En-tête du menu mobile */
+    .nav-menu::before {
+        content: 'Menu';
+        display: block;
+        padding: 24px 20px;
+        background: var(--primary);
+        color: #fff;
+        font-size: 1.5rem;
+        font-weight: 800;
+        border-bottom: 2px solid rgba(255,255,255,0.1);
+    }
+    
+    /* Liens de navigation */
+    .nav-menu li {
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    .nav-menu a {
+        padding: 16px 20px;
+        border-bottom: none;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        transition: all 0.3s ease;
+    }
+    
+    .nav-menu a::before {
+        content: '›';
+        font-size: 1.5rem;
+        opacity: 0;
+        transform: translateX(-10px);
+        transition: all 0.3s ease;
+    }
+    
+    .nav-menu a:hover::before {
+        opacity: 1;
+        transform: translateX(0);
+    }
+    
+    .nav-menu a::after {
+        display: none;
+    }
+    
+    /* Section des réseaux sociaux dans le menu */
+    .mobile-social-links {
+        padding: 24px 20px;
+        background: rgba(255,255,255,0.05);
+        margin-top: auto;
+    }
+    
+    .mobile-social-links h4 {
+        color: #fff;
+        margin-bottom: 16px;
+        font-size: 1rem;
+        opacity: 0.9;
+    }
+    
+    .mobile-social-links .social-icons {
+        display: flex;
+        gap: 16px;
+    }
+    
+    .mobile-social-links a {
+        width: 44px;
+        height: 44px;
+        background: rgba(255,255,255,0.1);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        padding: 0;
+    }
+    
+    .mobile-social-links a:hover {
+        background: var(--primary-solid);
+        transform: translateY(-3px);
+    }
+    
+    /* Overlay sombre */
+    .menu-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100vh;
+        background: rgba(0,0,0,0.7);
+        z-index: 999;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+    
+    .menu-overlay.active {
+        display: block;
+        opacity: 1;
+    }
+    
+    /* Animation d'entrée */
+    @keyframes slideInRight {
+        from {
+            right: -100%;
+        }
+        to {
+            right: 0;
+        }
+    }
+    
+    .nav-menu.open {
+        animation: slideInRight 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+}
+
+@media (max-width: 768px) {
+    .logo-section {
+        padding: 12px 16px;
+        flex-wrap: nowrap;
+        gap: 8px;
+    }
+    
+    .logo-section > div:first-child {
+        flex: 1;
+        min-width: 0;
+    }
+    
+    .logo .logo-icon {
+        font-size: 24px;
+    }
+    
+    .logo-section h1 {
+        font-size: 16px !important;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    
+    .logo-section > div:first-child > div:last-child {
+        font-size: 10px !important;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    
+    /* Barre de recherche + bouton menu */
+    .logo-section > div:last-child {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-shrink: 0;
+    }
+    
+    .search-bar {
+        width: 140px !important;
+        max-width: 140px;
+    }
+    
+    .search-bar input {
+        padding: 10px 12px;
+        font-size: 0.85rem;
+    }
+    
+    .search-bar button {
+        padding: 10px 14px;
+    }
+    
+    .mobile-menu-btn {
+        padding: 10px 12px;
+        font-size: 18px;
+        flex-shrink: 0;
+    }
+    
+    /* Top bar */
+    .top-bar .container {
+        padding: 10px 16px;
+        font-size: 0.8rem;
+    }
+    
+    .top-bar > div:last-child {
+        gap: 8px;
+    }
+    
+    /* Menu mobile */
+    .nav-menu {
+        width: 280px;
+        max-width: 85vw;
+    }
+    
+    .nav-menu a {
+        padding: 14px 16px;
+        font-size: 0.95rem;
+    }
+    
+    /* Container principal */
+    .container {
+        padding: 0 16px;
+        max-width: 100%;
+        overflow-x: hidden;
+    }
+}
+
+@media (max-width: 375px) {
+    .logo-section h1 {
+        font-size: 14px !important;
+    }
+    
+    .logo-section > div:first-child > div:last-child {
+        display: none;
+    }
+    
+    .search-bar {
+        width: 120px !important;
+        max-width: 120px;
+    }
+    
+    .search-bar input {
+        padding: 8px 10px;
+        font-size: 0.8rem;
+    }
+    
+    .search-bar button {
+        padding: 8px 12px;
+    }
+    
+    .mobile-menu-btn {
+        padding: 8px 10px;
+        font-size: 16px;
+    }
+}
+
+@media (min-width: 390px) and (max-width: 430px) {
+    .logo-section {
+        padding: 12px 16px;
+    }
+    
+    .logo-section h1 {
+        font-size: 17px !important;
+    }
+    
+    .search-bar {
+        width: 160px !important;
+    }
+}
+/* Styles pour le footer horizontal */
+footer {
+    background: var(--dark);
+    color: #fff;
+    padding: 60px 24px 20px;
+    margin-top: 60px;
+    position: relative;
+    overflow: hidden;
+}
+
+footer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--primary);
+}
+
+footer::after {
+    content: '';
+    position: absolute;
+    bottom: -50%;
+    left: -20%;
+    width: 600px;
+    height: 600px;
+    background: var(--primary);
+    border-radius: 50%;
+    opacity: 0.05;
+    filter: blur(100px);
+}
+
+.footer-content {
+    display: flex;
+    justify-content: space-between;
+    gap: 40px;
+    position: relative;
+    z-index: 1;
+    margin-bottom: 40px;
+    max-width: 1280px;
+    margin-left: auto;
+    margin-right: auto;
+    flex-wrap: wrap;
+}
+
+.footer-section {
+    flex: 1;
+    min-width: 200px;
+}
+
+.footer-section h4 {
+    margin-bottom: 20px;
+    font-size: 1.2rem;
+    background: var(--primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.footer-section ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.footer-section li {
+    padding: 8px 0;
+    opacity: 0.8;
+    transition: var(--transition);
+    cursor: pointer;
+}
+
+.footer-section li:hover {
+    opacity: 1;
+    padding-left: 8px;
+    color: var(--accent);
+}
+
+.footer-section a {
+    color: inherit;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Style spécifique pour le lien WhatsApp */
+.footer-section a[href*="whatsapp"] {
+    color: #25D366;
+    font-weight: 600;
+}
+
+.footer-section a[href*="whatsapp"]:hover {
+    color: #128C7E;
+}
+
+.social-links {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.social-link {
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
+}
+
+.social-link:hover {
+    background: var(--primary-solid);
+    transform: translateY(-3px);
+}
+
+.newsletter p {
+    margin-bottom: 12px;
+    font-size: 0.9rem;
+    opacity: 0.9;
+}
+
+.newsletter-form {
+    display: flex;
+    gap: 8px;
+}
+
+.newsletter-form input {
+    flex: 1;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    font-size: 0.9rem;
+}
+
+.newsletter-form input::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.newsletter-form button {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: var(--transition);
+    white-space: nowrap;
+}
+
+.newsletter-form button:hover {
+    background: var(--primary-solid);
+    transform: translateY(-2px);
+}
+
+.footer-bottom {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 20px;
+    position: relative;
+    z-index: 1;
+}
+
+.footer-bottom-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1280px;
+    margin: 0 auto;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.copyright {
+    font-size: 14px;
+    opacity: 0.8;
+}
+
+.footer-links {
+    display: flex;
+    gap: 20px;
+}
+
+.footer-links a {
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+    font-size: 14px;
+    transition: var(--transition);
+}
+
+.footer-links a:hover {
+    color: var(--accent);
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .footer-content {
+        gap: 30px;
+    }
+    
+    .footer-section {
+        min-width: 180px;
+    }
+}
+
+@media (max-width: 768px) {
+    footer {
+        padding: 40px 16px 20px;
+    }
+    
+    .footer-content {
+        flex-direction: column;
+        gap: 30px;
+    }
+    
+    .footer-section {
+        min-width: 100%;
+    }
+    
+    .footer-bottom-content {
+        flex-direction: column;
+        text-align: center;
+        gap: 12px;
+    }
+    
+    .footer-links {
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+    
+    .newsletter-form {
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 480px) {
+    .social-links {
+        justify-content: center;
+    }
+    
+    .footer-links {
+        flex-direction: column;
+        gap: 8px;
+    }
+}
+.new-badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: linear-gradient(135deg, #ff6b6b, #ff8e53);
+    color: white;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    z-index: 10;
+    box-shadow: 0 4px 15px rgba(255, 107, 107, 0.5);
+    animation: pulseNew 2s ease-in-out infinite;
+}
+
+@keyframes pulseNew {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+
+#articlesContainer {
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.category-item {
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.category-item:hover {
+    transform: translateY(-8px) scale(1.05);
+}
+
+/* Logo du site */
+.site-logo {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+    border-radius: 8px;
+    transition: transform 0.3s ease;
+}
+
+.site-logo:hover {
+    transform: scale(1.1) rotate(5deg);
+}
+
+/* Logo icon de secours */
+.logo-icon {
+    font-size: 36px;
+    background: var(--primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+/* Responsive logo */
+@media (max-width: 768px) {
+    .site-logo {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .logo-icon {
+        font-size: 28px;
+    }
+}
+
+@media (max-width: 480px) {
+    .site-logo {
+        width: 36px;
+        height: 36px;
+    }
+    
+    .logo-icon {
+        font-size: 24px;
+    }
+}
+    </style>
+</head>
+<body>
+    <header>
+    <div class="top-bar">
+        <div class="container">
+            <div id="currentDate">Chargement...</div>
+            <div style="display:flex;gap:12px;align-items:center">
+                <a href="#" style="color:#fff"><i class="fab fa-facebook-f"></i></a>
+               
+                <a href="articles.html" style="color:#fff"><i class="fab fa-youtube"></i></a>
+            </div>
+        </div>
+    </div>
+    <div class="logo-section container">
+        <div style="display:flex;align-items:center;gap:12px">
+            <i class="fas fa-newspaper logo-icon"></i>
+            <div>
+                <h1 style="margin:0;font-size:20px">CFI 237</h1>
+                
+            </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px">
+            <div class="search-bar">
+                <input placeholder="Rechercher..." id="searchInput">
+                <button onclick="performSearch()"><i class="fas fa-search"></i></button>
+            </div>
+            <button class="mobile-menu-btn" onclick="toggleMenu()"><i class="fas fa-bars"></i></button>
+        </div>
+    </div>
+    <nav>
+        <div class="container">
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="index.html"><i class="fas fa-home"></i> Accueil</a></li>
+                <li><a href="#" onclick="filterByCategory('Politique'); return false;"><i class="fas fa-landmark"></i> Politique</a></li>
+                <li><a href="#" onclick="filterByCategory('Économie'); return false;"><i class="fas fa-chart-line"></i> Économie</a></li>
+                <li><a href="#" onclick="filterByCategory('Société'); return false;"><i class="fas fa-users"></i> Société</a></li>
+                <li><a href="#" onclick="filterByCategory('Sports'); return false;"><i class="fas fa-futbol"></i> Sports</a></li>
+                <li><a href="#" onclick="filterByCategory('Culture'); return false;"><i class="fas fa-palette"></i> Culture</a></li>
+                <li><a href="#" onclick="filterByCategory('Santé'); return false;"><i class="fas fa-heartbeat"></i> Santé</a></li>
+                <li><a href="#" onclick="filterByCategory('Technologie'); return false;"><i class="fas fa-laptop-code"></i> Technologie</a></li>
+                <li><a href="articles.html"><i class="fas fa-newspaper"></i> Tous les Articles</a></li>
+                
+                <!-- Réseaux sociaux dans le menu mobile -->
+                <div class="mobile-social-links">
+                    <h4>Suivez-nous</h4>
+                    <div class="social-icons">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="articles.html"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+            </ul>
+        </div>
+        <div class="menu-overlay" id="menuOverlay" onclick="toggleMenu()"></div>
+    </nav>
+</header>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="container">
+            <h1 class="page-title">Tous les Articles</h1>
+            <p class="page-subtitle">Découvrez l'ensemble de notre contenu : articles, vidéos, débats et événements</p>
+        </div>
+    </section>
+
+    <!-- Filter System -->
+    <section class="container">
+        <div class="filter-system">
+            <div class="filter-header">
+                <h2 class="filter-title">
+                    <i class="fas fa-filter"></i>
+                    Filtres
+                </h2>
+                <div class="filter-controls">
+                    <div class="filter-group">
+                        <label class="filter-label">Type de contenu</label>
+                        <select class="filter-select" id="contentTypeFilter">
+                            <option value="all">Tous les types</option>
+                            <option value="article">Articles</option>
+                            <option value="video">Vidéos</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label class="filter-label">Catégorie</label>
+                        <select class="filter-select" id="categoryFilter">
+                            <option value="all">Toutes catégories</option>
+                            <option value="Politique">Politique</option>
+                            <option value="Économie">Économie</option>
+                            <option value="Sports">Sports</option>
+                            <option value="Société">Société</option>
+                            <option value="Culture">Culture</option>
+                            <option value="Santé">Santé</option>
+                            <option value="Technologie">Technologie</option>
+                            <option value="International">International</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label class="filter-label">Section</label>
+                        <select class="filter-select" id="sectionFilter">
+                            <option value="all">Toutes sections</option>
+                            <option value="main">Articles principaux</option>
+                            <option value="hero">À la une (Slider)</option>
+                            <option value="a-la-une">Carousel À la Une</option>
+                            <option value="featured">À ne pas manquer</option>
+                            <option value="trending">Trending</option>
+                            <option value="videos">Vidéos</option>
+                            <option value="debates">Grands Débats</option>
+                            <option value="societe">Société</option>
+                            <option value="events">Événements</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="filter-tags">
+                <div class="filter-tag" onclick="setQuickFilter('videos')">
+                    <i class="fas fa-play-circle"></i>
+                    Vidéos seulement
+                </div>
+                <div class="filter-tag" onclick="setQuickFilter('debates')">
+                    <i class="fas fa-comments"></i>
+                    Grands Débats
+                </div>
+                <div class="filter-tag" onclick="setQuickFilter('trending')">
+                    <i class="fas fa-fire"></i>
+                    Trending
+                </div>
+                <div class="filter-tag" onclick="setQuickFilter('featured')">
+                    <i class="fas fa-star"></i>
+                    À ne pas manquer
+                </div>
+            </div>
+            
+            <div id="activeFilters" class="active-filters" style="display: none;">
+                <!-- Les filtres actifs apparaîtront ici -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Articles Grid -->
+    <section class="container">
+        <div class="articles-container" id="articlesContainer">
+            <div class="loading">
+                <i class="fas fa-spinner fa-spin"></i>
+                <p>Chargement des articles...</p>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+    <div class="footer-content">
+        <div class="footer-section">
+            <h4>Abu Media Group</h4>
+            <ul>
+                <li><a href="#about">À propos</a></li>
+               <li><a href="https://wa.me/237697691984?text=Bonjour%20Abu%20Media%20Group,%20je%20vous%20contacte%20depuis%20votre%20site%20web" target="_blank">
+                    <i class="fab fa-whatsapp"></i> Contact WhatsApp
+                </a></li>
+            </ul>
+        </div>
+        
+      
+        
+       
+    </div>
+    
+    <div class="footer-bottom">
+        <div class="footer-bottom-content">
+            <div class="copyright">
+                © 2025 Abu Media Group. Tous droits réservés.
+            </div>
+            <div class="footer-links">
+                <a href="#confidentialite">Politique de confidentialité</a>
+                <a href="#conditions">Conditions d'utilisation</a>
+                <a href="#mentions">Mentions légales</a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+    <script>
+        // Configuration
+        const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwbTx8XvbdE_xRkySixo2HpB4H5B_lQBdkshMd-0hTG69fjxcJ4Ncn1mhrUOq5W17ZK4w/exec';
+
+        let allArticles = [];
+        let filteredArticles = [];
+        let currentFilters = {
+            contentType: 'all',
+            category: 'all',
+            section: 'all',
+            search: ''
+        };
+
+document.addEventListener('DOMContentLoaded', function() {
+    updateCurrentDate();
+    
+    // Vérifier les paramètres URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const category = urlParams.get('category');
+    const search = urlParams.get('search');
+    const section = urlParams.get('section');
+    const contentType = urlParams.get('contentType');
+    
+    // Pré-remplir les filtres
+    if (category) {
+        currentFilters.category = category;
+        document.getElementById('categoryFilter').value = category;
+    }
+    
+    if (search) {
+        currentFilters.search = search;
+        document.getElementById('searchInput').value = search;
+    }
+    
+    if (section) {
+        currentFilters.section = section;
+        document.getElementById('sectionFilter').value = section;
+    }
+    
+    if (contentType) {
+        currentFilters.contentType = contentType;
+        document.getElementById('contentTypeFilter').value = contentType;
+    }
+    
+    loadAllArticles();
+    setupFilterListeners();
+});
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    const navLinks = document.querySelectorAll('.nav-menu a');
+    
+    navLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            const navMenu = document.getElementById('navMenu');
+            if (navMenu && navMenu.classList.contains('open')) {
+                toggleMenu();
+            }
+        });
+    });
+    
+    // Fermer avec la touche Escape
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            const navMenu = document.getElementById('navMenu');
+            if (navMenu && navMenu.classList.contains('open')) {
+                toggleMenu();
+            }
+        }
+    });
+});
+
+
+        // Mettre à jour la date
+        function updateCurrentDate() {
+            const days = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
+            const months = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
+            const now = new Date();
+            const dateStr = `${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
+            document.getElementById('currentDate').textContent = dateStr;
+        }
+
+        // Toggle menu mobile
+       function toggleMenu() {
+    const navMenu = document.getElementById('navMenu');
+    const menuBtn = document.querySelector('.mobile-menu-btn i');
+    const overlay = document.getElementById('menuOverlay');
+    const body = document.body;
+    
+    if (navMenu) {
+        const isOpen = navMenu.classList.contains('open');
+        
+        if (isOpen) {
+            // Fermer le menu
+            navMenu.classList.remove('open');
+            overlay.classList.remove('active');
+            body.style.overflow = '';
+            
+            if (menuBtn) {
+                menuBtn.classList.remove('fa-times');
+                menuBtn.classList.add('fa-bars');
+            }
+        } else {
+            // Ouvrir le menu
+            navMenu.classList.add('open');
+            overlay.classList.add('active');
+            body.style.overflow = 'hidden';
+            
+            if (menuBtn) {
+                menuBtn.classList.remove('fa-bars');
+                menuBtn.classList.add('fa-times');
+            }
+        }
+    }
+}
+
+    async function loadAllArticles() {
+    try {
+        const container = document.getElementById('articlesContainer');
+        container.innerHTML = `
+            <div class="loading">
+                <i class="fas fa-spinner fa-spin"></i>
+                <p>Chargement des articles...</p>
+            </div>
+        `;
+        
+        const response = await fetch(GOOGLE_APPS_SCRIPT_URL);
+        const result = await response.json();
+        
+        if (result.success && result.data) {
+            // ✨ INVERSER L'ORDRE : Les plus récents en premier
+            allArticles = result.data.reverse(); // ← LIGNE AJOUTÉE
+            
+            console.log('🔄 Articles inversés : Plus récents en premier');
+            
+            applyFilters();
+        } else {
+            showError('Aucun article trouvé');
+        }
+    } catch (error) {
+        console.error('Erreur chargement articles:', error);
+        showError('Erreur de chargement des articles');
+    }
+}
+
+console.log('🔍 Vérification de l\'ordre des articles:');
+console.log('Premier article (le plus récent):', allArticles[0]?.titre);
+console.log('Date:', allArticles[0]?.date);
+console.log('---');
+console.log('Dernier article (le plus ancien):', allArticles[allArticles.length - 1]?.titre);
+console.log('Date:', allArticles[allArticles.length - 1]?.date);
+
+
+// ========================================
+// 🎨 INDICATEUR VISUEL "NOUVEAU"
+// ========================================
+// Bonus : Ajouter un badge "NOUVEAU" sur les articles de moins de 24h
+
+function isNewArticle(articleDate) {
+    const now = new Date();
+    const articleTime = new Date(articleDate);
+    const hoursDiff = (now - articleTime) / (1000 * 60 * 60);
+    return hoursDiff < 24;
+}
+
+// Dans la fonction displayArticles() ou chargerArticlesGrid()
+const newBadge = isNewArticle(article.date) ? 
+    '<span class="new-badge">🔥 NOUVEAU</span>' : '';
+
+// HTML avec le badge
+`<div class="article-card">
+    <div class="article-image">
+        ${newBadge}
+        <img src="${article.image}" alt="${article.titre}">
+    </div>
+    ...
+</div>`
+
+
+        // Configurer les écouteurs de filtres
+        function setupFilterListeners() {
+            document.getElementById('contentTypeFilter').addEventListener('change', function() {
+                currentFilters.contentType = this.value;
+                applyFilters();
+            });
+            
+            document.getElementById('categoryFilter').addEventListener('change', function() {
+                currentFilters.category = this.value;
+                applyFilters();
+            });
+            
+            document.getElementById('sectionFilter').addEventListener('change', function() {
+                currentFilters.section = this.value;
+                applyFilters();
+            });
+            
+            document.getElementById('searchInput').addEventListener('input', function() {
+                currentFilters.search = this.value.toLowerCase();
+                applyFilters();
+            });
+            
+            document.getElementById('searchInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    performSearch();
+                }
+            });
+        }
+
+        // Vérifier les filtres dans l'URL
+    function checkUrlFilters() {
+    const urlParams = new URLSearchParams(window.location.search);
+    
+    // Vérifier le filtre de recherche
+    const searchParam = urlParams.get('search');
+    if (searchParam) {
+        currentFilters.search = decodeURIComponent(searchParam);
+        document.getElementById('searchInput').value = currentFilters.search;
+    }
+    
+    // Vérifier le filtre de catégorie
+    const categoryParam = urlParams.get('category');
+    if (categoryParam) {
+        currentFilters.category = decodeURIComponent(categoryParam);
+        document.getElementById('categoryFilter').value = currentFilters.category;
+    }
+    
+    // Vérifier le filtre de section
+    const sectionParam = urlParams.get('section');
+    if (sectionParam) {
+        currentFilters.section = decodeURIComponent(sectionParam);
+        document.getElementById('sectionFilter').value = currentFilters.section;
+    }
+    
+    // Vérifier le filtre de type de contenu
+    const contentTypeParam = urlParams.get('contentType');
+    if (contentTypeParam) {
+        currentFilters.contentType = decodeURIComponent(contentTypeParam);
+        document.getElementById('contentTypeFilter').value = currentFilters.contentType;
+    }
+    
+    // Vérifier le filtre rapide (anciennes URLs)
+    const filterParam = urlParams.get('filter');
+    if (filterParam) {
+        setQuickFilter(filterParam);
+    }
+    
+    // NE PAS appliquer les filtres ici - attendre que les articles soient chargés
+}
+
+
+        // Appliquer les filtres
+        function applyFilters() {
+    // Ne rien faire si les articles ne sont pas encore chargés
+    if (!allArticles || allArticles.length === 0) {
+        return;
+    }
+    
+    filteredArticles = allArticles.filter(article => {
+        // Filtre type de contenu
+        if (currentFilters.contentType !== 'all') {
+            if (currentFilters.contentType === 'video' && article.contentType !== 'video') return false;
+            if (currentFilters.contentType === 'article' && article.contentType === 'video') return false;
+        }
+        
+        // Filtre catégorie
+        if (currentFilters.category !== 'all' && article.categorie !== currentFilters.category) {
+            return false;
+        }
+        
+        // Filtre section
+        if (currentFilters.section !== 'all') {
+            if (!articleInSection(article, currentFilters.section)) return false;
+        }
+        
+        // Filtre recherche
+        if (currentFilters.search) {
+            const searchTerm = currentFilters.search.toLowerCase();
+            const matchesSearch = 
+                (article.titre && article.titre.toLowerCase().includes(searchTerm)) ||
+                (article.extrait && article.extrait.toLowerCase().includes(searchTerm)) ||
+                (article.contenu && article.contenu.toLowerCase().includes(searchTerm)) ||
+                (article.auteur && article.auteur.toLowerCase().includes(searchTerm)) ||
+                (article.categorie && article.categorie.toLowerCase().includes(searchTerm));
+            
+            if (!matchesSearch) return false;
+        }
+        
+        return true;
+    });
+    
+    displayArticles();
+    updateActiveFilters();
+    updatePageTitle();
+    updateUrlParams();
+}
+
+// Remplacer la partie d'affichage des métadonnées dans displayArticles()
+function displayArticles() {
+    const container = document.getElementById('articlesContainer');
+    
+    if (filteredArticles.length === 0) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <i class="fas fa-search"></i>
+                <h3>Aucun résultat trouvé</h3>
+                <p>Aucun article ne correspond à vos critères de recherche.</p>
+                <button class="btn" onclick="clearAllFilters()">
+                    <i class="fas fa-times"></i>
+                    Réinitialiser les filtres
+                </button>
+            </div>
+        `;
+        return;
+    }
+    
+    container.innerHTML = filteredArticles.map(article => {
+        const isVideo = article.contentType === 'video';
+        const badgeText = isVideo ? 'Vidéo' : (article.categorie || 'Article');
+        const badgeClass = isVideo ? 'article-badge video-badge' : 'article-badge';
+        
+        // Formatage des compteurs
+        const views = article.vue || 0;
+        const likes = article.likes || 0;
+        const viewsText = views === 0 ? 'Aucune vue' : `${views} vue${views > 1 ? 's' : ''}`;
+        const likesText = likes === 0 ? 'Aucun like' : `${likes} like${likes > 1 ? 's' : ''}`;
+        
+        return `
+            <div class="article-card" onclick="openArticle('${article.id}')">
+                <div class="article-image">
+                    <img src="${article.image || getDefaultImage(article)}" 
+                         alt="${article.titre}"
+                         onerror="this.src='https://picsum.photos/600/400?random=' + Math.random()">
+                    <span class="${badgeClass}">${badgeText}</span>
+                    ${isVideo ? '<div class="video-play"><i class="fas fa-play"></i></div>' : ''}
+                </div>
+                <div class="article-content">
+                    <div class="article-category">${article.categorie || 'Général'}</div>
+                    <h3 class="article-title">${article.titre || 'Sans titre'}</h3>
+                    <p class="article-excerpt">${article.extrait || 'Aucun extrait disponible...'}</p>
+                    <div class="article-meta">
+                        <div class="article-date">
+                            <i class="far fa-clock"></i>
+                            ${formatDate(article.date)}
+                        </div>
+                        <div style="display: flex; gap: 12px; font-size: 0.8rem; color: var(--muted);">
+                            <span><i class="far fa-eye"></i> ${viewsText}</span>
+                            <span><i class="far fa-heart"></i> ${likesText}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+
+
+        // Mettre à jour l'affichage des filtres actifs
+        function updateActiveFilters() {
+            const activeFiltersContainer = document.getElementById('activeFilters');
+            const activeFilters = [];
+            
+            if (currentFilters.contentType !== 'all') {
+                activeFilters.push(`
+                    <div class="active-filter">
+                        Type: ${currentFilters.contentType === 'video' ? 'Vidéos' : 'Articles'}
+                        <i class="fas fa-times" onclick="removeFilter('contentType')"></i>
+                    </div>
+                `);
+            }
+            
+            if (currentFilters.category !== 'all') {
+                activeFilters.push(`
+                    <div class="active-filter">
+                        Catégorie: ${currentFilters.category}
+                        <i class="fas fa-times" onclick="removeFilter('category')"></i>
+                    </div>
+                `);
+            }
+            
+            if (currentFilters.section !== 'all') {
+                activeFilters.push(`
+                    <div class="active-filter">
+                        Section: ${getSectionName(currentFilters.section)}
+                        <i class="fas fa-times" onclick="removeFilter('section')"></i>
+                    </div>
+                `);
+            }
+            
+            if (currentFilters.search) {
+                activeFilters.push(`
+                    <div class="active-filter">
+                        Recherche: "${currentFilters.search}"
+                        <i class="fas fa-times" onclick="removeFilter('search')"></i>
+                    </div>
+                `);
+            }
+            
+            if (activeFilters.length > 0) {
+                activeFiltersContainer.innerHTML = activeFilters.join('') + `
+                    <button class="clear-filters" onclick="clearAllFilters()">
+                        <i class="fas fa-times"></i>
+                        Tout effacer
+                    </button>
+                `;
+                activeFiltersContainer.style.display = 'flex';
+            } else {
+                activeFiltersContainer.style.display = 'none';
+            }
+        }
+
+        // Fonctions de filtrage rapide
+        function setQuickFilter(filterType) {
+            switch(filterType) {
+                case 'videos':
+                    currentFilters.contentType = 'video';
+                    document.getElementById('contentTypeFilter').value = 'video';
+                    break;
+                case 'debates':
+                    currentFilters.section = 'debates';
+                    document.getElementById('sectionFilter').value = 'debates';
+                    break;
+                case 'trending':
+                    currentFilters.section = 'trending';
+                    document.getElementById('sectionFilter').value = 'trending';
+                    break;
+                case 'featured':
+                    currentFilters.section = 'featured';
+                    document.getElementById('sectionFilter').value = 'featured';
+                    break;
+            }
+            applyFilters();
+        }
+
+        // Supprimer un filtre spécifique
+        function removeFilter(filterType) {
+            currentFilters[filterType] = 'all';
+            if (filterType === 'search') {
+                currentFilters.search = '';
+                document.getElementById('searchInput').value = '';
+            } else {
+                document.getElementById(filterType + 'Filter').value = 'all';
+            }
+            applyFilters();
+        }
+
+        // Effacer tous les filtres
+        function clearAllFilters() {
+            currentFilters = {
+                contentType: 'all',
+                category: 'all',
+                section: 'all',
+                search: ''
+            };
+            
+            document.getElementById('contentTypeFilter').value = 'all';
+            document.getElementById('categoryFilter').value = 'all';
+            document.getElementById('sectionFilter').value = 'all';
+            document.getElementById('searchInput').value = '';
+            
+            applyFilters();
+        }
+
+        // Recherche
+        function performSearch() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            currentFilters.search = searchTerm;
+            applyFilters();
+        }
+
+        // Ouvrir un article
+        function openArticle(articleId) {
+            localStorage.setItem('articleActuel', articleId);
+            window.location.href = 'article-detail.html';
+        }
+
+        // Fonctions utilitaires
+        function articleInSection(article, sectionName) {
+            if (!article.section) return false;
+            
+            const sections = {
+                'main': ['principal', 'main'],
+                'hero': ['hero', 'slider', 'à la une'],
+                'a-la-une': ['carousel', 'caroussel', 'à la une'],
+                'featured': ['featured', 'à ne pas manquer'],
+                'trending': ['trending', 'tendance'],
+                'videos': ['videos', 'vidéo'],
+                'debates': ['debates', 'débats'],
+                'societe': ['societe', 'société'],
+                'events': ['events', 'événements']
+            };
+            
+            const sectionKeywords = sections[sectionName] || [];
+            const articleSection = article.section.toLowerCase();
+            
+            return sectionKeywords.some(keyword => articleSection.includes(keyword));
+        }
+
+        function getSectionName(sectionKey) {
+            const sections = {
+                'main': 'Articles principaux',
+                'hero': 'À la une (Slider)',
+                'a-la-une': 'Carousel À la Une',
+                'featured': 'À ne pas manquer',
+                'trending': 'Trending',
+                'videos': 'Vidéos',
+                'debates': 'Grands Débats',
+                'societe': 'Société',
+                'events': 'Événements'
+            };
+            return sections[sectionKey] || sectionKey;
+        }
+
+        function getDefaultImage(article) {
+            const categories = {
+                'Politique': 'https://picsum.photos/600/400?grayscale&random=1',
+                'Économie': 'https://picsum.photos/600/400?grayscale&random=2',
+                'Sports': 'https://picsum.photos/600/400?grayscale&random=3',
+                'Société': 'https://picsum.photos/600/400?grayscale&random=4',
+                'Culture': 'https://picsum.photos/600/400?grayscale&random=5',
+                'Santé': 'https://picsum.photos/600/400?grayscale&random=6',
+                'Technologie': 'https://picsum.photos/600/400?grayscale&random=7',
+                'International': 'https://picsum.photos/600/400?grayscale&random=8'
+            };
+            return categories[article.categorie] || 'https://picsum.photos/600/400?random=' + Math.random();
+        }
+
+        function formatDate(dateString) {
+            if (!dateString) return 'Date inconnue';
+            
+            const date = new Date(dateString);
+            if (isNaN(date.getTime())) return 'Date inconnue';
+            
+            const now = new Date();
+            const diffTime = Math.abs(now - date);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            
+            if (diffDays === 1) return 'Hier';
+            if (diffDays < 7) return `Il y a ${diffDays} jours`;
+            if (diffDays < 30) return `Il y a ${Math.floor(diffDays/7)} semaines`;
+            
+            return date.toLocaleDateString('fr-FR', {
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric'
+            });
+        }
+
+        function showError(message) {
+            const container = document.getElementById('articlesContainer');
+            container.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <h3>Erreur</h3>
+                    <p>${message}</p>
+                    <button class="btn" onclick="loadAllArticles()">
+                        <i class="fas fa-redo"></i>
+                        Réessayer
+                    </button>
+                </div>
+            `;
+        }
+
+// Modifiez la fonction applyFilters() pour appeler updatePageTitle()
+function applyFilters() {
+    filteredArticles = allArticles.filter(article => {
+        // Filtre type de contenu
+        if (currentFilters.contentType !== 'all') {
+            if (currentFilters.contentType === 'video' && article.contentType !== 'video') return false;
+            if (currentFilters.contentType === 'article' && article.contentType === 'video') return false;
+        }
+        
+        // Filtre catégorie
+        if (currentFilters.category !== 'all' && article.categorie !== currentFilters.category) {
+            return false;
+        }
+        
+        // Filtre section
+        if (currentFilters.section !== 'all') {
+            if (!articleInSection(article, currentFilters.section)) return false;
+        }
+        
+        // Filtre recherche
+        if (currentFilters.search) {
+            const searchTerm = currentFilters.search.toLowerCase();
+            const matchesSearch = 
+                (article.titre && article.titre.toLowerCase().includes(searchTerm)) ||
+                (article.extrait && article.extrait.toLowerCase().includes(searchTerm)) ||
+                (article.contenu && article.contenu.toLowerCase().includes(searchTerm)) ||
+                (article.auteur && article.auteur.toLowerCase().includes(searchTerm)) ||
+                (article.categorie && article.categorie.toLowerCase().includes(searchTerm));
+            
+            if (!matchesSearch) return false;
+        }
+        
+        return true;
+    });
+    
+    displayArticles();
+    updateActiveFilters();
+    updatePageTitle(); // Nouvelle ligne
+    updateUrlParams(); // Nouvelle ligne
+}
+
+// Nouvelle fonction pour mettre à jour l'URL sans recharger la page
+function updateUrlParams() {
+    const params = new URLSearchParams();
+    
+    if (currentFilters.search) {
+        params.set('search', currentFilters.search);
+    }
+    if (currentFilters.category !== 'all') {
+        params.set('category', currentFilters.category);
+    }
+    if (currentFilters.section !== 'all') {
+        params.set('section', currentFilters.section);
+    }
+    if (currentFilters.contentType !== 'all') {
+        params.set('contentType', currentFilters.contentType);
+    }
+    
+    const newUrl = params.toString() 
+        ? `${window.location.pathname}?${params.toString()}`
+        : window.location.pathname;
+    
+    window.history.replaceState({}, '', newUrl);
+}
+function updatePageTitle() {
+    const pageTitle = document.querySelector('.page-title');
+    const pageSubtitle = document.querySelector('.page-subtitle');
+    
+    if (currentFilters.category !== 'all') {
+        const categoryEmojis = {
+            'Politique': '🏛️',
+            'Économie': '📊',
+            'Sports': '⚽',
+            'Société': '👥',
+            'Culture': '🎨',
+            'Santé': '❤️',
+            'Technologie': '💻',
+            'International': '🌍'
+        };
+        
+        const emoji = categoryEmojis[currentFilters.category] || '📰';
+        pageTitle.textContent = `${emoji} ${currentFilters.category}`;
+        
+        const count = filteredArticles.length;
+        pageSubtitle.textContent = `${count} article${count > 1 ? 's' : ''} trouvé${count > 1 ? 's' : ''}`;
+        
+    } else if (currentFilters.search) {
+        pageTitle.textContent = `🔍 Résultats pour "${currentFilters.search}"`;
+        pageSubtitle.textContent = `${filteredArticles.length} article(s) trouvé(s)`;
+        
+    } else {
+        pageTitle.textContent = 'Tous les Articles';
+        pageSubtitle.textContent = 'Découvrez l\'ensemble de notre contenu';
+    }
+}
+
+
+// Remplacez la fonction articleInSection() existante
+function articleInSection(article, sectionName) {
+    if (!article.section) return sectionName === 'main';
+    
+    const articleSections = article.section.toLowerCase().split(',').map(s => s.trim());
+    
+    // Correspondances directes
+    if (articleSections.includes(sectionName.toLowerCase())) {
+        return true;
+    }
+    
+    // Correspondances alternatives
+    const sectionAliases = {
+        'main': ['principal', 'main', 'article'],
+        'hero': ['hero', 'slider', 'une', 'à la une'],
+        'a-la-une': ['carousel', 'caroussel', 'à la une'],
+        'featured': ['featured', 'à ne pas manquer', 'important'],
+        'trending': ['trending', 'tendance', 'populaire'],
+        'videos': ['videos', 'vidéo', 'video'],
+        'debates': ['debates', 'débats', 'debat'],
+        'societe': ['societe', 'société', 'social'],
+        'events': ['events', 'événements', 'evenement']
+    };
+    
+    const aliases = sectionAliases[sectionName] || [];
+    return articleSections.some(section => 
+        aliases.some(alias => section.includes(alias))
+    );
+}
+
+function renderCategoryStats() {
+    const categories = ['Politique', 'Économie', 'Sports', 'Société', 'Culture', 'Santé'];
+    
+    return categories.map(cat => {
+        const count = allArticles.filter(a => a.categorie === cat).length;
+        return `
+            <li onclick="filterByCategory('${cat}')" style="cursor: pointer; padding: 10px 0;">
+                <span>${cat}</span>
+                <span style="float: right; background: var(--primary); color: white; padding: 2px 8px; border-radius: 10px;">
+                    ${count}
+                </span>
+            </li>
+        `;
+    }).join('');
+}
+    </script>
+
+    <script>
+// 🔐 Accès Admin Multi-Méthodes
+(function() {
+    const LOGIN_URL = 'login-secure-2024.html';
+    const ACCESS_CODE = 'Abu2024'; // Changez-moi !
+    
+    // Méthode 1: Logo (5 clics)
+    let clicks = 0, timer;
+    const logo = document.querySelector('.logo-icon, .logo');
+    if (logo) {
+        logo.style.cursor = 'pointer';
+        logo.onclick = () => {
+            if (++clicks === 5 && confirm('🔐 Admin ?')) 
+                location.href = LOGIN_URL;
+            clearTimeout(timer);
+            timer = setTimeout(() => clicks = 0, 3000);
+        };
+    }
+    
+    // Méthode 2: Ctrl+Shift+L
+    document.onkeydown = e => {
+        if (e.ctrlKey && e.shiftKey && e.key === 'L') {
+            e.preventDefault();
+            const code = prompt('🔐 Code :');
+            if (code === ACCESS_CODE) location.href = LOGIN_URL;
+        }
+    };
+    
+    // Méthode 3: URL ?admin
+    if (new URLSearchParams(location.search).has('admin')) {
+        history.replaceState({}, '', location.pathname);
+        if (confirm('🔐 Admin ?')) location.href = LOGIN_URL;
+    }
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,3191 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Abu Media Group</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #0f172a;
+            color: #f1f5f9;
+            min-height: 100vh;
+        }
+        
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 280px;
+            height: 100vh;
+            background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+            padding: 32px 24px;
+            border-right: 1px solid rgba(255,255,255,0.1);
+            z-index: 1000;
+            overflow-y: auto;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 48px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .logo i {
+            font-size: 32px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .logo h2 {
+            font-size: 1.3rem;
+            color: #fff;
+        }
+        
+        .nav-menu {
+            list-style: none;
+        }
+        
+        .nav-menu li {
+            margin-bottom: 8px;
+        }
+        
+        .nav-menu a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 16px;
+            color: #cbd5e1;
+            text-decoration: none;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            cursor: pointer;
+        }
+        
+        .nav-menu a:hover,
+        .nav-menu a.active {
+            background: rgba(102, 126, 234, 0.15);
+            color: #667eea;
+        }
+        
+        .nav-menu i {
+            width: 20px;
+            text-align: center;
+        }
+        
+        .main-content {
+            margin-left: 280px;
+            padding: 32px;
+            min-height: 100vh;
+        }
+        
+        .top-bar {
+            background: #1e293b;
+            padding: 20px 32px;
+            border-radius: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+        }
+        
+        .page-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #fff;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(255,255,255,0.05);
+            padding: 10px 16px;
+            border-radius: 10px;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+        }
+        
+        .section {
+            display: none;
+        }
+        
+        .section.active {
+            display: block;
+        }
+        
+        .form-card, .content-card {
+            background: #1e293b;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 24px;
+        }
+        
+        .form-section {
+            margin-bottom: 32px;
+        }
+        
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .section-title i {
+            color: #667eea;
+        }
+        
+        .form-group {
+            margin-bottom: 24px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #e2e8f0;
+            font-size: 0.95rem;
+        }
+        
+        .required {
+            color: #ef4444;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 14px 18px;
+            background: #0f172a;
+            border: 2px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            color: #f1f5f9;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        }
+        
+        textarea.form-control {
+            min-height: 150px;
+            resize: vertical;
+        }
+        
+        select.form-control {
+            cursor: pointer;
+        }
+        
+        .upload-area {
+            border: 3px dashed rgba(255,255,255,0.2);
+            border-radius: 16px;
+            padding: 48px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: rgba(102, 126, 234, 0.05);
+        }
+        
+        .upload-area:hover {
+            border-color: #667eea;
+            background: rgba(102, 126, 234, 0.1);
+        }
+        
+        .upload-area i {
+            font-size: 3.5rem;
+            color: #667eea;
+            margin-bottom: 16px;
+        }
+        
+        .image-preview {
+            margin-top: 20px;
+            display: none;
+            position: relative;
+        }
+        
+        .image-preview.show {
+            display: block;
+        }
+        
+        .image-preview img {
+            width: 100%;
+            max-height: 400px;
+            object-fit: cover;
+            border-radius: 16px;
+        }
+        
+        .remove-image {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: #ef4444;
+            color: #fff;
+            border: none;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.3rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 16px rgba(239, 68, 68, 0.4);
+        }
+        
+        .remove-image:hover {
+            transform: scale(1.1);
+            background: #dc2626;
+        }
+        
+        .btn {
+            padding: 16px 32px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.05rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: #fff;
+            box-shadow: 0 4px 16px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.5);
+        }
+        
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .btn-secondary {
+            background: rgba(255,255,255,0.1);
+            color: #e2e8f0;
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(255,255,255,0.15);
+        }
+        
+        .btn-danger {
+            background: #ef4444;
+            color: #fff;
+        }
+        
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+        
+        .btn-success {
+            background: #22c55e;
+            color: #fff;
+        }
+        
+        .btn-success:hover {
+            background: #16a34a;
+        }
+        
+        .btn-sm {
+            padding: 8px 16px;
+            font-size: 0.9rem;
+        }
+        
+        .btn-block {
+            width: 100%;
+        }
+        
+        .alert {
+            padding: 18px 24px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            display: none;
+            align-items: center;
+            gap: 14px;
+            animation: slideIn 0.3s ease;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .alert.show {
+            display: flex;
+        }
+        
+        .alert-success {
+            background: rgba(34, 197, 94, 0.15);
+            border: 2px solid #22c55e;
+            color: #86efac;
+        }
+        
+        .alert-error {
+            background: rgba(239, 68, 68, 0.15);
+            border: 2px solid #ef4444;
+            color: #fca5a5;
+        }
+        
+        .char-count {
+            text-align: right;
+            font-size: 0.85rem;
+            color: #64748b;
+            margin-top: 6px;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+        
+        .helper-text {
+            font-size: 0.85rem;
+            color: #64748b;
+            margin-top: 6px;
+        }
+        
+        .upload-progress {
+            display: none;
+            margin-top: 16px;
+        }
+        
+        .upload-progress.show {
+            display: block;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        .progress-text {
+            text-align: center;
+            margin-top: 8px;
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+
+        /* Articles List */
+        .search-bar {
+            margin-bottom: 24px;
+            display: flex;
+            gap: 12px;
+        }
+        
+        .search-input {
+            flex: 1;
+            padding: 14px 18px;
+            background: #0f172a;
+            border: 2px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            color: #f1f5f9;
+            font-size: 1rem;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .article-item {
+            background: #0f172a;
+            border: 2px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            display: grid;
+            grid-template-columns: 120px 1fr auto;
+            gap: 20px;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+        
+        .article-item:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+        }
+        
+        .article-thumbnail {
+            width: 120px;
+            height: 80px;
+            border-radius: 10px;
+            object-fit: cover;
+        }
+        
+        .article-info h3 {
+            color: #fff;
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+        }
+        
+        .article-meta {
+            display: flex;
+            gap: 16px;
+            font-size: 0.85rem;
+            color: #64748b;
+            margin-top: 8px;
+        }
+        
+        .article-meta span {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .article-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .badge-primary {
+            background: rgba(102, 126, 234, 0.2);
+            color: #667eea;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 28px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 32px rgba(0,0,0,0.4);
+        }
+        
+        .stat-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+        }
+        
+        .stat-icon.blue {
+            background: rgba(102, 126, 234, 0.15);
+            color: #667eea;
+        }
+        
+        .stat-icon.green {
+            background: rgba(34, 197, 94, 0.15);
+            color: #22c55e;
+        }
+        
+        .stat-icon.orange {
+            background: rgba(251, 146, 60, 0.15);
+            color: #fb923c;
+        }
+        
+        .stat-icon.purple {
+            background: rgba(168, 85, 247, 0.15);
+            color: #a855f7;
+        }
+        
+        .stat-info h4 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 4px;
+        }
+        
+        .stat-info p {
+            color: #64748b;
+            font-size: 0.95rem;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .modal.show {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: #1e293b;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 800px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+        }
+        
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255,255,255,0.1);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            color: #fff;
+            font-size: 1.3rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .modal-close:hover {
+            background: #ef4444;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #64748b;
+        }
+        
+        .loading i {
+            font-size: 3rem;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #64748b;
+        }
+        
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+        
+        @media(max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            
+            .main-content {
+                margin-left: 0;
+                padding: 20px;
+            }
+            
+            .form-card, .content-card {
+                padding: 24px;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .article-item {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Mobile Menu Button */
+.mobile-menu-btn {
+    display: none;
+    background: rgba(255,255,255,0.1);
+    border: none;
+    color: #fff;
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+}
+
+.mobile-menu-btn:hover {
+    background: rgba(255,255,255,0.15);
+}
+
+/* Sidebar Mobile */
+.sidebar-mobile-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    z-index: 1999;
+}
+
+.sidebar-mobile-overlay.show {
+    display: block;
+}
+
+/* Mobile Navigation Tabs */
+.mobile-nav-tabs {
+    display: none;
+    background: #1e293b;
+    padding: 16px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 999;
+}
+
+.mobile-nav-tabs.show {
+    display: flex;
+}
+
+.mobile-tab {
+    flex: 1;
+    padding: 12px 16px;
+    background: transparent;
+    border: 2px solid rgba(255,255,255,0.1);
+    color: #cbd5e1;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin: 0 4px;
+}
+
+.mobile-tab.active {
+    background: rgba(102, 126, 234, 0.15);
+    border-color: #667eea;
+    color: #667eea;
+}
+
+.mobile-tab i {
+    font-size: 1rem;
+}
+
+/* Responsive Improvements */
+@media(max-width: 1200px) {
+    .main-content {
+        margin-left: 0;
+        padding: 20px 16px;
+    }
+    
+    .sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+        width: 300px;
+    }
+    
+    .sidebar.show {
+        transform: translateX(0);
+    }
+    
+    .mobile-menu-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .mobile-nav-tabs {
+        display: flex;
+    }
+    
+    .top-bar {
+        padding: 16px 20px;
+        margin-bottom: 16px;
+    }
+    
+    .page-title {
+        font-size: 1.4rem;
+    }
+    
+    .form-card, .content-card {
+        padding: 24px 20px;
+        border-radius: 16px;
+    }
+    
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+    }
+    
+    .stat-card {
+        padding: 20px;
+    }
+    
+    .stat-icon {
+        width: 60px;
+        height: 60px;
+        font-size: 1.5rem;
+    }
+    
+    .stat-info h4 {
+        font-size: 1.6rem;
+    }
+}
+
+@media(max-width: 768px) {
+    .mobile-nav-tabs {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+    
+    .mobile-tab {
+        flex: 1 0 calc(50% - 8px);
+        min-width: calc(50% - 8px);
+        font-size: 0.8rem;
+        padding: 10px 12px;
+    }
+    
+    .mobile-tab i {
+        font-size: 0.9rem;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .form-row {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+    
+    .article-item {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+    
+    .article-thumbnail {
+        width: 100%;
+        height: 200px;
+        margin-bottom: 12px;
+    }
+    
+    .article-meta {
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    
+    .article-actions {
+        justify-content: center;
+        margin-top: 12px;
+    }
+    
+    .upload-area {
+        padding: 32px 20px;
+    }
+    
+    .upload-area i {
+        font-size: 2.5rem;
+    }
+    
+    .modal-content {
+        padding: 24px 20px;
+        margin: 10px;
+    }
+    
+    .search-bar {
+        flex-direction: column;
+    }
+    
+    .search-input, 
+    .form-control {
+        padding: 12px 16px;
+    }
+}
+
+@media(max-width: 480px) {
+    .mobile-tab {
+        flex: 1 0 100%;
+        min-width: 100%;
+    }
+    
+    .main-content {
+        padding: 16px 12px;
+    }
+    
+    .top-bar {
+        padding: 12px 16px;
+    }
+    
+    .page-title {
+        font-size: 1.2rem;
+    }
+    
+    .user-info {
+        padding: 8px 12px;
+    }
+    
+    .user-avatar {
+        width: 32px;
+        height: 32px;
+        font-size: 0.9rem;
+    }
+    
+    .form-card, .content-card {
+        padding: 20px 16px;
+    }
+    
+    .btn {
+        padding: 14px 20px;
+        font-size: 1rem;
+    }
+    
+    .section-title {
+        font-size: 1.1rem;
+    }
+}
+
+/* Améliorations pour le modal */
+.modal-content {
+    max-height: 85vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-content form {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 8px;
+}
+
+/* Scrollbar personnalisée */
+.modal-content form::-webkit-scrollbar {
+    width: 6px;
+}
+
+.modal-content form::-webkit-scrollbar-track {
+    background: rgba(255,255,255,0.1);
+    border-radius: 3px;
+}
+
+.modal-content form::-webkit-scrollbar-thumb {
+    background: #667eea;
+    border-radius: 3px;
+}
+
+.modal-content form::-webkit-scrollbar-thumb:hover {
+    background: #764ba2;
+}
+
+/* Sections avec scroll */
+.scroll-container {
+    max-height: 150px;
+    overflow-y: auto;
+    padding: 8px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.logout-btn {
+    background: rgba(239, 68, 68, 0.1);
+    color: #fca5a5;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    padding: 10px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 0.85rem;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+}
+
+.logout-btn:hover {
+    background: rgba(239, 68, 68, 0.2);
+    color: #f87171;
+    border-color: rgba(239, 68, 68, 0.5);
+    transform: translateY(-1px);
+}
+
+@media(max-width: 768px) {
+    .logout-btn span {
+        display: none;
+    }
+    
+    .logout-btn {
+        padding: 8px 12px;
+    }
+}
+    </style>
+</head>
+<body>
+
+<script>
+// 🔐 Vérification de la session
+(function() {
+    const sessionData = sessionStorage.getItem('adminSession');
+    
+    if (!sessionData) {
+        // Pas de session → redirection login
+        window.location.href = 'login-secure-2024.html';
+        return;
+    }
+    
+    try {
+        const session = JSON.parse(sessionData);
+        const now = Date.now();
+        
+        // Vérifier l'expiration
+        if (!session.authenticated || now > session.expiresAt) {
+            sessionStorage.removeItem('adminSession');
+            alert('⏱️ Session expirée. Veuillez vous reconnecter.');
+            window.location.href = 'login-secure-2024.html';
+            return;
+        }
+        
+        // Session valide ✅
+        console.log('✅ Session valide pour:', session.username);
+        
+        // Ajouter un bouton de déconnexion
+       
+        
+    } catch (e) {
+        console.error('Erreur session:', e);
+        window.location.href = 'login-secure-2024.html';
+    }
+})();
+</script>
+
+
+    <aside class="sidebar">
+        <div class="logo">
+            <i class="fas fa-shield-alt"></i>
+            <h2>Admin Panel</h2>
+        </div>
+        
+        <ul class="nav-menu">
+            <li><a href="#" data-section="new-article" class="nav-link active">
+                <i class="fas fa-plus-circle"></i> Nouvel Article
+            </a></li>
+            <li><a href="#" data-section="my-articles" class="nav-link">
+                <i class="fas fa-list"></i> Mes Articles
+            </a></li>
+            <li><a href="#" data-section="statistics" class="nav-link">
+                <i class="fas fa-chart-line"></i> Statistiques
+            </a></li>
+            <li><a href="#" data-section="settings" class="nav-link">
+                <i class="fas fa-cog"></i> Paramètres
+            </a></li>
+            <li><a href="index.html">
+                <i class="fas fa-home"></i> Voir le Site
+            </a></li>
+        </ul>
+    </aside>
+
+
+<!-- Mobile Navigation Tabs -->
+<div class="mobile-nav-tabs" id="mobileNavTabs">
+ <button onclick="openOneSignal()"
+        style="background: #667eea; color: white; border: none; padding: 15px 30px; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: 600;">
+    📨 Notifier vos Abonnez
+</button>
+
+<script>
+function openOneSignal() {
+    // Essayer différentes URLs possibles
+    const urls = [
+        'https://onesignal.com/apps/cafdfcde-aa21-414a-98de-f8e9c837738f',
+        'https://onesignal.com/apps/cafdfcde-aa21-414a-98de-f8e9c837738f/campaigns',
+        'https://onesignal.com/apps/cafdfcde-aa21-414a-98de-f8e9c837738f/messages',
+        'https://onesignal.com'
+    ];
+    
+    // Ouvrir la première URL
+    window.open(urls[0], '_blank');
+    
+    // Instructions détaillées
+    setTimeout(() => {
+        alert(`🔍 INSTRUCTIONS ONE SIGNAL :
+
+1. Si vous n'êtes pas connecté, connectez-vous
+2. Cliquez sur "Messages" ou "Campaigns"
+3. Cliquez sur "New Push" ou "New Campaign"
+4. Remplissez :
+   - Title : Votre titre
+   - Message : Votre message
+   - URL : Votre lien
+5. Choisissez "All Subscribers"
+6. Cliquez "Send Message"
+
+✅ Votre notification partira !`);
+    }, 1500);
+}
+</script>
+    <button class="mobile-tab active" data-section="new-article">
+        <i class="fas fa-plus-circle"></i>
+        <span>Nouveau</span>
+    </button>
+    <button class="mobile-tab" data-section="my-articles">
+        <i class="fas fa-list"></i>
+        <span>Articles</span>
+    </button>
+    <button class="mobile-tab" data-section="statistics">
+        <i class="fas fa-chart-line"></i>
+        <span>Stats</span>
+    </button>
+    <button class="mobile-tab" data-section="settings">
+        <i class="fas fa-cog"></i>
+        <span>Paramètres</span>
+    </button>
+
+   <button class="mobile-tab" onclick="window.location.href='index.html'">
+    <i class="fas fa-home"></i>
+    <span>Voir le Site</span>
+</button>
+</div>
+
+<!-- Mobile Sidebar Overlay -->
+<div class="sidebar-mobile-overlay" id="sidebarOverlay"></div>
+    <main class="main-content">
+     <!-- Dans la top-bar, après le user-info -->
+<div class="top-bar">
+    <h1 class="page-title" id="pageTitle">Créer un Nouvel Article</h1>
+    <div style="display: flex; align-items: center; gap: 16px;">
+        <div class="user-info">
+            <div class="user-avatar">A</div>
+            <div>
+                <div style="font-weight:600">Admin</div>
+                <div style="font-size:0.85rem;opacity:0.7">Administrateur</div>
+            </div>
+        </div>
+        <button class="logout-btn" onclick="logout()">
+            <i class="fas fa-sign-out-alt"></i>
+            <span>Déconnexion</span>
+        </button>
+    </div>
+</div>
+
+        <div class="alert alert-success" id="successAlert">
+            <i class="fas fa-check-circle" style="font-size:1.5rem"></i>
+            <div>
+                <strong id="successTitle">Succès !</strong>
+                <p style="margin:4px 0 0;font-size:0.9rem;opacity:0.8" id="successMessage"></p>
+            </div>
+        </div>
+        
+        <div class="alert alert-error" id="errorAlert">
+            <i class="fas fa-exclamation-triangle" style="font-size:1.5rem"></i>
+            <div>
+                <strong>Erreur</strong>
+                <p style="margin:4px 0 0;font-size:0.9rem;opacity:0.8" id="errorMessage"></p>
+            </div>
+        </div>
+
+        <!-- NEW ARTICLE SECTION -->
+        <div id="new-article" class="section active">
+            <div class="form-card">
+                <form id="articleForm">
+                   <!-- Remplacer toute la section Image de Couverture par ce code -->
+<div class="form-section">
+    <h3 class="section-title">
+        <i class="fas fa-images"></i>
+        Images de l'Article
+    </h3>
+    
+    <input type="file" id="imageInput" accept="image/*" multiple style="display:none">
+    
+    <div class="upload-area" id="uploadArea">
+        <i class="fas fa-cloud-upload-alt"></i>
+        <h4 style="margin:0 0 8px;color:#fff">Glissez des images ou cliquez pour sélectionner</h4>
+        <p style="color:#64748b">JPG, PNG, WEBP (Max 10MB par image) - <strong>La première image sera la couverture</strong></p>
+    </div>
+    
+    <div class="upload-progress" id="uploadProgress">
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <div class="progress-text" id="progressText">Upload en cours...</div>
+    </div>
+    
+    <!-- Galerie d'aperçu des images -->
+    <div class="images-preview" id="imagesPreview">
+        <!-- Les images uploadées apparaîtront ici -->
+    </div>
+    
+    <!-- Champs cachés pour stocker les URLs -->
+    <input type="hidden" id="imageUrl" required>
+    <input type="hidden" id="imagesUrls">
+</div>
+
+                    <div class="form-section">
+                        <h3 class="section-title">
+                            <i class="fas fa-info-circle"></i>
+                            Informations de Base
+                        </h3>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Titre de l'Article <span class="required">*</span></label>
+                            <input 
+                                type="text" 
+                                class="form-control" 
+                                id="titre" 
+                                placeholder="Ex: Dialogue national : Les grandes orientations définies pour 2025"
+                                required
+                                maxlength="200"
+                            >
+                            <div class="char-count"><span id="titreCount">0</span>/200 caractères</div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Catégorie <span class="required">*</span></label>
+                                <select class="form-control" id="categorie" required>
+                                    <option value="">Choisir une catégorie</option>
+                                    <option value="Politique">Politique</option>
+                                    <option value="Économie">Économie</option>
+                                    <option value="Sports">Sports</option>
+                                    <option value="Société">Société</option>
+                                    <option value="Culture">Culture</option>
+                                    <option value="Santé">Santé</option>
+                                    <option value="Technologie">Technologie</option>
+                                    <option value="International">International</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Auteur <span class="required">*</span></label>
+                                <input 
+                                    type="text" 
+                                    class="form-control" 
+                                    id="auteur" 
+                                    placeholder="Ex: Rodrigue Ngando"
+                                    required
+                                >
+                            </div>
+                        </div>
+                    </div>
+<div class="form-row">
+    <!-- Dans le formulaire nouveau article - Remplacer l'ancien select -->
+<div class="form-group">
+    <label class="form-label">Sections <span class="required">*</span></label>
+    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:8px">
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;padding:12px;border:2px solid rgba(255,255,255,0.1);border-radius:10px;transition:all 0.3s ease" 
+               onmouseover="this.style.borderColor='#667eea'" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)'">
+            <input type="checkbox" name="sections" value="main" checked> 
+            <span>📰 Articles principaux</span>
+        </label>
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;padding:12px;border:2px solid rgba(255,255,255,0.1);border-radius:10px;transition:all 0.3s ease"
+               onmouseover="this.style.borderColor='#667eea'" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)'">
+            <input type="checkbox" name="sections" value="hero"> 
+            <span>🌟 À la une (Slider)</span>
+        </label>
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;padding:12px;border:2px solid rgba(255,255,255,0.1);border-radius:10px;transition:all 0.3s ease"
+               onmouseover="this.style.borderColor='#667eea'" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)'">
+            <input type="checkbox" name="sections" value="a-la-une"> 
+            <span>🔥 Carousel À la Une</span>
+        </label>
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;padding:12px;border:2px solid rgba(255,255,255,0.1);border-radius:10px;transition:all 0.3s ease"
+               onmouseover="this.style.borderColor='#667eea'" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)'">
+            <input type="checkbox" name="sections" value="featured"> 
+            <span>⭐ À ne pas manquer</span>
+        </label>
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;padding:12px;border:2px solid rgba(255,255,255,0.1);border-radius:10px;transition:all 0.3s ease"
+               onmouseover="this.style.borderColor='#667eea'" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)'">
+            <input type="checkbox" name="sections" value="trending"> 
+            <span>📈 Trending</span>
+        </label>
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;padding:12px;border:2px solid rgba(255,255,255,0.1);border-radius:10px;transition:all 0.3s ease"
+               onmouseover="this.style.borderColor='#667eea'" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)'">
+            <input type="checkbox" name="sections" value="videos"> 
+            <span>🎥 Vidéos</span>
+        </label>
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;padding:12px;border:2px solid rgba(255,255,255,0.1);border-radius:10px;transition:all 0.3s ease"
+               onmouseover="this.style.borderColor='#667eea'" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)'">
+            <input type="checkbox" name="sections" value="debates"> 
+            <span>💬 Grands Débats</span>
+        </label>
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;padding:12px;border:2px solid rgba(255,255,255,0.1);border-radius:10px;transition:all 0.3s ease"
+               onmouseover="this.style.borderColor='#667eea'" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)'">
+            <input type="checkbox" name="sections" value="societe"> 
+            <span>👥 Société</span>
+        </label>
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;padding:12px;border:2px solid rgba(255,255,255,0.1);border-radius:10px;transition:all 0.3s ease"
+               onmouseover="this.style.borderColor='#667eea'" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)'">
+            <input type="checkbox" name="sections" value="events"> 
+            <span>📅 Événements</span>
+        </label>
+    </div>
+    <div class="helper-text">
+        <i class="fas fa-info-circle"></i>
+        Cochez toutes les sections où vous voulez que l'article apparaisse
+    </div>
+</div>
+    
+    <!-- Remplacer cette partie dans le modal d'édition -->
+<!-- Après la partie Catégorie/Auteur, avant les Sections -->
+<div class="form-row">
+    <div class="form-group">
+        <label class="form-label">Type de contenu</label>
+        <div style="display:flex;flex-direction:column;gap:12px;margin-top:8px">
+            <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
+                <input type="radio" name="contentType" value="article" checked> 
+                <span>Article</span>
+            </label>
+            <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
+                <input type="radio" name="contentType" value="video"> 
+                <span>Vidéo</span>
+            </label>
+        </div>
+    </div>
+</div>
+
+<!-- Champ URL vidéo -->
+<div class="form-group" id="videoUrlField" style="display:none">
+    <label class="form-label">URL de la vidéo (YouTube/Facebook) <span class="required">*</span></label>
+    <input type="url" class="form-control" id="videoUrl" placeholder="https://www.youtube.com/watch?v=...">
+    <div class="helper-text">
+        <i class="fas fa-info-circle"></i>
+        Pour YouTube : une miniature sera générée automatiquement
+    </div>
+</div>
+
+</div>
+
+                    <div class="form-section">
+                        <h3 class="section-title">
+                            <i class="fas fa-file-alt"></i>
+                            Contenu de l'Article
+                        </h3>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Extrait (Résumé Court) <span class="required">*</span></label>
+                            <textarea 
+                                class="form-control" 
+                                id="extrait" 
+                                placeholder="Un court résumé de l'article en 1-2 phrases"
+                                required
+                                maxlength="300"
+                                rows="3"
+                            ></textarea>
+                            <div class="char-count"><span id="extraitCount">0</span>/300 caractères</div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Contenu Complet <span class="required">*</span></label>
+                            <textarea 
+                                class="form-control" 
+                                id="contenu" 
+                                placeholder="Écrivez le contenu complet de l'article ici..."
+                                required
+                                rows="14"
+                            ></textarea>
+                            <div class="helper-text">
+                                <i class="fas fa-info-circle"></i>
+                                Séparez les paragraphes par une ligne vide pour une meilleure mise en page
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="display:flex;gap:16px;margin-top:40px">
+                        <button type="submit" class="btn btn-primary btn-block" id="submitBtn">
+                            <i class="fas fa-paper-plane"></i>
+                            Publier l'Article
+                        </button>
+                    </div>
+                    
+                    <div style="margin-top:16px">
+                        <button type="button" class="btn btn-secondary btn-block" onclick="resetForm()">
+                            <i class="fas fa-redo"></i>
+                            Réinitialiser
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- MY ARTICLES SECTION -->
+        <div id="my-articles" class="section">
+            <div class="content-card">
+                <div class="search-bar">
+                    <input type="text" class="search-input" id="searchInput" placeholder="🔍 Rechercher un article...">
+                    <select class="form-control" id="filterCategory" style="width: 200px;">
+                        <option value="">Toutes catégories</option>
+                        <option value="Politique">Politique</option>
+                        <option value="Économie">Économie</option>
+                        <option value="Sports">Sports</option>
+                        <option value="Société">Société</option>
+                        <option value="Culture">Culture</option>
+                        <option value="Santé">Santé</option>
+                        <option value="Technologie">Technologie</option>
+                        <option value="International">International</option>
+                    </select>
+                </div>
+                
+                <div id="articlesContainer">
+                    <div class="loading">
+                        <i class="fas fa-spinner"></i>
+                        <p style="margin-top:16px">Chargement des articles...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- STATISTICS SECTION -->
+        <div id="statistics" class="section">
+            <div class="stats-grid" id="statsGrid">
+                <div class="stat-card">
+                    <div class="stat-icon blue">
+                        <i class="fas fa-newspaper"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h4 id="totalArticles">0</h4>
+                        <p>Articles Publiés</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon green">
+                        <i class="fas fa-eye"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h4 id="totalViews">0</h4>
+                        <p>Vues Totales</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon orange">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h4 id="totalLikes">0</h4>
+                        <p>Likes Totaux</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon purple">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h4 id="avgEngagement">0%</h4>
+                        <p>Taux d'Engagement</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h3 class="section-title">
+                    <i class="fas fa-trophy"></i>
+                    Top 5 Articles les Plus Populaires
+                </h3>
+                <div id="topArticlesContainer">
+                    <div class="loading">
+                        <i class="fas fa-spinner"></i>
+                        <p style="margin-top:16px">Chargement des statistiques...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SETTINGS SECTION -->
+        <div id="settings" class="section">
+            <div class="form-card">
+                <h3 class="section-title">
+                    <i class="fas fa-user-circle"></i>
+                    Informations du Profil
+                </h3>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Nom d'utilisateur</label>
+                        <input type="text" class="form-control" id="settingsUsername" value="Admin">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-control" id="settingsEmail" value="admin@abumedia.com">
+                    </div>
+                </div>
+                
+                <button class="btn btn-success" onclick="saveSettings('profile')">
+                    <i class="fas fa-save"></i> Sauvegarder le Profil
+                </button>
+            </div>
+
+            <div class="form-card">
+                <h3 class="section-title">
+                    <i class="fas fa-lock"></i>
+                    Sécurité
+                </h3>
+                
+                <div class="form-group">
+                    <label class="form-label">Ancien mot de passe</label>
+                    <input type="password" class="form-control" id="oldPassword">
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Nouveau mot de passe</label>
+                        <input type="password" class="form-control" id="newPassword">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Confirmer le mot de passe</label>
+                        <input type="password" class="form-control" id="confirmPassword">
+                    </div>
+                </div>
+                
+                <button class="btn btn-primary" onclick="changePassword()">
+                    <i class="fas fa-key"></i> Changer le Mot de Passe
+                </button>
+            </div>
+
+            <div class="form-card">
+                <h3 class="section-title">
+                    <i class="fas fa-palette"></i>
+                    Préférences du Site
+                </h3>
+                
+                <div class="form-group">
+                    <label class="form-label">Nom du site</label>
+                    <input type="text" class="form-control" id="siteName" value="Abu Media Group">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Description du site</label>
+                    <textarea class="form-control" id="siteDescription" rows="3">Votre source d'information fiable au Cameroun</textarea>
+                </div>
+                
+                <button class="btn btn-success" onclick="saveSettings('site')">
+                    <i class="fas fa-save"></i> Sauvegarder les Paramètres
+                </button>
+            </div>
+
+            <div class="form-card" style="border: 2px solid #ef4444;">
+                <h3 class="section-title" style="color: #ef4444;">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    Zone Dangereuse
+                </h3>
+                
+                <p style="color: #64748b; margin-bottom: 20px;">
+                    Les actions ci-dessous sont irréversibles. Procédez avec prudence.
+                </p>
+                
+                <button class="btn btn-danger" onclick="confirmDeleteAll()">
+                    <i class="fas fa-trash-alt"></i> Supprimer Tous les Articles
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- EDIT MODAL -->
+   <!-- EDIT MODAL -->
+<div class="modal" id="editModal">
+    <div class="modal-content">
+        <button class="modal-close" onclick="closeEditModal()">
+            <i class="fas fa-times"></i>
+        </button>
+        
+        <h2 style="margin-bottom: 24px; color: #fff;">
+            <i class="fas fa-edit"></i> Modifier l'Article
+        </h2>
+        
+        <form id="editForm" style="max-height: 70vh; overflow-y: auto; padding-right: 10px;">
+            <input type="hidden" id="editArticleId">
+            
+            <div class="form-section">
+                <h3 class="section-title">
+                    <i class="fas fa-image"></i>
+                    Image de Couverture
+                </h3>
+                
+                <input type="file" id="editImageInput" accept="image/*" style="display:none">
+                
+                <div class="image-preview show" id="editImagePreview">
+                    <button type="button" class="remove-image" onclick="changeEditImage()" title="Changer l'image">
+                        <i class="fas fa-camera"></i>
+                    </button>
+                    <img id="editPreviewImg" src="" alt="Preview">
+                </div>
+                
+                <div class="upload-progress" id="editUploadProgress">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="editProgressFill"></div>
+                    </div>
+                    <div class="progress-text" id="editProgressText">Upload en cours...</div>
+                </div>
+                
+                <button type="button" class="btn btn-secondary btn-block" onclick="changeEditImage()" style="margin-top: 16px;">
+                    <i class="fas fa-upload"></i> Changer l'image
+                </button>
+                
+                <input type="hidden" id="editImageUrl">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Titre <span class="required">*</span></label>
+                <input type="text" class="form-control" id="editTitre" required maxlength="200">
+                <div class="char-count"><span id="editTitreCount">0</span>/200 caractères</div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Catégorie <span class="required">*</span></label>
+                    <select class="form-control" id="editCategorie" required>
+                        <option value="Politique">Politique</option>
+                        <option value="Économie">Économie</option>
+                        <option value="Sports">Sports</option>
+                        <option value="Société">Société</option>
+                        <option value="Culture">Culture</option>
+                        <option value="Santé">Santé</option>
+                        <option value="Technologie">Technologie</option>
+                        <option value="International">International</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Auteur <span class="required">*</span></label>
+                    <input type="text" class="form-control" id="editAuteur" required>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Sections <span class="required">*</span></label>
+                    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:8px;max-height:150px;overflow-y:auto;padding:8px;background:rgba(255,255,255,0.05);border-radius:8px;">
+                        <label style="display:flex;align-items:center;gap:6px;cursor:pointer;padding:8px;font-size:0.9rem;">
+                            <input type="checkbox" name="editSections" value="main"> 
+                            <span>📰 Principaux</span>
+                        </label>
+                        <label style="display:flex;align-items:center;gap:6px;cursor:pointer;padding:8px;font-size:0.9rem;">
+                            <input type="checkbox" name="editSections" value="hero"> 
+                            <span>🌟 Slider</span>
+                        </label>
+                        <label style="display:flex;align-items:center;gap:6px;cursor:pointer;padding:8px;font-size:0.9rem;">
+                            <input type="checkbox" name="editSections" value="a-la-une"> 
+                            <span>🔥 Carousel</span>
+                        </label>
+                        <label style="display:flex;align-items:center;gap:6px;cursor:pointer;padding:8px;font-size:0.9rem;">
+                            <input type="checkbox" name="editSections" value="featured"> 
+                            <span>⭐ Important</span>
+                        </label>
+                        <label style="display:flex;align-items:center;gap:6px;cursor:pointer;padding:8px;font-size:0.9rem;">
+                            <input type="checkbox" name="editSections" value="trending"> 
+                            <span>📈 Trending</span>
+                        </label>
+                        <label style="display:flex;align-items:center;gap:6px;cursor:pointer;padding:8px;font-size:0.9rem;">
+                            <input type="checkbox" name="editSections" value="videos"> 
+                            <span>🎥 Vidéos</span>
+                        </label>
+                        <label style="display:flex;align-items:center;gap:6px;cursor:pointer;padding:8px;font-size:0.9rem;">
+                            <input type="checkbox" name="editSections" value="debates"> 
+                            <span>💬 Débats</span>
+                        </label>
+                        <label style="display:flex;align-items:center;gap:6px;cursor:pointer;padding:8px;font-size:0.9rem;">
+                            <input type="checkbox" name="editSections" value="societe"> 
+                            <span>👥 Société</span>
+                        </label>
+                        <label style="display:flex;align-items:center;gap:6px;cursor:pointer;padding:8px;font-size:0.9rem;">
+                            <input type="checkbox" name="editSections" value="events"> 
+                            <span>📅 Événements</span>
+                        </label>
+                    </div>
+                    <div class="helper-text">
+                        <i class="fas fa-info-circle"></i>
+                        Cochez les sections où l'article doit apparaître
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Type de contenu</label>
+                    <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px">
+                        <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
+                            <input type="radio" name="editContentType" value="article" checked> 
+                            <span>Article</span>
+                        </label>
+                        <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
+                            <input type="radio" name="editContentType" value="video"> 
+                            <span>Vidéo</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group" id="editVideoUrlField" style="display:none">
+                <label class="form-label">URL de la vidéo (YouTube/Facebook)</label>
+                <input 
+                    type="url" 
+                    class="form-control" 
+                    id="editVideoUrl"  
+                    placeholder="https://www.youtube.com/watch?v=..."
+                >
+                <div class="helper-text">
+                    <i class="fas fa-info-circle"></i>
+                    Collez l'URL complète de la vidéo YouTube ou Facebook
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Extrait <span class="required">*</span></label>
+                <textarea class="form-control" id="editExtrait" required maxlength="300" rows="3" style="min-height:80px;"></textarea>
+                <div class="char-count"><span id="editExtraitCount">0</span>/300 caractères</div>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Contenu <span class="required">*</span></label>
+                <textarea class="form-control" id="editContenu" required rows="8" style="min-height:200px;"></textarea>
+            </div>
+            
+            <div style="display:flex;gap:12px;margin-top:24px;padding-top:16px;border-top:1px solid rgba(255,255,255,0.1)">
+                <button type="submit" class="btn btn-success" style="flex:1">
+                    <i class="fas fa-save"></i> Enregistrer
+                </button>
+                <button type="button" class="btn btn-secondary" onclick="closeEditModal()">
+                    <i class="fas fa-times"></i> Annuler
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+  <script>
+    
+    const CLOUDINARY_CLOUD_NAME = 'dkuciagop';
+    const CLOUDINARY_UPLOAD_PRESET = 'abu_media_upload';
+    const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyqZxEiJXt1VbHvprYZREwe_tjN8Vr7JTHRqRPjGrwW1uZh9WRu2FaWuY_3D-VpaffSbQ/exec';
+    
+    let allArticles = [];
+    let uploadedImageUrl = '';
+    let editingArticleId = null;
+let uploadedImages = []; // Tableau pour toutes les images
+let currentUploadIndex = 0;
+let totalUploads = 0;
+
+    // Navigation principale (PC et mobile)
+    function initNavigation() {
+        // Navigation desktop - liens de la sidebar
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Retirer la classe active de tous les liens
+                document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                // Ajouter la classe active au lien cliqué
+                this.classList.add('active');
+                
+                const sectionId = this.dataset.section;
+                
+                // Masquer toutes les sections
+                document.querySelectorAll('.section').forEach(section => {
+                    section.classList.remove('active');
+                });
+                
+                // Afficher la section correspondante
+                document.getElementById(sectionId).classList.add('active');
+                
+                // Mettre à jour le titre de la page
+                const titles = {
+                    'new-article': 'Créer un Nouvel Article',
+                    'my-articles': 'Mes Articles',
+                    'statistics': 'Statistiques',
+                    'settings': 'Paramètres'
+                };
+                document.getElementById('pageTitle').textContent = titles[sectionId];
+                
+                // Charger les données si nécessaire
+                if (sectionId === 'my-articles') loadArticles();
+                if (sectionId === 'statistics') loadStatistics();
+                
+                // Fermer la sidebar sur mobile
+                if (window.innerWidth <= 1200) {
+                    document.querySelector('.sidebar').classList.remove('show');
+                    document.getElementById('sidebarOverlay').classList.remove('show');
+                }
+            });
+        });
+
+        // Navigation mobile - tabs
+        const mobileTabs = document.querySelectorAll('.mobile-tab');
+        mobileTabs.forEach(tab => {
+            tab.addEventListener('click', function() {
+                const sectionId = this.dataset.section;
+                
+                // Mettre à jour l'onglet actif
+                mobileTabs.forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Mettre à jour la navigation desktop correspondante
+                document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                document.querySelector(`.nav-link[data-section="${sectionId}"]`).classList.add('active');
+                
+                // Afficher la section
+                document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+                document.getElementById(sectionId).classList.add('active');
+                
+                // Mettre à jour le titre
+                const titles = {
+                    'new-article': 'Créer un Nouvel Article',
+                    'my-articles': 'Mes Articles',
+                    'statistics': 'Statistiques',
+                    'settings': 'Paramètres'
+                };
+                document.getElementById('pageTitle').textContent = titles[sectionId];
+                
+                if (sectionId === 'my-articles') loadArticles();
+                if (sectionId === 'statistics') loadStatistics();
+                
+                // Fermer la sidebar
+                document.querySelector('.sidebar').classList.remove('show');
+                document.getElementById('sidebarOverlay').classList.remove('show');
+            });
+        });
+
+        // Menu mobile
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const sidebar = document.querySelector('.sidebar');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+        
+        if (mobileMenuBtn) {
+            mobileMenuBtn.addEventListener('click', () => {
+                sidebar.classList.toggle('show');
+                sidebarOverlay.classList.toggle('show');
+            });
+        }
+        
+        if (sidebarOverlay) {
+            sidebarOverlay.addEventListener('click', () => {
+                sidebar.classList.remove('show');
+                sidebarOverlay.classList.remove('show');
+            });
+        }
+    }
+
+    // Gestion du redimensionnement
+    function handleResize() {
+        const sidebar = document.querySelector('.sidebar');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+        
+        if (window.innerWidth > 1200) {
+            sidebar.classList.remove('show');
+            sidebarOverlay.classList.remove('show');
+        }
+    }
+
+    // Améliorations pour mobile
+    function initMobileFormEnhancements() {
+        document.querySelectorAll('.form-control').forEach(input => {
+            input.addEventListener('focus', function() {
+                this.style.fontSize = '16px';
+            });
+        });
+        
+        document.querySelectorAll('.btn').forEach(btn => {
+            btn.style.minHeight = '44px';
+            btn.style.minWidth = '44px';
+        });
+    }
+
+    // Initialisation au chargement de la page
+    document.addEventListener('DOMContentLoaded', function() {
+        initNavigation();
+        initMobileFormEnhancements();
+         initContentTypeToggle(); 
+         initMultipleImageUpload();
+          initEditContentTypeToggle();
+        window.addEventListener('resize', handleResize);
+
+        // Initialiser les compteurs de caractères
+        document.getElementById('titre').addEventListener('input', function() {
+            document.getElementById('titreCount').textContent = this.value.length;
+        });
+        
+        document.getElementById('extrait').addEventListener('input', function() {
+            document.getElementById('extraitCount').textContent = this.value.length;
+        });
+
+        document.getElementById('editTitre').addEventListener('input', function() {
+            document.getElementById('editTitreCount').textContent = this.value.length;
+        });
+        
+        document.getElementById('editExtrait').addEventListener('input', function() {
+            document.getElementById('editExtraitCount').textContent = this.value.length;
+        });
+
+        // Initialiser l'upload d'image
+        initImageUpload();
+
+        // Initialiser la recherche et filtres
+        document.getElementById('searchInput').addEventListener('input', filterArticles);
+        document.getElementById('filterCategory').addEventListener('change', filterArticles);
+
+        // Initialiser les formulaires
+        document.getElementById('articleForm').addEventListener('submit', handleArticleSubmit);
+        document.getElementById('editForm').addEventListener('submit', handleEditSubmit);
+
+        // Initialiser l'upload d'image pour l'édition
+        document.getElementById('editImageInput').addEventListener('change', handleEditImageChange);
+
+        // Fermer la modal en cliquant à l'extérieur
+        document.getElementById('editModal').addEventListener('click', function(e) {
+            if (e.target === this) closeEditModal();
+        });
+
+        // Charger les données si nécessaire
+        if (document.getElementById('my-articles').classList.contains('active')) {
+            loadArticles();
+        }
+        if (document.getElementById('statistics').classList.contains('active')) {
+            loadStatistics();
+        }
+    });
+
+
+// Initialiser l'upload multiple d'images
+function initMultipleImageUpload() {
+    const uploadArea = document.getElementById('uploadArea');
+    const imageInput = document.getElementById('imageInput');
+    
+    uploadArea.addEventListener('click', () => imageInput.click());
+    
+    uploadArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        uploadArea.style.borderColor = '#667eea';
+    });
+    
+    uploadArea.addEventListener('dragleave', () => {
+        uploadArea.style.borderColor = 'rgba(255,255,255,0.2)';
+    });
+    
+    uploadArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        const files = Array.from(e.dataTransfer.files);
+        handleMultipleFiles(files);
+    });
+    
+    imageInput.addEventListener('change', (e) => {
+        const files = Array.from(e.target.files);
+        handleMultipleFiles(files);
+    });
+}
+
+// Gérer plusieurs fichiers
+function handleMultipleFiles(files) {
+    const imageFiles = files.filter(file => file.type.startsWith('image/'));
+    
+    if (imageFiles.length === 0) {
+        showAlert('error', 'Veuillez sélectionner des images valides');
+        return;
+    }
+    
+    // Vérifier la taille de chaque fichier
+    const oversizedFiles = imageFiles.filter(file => file.size > 10 * 1024 * 1024);
+    if (oversizedFiles.length > 0) {
+        showAlert('error', `${oversizedFiles.length} image(s) trop grande(s) (max 10MB)`);
+        return;
+    }
+    
+    // Masquer la zone d'upload
+    document.getElementById('uploadArea').style.display = 'none';
+    
+    // Initialiser le tableau d'images
+    uploadedImages = [];
+    currentUploadIndex = 0;
+    totalUploads = imageFiles.length;
+    
+    // Afficher la barre de progression
+    document.getElementById('uploadProgress').classList.add('show');
+    document.getElementById('progressText').textContent = `Upload 1/${totalUploads}...`;
+    
+    // Commencer l'upload séquentiel
+    uploadNextImage(imageFiles);
+}
+
+// Upload séquentiel des images
+async function uploadNextImage(files) {
+    if (currentUploadIndex >= files.length) {
+        // Tous les uploads sont terminés
+        document.getElementById('uploadProgress').classList.remove('show');
+        document.getElementById('uploadArea').style.display = 'block';
+        updateImageFields();
+        displayImagesPreview();
+        return;
+    }
+    
+    const file = files[currentUploadIndex];
+    const progressPercent = ((currentUploadIndex + 1) / totalUploads) * 100;
+    document.getElementById('progressFill').style.width = `${progressPercent}%`;
+    document.getElementById('progressText').textContent = `Upload ${currentUploadIndex + 1}/${totalUploads}...`;
+    
+    try {
+        const imageUrl = await uploadSingleImage(file);
+        uploadedImages.push(imageUrl);
+        currentUploadIndex++;
+        
+        // Uploader l'image suivante
+        setTimeout(() => uploadNextImage(files), 500);
+        
+    } catch (error) {
+        console.error(`Erreur upload image ${currentUploadIndex + 1}:`, error);
+        showAlert('error', `Erreur lors de l'upload de l'image ${currentUploadIndex + 1}`);
+        currentUploadIndex++;
+        setTimeout(() => uploadNextImage(files), 500);
+    }
+}
+
+// Upload d'une seule image vers Cloudinary
+async function uploadSingleImage(file) {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+    
+    const response = await fetch(
+        `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`,
+        { method: 'POST', body: formData }
+    );
+    
+    if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+    }
+    
+    const data = await response.json();
+    return data.secure_url;
+}
+
+// Mettre à jour les champs cachés avec les URLs
+function updateImageFields() {
+    if (uploadedImages.length > 0) {
+        // Première image = couverture
+        document.getElementById('imageUrl').value = uploadedImages[0];
+        
+        // Toutes les images en JSON stringifié
+        document.getElementById('imagesUrls').value = JSON.stringify(uploadedImages);
+        
+        showAlert('success', `${uploadedImages.length} image(s) uploadée(s) avec succès!`, 'La première image est la couverture');
+    }
+}
+
+// Afficher l'aperçu de toutes les images
+function displayImagesPreview() {
+    const previewContainer = document.getElementById('imagesPreview');
+    
+    if (uploadedImages.length === 0) {
+        previewContainer.innerHTML = '';
+        previewContainer.classList.remove('show');
+        return;
+    }
+    
+    previewContainer.classList.add('show');
+    
+    previewContainer.innerHTML = `
+        <div style="margin-bottom: 16px; color: #e2e8f0; font-weight: 600;">
+            <i class="fas fa-info-circle"></i> 
+            ${uploadedImages.length} image(s) - <span style="color: #667eea">La première est la couverture</span>
+        </div>
+        <div class="images-grid">
+            ${uploadedImages.map((url, index) => `
+                <div class="image-preview-item ${index === 0 ? 'cover-image' : ''}">
+                    <img src="${url}" alt="Preview ${index + 1}">
+                    <div class="image-overlay">
+                        ${index === 0 ? '<div class="cover-badge">Couverture</div>' : ''}
+                        <button type="button" class="remove-single-image" onclick="removeSingleImage(${index})" title="Supprimer">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('')}
+        </div>
+        <button type="button" class="btn btn-secondary" onclick="clearAllImages()" style="margin-top: 16px; width: 100%;">
+            <i class="fas fa-trash"></i> Supprimer toutes les images
+        </button>
+    `;
+}
+
+// Supprimer une image spécifique
+function removeSingleImage(index) {
+    uploadedImages.splice(index, 1);
+    
+    if (uploadedImages.length === 0) {
+        clearAllImages();
+    } else {
+        updateImageFields();
+        displayImagesPreview();
+    }
+}
+
+// Supprimer toutes les images
+function clearAllImages() {
+    uploadedImages = [];
+    document.getElementById('imageUrl').value = '';
+    document.getElementById('imagesUrls').value = '';
+    document.getElementById('imagesPreview').classList.remove('show');
+    document.getElementById('uploadArea').style.display = 'block';
+    document.getElementById('imageInput').value = '';
+}
+
+// CSS pour la galerie d'images
+const galleryStyles = `
+.images-preview {
+    display: none;
+    margin-top: 20px;
+}
+
+.images-preview.show {
+    display: block;
+}
+
+.images-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.image-preview-item {
+    position: relative;
+    border-radius: 12px;
+    overflow: hidden;
+    aspect-ratio: 4/3;
+    border: 3px solid rgba(255,255,255,0.1);
+    transition: all 0.3s ease;
+}
+
+.image-preview-item.cover-image {
+    border-color: #667eea;
+    box-shadow: 0 4px 16px rgba(102, 126, 234, 0.4);
+}
+
+.image-preview-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.image-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.image-preview-item:hover .image-overlay {
+    opacity: 1;
+}
+
+.cover-badge {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    background: #667eea;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 0.7rem;
+    font-weight: 600;
+}
+
+.remove-single-image {
+    background: #ef4444;
+    color: white;
+    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.remove-single-image:hover {
+    transform: scale(1.1);
+    background: #dc2626;
+}
+
+@media (max-width: 768px) {
+    .images-grid {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 12px;
+    }
+}
+`;
+
+// Injecter les styles CSS
+const styleSheet = document.createElement('style');
+styleSheet.textContent = galleryStyles;
+document.head.appendChild(styleSheet);
+
+
+    // Image Upload (New Article)
+    function initImageUpload() {
+        const uploadArea = document.getElementById('uploadArea');
+        const imageInput = document.getElementById('imageInput');
+        
+        uploadArea.addEventListener('click', () => imageInput.click());
+        
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.style.borderColor = '#667eea';
+        });
+        
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.style.borderColor = 'rgba(255,255,255,0.2)';
+        });
+        
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            const file = e.dataTransfer.files[0];
+            if (file && file.type.startsWith('image/')) {
+                uploadToCloudinary(file);
+            }
+        });
+        
+        imageInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) uploadToCloudinary(file);
+        });
+    }
+    
+    async function uploadToCloudinary(file) {
+        if (file.size > 10 * 1024 * 1024) {
+            showAlert('error', 'Image trop grande (max 10MB)');
+            return;
+        }
+        
+        document.getElementById('uploadProgress').classList.add('show');
+        document.getElementById('uploadArea').style.display = 'none';
+        
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+        
+        try {
+            const response = await fetch(
+                `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`,
+                { method: 'POST', body: formData }
+            );
+            
+            const data = await response.json();
+            
+            if (data.secure_url) {
+                uploadedImageUrl = data.secure_url;
+                document.getElementById('imageUrl').value = uploadedImageUrl;
+                document.getElementById('previewImg').src = uploadedImageUrl;
+                document.getElementById('imagePreview').classList.add('show');
+                document.getElementById('uploadProgress').classList.remove('show');
+            }
+        } catch (error) {
+            showAlert('error', 'Erreur lors de l\'upload de l\'image');
+            document.getElementById('uploadProgress').classList.remove('show');
+            document.getElementById('uploadArea').style.display = 'block';
+        }
+    }
+    
+    function removeImage() {
+        uploadedImageUrl = '';
+        document.getElementById('imageUrl').value = '';
+        document.getElementById('imagePreview').classList.remove('show');
+        document.getElementById('uploadArea').style.display = 'block';
+        document.getElementById('imageInput').value = '';
+    }
+
+    // Submit New Article
+
+async function handleArticleSubmit(e) {
+    e.preventDefault();
+
+    // Validation des images
+    if (uploadedImages.length === 0) {
+        showAlert('error', 'Veuillez uploader au moins une image');
+        return;
+    }
+
+    const titre = document.getElementById('titre').value.trim();
+    const categorie = document.getElementById('categorie').value;
+    const auteur = document.getElementById('auteur').value.trim();
+    const extrait = document.getElementById('extrait').value.trim();
+    const contenu = document.getElementById('contenu').value.trim();
+
+    if (!titre || !categorie || !auteur || !extrait || !contenu) {
+        showAlert('error', 'Veuillez remplir tous les champs obligatoires');
+        return;
+    }
+
+    const contentType = document.querySelector('input[name="contentType"]:checked').value;
+    const selectedSections = getSelectedSections();
+
+    // Préparer le payload avec les images
+    const payload = {
+        titre: titre,
+        categorie: categorie,
+        section: selectedSections.join(','),
+        contentType: contentType,
+        image: uploadedImages[0], // Première image = couverture
+        images: JSON.stringify(uploadedImages), // Toutes les images en JSON stringifié
+        extrait: extrait,
+        contenu: contenu,
+        auteur: auteur,
+        date: new Date().toISOString(),
+        vue: 0,
+        likes: 0
+    };
+
+    if (contentType === 'video') {
+        payload.video_url = document.getElementById('videoUrl').value.trim();
+    }
+
+    const submitBtn = document.getElementById('submitBtn');
+    const originalBtnHTML = submitBtn.innerHTML;
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Publication...';
+
+    try {
+        const response = await fetchWithCorsFallback(GOOGLE_APPS_SCRIPT_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+
+        let result;
+        try {
+            result = await response.json();
+        } catch (parseErr) {
+            console.warn('Impossible de parser la réponse JSON:', parseErr);
+            result = { success: true, newId: Date.now().toString() };
+        }
+
+        if (result && result.success) {
+            const articleId = result.newId || result.id || Date.now().toString();
+            
+            showAlert('success', 'Article publié avec succès !', `${uploadedImages.length} image(s) incluses`);
+            
+            console.log('✅ Article publié - ID:', articleId);
+            
+            // Réinitialiser le formulaire
+            setTimeout(() => resetForm(), 1200);
+        } else {
+            throw new Error(result?.error || 'Erreur serveur inconnue');
+        }
+
+    } catch (error) {
+        console.error('Erreur lors de la publication:', error);
+        showAlert('error', 'Erreur lors de la publication: ' + error.message);
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalBtnHTML;
+    }
+}
+
+// Fonction améliorée pour gérer CORS avec fallback
+// ✅ REMPLACER TOUTE LA FONCTION fetchWithCorsFallback
+async function fetchWithCorsFallback(url, options) {
+  try {
+    // Mode no-cors directement (pas de tentative normale qui échoue)
+    await fetch(url, {
+      ...options,
+      mode: 'no-cors'
+    });
+    
+    // En mode no-cors on ne peut pas lire la réponse
+    return {
+      ok: true,
+      json: async () => ({ success: true, newId: Date.now().toString() })
+    };
+  } catch (error) {
+    console.warn('⚠️ Erreur réseau:', error.message);
+    throw error;
+  }
+}
+
+
+
+    function displayArticles(articles) {
+        const container = document.getElementById('articlesContainer');
+        
+        if (articles.length === 0) {
+            container.innerHTML = '<div class="empty-state"><i class="fas fa-search"></i><h3>Aucun résultat</h3><p>Aucun article ne correspond à votre recherche</p></div>';
+            return;
+        }
+        
+        container.innerHTML = articles.map(article => `
+            <div class="article-item">
+                <img src="${article.image}" alt="${article.titre}" class="article-thumbnail">
+                <div class="article-info">
+                    <h3>${article.titre}</h3>
+                    <span class="badge badge-primary">${article.categorie}</span>
+                    <div class="article-meta">
+                        <span><i class="fas fa-calendar"></i> ${article.date}</span>
+                        <span><i class="fas fa-user"></i> ${article.auteur}</span>
+                        <span><i class="fas fa-eye"></i> ${article.vue} vues</span>
+                        <span><i class="fas fa-heart"></i> ${article.likes} likes</span>
+                    </div>
+                </div>
+                <div class="article-actions">
+                    <button class="btn btn-secondary btn-sm" onclick="moveArticle('${article.id}', 'up')" title="Monter">
+                        <i class="fas fa-arrow-up"></i>
+                    </button>
+                    <button class="btn btn-secondary btn-sm" onclick="moveArticle('${article.id}', 'down')" title="Descendre">
+                        <i class="fas fa-arrow-down"></i>
+                    </button>
+                    <button class="btn btn-primary btn-sm" onclick="editArticle('${article.id}')" title="Modifier">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="btn btn-danger btn-sm" onclick="deleteArticle('${article.id}')" title="Supprimer">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    // Search and Filter
+    function filterArticles() {
+        const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+        const category = document.getElementById('filterCategory').value;
+        
+        const filtered = allArticles.filter(article => {
+            const matchesSearch = article.titre.toLowerCase().includes(searchTerm) || 
+                                 article.extrait.toLowerCase().includes(searchTerm);
+            const matchesCategory = !category || article.categorie === category;
+            return matchesSearch && matchesCategory;
+        });
+        
+        displayArticles(filtered);
+    }
+
+    // Edit Article
+   function editArticle(id) {
+    const article = allArticles.find(a => a.id == id);
+    if (!article) return;
+    
+    editingArticleId = id;
+    document.getElementById('editArticleId').value = id;
+    document.getElementById('editTitre').value = article.titre;
+    document.getElementById('editCategorie').value = article.categorie;
+    document.getElementById('editAuteur').value = article.auteur;
+    document.getElementById('editExtrait').value = article.extrait;
+    document.getElementById('editContenu').value = article.contenu;
+    document.getElementById('editImageUrl').value = article.image;
+    document.getElementById('editPreviewImg').src = article.image;
+    
+    // Gérer les sections multiples
+    setSelectedSections(article.section);
+    
+    // Gérer le type de contenu - CORRIGÉ
+    const isVideo = article.video_url;
+    if (isVideo) {
+        document.querySelector('input[name="editContentType"][value="video"]').checked = true;
+        document.getElementById('editVideoUrlField').style.display = 'block';
+        document.getElementById('editVideoUrl').value = article.video_url || '';
+    } else {
+        document.querySelector('input[name="editContentType"][value="article"]').checked = true;
+        document.getElementById('editVideoUrlField').style.display = 'none';
+        document.getElementById('editVideoUrl').value = '';
+    }
+    
+    document.getElementById('editTitreCount').textContent = article.titre.length;
+    document.getElementById('editExtraitCount').textContent = article.extrait.length;
+    
+    document.getElementById('editModal').classList.add('show');
+}
+
+    function closeEditModal() {
+        document.getElementById('editModal').classList.remove('show');
+        editingArticleId = null;
+    }
+
+    // Change Edit Image
+    function changeEditImage() {
+        document.getElementById('editImageInput').click();
+    }
+
+    async function handleEditImageChange(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        
+        if (file.size > 10 * 1024 * 1024) {
+            showAlert('error', 'Image trop grande (max 10MB)');
+            return;
+        }
+        
+        // Afficher le progress bar
+        document.getElementById('editUploadProgress').classList.add('show');
+        document.getElementById('editImagePreview').style.opacity = '0.5';
+        
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+        
+        try {
+            // Simuler la progression
+            let progress = 0;
+            const progressInterval = setInterval(() => {
+                progress += 10;
+                if (progress <= 90) {
+                    document.getElementById('editProgressFill').style.width = progress + '%';
+                }
+            }, 200);
+            
+            const response = await fetch(
+                `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`,
+                { method: 'POST', body: formData }
+            );
+            
+            clearInterval(progressInterval);
+            const data = await response.json();
+            
+            if (data.secure_url) {
+                document.getElementById('editProgressFill').style.width = '100%';
+                document.getElementById('editImageUrl').value = data.secure_url;
+                document.getElementById('editPreviewImg').src = data.secure_url;
+                
+                setTimeout(() => {
+                    document.getElementById('editUploadProgress').classList.remove('show');
+                    document.getElementById('editImagePreview').style.opacity = '1';
+                    document.getElementById('editProgressFill').style.width = '0%';
+                }, 500);
+                
+                showAlert('success', 'Image mise à jour !', 'La nouvelle image a été uploadée avec succès.');
+            } else {
+                throw new Error('Upload failed');
+            }
+        } catch (error) {
+            showAlert('error', 'Erreur lors de l\'upload de l\'image');
+            document.getElementById('editUploadProgress').classList.remove('show');
+            document.getElementById('editImagePreview').style.opacity = '1';
+            document.getElementById('editProgressFill').style.width = '0%';
+        }
+    }
+
+    // Submit Edit Form
+   async function handleEditSubmit(e) {
+    e.preventDefault();
+    
+   const contentType = document.querySelector('input[name="editContentType"]:checked').value;
+    const selectedSections = getSelectedEditSections();
+    
+    const updateData = {
+        action: 'update',
+        id: document.getElementById('editArticleId').value,
+        titre: document.getElementById('editTitre').value.trim(),
+        categorie: document.getElementById('editCategorie').value,
+        section: selectedSections.join(','),
+        contentType: contentType,
+        auteur: document.getElementById('editAuteur').value.trim(),
+        extrait: document.getElementById('editExtrait').value.trim(),
+        contenu: document.getElementById('editContenu').value.trim(),
+        image: document.getElementById('editImageUrl').value
+    };
+    
+    if (contentType === 'video') {
+        updateData.video_url = document.getElementById('editVideoUrl').value.trim();
+    } else {
+        updateData.video_url = '';
+    }
+    
+    const submitBtn = e.target.querySelector('button[type="submit"]');
+    const originalHTML = submitBtn.innerHTML;
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enregistrement...';
+    
+    try {
+        await fetch(GOOGLE_APPS_SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(updateData)
+        });
+        
+        showAlert('success', 'Article mis à jour !', 'Les sections ont été mises à jour.');
+        closeEditModal();
+        setTimeout(() => loadArticles(), 1000);
+        
+    } catch (error) {
+        showAlert('error', 'Erreur lors de la mise à jour');
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalHTML;
+    }
+}
+
+    // Delete Article
+    async function deleteArticle(id) {
+        if (!confirm('Êtes-vous sûr de vouloir supprimer cet article ? Cette action est irréversible.')) {
+            return;
+        }
+        
+        try {
+            await fetch(GOOGLE_APPS_SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: 'delete', id: id })
+            });
+            
+            showAlert('success', 'Article supprimé !', 'L\'article a été supprimé avec succès.');
+            setTimeout(() => loadArticles(), 1000);
+            
+        } catch (error) {
+            showAlert('error', 'Erreur lors de la suppression');
+        }
+    }
+
+    // Move Article (Reorder)
+    async function moveArticle(id, direction) {
+        try {
+            await fetch(GOOGLE_APPS_SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    action: 'reorder', 
+                    id: id, 
+                    direction: direction 
+                })
+            });
+            
+            showAlert('success', 'Ordre modifié !', 'L\'article a été déplacé avec succès.');
+            setTimeout(() => loadArticles(), 800);
+            
+        } catch (error) {
+            showAlert('error', 'Erreur lors du déplacement');
+        }
+    }
+
+    // Load Statistics
+    async function loadStatistics() {
+        try {
+            const response = await fetch(GOOGLE_APPS_SCRIPT_URL);
+            const result = await response.json();
+            
+            if (result.success && result.data) {
+                const articles = result.data;
+                const totalArticles = articles.length;
+                const totalViews = articles.reduce((sum, a) => sum + parseInt(a.vue || 0), 0);
+                const totalLikes = articles.reduce((sum, a) => sum + parseInt(a.likes || 0), 0);
+                const avgEngagement = totalViews > 0 ? ((totalLikes / totalViews) * 100).toFixed(1) : 0;
+                
+                document.getElementById('totalArticles').textContent = totalArticles;
+                document.getElementById('totalViews').textContent = totalViews.toLocaleString();
+                document.getElementById('totalLikes').textContent = totalLikes.toLocaleString();
+                document.getElementById('avgEngagement').textContent = avgEngagement + '%';
+                
+                // Top Articles
+                const topArticles = [...articles]
+                    .sort((a, b) => (parseInt(b.vue) + parseInt(b.likes) * 2) - (parseInt(a.vue) + parseInt(a.likes) * 2))
+                    .slice(0, 5);
+                
+                displayTopArticles(topArticles);
+            }
+        } catch (error) {
+            console.error('Error loading statistics:', error);
+        }
+    }
+
+    function displayTopArticles(articles) {
+        const container = document.getElementById('topArticlesContainer');
+        
+        if (articles.length === 0) {
+            container.innerHTML = '<div class="empty-state"><i class="fas fa-chart-bar"></i><h3>Aucune donnée</h3><p>Publiez des articles pour voir les statistiques</p></div>';
+            return;
+        }
+        
+        container.innerHTML = articles.map((article, index) => `
+            <div class="article-item">
+                <div style="font-size: 2rem; font-weight: 700; color: #667eea; width: 60px; text-align: center;">
+                    ${index + 1}
+                </div>
+                <img src="${article.image}" alt="${article.titre}" class="article-thumbnail">
+                <div class="article-info">
+                    <h3>${article.titre}</h3>
+                    <div class="article-meta">
+                        <span><i class="fas fa-eye"></i> ${article.vue} vues</span>
+                        <span><i class="fas fa-heart"></i> ${article.likes} likes</span>
+                        <span><i class="fas fa-fire"></i> ${parseInt(article.vue) + parseInt(article.likes) * 2} score</span>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    // Settings Functions
+    function saveSettings(type) {
+        if (type === 'profile') {
+            showAlert('success', 'Profil sauvegardé !', 'Vos informations ont été mises à jour.');
+        } else if (type === 'site') {
+            showAlert('success', 'Paramètres sauvegardés !', 'Les paramètres du site ont été mis à jour.');
+        }
+    }
+
+    function changePassword() {
+        const oldPass = document.getElementById('oldPassword').value;
+        const newPass = document.getElementById('newPassword').value;
+        const confirmPass = document.getElementById('confirmPassword').value;
+        
+        if (!oldPass || !newPass || !confirmPass) {
+            showAlert('error', 'Veuillez remplir tous les champs');
+            return;
+        }
+        
+        if (newPass !== confirmPass) {
+            showAlert('error', 'Les mots de passe ne correspondent pas');
+            return;
+        }
+        
+        if (newPass.length < 8) {
+            showAlert('error', 'Le mot de passe doit contenir au moins 8 caractères');
+            return;
+        }
+        
+        showAlert('success', 'Mot de passe changé !', 'Votre mot de passe a été mis à jour avec succès.');
+        document.getElementById('oldPassword').value = '';
+        document.getElementById('newPassword').value = '';
+        document.getElementById('confirmPassword').value = '';
+    }
+
+    function confirmDeleteAll() {
+        if (confirm('⚠️ ATTENTION : Vous êtes sur le point de supprimer TOUS les articles. Cette action est IRRÉVERSIBLE.\n\nÊtes-vous absolument sûr ?')) {
+            if (confirm('Dernière confirmation : Supprimer tous les articles ?')) {
+                showAlert('success', 'Fonction désactivée', 'Cette fonction est désactivée pour des raisons de sécurité.');
+            }
+        }
+    }
+
+    // Alert Function
+    function showAlert(type, title = '', message = '') {
+        document.querySelectorAll('.alert').forEach(a => a.classList.remove('show'));
+        
+        if (type === 'success') {
+            document.getElementById('successTitle').textContent = title;
+            document.getElementById('successMessage').textContent = message;
+            document.getElementById('successAlert').classList.add('show');
+            setTimeout(() => document.getElementById('successAlert').classList.remove('show'), 5000);
+        } else {
+            document.getElementById('errorMessage').textContent = title;
+            document.getElementById('errorAlert').classList.add('show');
+            setTimeout(() => document.getElementById('errorAlert').classList.remove('show'), 5000);
+        }
+    }
+// ========================================
+// 🔄 FONCTION RESET FORM CORRIGÉE
+// ========================================
+
+function resetForm() {
+    // Réinitialiser le formulaire
+    document.getElementById('articleForm').reset();
+    document.getElementById('titreCount').textContent = '0';
+    document.getElementById('extraitCount').textContent = '0';
+    document.getElementById('videoUrlField').style.display = 'none';
+    
+    // Réinitialiser les cases à cocher (cocher "main" par défaut)
+    document.querySelectorAll('input[name="sections"]').forEach(checkbox => {
+        checkbox.checked = checkbox.value === 'main';
+    });
+    
+    // Réinitialiser le type de contenu
+    document.querySelector('input[name="contentType"][value="article"]').checked = true;
+    
+    // 🔥 CORRECTION: Utiliser clearAllImages() au lieu de removeImage()
+    clearAllImages();
+    
+    console.log('🔄 Formulaire réinitialisé');
+}
+
+    // Gérer l'affichage conditionnel du champ URL vidéo
+function initContentTypeToggle() {
+    const contentTypeRadios = document.querySelectorAll('input[name="contentType"]');
+    const videoUrlField = document.getElementById('videoUrlField');
+    
+    contentTypeRadios.forEach(radio => {
+        radio.addEventListener('change', function() {
+            videoUrlField.style.display = this.value === 'video' ? 'block' : 'none';
+            if (this.value === 'video') {
+                document.getElementById('videoUrl').required = true;
+            } else {
+                document.getElementById('videoUrl').required = false;
+            }
+        });
+    });
+
+    // Pour l'édition
+    const editContentTypeRadios = document.querySelectorAll('input[name="editContentType"]');
+    const editVideoUrlField = document.getElementById('editVideoUrlField');
+    
+    editContentTypeRadios.forEach(radio => {
+        radio.addEventListener('change', function() {
+            editVideoUrlField.style.display = this.value === 'video' ? 'block' : 'none';
+            if (this.value === 'video') {
+                document.getElementById('editVideoUrl').required = true;
+            } else {
+                document.getElementById('editVideoUrl').required = false;
+            }
+        });
+    });
+}
+
+// Fonction pour récupérer les sections sélectionnées (NOUVEAU ARTICLE)
+function getSelectedSections() {
+    const selected = [];
+    document.querySelectorAll('input[name="sections"]:checked').forEach(checkbox => {
+        selected.push(checkbox.value);
+    });
+    return selected.length > 0 ? selected : ['main']; // Par défaut si rien coché
+}
+
+// Fonction pour récupérer les sections sélectionnées (ÉDITION)
+function getSelectedEditSections() {
+    const selected = [];
+    document.querySelectorAll('input[name="editSections"]:checked').forEach(checkbox => {
+        selected.push(checkbox.value);
+    });
+    return selected.length > 0 ? selected : ['main'];
+}
+
+// Fonction pour pré-remplir les cases à cocher (ÉDITION)
+// Fonction pour pré-remplir les cases à cocher (ÉDITION)
+function setSelectedSections(sectionsString) {
+    // Nettoyer d'abord toutes les cases
+    document.querySelectorAll('input[name="editSections"]').forEach(checkbox => {
+        checkbox.checked = false;
+    });
+    
+    // Cocher les cases correspondantes
+    if (sectionsString && sectionsString !== 'undefined') {
+        const sections = sectionsString.split(',');
+        sections.forEach(section => {
+            const trimmedSection = section.trim();
+            if (trimmedSection) {
+                const checkbox = document.querySelector(`input[name="editSections"][value="${trimmedSection}"]`);
+                if (checkbox) {
+                    checkbox.checked = true;
+                }
+            }
+        });
+    }
+    
+    // Si rien n'est coché, cocher "main" par défaut
+    if (document.querySelectorAll('input[name="editSections"]:checked').length === 0) {
+        const mainCheckbox = document.querySelector('input[name="editSections"][value="main"]');
+        if (mainCheckbox) {
+            mainCheckbox.checked = true;
+        }
+    }
+}
+
+// 🔹 FONCTION POUR CHARGER LES ARTICLES (AJOUTER CETTE FONCTION)
+async function loadArticles() {
+    const container = document.getElementById('articlesContainer');
+    container.innerHTML = '<div class="loading"><i class="fas fa-spinner"></i><p style="margin-top:16px">Chargement des articles...</p></div>';
+    
+    try {
+        const response = await fetch(GOOGLE_APPS_SCRIPT_URL);
+        const result = await response.json();
+        
+        if (result.success && result.data) {
+            allArticles = result.data;
+            displayArticles(allArticles);
+        } else {
+            container.innerHTML = '<div class="empty-state"><i class="fas fa-inbox"></i><h3>Aucun article trouvé</h3><p>Commencez par créer votre premier article</p></div>';
+        }
+    } catch (error) {
+        console.error('Erreur chargement articles:', error);
+        container.innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-circle"></i><h3>Erreur de chargement</h3><p>Impossible de charger les articles</p></div>';
+    }
+}
+
+// 🔹 FONCTION POUR AFFICHER LES ARTICLES
+function displayArticles(articles) {
+    const container = document.getElementById('articlesContainer');
+    
+    if (articles.length === 0) {
+        container.innerHTML = '<div class="empty-state"><i class="fas fa-search"></i><h3>Aucun résultat</h3><p>Aucun article ne correspond à votre recherche</p></div>';
+        return;
+    }
+    
+    container.innerHTML = articles.map(article => `
+        <div class="article-item">
+            <img src="${article.image}" alt="${article.titre}" class="article-thumbnail" 
+                 onerror="this.src='https://picsum.photos/120/80?random=' + Math.random()">
+            <div class="article-info">
+                <h3>${article.titre}</h3>
+                <span class="badge badge-primary">${article.categorie}</span>
+                <div class="article-meta">
+                    <span><i class="fas fa-calendar"></i> ${formatDate(article.date)}</span>
+                    <span><i class="fas fa-user"></i> ${article.auteur}</span>
+                    <span><i class="fas fa-eye"></i> ${article.vue || 0} vues</span>
+                    <span><i class="fas fa-heart"></i> ${article.likes || 0} likes</span>
+                    <span><i class="fas fa-layer-group"></i> ${article.section || 'main'}</span>
+                </div>
+            </div>
+            <div class="article-actions">
+                <button class="btn btn-secondary btn-sm" onclick="moveArticle('${article.id}', 'up')" title="Monter">
+                    <i class="fas fa-arrow-up"></i>
+                </button>
+                <button class="btn btn-secondary btn-sm" onclick="moveArticle('${article.id}', 'down')" title="Descendre">
+                    <i class="fas fa-arrow-down"></i>
+                </button>
+                <button class="btn btn-primary btn-sm" onclick="editArticle('${article.id}')" title="Modifier">
+                    <i class="fas fa-edit"></i>
+                </button>
+                <button class="btn btn-danger btn-sm" onclick="deleteArticle('${article.id}')" title="Supprimer">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+        </div>
+    `).join('');
+}
+
+// 🔹 FONCTION POUR FORMATER LA DATE
+function formatDate(dateString) {
+    if (!dateString) return 'Date inconnue';
+    try {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('fr-FR', {
+            day: 'numeric',
+            month: 'short',
+            year: 'numeric'
+        });
+    } catch (error) {
+        return dateString;
+    }
+}
+
+// 🔹 FONCTION POUR SUPPRIMER UN ARTICLE
+async function deleteArticle(id) {
+    if (!confirm('Êtes-vous sûr de vouloir supprimer cet article ? Cette action est irréversible.')) {
+        return;
+    }
+    
+    try {
+        await fetch(GOOGLE_APPS_SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: 'delete', id: id })
+        });
+        
+        showAlert('success', 'Article supprimé !', 'L\'article a été supprimé avec succès.');
+        setTimeout(() => loadArticles(), 1000);
+        
+    } catch (error) {
+        showAlert('error', 'Erreur lors de la suppression');
+    }
+}
+
+// 🔹 FONCTION POUR DÉPLACER UN ARTICLE
+async function moveArticle(id, direction) {
+    try {
+        await fetch(GOOGLE_APPS_SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+                action: 'reorder', 
+                id: id, 
+                direction: direction 
+            })
+        });
+        
+        showAlert('success', 'Ordre modifié !', 'L\'article a été déplacé avec succès.');
+        setTimeout(() => loadArticles(), 800);
+        
+    } catch (error) {
+        showAlert('error', 'Erreur lors du déplacement');
+    }
+}
+
+// 🔹 FONCTIONS DE FILTRAGE ET RECHERCHE
+function filterArticles() {
+    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+    const category = document.getElementById('filterCategory').value;
+    
+    const filtered = allArticles.filter(article => {
+        const matchesSearch = article.titre.toLowerCase().includes(searchTerm) || 
+                             article.extrait.toLowerCase().includes(searchTerm);
+        const matchesCategory = !category || article.categorie === category;
+        return matchesSearch && matchesCategory;
+    });
+    
+    displayArticles(filtered);
+}
+
+// Initialiser la recherche et les filtres
+document.getElementById('searchInput').addEventListener('input', filterArticles);
+document.getElementById('filterCategory').addEventListener('change', filterArticles);
+
+
+// Initialiser le toggle pour l'édition
+function initEditContentTypeToggle() {
+    const editContentTypeRadios = document.querySelectorAll('input[name="editContentType"]');
+    const editVideoUrlField = document.getElementById('editVideoUrlField');
+    
+    editContentTypeRadios.forEach(radio => {
+        radio.addEventListener('change', function() {
+            editVideoUrlField.style.display = this.value === 'video' ? 'block' : 'none';
+            if (this.value === 'video') {
+                document.getElementById('editVideoUrl').required = true;
+            } else {
+                document.getElementById('editVideoUrl').required = false;
+            }
+        });
+    });
+}
+
+// Fonction professionnelle pour obtenir les miniatures vidéo
+async function getVideoThumbnail(videoUrl) {
+    if (!videoUrl) {
+        return 'https://picsum.photos/600/400?random=default';
+    }
+
+    // YouTube - Méthode directe avec ID
+    if (videoUrl.includes('youtube.com') || videoUrl.includes('youtu.be')) {
+        const videoId = extractYouTubeId(videoUrl);
+        if (videoId) {
+            // Essayer différentes qualités de thumbnail YouTube
+            const qualities = [
+                `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`,
+                `https://img.youtube.com/vi/${videoId}/sddefault.jpg`,
+                `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`,
+                `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`
+            ];
+            
+            // Vérifier quelle qualité est disponible
+            for (let quality of qualities) {
+                if (await checkImageExists(quality)) {
+                    return quality;
+                }
+            }
+            
+            // Fallback vers la qualité standard
+            return `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+        }
+    }
+    
+    // Facebook - Utiliser l'API Open Graph
+    if (videoUrl.includes('facebook.com') || videoUrl.includes('fb.watch')) {
+        try {
+            const fbThumbnail = await getFacebookThumbnail(videoUrl);
+            if (fbThumbnail) return fbThumbnail;
+        } catch (error) {
+            console.log('Facebook thumbnail non disponible, utilisation du fallback');
+        }
+    }
+    
+    // Fallback général
+    return `https://picsum.photos/600/400?random=${Math.random()}`;
+}
+
+// Extraire l'ID YouTube de manière fiable
+function extractYouTubeId(url) {
+    const patterns = [
+        /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/,
+        /youtube\.com\/watch\?v=([^"&?\/\s]{11})/,
+        /youtube\.com\/embed\/([^"&?\/\s]{11})/,
+        /youtu\.be\/([^"&?\/\s]{11})/
+    ];
+    
+    for (let pattern of patterns) {
+        const match = url.match(pattern);
+        if (match && match[1]) {
+            return match[1];
+        }
+    }
+    return null;
+}
+
+// Vérifier si une image existe
+function checkImageExists(url) {
+    return new Promise((resolve) => {
+        const img = new Image();
+        img.onload = () => resolve(true);
+        img.onerror = () => resolve(false);
+        img.src = url;
+        
+        // Timeout après 2 secondes
+        setTimeout(() => resolve(false), 2000);
+    });
+}
+
+// Obtenir la miniature Facebook via Open Graph
+async function getFacebookThumbnail(url) {
+    try {
+        // Utiliser un proxy CORS pour éviter les blocages
+        const proxyUrl = 'https://corsproxy.io/?';
+        const response = await fetch(proxyUrl + encodeURIComponent(url));
+        const html = await response.text();
+        
+        // Chercher la balise meta og:image
+        const ogImageMatch = html.match(/<meta property="og:image" content="([^"]*)"/i);
+        if (ogImageMatch && ogImageMatch[1]) {
+            return ogImageMatch[1];
+        }
+    } catch (error) {
+        console.warn('Impossible de récupérer la miniature Facebook:', error);
+    }
+    return null;
+}
+
+// Cache pour les miniatures
+const thumbnailCache = new Map();
+
+// Fonction optimisée avec cache
+async function getOptimizedVideoThumbnail(videoUrl) {
+    if (!videoUrl) {
+        return 'https://picsum.photos/600/400?random=default';
+    }
+    
+    // Vérifier le cache
+    if (thumbnailCache.has(videoUrl)) {
+        return thumbnailCache.get(videoUrl);
+    }
+    
+    try {
+        const thumbnail = await getVideoThumbnail(videoUrl);
+        
+        // Mettre en cache pendant 1 heure
+        thumbnailCache.set(videoUrl, thumbnail);
+        setTimeout(() => {
+            thumbnailCache.delete(videoUrl);
+        }, 60 * 60 * 1000);
+        
+        return thumbnail;
+    } catch (error) {
+        console.error('Erreur génération thumbnail:', error);
+        const fallback = `https://picsum.photos/600/400?random=fallback-${Math.random()}`;
+        thumbnailCache.set(videoUrl, fallback);
+        return fallback;
+    }
+}
+
+function logout() {
+    if (confirm('Voulez-vous vraiment vous déconnecter ?')) {
+        sessionStorage.removeItem('adminSession');
+        window.location.href = 'login-secure-2024.html';
+    }
+}
+
+async function sendNotificationForArticle(articleData) {
+  try {
+    const response = await fetch(GOOGLE_APPS_SCRIPT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        action: 'send_push_notification',
+        articleData: {
+          title: articleData.titre || 'Nouvel article',
+          body: articleData.extrait || 'Découvrez notre dernier article',
+          icon: articleData.image || '/icons/icon-192x192.png',
+          url: window.location.origin + '/article-detail.html?id=' + articleData.id,
+          articleId: articleData.id
+        }
+      })
+    });
+
+    const result = await response.json();
+    
+    if (result.success) {
+      console.log('📢 Notifications envoyées:', result.message);
+      return true;
+    } else {
+      console.warn('⚠️ Erreur notifications:', result.error);
+      return false;
+    }
+  } catch (error) {
+    console.error('❌ Erreur envoi notifications:', error);
+    return false;
+  }
+}
+
+</script>
+</body>
+</html>

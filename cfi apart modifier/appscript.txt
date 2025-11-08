@@ -1,0 +1,453 @@
+// ========================================
+// ✅ VERSION ULTRA-SIMPLIFIÉE - 1 IMAGE SEULEMENT
+// ========================================
+
+function doPost(e) {
+  try {
+    var data = JSON.parse(e.postData.contents);
+    Logger.log('📥 Requête reçue - Action: ' + (data.action || 'CREATE_ARTICLE'));
+    
+    // Actions spéciales
+    if (data.action === 'increment_views') {
+      return handleCorsResponse(incrementViews(data));
+    }
+    
+    if (data.action === 'increment_likes') {
+      return handleCorsResponse(incrementLikes(data));
+    }
+    
+    if (data.action === 'add_comment') {
+      return handleCorsResponse(addComment(data));
+    }
+
+    var sheet = SpreadsheetApp.openById('17fea_nma-6ZpZHa1fCfNBjJUSSvL1rRjwumruMO0-cM').getActiveSheet();
+    
+    // Création d'un nouvel article
+    if (!data.action) {
+      return handleCorsResponse(createNewArticle(sheet, data));
+    }
+
+    // Update d'article
+    if (data.action === 'update') {
+      return handleCorsResponse(updateArticle(sheet, data));
+    }
+
+    // Delete article
+    if (data.action === 'delete') {
+      return handleCorsResponse(deleteArticle(sheet, data));
+    }
+
+    // Reorder article
+    if (data.action === 'reorder') {
+      return handleCorsResponse(reorderArticle(sheet, data));
+    }
+
+    throw new Error('Action non reconnue: ' + data.action);
+    
+  } catch (error) {
+    Logger.log('❌ ERREUR doPost: ' + error.toString());
+    return handleCorsResponse({ 
+      success: false, 
+      error: error.toString() 
+    });
+  }
+}
+
+// ========================================
+// 🆕 CRÉER UN NOUVEL ARTICLE (IMAGES MULTIPLES)
+// ========================================
+function createNewArticle(sheet, data) {
+  try {
+    ensureColumnsExist(sheet);
+    
+    var headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+    var newId = generateSimpleId(sheet);
+    
+    var newRow = [];
+    
+    for (var i = 0; i < headers.length; i++) {
+      var header = headers[i];
+      var value = '';
+      
+      switch(header) {
+        case 'id':
+          value = newId;
+          break;
+        case 'date':
+          value = new Date();
+          break;
+        case 'image':
+          // 🔥 PREMIÈRE IMAGE = COUVERTURE
+          value = data.image || '';
+          break;
+        case 'images':
+          // 🔥 TOUTES LES IMAGES EN JSON STRINGIFIÉ
+          // On reçoit déjà une string JSON, on la sauvegarde directement
+          value = data.images || '[]';
+          break;
+        case 'vue':
+        case 'likes':
+          value = 0;
+          break;
+        case 'section':
+          value = data.section || 'main';
+          break;
+        case 'contentType':
+          value = data.contentType || 'article';
+          break;
+        case 'video_url':
+          value = data.video_url || '';
+          break;
+        default:
+          value = data[header] || '';
+      }
+      
+      newRow.push(value);
+    }
+    
+    sheet.appendRow(newRow);
+    
+    Logger.log('✅ Article créé avec ID: ' + newId);
+    Logger.log('📸 Images: ' + (data.images ? JSON.parse(data.images).length + ' images' : 'Aucune'));
+    
+    return { 
+      success: true, 
+      message: 'Article ajouté avec ID: ' + newId,
+      newId: newId 
+    };
+    
+  } catch (error) {
+    Logger.log('❌ Erreur création article: ' + error.toString());
+    return { success: false, error: error.toString() };
+  }
+}
+
+// ========================================
+// ✏️ METTRE À JOUR UN ARTICLE (IMAGES MULTIPLES)
+// ========================================
+function updateArticle(sheet, data) {
+  try {
+    var headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+    var rows = sheet.getDataRange().getValues();
+    
+    var idIndex = headers.indexOf('id');
+    if (idIndex === -1) throw new Error('Colonne ID non trouvée');
+    
+    for (var i = 1; i < rows.length; i++) {
+      if (String(rows[i][idIndex]) === String(data.id)) {
+        
+        for (var j = 0; j < headers.length; j++) {
+          var header = headers[j];
+          
+          if (header === 'image' && data.image !== undefined) {
+            // 🔥 METTRE À JOUR L'IMAGE DE COUVERTURE
+            sheet.getRange(i + 1, j + 1).setValue(data.image);
+          } else if (header === 'images' && data.images !== undefined) {
+            // 🔥 METTRE À JOUR TOUTES LES IMAGES (JSON STRINGIFIÉ)
+            sheet.getRange(i + 1, j + 1).setValue(data.images);
+          } else if (data[header] !== undefined && header !== 'id') {
+            sheet.getRange(i + 1, j + 1).setValue(data[header]);
+          }
+        }
+        
+        Logger.log('✅ Article mis à jour: ' + data.id);
+        return { success: true, message: 'Article mis à jour' };
+      }
+    }
+    
+    throw new Error('Article introuvable: ' + data.id);
+    
+  } catch (error) {
+    Logger.log('❌ Erreur update article: ' + error.toString());
+    return { success: false, error: error.toString() };
+  }
+}
+
+// ========================================
+// 🛠️ S'ASSURER QUE LA COLONNE IMAGES EXISTE
+// ========================================
+function ensureColumnsExist(sheet) {
+  var headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+  var requiredColumns = [
+    'id', 'date', 'titre', 'categorie', 'section', 'contentType',
+    'image', 'images', 'extrait', 'contenu', 'auteur', 'video_url', 'vue', 'likes'
+  ];
+  
+  var missingColumns = requiredColumns.filter(function(col) {
+    return headers.indexOf(col) === -1;
+  });
+  
+  if (missingColumns.length > 0) {
+    var lastCol = sheet.getLastColumn();
+    missingColumns.forEach(function(col, index) {
+      sheet.getRange(1, lastCol + index + 1).setValue(col);
+    });
+    Logger.log('✅ Colonnes ajoutées: ' + missingColumns.join(', '));
+  }
+}
+
+// ========================================
+// 🗑️ SUPPRIMER UN ARTICLE
+// ========================================
+function deleteArticle(sheet, data) {
+  try {
+    var headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+    var rows = sheet.getDataRange().getValues();
+    
+    var idIndex = headers.indexOf('id');
+    if (idIndex === -1) throw new Error('Colonne ID non trouvée');
+    
+    for (var i = 1; i < rows.length; i++) {
+      if (String(rows[i][idIndex]) === String(data.id)) {
+        sheet.deleteRow(i + 1);
+        Logger.log('✅ Article supprimé: ' + data.id);
+        return { success: true, message: 'Article supprimé' };
+      }
+    }
+    
+    throw new Error('Article introuvable: ' + data.id);
+    
+  } catch (error) {
+    Logger.log('❌ Erreur delete article: ' + error.toString());
+    return { success: false, error: error.toString() };
+  }
+}
+
+// ========================================
+// 🔄 RÉORGANISER UN ARTICLE
+// ========================================
+function reorderArticle(sheet, data) {
+  try {
+    var headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+    var rows = sheet.getDataRange().getValues();
+    
+    var idIndex = headers.indexOf('id');
+    if (idIndex === -1) throw new Error('Colonne ID non trouvée');
+    
+    for (var i = 1; i < rows.length; i++) {
+      if (String(rows[i][idIndex]) === String(data.id)) {
+        var currentRow = i + 1;
+        
+        if (data.direction === 'up' && i > 1) {
+          sheet.moveRows(sheet.getRange(currentRow, 1, 1, sheet.getLastColumn()), currentRow - 1);
+        } else if (data.direction === 'down' && i < rows.length - 1) {
+          sheet.moveRows(sheet.getRange(currentRow, 1, 1, sheet.getLastColumn()), currentRow + 2);
+        }
+        
+        Logger.log('✅ Article réorganisé: ' + data.id);
+        return { success: true, message: 'Ordre modifié' };
+      }
+    }
+    
+    throw new Error('Article introuvable: ' + data.id);
+    
+  } catch (error) {
+    Logger.log('❌ Erreur reorder article: ' + error.toString());
+    return { success: false, error: error.toString() };
+  }
+}
+
+// ========================================
+// 📖 FONCTION doGet (LECTURE)
+// ========================================
+function doGet(e) {
+  try {
+    var action = e.parameter.action;
+    var articleId = e.parameter.article_id;
+    
+    if (action === 'get_comments' && articleId) {
+      return handleCorsResponse(getApprovedComments(articleId));
+    }
+    
+    var sheet = SpreadsheetApp.openById('17fea_nma-6ZpZHa1fCfNBjJUSSvL1rRjwumruMO0-cM').getActiveSheet();
+    var data = sheet.getDataRange().getValues();
+    var headers = data[0];
+    var jsonData = [];
+
+    for (var i = 1; i < data.length; i++) {
+      if (data[i].join('').trim() === '') continue;
+      
+      var row = data[i];
+      var article = {};
+      
+      for (var j = 0; j < headers.length; j++) {
+        article[headers[j]] = row[j];
+      }
+      
+      article.likes = parseInt(article.likes) || 0;
+      article.vue = parseInt(article.vue) || 0;
+      
+      jsonData.push(article);
+    }
+
+    Logger.log('✅ ' + jsonData.length + ' articles chargés');
+    return handleCorsResponse({ 
+      success: true, 
+      data: jsonData,
+      count: jsonData.length 
+    });
+
+  } catch (error) {
+    Logger.log('❌ ERREUR doGet: ' + error.toString());
+    return handleCorsResponse({ 
+      success: false, 
+      error: error.toString() 
+    });
+  }
+}
+
+// ========================================
+// 🛠️ FONCTIONS UTILITAIRES
+// ========================================
+
+function handleCorsResponse(responseObj) {
+  return ContentService
+    .createTextOutput(JSON.stringify(responseObj))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+function generateSimpleId(sheet) {
+  var data = sheet.getDataRange().getValues();
+  var headers = data[0];
+  var idIndex = headers.indexOf('id');
+  
+  var maxId = 0;
+  for (var i = 1; i < data.length; i++) {
+    if (data[i].join('').trim() === '') continue;
+    var currentId = parseInt(data[i][idIndex]) || 0;
+    if (currentId > maxId) maxId = currentId;
+  }
+  
+  return String(maxId + 1);
+}
+
+
+
+// ========================================
+// 👁️ INCRÉMENTER LES VUES
+// ========================================
+function incrementViews(data) {
+  try {
+    var sheet = SpreadsheetApp.openById('17fea_nma-6ZpZHa1fCfNBjJUSSvL1rRjwumruMO0-cM').getActiveSheet();
+    var rows = sheet.getDataRange().getValues();
+    var headers = rows[0];
+    
+    var idIndex = headers.indexOf('id');
+    var vueIndex = headers.indexOf('vue');
+    
+    for (var i = 1; i < rows.length; i++) {
+      if (String(rows[i][idIndex]) === String(data.id)) {
+        var currentViews = parseInt(rows[i][vueIndex]) || 0;
+        var newViews = currentViews + 1;
+        sheet.getRange(i + 1, vueIndex + 1).setValue(newViews);
+        
+        return { success: true, newViews: newViews };
+      }
+    }
+    
+    throw new Error('Article non trouvé: ' + data.id);
+    
+  } catch (error) {
+    Logger.log('❌ Erreur incrementViews: ' + error.toString());
+    return { success: false, error: error.toString() };
+  }
+}
+
+// ========================================
+// ❤️ INCRÉMENTER LES LIKES
+// ========================================
+function incrementLikes(data) {
+  try {
+    var sheet = SpreadsheetApp.openById('17fea_nma-6ZpZHa1fCfNBjJUSSvL1rRjwumruMO0-cM').getActiveSheet();
+    var rows = sheet.getDataRange().getValues();
+    var headers = rows[0];
+    
+    var idIndex = headers.indexOf('id');
+    var likesIndex = headers.indexOf('likes');
+    
+    for (var i = 1; i < rows.length; i++) {
+      if (String(rows[i][idIndex]) === String(data.id)) {
+        var currentLikes = parseInt(rows[i][likesIndex]) || 0;
+        var newLikes = currentLikes + 1;
+        sheet.getRange(i + 1, likesIndex + 1).setValue(newLikes);
+        
+        return { success: true, newLikes: newLikes };
+      }
+    }
+    
+    throw new Error('Article non trouvé: ' + data.id);
+    
+  } catch (error) {
+    Logger.log('❌ Erreur incrementLikes: ' + error.toString());
+    return { success: false, error: error.toString() };
+  }
+}
+
+// ========================================
+// 💬 GESTION DES COMMENTAIRES
+// ========================================
+function addComment(data) {
+  try {
+    var commentSheet = SpreadsheetApp.openById('17fea_nma-6ZpZHa1fCfNBjJUSSvL1rRjwumruMO0-cM').getSheetByName('Commentaires');
+    
+    if (!commentSheet) {
+      var ss = SpreadsheetApp.openById('17fea_nma-6ZpZHa1fCfNBjJUSSvL1rRjwumruMO0-cM');
+      commentSheet = ss.insertSheet('Commentaires');
+      commentSheet.appendRow(['id', 'article_id', 'author_name', 'author_email', 'comment_text', 'date', 'approved']);
+    }
+    
+    var rows = commentSheet.getDataRange().getValues();
+    var newId = rows.length;
+    
+    commentSheet.appendRow([
+      newId,
+      data.article_id,
+      data.author_name,
+      data.author_email,
+      data.comment_text,
+      new Date(),
+      true
+    ]);
+    
+    return { success: true, commentId: newId };
+    
+  } catch (error) {
+    Logger.log('❌ Erreur addComment: ' + error.toString());
+    return { success: false, error: error.toString() };
+  }
+}
+
+function getApprovedComments(articleId) {
+  try {
+    var commentSheet = SpreadsheetApp.openById('17fea_nma-6ZpZHa1fCfNBjJUSSvL1rRjwumruMO0-cM').getSheetByName('Commentaires');
+    
+    if (!commentSheet) {
+      return { success: true, comments: [] };
+    }
+    
+    var rows = commentSheet.getDataRange().getValues();
+    var headers = rows[0];
+    var comments = [];
+    
+    var articleIdIndex = headers.indexOf('article_id');
+    var authorNameIndex = headers.indexOf('author_name');
+    var commentTextIndex = headers.indexOf('comment_text');
+    var dateIndex = headers.indexOf('date');
+    
+    for (var i = 1; i < rows.length; i++) {
+      if (String(rows[i][articleIdIndex]) === String(articleId)) {
+        comments.push({
+          author_name: rows[i][authorNameIndex],
+          comment_text: rows[i][commentTextIndex],
+          date: rows[i][dateIndex]
+        });
+      }
+    }
+    
+    return { success: true, comments: comments };
+    
+  } catch (error) {
+    Logger.log('❌ Erreur getApprovedComments: ' + error.toString());
+    return { success: false, error: error.toString() };
+  }
+}

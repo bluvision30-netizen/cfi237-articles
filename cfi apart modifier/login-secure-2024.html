@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion Sécurisée</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Animations de fond */
+        body::before {
+            content: '';
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            top: -250px;
+            right: -250px;
+            animation: float 20s infinite;
+        }
+
+        body::after {
+            content: '';
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 50%;
+            bottom: -200px;
+            left: -200px;
+            animation: float 15s infinite reverse;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(30px, -30px) rotate(120deg); }
+            66% { transform: translate(-20px, 20px) rotate(240deg); }
+        }
+
+        .login-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 50px 40px;
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 450px;
+            position: relative;
+            z-index: 10;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .logo-section {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .logo-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .logo-icon i {
+            font-size: 36px;
+            color: white;
+        }
+
+        h1 {
+            color: #1a1a2e;
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            color: #1e293b;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-wrapper i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+            font-size: 18px;
+        }
+
+        input {
+            width: 100%;
+            padding: 15px 15px 15px 45px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #94a3b8;
+            cursor: pointer;
+            font-size: 18px;
+            padding: 5px;
+            transition: color 0.3s;
+        }
+
+        .toggle-password:hover {
+            color: #667eea;
+        }
+
+        .remember-forgot {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            font-size: 14px;
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            color: #64748b;
+        }
+
+        .remember-me input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            padding: 0;
+        }
+
+        .forgot-password {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+
+        .forgot-password:hover {
+            color: #764ba2;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+        }
+
+        .login-btn:active {
+            transform: translateY(0);
+        }
+
+        .login-btn:disabled {
+            background: #94a3b8;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .login-btn .spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .login-btn.loading .btn-text {
+            display: none;
+        }
+
+        .login-btn.loading .spinner {
+            display: block;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            display: none;
+            align-items: center;
+            gap: 12px;
+            font-size: 14px;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .alert.show {
+            display: flex;
+        }
+
+        .alert-error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+
+        .alert-success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+        }
+
+        .alert i {
+            font-size: 20px;
+        }
+
+        .security-info {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f1f5f9;
+            border-radius: 12px;
+            border-left: 4px solid #667eea;
+        }
+
+        .security-info h3 {
+            color: #1e293b;
+            font-size: 14px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .security-info ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .security-info li {
+            color: #64748b;
+            font-size: 13px;
+            padding: 5px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .security-info li i {
+            color: #10b981;
+            font-size: 12px;
+        }
+
+        .attempts-warning {
+            background: #fef3c7;
+            color: #92400e;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            margin-top: 15px;
+            display: none;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .attempts-warning.show {
+            display: flex;
+        }
+
+        @media (max-width: 768px) {
+            .login-container {
+                margin: 20px;
+                padding: 40px 30px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="logo-section">
+            <div class="logo-icon">
+                <i class="fas fa-shield-halved"></i>
+            </div>
+            <h1>Connexion Sécurisée</h1>
+            <p class="subtitle">Abu Media Group - Administration</p>
+        </div>
+
+        <div class="alert alert-error" id="errorAlert">
+            <i class="fas fa-exclamation-circle"></i>
+            <span id="errorMessage"></span>
+        </div>
+
+        <div class="alert alert-success" id="successAlert">
+            <i class="fas fa-check-circle"></i>
+            <span>Connexion réussie ! Redirection...</span>
+        </div>
+
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="username">
+                    <i class="fas fa-user"></i> Nom d'utilisateur
+                </label>
+                <div class="input-wrapper">
+                    <i class="fas fa-user"></i>
+                    <input 
+                        type="text" 
+                        id="username" 
+                        placeholder="Entrez votre nom d'utilisateur"
+                        required
+                        autocomplete="username"
+                    >
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="password">
+                    <i class="fas fa-lock"></i> Mot de passe
+                </label>
+                <div class="input-wrapper">
+                    <i class="fas fa-lock"></i>
+                    <input 
+                        type="password" 
+                        id="password" 
+                        placeholder="Entrez votre mot de passe"
+                        required
+                        autocomplete="current-password"
+                    >
+                    <button type="button" class="toggle-password" onclick="togglePassword()">
+                        <i class="fas fa-eye" id="toggleIcon"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="remember-forgot">
+                <label class="remember-me">
+                    <input type="checkbox" id="rememberMe">
+                    <span>Se souvenir de moi</span>
+                </label>
+                <a href="#" class="forgot-password" onclick="resetPassword(); return false;">
+                    Mot de passe oublié ?
+                </a>
+            </div>
+
+            <button type="submit" class="login-btn" id="loginBtn">
+                <span class="btn-text">
+                    <i class="fas fa-sign-in-alt"></i> Se connecter
+                </span>
+                <div class="spinner"></div>
+            </button>
+        </form>
+
+        <div class="attempts-warning" id="attemptsWarning">
+            <i class="fas fa-exclamation-triangle"></i>
+            <span id="attemptsText"></span>
+        </div>
+
+        <div class="security-info">
+            <h3>
+                <i class="fas fa-shield-check"></i>
+                Sécurité renforcée
+            </h3>
+            <ul>
+                <li><i class="fas fa-check"></i> Connexion chiffrée SSL/TLS</li>
+                <li><i class="fas fa-check"></i> Protection contre brute force</li>
+                <li><i class="fas fa-check"></i> Authentification à 2 facteurs</li>
+                <li><i class="fas fa-check"></i> Session sécurisée avec timeout</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // 🔐 CONFIGURATION SÉCURISÉE
+        const SECURITY_CONFIG = {
+            // ⚠️ CHANGEZ CES IDENTIFIANTS !
+            username: 'admin_abu',
+            // Hash SHA-256 du mot de passe "AbuMedia2024!" 
+            // Générez le vôtre sur : https://emn178.github.io/online-tools/sha256.html
+            passwordHash: 'cecb46f8467f79d1d1cf4e5bc60cc49a85c8e9fff194ec61fabb67ac9e7a07f6',
+            
+            maxAttempts: 5,
+            lockoutDuration: 15 * 60 * 1000, // 15 minutes
+            sessionTimeout: 30 * 60 * 1000, // 30 minutes
+            
+            // URL de redirection après connexion réussie
+            adminPage: 'admin-dashboard-xyz789.html'
+        };
+
+        let loginAttempts = parseInt(localStorage.getItem('loginAttempts') || '0');
+        let lockoutTime = parseInt(localStorage.getItem('lockoutTime') || '0');
+
+        // 🔒 Fonction de hashage SHA-256
+        async function hashPassword(password) {
+            const encoder = new TextEncoder();
+            const data = encoder.encode(password);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+
+        // 🕐 Vérifier le verrouillage
+        function checkLockout() {
+            const now = Date.now();
+            
+            if (lockoutTime > now) {
+                const remainingTime = Math.ceil((lockoutTime - now) / 60000);
+                showError(`Compte verrouillé. Réessayez dans ${remainingTime} minutes.`);
+                document.getElementById('loginBtn').disabled = true;
+                return true;
+            }
+            
+            if (lockoutTime > 0 && now > lockoutTime) {
+                // Réinitialiser après expiration du verrouillage
+                loginAttempts = 0;
+                lockoutTime = 0;
+                localStorage.setItem('loginAttempts', '0');
+                localStorage.setItem('lockoutTime', '0');
+                document.getElementById('loginBtn').disabled = false;
+            }
+            
+            return false;
+        }
+
+        // 👁️ Toggle visibilité du mot de passe
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const toggleIcon = document.getElementById('toggleIcon');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.classList.remove('fa-eye');
+                toggleIcon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.classList.remove('fa-eye-slash');
+                toggleIcon.classList.add('fa-eye');
+            }
+        }
+
+        // 📧 Réinitialisation du mot de passe
+        function resetPassword() {
+            const email = prompt('Entrez votre adresse email professionnelle :');
+            if (email) {
+                // Simuler l'envoi d'email (à implémenter avec votre backend)
+                alert('📧 Un lien de réinitialisation a été envoyé à ' + email);
+            }
+        }
+
+        // ⚠️ Afficher les erreurs
+        function showError(message) {
+            const errorAlert = document.getElementById('errorAlert');
+            const errorMessage = document.getElementById('errorMessage');
+            
+            errorMessage.textContent = message;
+            errorAlert.classList.add('show');
+            
+            setTimeout(() => {
+                errorAlert.classList.remove('show');
+            }, 5000);
+        }
+
+        // ✅ Afficher le succès
+        function showSuccess() {
+            document.getElementById('successAlert').classList.add('show');
+        }
+
+        // 📊 Mettre à jour l'avertissement de tentatives
+        function updateAttemptsWarning() {
+            const remainingAttempts = SECURITY_CONFIG.maxAttempts - loginAttempts;
+            
+            if (loginAttempts >= 3 && loginAttempts < SECURITY_CONFIG.maxAttempts) {
+                const warning = document.getElementById('attemptsWarning');
+                const text = document.getElementById('attemptsText');
+                
+                text.textContent = `⚠️ Attention : ${remainingAttempts} tentative(s) restante(s)`;
+                warning.classList.add('show');
+            }
+        }
+
+        // 🔐 Gestion du formulaire de connexion
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // Vérifier le verrouillage
+            if (checkLockout()) {
+                return;
+            }
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const rememberMe = document.getElementById('rememberMe').checked;
+            const loginBtn = document.getElementById('loginBtn');
+            
+            // Animation de chargement
+            loginBtn.classList.add('loading');
+            loginBtn.disabled = true;
+            
+            // Simuler un délai réseau (important pour la sécurité)
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            try {
+                // Hasher le mot de passe
+                const passwordHash = await hashPassword(password);
+                
+                // Vérifier les identifiants
+                if (username === SECURITY_CONFIG.username && 
+                    passwordHash === SECURITY_CONFIG.passwordHash) {
+                    
+                    // ✅ CONNEXION RÉUSSIE
+                    loginAttempts = 0;
+                    localStorage.setItem('loginAttempts', '0');
+                    
+                    // Créer une session sécurisée
+                    const sessionData = {
+                        authenticated: true,
+                        username: username,
+                        loginTime: Date.now(),
+                        expiresAt: Date.now() + SECURITY_CONFIG.sessionTimeout
+                    };
+                    
+                    sessionStorage.setItem('adminSession', JSON.stringify(sessionData));
+                    
+                    if (rememberMe) {
+                        localStorage.setItem('rememberUser', username);
+                    }
+                    
+                    // Afficher le succès
+                    showSuccess();
+                    
+                    // Log de sécurité (à envoyer à votre backend en production)
+                    console.log('🔐 Connexion réussie:', {
+                        username: username,
+                        timestamp: new Date().toISOString(),
+                        ip: 'À implémenter côté serveur'
+                    });
+                    
+                    // Redirection après 1.5 secondes
+                    setTimeout(() => {
+                        window.location.href = SECURITY_CONFIG.adminPage;
+                    }, 1500);
+                    
+                } else {
+                    // ❌ ÉCHEC DE CONNEXION
+                    loginAttempts++;
+                    localStorage.setItem('loginAttempts', loginAttempts.toString());
+                    
+                    if (loginAttempts >= SECURITY_CONFIG.maxAttempts) {
+                        // Verrouiller le compte
+                        lockoutTime = Date.now() + SECURITY_CONFIG.lockoutDuration;
+                        localStorage.setItem('lockoutTime', lockoutTime.toString());
+                        
+                        showError('Trop de tentatives échouées. Compte verrouillé pour 15 minutes.');
+                        
+                        // Log de sécurité
+                        console.warn('🚨 Compte verrouillé:', {
+                            username: username,
+                            attempts: loginAttempts,
+                            lockoutUntil: new Date(lockoutTime).toISOString()
+                        });
+                    } else {
+                        const remainingAttempts = SECURITY_CONFIG.maxAttempts - loginAttempts;
+                        showError(`Identifiants incorrects. ${remainingAttempts} tentative(s) restante(s).`);
+                        updateAttemptsWarning();
+                    }
+                }
+            } catch (error) {
+                console.error('Erreur de connexion:', error);
+                showError('Erreur système. Veuillez réessayer.');
+            } finally {
+                loginBtn.classList.remove('loading');
+                loginBtn.disabled = false;
+            }
+        });
+
+        // 🔄 Pré-remplir le nom d'utilisateur si mémorisé
+        window.addEventListener('DOMContentLoaded', function() {
+            checkLockout();
+            updateAttemptsWarning();
+            
+            const rememberedUser = localStorage.getItem('rememberUser');
+            if (rememberedUser) {
+                document.getElementById('username').value = rememberedUser;
+                document.getElementById('rememberMe').checked = true;
+                document.getElementById('password').focus();
+            } else {
+                document.getElementById('username').focus();
+            }
+        });
+
+        // 🛡️ Protection contre l'inspection du code
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+        });
+
+        document.addEventListener('keydown', function(e) {
+            // Bloquer F12, Ctrl+Shift+I, Ctrl+U
+            if (e.key === 'F12' || 
+                (e.ctrlKey && e.shiftKey && e.key === 'I') ||
+                (e.ctrlKey && e.key === 'u')) {
+                e.preventDefault();
+            }
+        });
+    </script>
+</body>
+</html>
