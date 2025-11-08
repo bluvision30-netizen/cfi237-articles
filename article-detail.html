@@ -1025,6 +1025,28 @@ function updateMetaTags(article) {
         return keywords.some(keyword => sections.some(s => s.includes(keyword)));
     }
 
+      // ========================================
+// 🎯 FONCTION generateSlug MANQUANTE
+// ========================================
+function generateSlug(text) {
+    if (!text) return 'article';
+    
+    return text
+        .toString()
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '') // Remove accents
+        .replace(/[^a-z0-9 -]/g, '') // Remove invalid chars
+        .replace(/\s+/g, '-') // Replace spaces with -
+        .replace(/-+/g, '-') // Replace multiple - with single -
+        .replace(/^-+/, '') // Trim - from start of text
+        .replace(/-+$/, '') // Trim - from end of text
+        .substring(0, 50); // Limit length
+}
+      
+// ========================================
+// 🎯 FONCTION getShareUrl CORRIGÉE
+// ========================================
 async function getShareUrl(articleId) {
     try {
         console.log('🔗 Récupération URL share pour:', articleId);
@@ -1032,26 +1054,44 @@ async function getShareUrl(articleId) {
         const response = await fetch(`${GOOGLE_APPS_SCRIPT_URL}?action=get_share_url&article_id=${articleId}`);
         const result = await response.json();
         
-        console.log('📦 Réponse share URL:', result);
+        console.log('📦 Réponse COMPLÈTE:', result);
         
+        // 🎯 VÉRIFIER SI shareUrl EXISTE
         if (result.success && result.shareUrl) {
-            // 🎯 DOIT ÊTRE UN LIEN VERS /share/...html
+            console.log('✅ URL share trouvée:', result.shareUrl);
             return result.shareUrl;
-        } else {
-            throw new Error(result.error || 'URL de partage non disponible');
+        } 
+        // 🎯 FALLBACK : CHERCHER DANS LES DONNÉES
+        else if (result.success && result.data) {
+            const article = result.data.find(a => String(a.id) === String(articleId));
+            if (article) {
+                const slug = generateSlug(article.titre) + '-' + articleId;
+                const fallbackUrl = `https://cfiupload.netlify.app/share/${slug}.html`;
+                console.log('🔄 URL générée depuis données:', fallbackUrl);
+                return fallbackUrl;
+            }
         }
+        
+        throw new Error('URL de partage non disponible dans la réponse');
+        
     } catch (error) {
         console.error('❌ Erreur getShareUrl:', error);
         
-        // Fallback : générer l'URL localement
-        const articleTitle = document.querySelector('.article-title')?.textContent || 'article';
-        const slug = generateSlug(articleTitle) + '-' + articleId;
-        const fallbackUrl = `https://cfiupload.netlify.app/share/${slug}.html`; // 🎯 CORRIGE ICI AUSSI
-        
-        console.log('🔄 Utilisation URL fallback:', fallbackUrl);
-        return fallbackUrl;
+        // 🎯 FALLBACK ULTIME : utiliser le titre de la page
+        try {
+            const articleTitle = document.querySelector('.article-title')?.textContent || 'article';
+            const slug = generateSlug(articleTitle) + '-' + articleId;
+            const fallbackUrl = `https://cfiupload.netlify.app/share/${slug}.html`;
+            console.log('🔄 Utilisation URL fallback ultime:', fallbackUrl);
+            return fallbackUrl;
+        } catch (fallbackError) {
+            console.error('💥 Fallback échoué:', fallbackError);
+            // Dernier recours
+            return `https://cfiupload.netlify.app/share/article-${articleId}.html`;
+        }
     }
 }
+      
 async function chargerArticle() {
     try {
         // 🎯 RÉCUPÉRER L'ID (peu importe le format)
@@ -2692,4 +2732,5 @@ function handleSwipe() {
 </body>
 
 </html>
+
 
