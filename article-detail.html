@@ -1092,16 +1092,18 @@ async function getShareUrl(articleId) {
     }
 }
 
-// ========================================
-// 🎯 FONCTION fallbackShare MANQUANTE
-// ========================================
 function fallbackShare(shareUrl) {
     try {
-        // Récupérer les données de l'article SANS ERREUR
         const articleTitle = document.querySelector('.article-title')?.textContent?.trim() || 'Article intéressant';
         
-        // Créer un modal de partage stylisé
+        // 🎯 SUPPRIMER TOUT MODAL EXISTANT D'ABORD
+        const existingModal = document.querySelector('div[style*="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8)"]');
+        if (existingModal) {
+            existingModal.remove();
+        }
+        
         const shareModal = document.createElement('div');
+        shareModal.id = 'shareModal'; // 🎯 AJOUTER UN ID
         shareModal.style.cssText = `
             position: fixed;
             top: 0;
@@ -1114,10 +1116,12 @@ function fallbackShare(shareUrl) {
             align-items: center;
             z-index: 10000;
             backdrop-filter: blur(10px);
+            opacity: 0;
+            animation: fadeIn 0.3s ease forwards;
         `;
         
         shareModal.innerHTML = `
-            <div style="
+            <div class="share-modal-content" style="
                 background: white;
                 padding: 30px;
                 border-radius: 20px;
@@ -1125,7 +1129,9 @@ function fallbackShare(shareUrl) {
                 width: 90%;
                 text-align: center;
                 box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            ">
+                transform: scale(0.9);
+                animation: scaleIn 0.3s ease forwards;
+            " onclick="event.stopPropagation()"> <!-- 🎯 EMPÊCHER LA PROPAGATION -->
                 <h3 style="margin: 0 0 20px 0; color: var(--dark);">
                     <i class="fas fa-share-alt" style="color: var(--primary-solid);"></i>
                     Partager cet article
@@ -1162,68 +1168,7 @@ function fallbackShare(shareUrl) {
                     Copier le lien
                 </button>
                 
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px;">
-                    <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}" 
-                       target="_blank" style="
-                        padding: 12px;
-                        background: #1877F2;
-                        color: white;
-                        border-radius: 10px;
-                        text-decoration: none;
-                        font-weight: 600;
-                        transition: all 0.3s ease;
-                    " onmouseover="this.style.transform='translateY(-2px)'" 
-                       onmouseout="this.style.transform='translateY(0)'">
-                        <i class="fab fa-facebook-f"></i> Facebook
-                    </a>
-                    
-                    <a href="https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(articleTitle)}" 
-                       target="_blank" style="
-                        padding: 12px;
-                        background: #1DA1F2;
-                        color: white;
-                        border-radius: 10px;
-                        text-decoration: none;
-                        font-weight: 600;
-                        transition: all 0.3s ease;
-                    " onmouseover="this.style.transform='translateY(-2px)'" 
-                       onmouseout="this.style.transform='translateY(0)'">
-                        <i class="fab fa-twitter"></i> Twitter
-                    </a>
-                </div>
-                
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                    <a href="https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}" 
-                       target="_blank" style="
-                        padding: 12px;
-                        background: #0A66C2;
-                        color: white;
-                        border-radius: 10px;
-                        text-decoration: none;
-                        font-weight: 600;
-                        transition: all 0.3s ease;
-                    " onmouseover="this.style.transform='translateY(-2px)'" 
-                       onmouseout="this.style.transform='translateY(0)'">
-                        <i class="fab fa-linkedin-in"></i> LinkedIn
-                    </a>
-                    
-                    <a href="#" onclick="shareOnWhatsApp('${shareUrl}', '${articleTitle.replace(/'/g, "\\'")}')" style="
-                        padding: 12px;
-                        background: #25D366;
-                        color: white;
-                        border-radius: 10px;
-                        text-decoration: none;
-                        font-weight: 600;
-                        transition: all 0.3s ease;
-                        border: none;
-                        cursor: pointer;
-                    " onmouseover="this.style.transform='translateY(-2px)'" 
-                       onmouseout="this.style.transform='translateY(0)'">
-                        <i class="fab fa-whatsapp"></i> WhatsApp
-                    </a>
-                </div>
-                
-                <button onclick="this.closest('div').parentElement.remove()" style="
+                <button onclick="closeShareModal()" style="
                     width: 100%;
                     padding: 12px;
                     background: transparent;
@@ -1239,24 +1184,54 @@ function fallbackShare(shareUrl) {
                     Fermer
                 </button>
             </div>
+            
+            <style>
+                @keyframes fadeIn {
+                    to { opacity: 1; }
+                }
+                @keyframes scaleIn {
+                    to { transform: scale(1); }
+                }
+            </style>
         `;
         
         document.body.appendChild(shareModal);
         
-        // Fermer en cliquant en dehors
+        // 🎯 FERMETURE UNIQUEMENT SUR LE FOND
         shareModal.addEventListener('click', function(e) {
             if (e.target === shareModal) {
-                shareModal.remove();
+                closeShareModal();
             }
         });
         
     } catch (error) {
         console.error('❌ Erreur fallbackShare:', error);
-        // Fallback ultra-simple
         copyShareLink(shareUrl);
     }
 }
 
+// ========================================
+// 🎯 FONCTION POUR FERMER LE MODAL
+// ========================================
+function closeShareModal() {
+    const modal = document.getElementById('shareModal');
+    if (modal) {
+        modal.style.animation = 'fadeOut 0.3s ease forwards';
+        setTimeout(() => {
+            modal.remove();
+        }, 300);
+        
+        // Ajouter l'animation de sortie
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes fadeOut {
+                from { opacity: 1; }
+                to { opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+}
 // ========================================
 // 🎯 FONCTION shareOnWhatsApp MANQUANTE
 // ========================================
@@ -2984,6 +2959,7 @@ function handleSwipe() {
 </body>
 
 </html>
+
 
 
 
