@@ -1029,7 +1029,36 @@ function updateMetaTags(article) {
 // ✅ MODIFICATION DANS article-detail.html
 // ========================================
 // Remplacer la fonction chargerArticle() existante
-
+// ========================================
+// 🎯 FONCTION getShareUrl CORRECTE
+// ========================================
+async function getShareUrl(articleId) {
+    try {
+        console.log('🔗 Récupération URL share pour:', articleId);
+        
+        const response = await fetch(`${GOOGLE_APPS_SCRIPT_URL}?action=get_share_url&article_id=${articleId}`);
+        const result = await response.json();
+        
+        console.log('📦 Réponse share URL:', result);
+        
+        if (result.success && result.shareUrl) {
+            // 🎯 DOIT ÊTRE UN LIEN VERS /share/...html
+            return result.shareUrl;
+        } else {
+            throw new Error(result.error || 'URL de partage non disponible');
+        }
+    } catch (error) {
+        console.error('❌ Erreur getShareUrl:', error);
+        
+        // Fallback : générer l'URL localement
+        const articleTitle = document.querySelector('.article-title')?.textContent || 'article';
+        const slug = generateSlug(articleTitle) + '-' + articleId;
+        const fallbackUrl = `https://cfiupload.netlify.app/share/${slug}.html`;
+        
+        console.log('🔄 Utilisation URL fallback:', fallbackUrl);
+        return fallbackUrl;
+    }
+}
 async function chargerArticle() {
     try {
         // 🎯 RÉCUPÉRER L'ID (peu importe le format)
@@ -2643,4 +2672,5 @@ function handleSwipe() {
 
 </script>
 </body>
+
 </html>
