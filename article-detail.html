@@ -1025,13 +1025,6 @@ function updateMetaTags(article) {
         return keywords.some(keyword => sections.some(s => s.includes(keyword)));
     }
 
-   // ========================================
-// ✅ MODIFICATION DANS article-detail.html
-// ========================================
-// Remplacer la fonction chargerArticle() existante
-// ========================================
-// 🎯 FONCTION getShareUrl CORRECTE
-// ========================================
 async function getShareUrl(articleId) {
     try {
         console.log('🔗 Récupération URL share pour:', articleId);
@@ -1053,7 +1046,7 @@ async function getShareUrl(articleId) {
         // Fallback : générer l'URL localement
         const articleTitle = document.querySelector('.article-title')?.textContent || 'article';
         const slug = generateSlug(articleTitle) + '-' + articleId;
-        const fallbackUrl = `https://cfiupload.netlify.app/share/${slug}.html`;
+        const fallbackUrl = `https://cfiupload.netlify.app/share/${slug}.html`; // 🎯 CORRIGE ICI AUSSI
         
         console.log('🔄 Utilisation URL fallback:', fallbackUrl);
         return fallbackUrl;
@@ -1827,24 +1820,49 @@ function afficherArticle(article, tousLesArticles) {
         window.print();
     }
 
-    // Fonction de partage améliorée
-    function partager() {
-        if (navigator.share) {
-            navigator.share({
-                title: document.title,
-                text: document.querySelector('.article-title').textContent,
-                url: window.location.href
-            });
-        } else {
-            // Fallback pour les navigateurs qui ne supportent pas l'API Share
-            const url = window.location.href;
-            navigator.clipboard.writeText(url).then(() => {
-                alert('Lien copié dans le presse-papier !');
-            }).catch(() => {
-                prompt('Copiez ce lien :', url);
-            });
+// ========================================
+// 🎯 FONCTION PARTAGER CORRECTE
+// ========================================
+async function partager() {
+    try {
+        const articleId = localStorage.getItem('articleActuel');
+        if (!articleId) {
+            alert('Aucun article sélectionné');
+            return;
         }
+
+        console.log('🔗 Génération lien share pour:', articleId);
+        
+        // 🎯 RÉCUPÉRER LE VRAI LIEN DE PARTAGE
+        const shareUrl = await getShareUrl(articleId);
+        
+        console.log('📤 Lien de partage:', shareUrl);
+
+        // Utiliser l'API Web Share si disponible
+        if (navigator.share) {
+            try {
+                await navigator.share({
+                    title: document.querySelector('.article-title').textContent,
+                    text: document.querySelector('.article-excerpt-highlight')?.textContent || 'Découvrez cet article sur CFI 237',
+                    url: shareUrl  // 🎯 LIEN VERS LA PAGE SHARE
+                });
+                console.log('✅ Partage réussi');
+            } catch (shareError) {
+                if (shareError.name !== 'AbortError') {
+                    // Fallback si l'utilisateur annule le partage
+                    fallbackShare(shareUrl);
+                }
+            }
+        } else {
+            // Fallback pour les navigateurs sans API Share
+            fallbackShare(shareUrl);
+        }
+
+    } catch (error) {
+        console.error('❌ Erreur partage:', error);
+        alert('Erreur lors de la génération du lien de partage');
     }
+}
 
     // ===== FONCTIONS COMMENTAIRES =====
     async function submitComment(articleId, authorName, authorEmail, commentText) {
@@ -2674,3 +2692,4 @@ function handleSwipe() {
 </body>
 
 </html>
+
