@@ -1959,7 +1959,31 @@ function afficherArticle(article, tousLesArticles) {
     loadAndDisplayComments(article.id);
 }
 
+async function partager() {
+    try {
+        const articleId = localStorage.getItem('articleActuel');
+        if (!articleId) {
+            alert('Aucun article sélectionné');
+            return;
+        }
 
+        console.log('🔗 Génération lien share pour:', articleId);
+        
+        const shareUrl = await getShareUrl(articleId);
+        
+        console.log('📤 Lien de partage:', shareUrl);
+
+        // 🎯 VERSION SIMPLE : juste copier le lien
+        await copyShareLink(shareUrl);
+        
+        // Optionnel : message de confirmation
+        alert('Lien copié ! Collez-le dans WhatsApp: ' + shareUrl);
+
+    } catch (error) {
+        console.error('❌ Erreur partage:', error);
+        alert('Erreur lors de la génération du lien de partage');
+    }
+}
 
     
     // ===== FONCTION : Charger et afficher les commentaires =====
@@ -2959,6 +2983,7 @@ function handleSwipe() {
 </body>
 
 </html>
+
 
 
 
