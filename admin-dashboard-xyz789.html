@@ -2454,11 +2454,11 @@ async function forceGenerateSharePage(articleId) {
                     <button class="btn btn-danger btn-sm" onclick="deleteArticle('${article.id}')" title="Supprimer">
                         <i class="fas fa-trash"></i>
                     </button>
-                      const shareButton = `
-        <button class="btn btn-info btn-sm" onclick="forceGenerateSharePage('${article.id}')" title="Générer page share">
-            <i class="fas fa-share-alt"></i>
-        </button>
-    `;
+                      
+                     <button class="btn btn-info btn-sm" onclick="forceGenerateSharePage('${article.id}')" title="Générer page share">
+                    <i class="fas fa-share-alt"></i>
+                     </button>
+           
                 </div>
             </div>
         `).join('');
