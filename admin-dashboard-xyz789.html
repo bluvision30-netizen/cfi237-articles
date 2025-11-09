@@ -2364,10 +2364,10 @@ async function handleArticleSubmit(e) {
         }
         
         if (verification && verification.success) {
-            showAlert('success', 
-                '✅ Article publié avec succès !', 
-                `ID: ${verification.articleId} - Titre: ${verification.titre}`
-            );
+           showAlert('success', 
+    '✅ Article envoyé !', 
+    '<button onclick="verifierManuellement(\'' + titre + '\')" class="btn btn-sm btn-primary">Vérifier maintenant</button>'
+);
             
             console.log('🎉 Création confirmée:', verification);
             
@@ -3329,5 +3329,6 @@ async function sendNotificationForArticle(articleData) {
 </body>
 
 </html>
+
 
 
