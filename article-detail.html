@@ -1092,47 +1092,55 @@ async function getShareUrl(articleId) {
     }
 }
 
+// ========================================
+// 🎯 FONCTIONS MANQUANTES POUR LE PARTAGE
+// ========================================
+
+// ========================================
+// 🎯 FALLBACKSHARE AMÉLIORÉ - MODAL STABLE
+// ========================================
 function fallbackShare(shareUrl) {
+    console.log('🔄 Fallback share avec URL:', shareUrl);
+    
     try {
-        const articleTitle = document.querySelector('.article-title')?.textContent?.trim() || 'Article intéressant';
+        // Fermer tout modal existant d'abord
+        closeShareModal();
         
-        // 🎯 SUPPRIMER TOUT MODAL EXISTANT D'ABORD
-        const existingModal = document.querySelector('div[style*="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8)"]');
-        if (existingModal) {
-            existingModal.remove();
-        }
+        // Récupérer les données de l'article
+        const articleTitle = document.querySelector('.article-title')?.textContent?.trim() || 'Article CFI 237';
         
+        // Créer un modal de partage STABLE
         const shareModal = document.createElement('div');
-        shareModal.id = 'shareModal'; // 🎯 AJOUTER UN ID
+        shareModal.id = 'shareModalOverlay';
         shareModal.style.cssText = `
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.8);
+            background: rgba(0,0,0,0.9);
             display: flex;
             justify-content: center;
             align-items: center;
             z-index: 10000;
             backdrop-filter: blur(10px);
             opacity: 0;
-            animation: fadeIn 0.3s ease forwards;
+            transition: opacity 0.3s ease;
         `;
         
         shareModal.innerHTML = `
-            <div class="share-modal-content" style="
+            <div style="
                 background: white;
                 padding: 30px;
                 border-radius: 20px;
                 max-width: 500px;
                 width: 90%;
                 text-align: center;
-                box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+                box-shadow: 0 20px 60px rgba(0,0,0,0.5);
                 transform: scale(0.9);
-                animation: scaleIn 0.3s ease forwards;
-            " onclick="event.stopPropagation()"> <!-- 🎯 EMPÊCHER LA PROPAGATION -->
-                <h3 style="margin: 0 0 20px 0; color: var(--dark);">
+                transition: transform 0.3s ease;
+            " id="shareModalContent">
+                <h3 style="margin: 0 0 20px 0; color: var(--dark); font-size: 1.4rem;">
                     <i class="fas fa-share-alt" style="color: var(--primary-solid);"></i>
                     Partager cet article
                 </h3>
@@ -1144,13 +1152,16 @@ function fallbackShare(shareUrl) {
                     margin: 20px 0;
                     border: 2px dashed #e2e8f0;
                     word-break: break-all;
-                    font-size: 0.9rem;
+                    font-size: 0.85rem;
                     color: var(--dark);
+                    text-align: left;
+                    max-height: 80px;
+                    overflow-y: auto;
                 ">
                     ${shareUrl}
                 </div>
                 
-                <button onclick="copyShareLink('${shareUrl}')" style="
+                <button onclick="handleCopyLink('${shareUrl.replace(/'/g, "\\'")}')" style="
                     width: 100%;
                     padding: 14px;
                     background: var(--primary);
@@ -1168,6 +1179,91 @@ function fallbackShare(shareUrl) {
                     Copier le lien
                 </button>
                 
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px;">
+                    <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}" 
+                       target="_blank" 
+                       style="
+                        padding: 12px;
+                        background: #1877F2;
+                        color: white;
+                        border-radius: 10px;
+                        text-decoration: none;
+                        font-weight: 600;
+                        transition: all 0.3s ease;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        gap: 8px;
+                    " onmouseover="this.style.transform='translateY(-2px)'" 
+                       onmouseout="this.style.transform='translateY(0)'">
+                        <i class="fab fa-facebook-f"></i>
+                        Facebook
+                    </a>
+                    
+                    <a href="https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(articleTitle)}" 
+                       target="_blank"
+                       style="
+                        padding: 12px;
+                        background: #1DA1F2;
+                        color: white;
+                        border-radius: 10px;
+                        text-decoration: none;
+                        font-weight: 600;
+                        transition: all 0.3s ease;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        gap: 8px;
+                    " onmouseover="this.style.transform='translateY(-2px)'" 
+                       onmouseout="this.style.transform='translateY(0)'">
+                        <i class="fab fa-twitter"></i>
+                        Twitter
+                    </a>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px;">
+                    <a href="https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}" 
+                       target="_blank"
+                       style="
+                        padding: 12px;
+                        background: #0A66C2;
+                        color: white;
+                        border-radius: 10px;
+                        text-decoration: none;
+                        font-weight: 600;
+                        transition: all 0.3s ease;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        gap: 8px;
+                    " onmouseover="this.style.transform='translateY(-2px)'" 
+                       onmouseout="this.style.transform='translateY(0)'">
+                        <i class="fab fa-linkedin-in"></i>
+                        LinkedIn
+                    </a>
+                    
+                    <button onclick="handleWhatsAppShare('${shareUrl.replace(/'/g, "\\'")}', '${articleTitle.replace(/'/g, "\\'")}')" 
+                            style="
+                        padding: 12px;
+                        background: #25D366;
+                        color: white;
+                        border-radius: 10px;
+                        text-decoration: none;
+                        font-weight: 600;
+                        transition: all 0.3s ease;
+                        border: none;
+                        cursor: pointer;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        gap: 8px;
+                    " onmouseover="this.style.transform='translateY(-2px)'" 
+                       onmouseout="this.style.transform='translateY(0)'">
+                        <i class="fab fa-whatsapp"></i>
+                        WhatsApp
+                    </button>
+                </div>
+                
                 <button onclick="closeShareModal()" style="
                     width: 100%;
                     padding: 12px;
@@ -1177,81 +1273,126 @@ function fallbackShare(shareUrl) {
                     border-radius: 10px;
                     font-weight: 600;
                     cursor: pointer;
-                    margin-top: 15px;
+                    margin-top: 10px;
                     transition: all 0.3s ease;
                 " onmouseover="this.style.borderColor='var(--secondary)'; this.style.color='var(--secondary)'" 
                    onmouseout="this.style.borderColor='#e2e8f0'; this.style.color='var(--muted)'">
                     Fermer
                 </button>
             </div>
-            
-            <style>
-                @keyframes fadeIn {
-                    to { opacity: 1; }
-                }
-                @keyframes scaleIn {
-                    to { transform: scale(1); }
-                }
-            </style>
         `;
         
         document.body.appendChild(shareModal);
         
-        // 🎯 FERMETURE UNIQUEMENT SUR LE FOND
+        // Animation d'entrée
+        setTimeout(() => {
+            shareModal.style.opacity = '1';
+            const content = document.getElementById('shareModalContent');
+            if (content) {
+                content.style.transform = 'scale(1)';
+            }
+        }, 10);
+        
+        // Gestionnaire de fermeture au clic sur l'overlay
         shareModal.addEventListener('click', function(e) {
             if (e.target === shareModal) {
                 closeShareModal();
             }
         });
         
+        // 🎯 EMPÊCHER LA PROPAGATION DES CLICS DANS LE CONTENU
+        const modalContent = document.getElementById('shareModalContent');
+        if (modalContent) {
+            modalContent.addEventListener('click', function(e) {
+                e.stopPropagation();
+            });
+        }
+        
+        console.log('✅ Modal de partage affiché avec succès');
+        
     } catch (error) {
         console.error('❌ Erreur fallbackShare:', error);
+        // Fallback ultra-simple
         copyShareLink(shareUrl);
     }
 }
 
 // ========================================
-// 🎯 FONCTION POUR FERMER LE MODAL
+// 🎯 FONCTIONS DE GESTION DU MODAL
 // ========================================
+
+// Fonction pour fermer le modal
 function closeShareModal() {
-    const modal = document.getElementById('shareModal');
+    console.log('🔒 Fermeture du modal');
+    const modal = document.getElementById('shareModalOverlay');
     if (modal) {
-        modal.style.animation = 'fadeOut 0.3s ease forwards';
+        modal.style.opacity = '0';
+        const content = document.getElementById('shareModalContent');
+        if (content) {
+            content.style.transform = 'scale(0.9)';
+        }
         setTimeout(() => {
-            modal.remove();
-        }, 300);
-        
-        // Ajouter l'animation de sortie
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes fadeOut {
-                from { opacity: 1; }
-                to { opacity: 0; }
+            if (modal.parentElement) {
+                modal.parentElement.removeChild(modal);
             }
-        `;
-        document.head.appendChild(style);
+        }, 300);
     }
 }
-// ========================================
-// 🎯 FONCTION shareOnWhatsApp MANQUANTE
-// ========================================
+
+// Gestionnaire pour copier le lien
+function handleCopyLink(url) {
+    console.log('📋 Copie du lien depuis le modal');
+    copyShareLink(url);
+    // Ne pas fermer le modal après la copie
+}
+
+// Gestionnaire pour WhatsApp
+function handleWhatsAppShare(url, title) {
+    console.log('📱 Partage WhatsApp depuis le modal');
+    shareOnWhatsApp(url, title);
+    // Fermer le modal après le partage
+    setTimeout(() => {
+        closeShareModal();
+    }, 1000);
+}
+
+// Fonction pour copier le lien (inchangée mais importante)
+function copyShareLink(url) {
+    console.log('📋 Copie du lien:', url);
+    
+    navigator.clipboard.writeText(url).then(() => {
+        showNotification('✅ Lien copié dans le presse-papier !');
+    }).catch((err) => {
+        console.error('❌ Erreur clipboard:', err);
+        // Fallback pour les anciens navigateurs
+        const textArea = document.createElement('textarea');
+        textArea.value = url;
+        textArea.style.position = 'fixed';
+        textArea.style.opacity = '0';
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+        showNotification('✅ Lien copié !');
+    });
+}
+
+// Fonction WhatsApp (inchangée)
 function shareOnWhatsApp(shareUrl, articleTitle) {
     try {
-        // Méthode sécurisée pour WhatsApp
-        const shareText = `${articleTitle} ${shareUrl}`;
+        console.log('📱 Partage WhatsApp:', shareUrl);
+        
+        // Encoder le texte pour WhatsApp
+        const shareText = `${articleTitle} - ${shareUrl}`;
         const encodedText = encodeURIComponent(shareText);
         
-        // URL WhatsApp sécurisée
-        const whatsappUrl = `https://api.whatsapp.com/send?text=${encodedText}`;
+        // URL WhatsApp
+        const whatsappUrl = `https://wa.me/?text=${encodedText}`;
         
         // Ouvrir dans un nouvel onglet
         window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
         
-        // Fermer le modal
-        const modal = document.querySelector('div[style*="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8)"]');
-        if (modal) {
-            modal.remove();
-        }
+        showNotification('✅ Ouverture de WhatsApp...');
         
     } catch (error) {
         console.error('❌ Erreur WhatsApp:', error);
@@ -1261,29 +1402,10 @@ function shareOnWhatsApp(shareUrl, articleTitle) {
     }
 }
 
-// ========================================
-// 🎯 FONCTION copyShareLink MANQUANTE
-// ========================================
-function copyShareLink(url) {
-    navigator.clipboard.writeText(url).then(() => {
-        // Afficher une notification de succès
-        showNotification('✅ Lien copié dans le presse-papier !');
-    }).catch(() => {
-        // Fallback pour les anciens navigateurs
-        const textArea = document.createElement('textarea');
-        textArea.value = url;
-        document.body.appendChild(textArea);
-        textArea.select();
-        document.execCommand('copy');
-        document.body.removeChild(textArea);
-        showNotification('✅ Lien copié !');
-    });
-}
-
-// ========================================
-// 🎯 FONCTION showNotification MANQUANTE
-// ========================================
+// Fonction de notification (inchangée)
 function showNotification(message) {
+    console.log('🔔 Notification:', message);
+    
     const notification = document.createElement('div');
     notification.style.cssText = `
         position: fixed;
@@ -1298,8 +1420,14 @@ function showNotification(message) {
         box-shadow: 0 8px 30px rgba(0,0,0,0.2);
         transform: translateX(400px);
         transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        max-width: 300px;
+        word-wrap: break-word;
     `;
     notification.textContent = message;
+    
+    // Supprimer les notifications existantes
+    const existingNotifications = document.querySelectorAll('div[style*="position: fixed; top: 20px; right: 20px"]');
+    existingNotifications.forEach(notif => notif.remove());
     
     document.body.appendChild(notification);
     
@@ -1318,16 +1446,24 @@ function showNotification(message) {
         }, 300);
     }, 3000);
 }
-      
+// ========================================
+// ✅ CHARGEMENT D'ARTICLE AMÉLIORÉ
+// ========================================
 async function chargerArticle() {
     try {
-        // 🎯 RÉCUPÉRER L'ID (peu importe le format)
-        const articleId = localStorage.getItem('articleActuel');
+        // 🎯 RÉCUPÉRER L'ID DE MULTIPLES SOURCES
+        let articleId = localStorage.getItem('articleActuel');
+        
+        // Fallback : vérifier l'URL
+        if (!articleId || articleId === 'null' || articleId === 'undefined') {
+            const urlParams = new URLSearchParams(window.location.search);
+            articleId = urlParams.get('id') || urlParams.get('article');
+        }
         
         console.log('🔍 ID récupéré:', articleId, 'Type:', typeof articleId);
         
-        if (!articleId || articleId === 'null' || articleId === 'undefined') {
-            afficherErreur('Aucun article sélectionné');
+        if (!articleId) {
+            afficherErreur('Aucun article sélectionné. Retournez à la page d\'accueil.');
             return;
         }
 
@@ -1335,61 +1471,48 @@ async function chargerArticle() {
         const response = await fetch(GOOGLE_APPS_SCRIPT_URL);
         const result = await response.json();
         
-        console.log('📦 Résultat API:', result);
+        console.log('📦 Résultat API:', result.data?.length, 'articles chargés');
         
         if (!result.success) {
-            throw new Error(result.error || 'Erreur de chargement');
+            throw new Error(result.error || 'Erreur de chargement des articles');
         }
 
-        // 🎯 INVERSER L'ORDRE (pour correspondre à index.html)
-        const articlesReversed = result.data.reverse();
-
-        // 🔍 DEBUG: Afficher les IDs disponibles
-        console.log('📋 IDs disponibles:', articlesReversed.map(a => ({id: a.id, titre: a.titre})));
-
-        // 🎯 RECHERCHE FLEXIBLE DE L'ARTICLE
+        // 🎯 RECHERCHE ROBUSTE DE L'ARTICLE
+        const articles = result.data || [];
         let article = null;
         
-        // Méthode 1: Comparaison stricte
-        article = articlesReversed.find(a => a.id === articleId);
+        // Méthodes de recherche multiples
+        article = articles.find(a => 
+            String(a.id).trim() === String(articleId).trim() ||
+            String(a.id) === String(articleId) ||
+            a.id == articleId // Comparaison lâche
+        );
         
-        // Méthode 2: Comparaison avec conversion en string
         if (!article) {
-            article = articlesReversed.find(a => String(a.id) === String(articleId));
-        }
-        
-        // Méthode 3: Si c'est un nombre, essayer l'index
-        if (!article && !isNaN(articleId)) {
-            const index = parseInt(articleId) - 1; // -1 car les IDs commencent à 1
-            if (index >= 0 && index < articlesReversed.length) {
-                article = articlesReversed[index];
-                console.log('📍 Article trouvé par index:', index);
+            console.warn('⚠️ Article non trouvé avec méthodes standards, recherche étendue...');
+            // Recherche par index si ID numérique
+            if (!isNaN(articleId)) {
+                const index = parseInt(articleId) - 1;
+                if (index >= 0 && index < articles.length) {
+                    article = articles[index];
+                    console.log('📍 Article trouvé par index:', index);
+                }
             }
         }
         
-        // Méthode 4: Recherche avec trim
-        if (!article) {
-            article = articlesReversed.find(a => 
-                String(a.id).trim() === String(articleId).trim()
-            );
-        }
-        
-        console.log('🎯 Article trouvé:', article);
+        console.log('🎯 Article trouvé:', article ? 'OUI' : 'NON');
         
         if (!article) {
-            console.error('❌ Article introuvable');
-            console.error('   ID recherché:', articleId);
-            console.error('   IDs disponibles:', articlesReversed.map(a => a.id));
-            afficherErreur('Article non trouvé (ID: ' + articleId + ')');
+            afficherErreur(`Article non trouvé (ID: ${articleId}). L'article a peut-être été supprimé.`);
             return;
         }
 
         // ✅ AFFICHER L'ARTICLE
-        afficherArticle(article, articlesReversed);
+        afficherArticle(article, articles);
 
     } catch (error) {
-        console.error('❌ Erreur:', error);
-        afficherErreur('Erreur de chargement de l\'article');
+        console.error('❌ Erreur chargement article:', error);
+        afficherErreur('Erreur de chargement de l\'article: ' + error.message);
     }
 }
 
@@ -1959,28 +2082,49 @@ function afficherArticle(article, tousLesArticles) {
     loadAndDisplayComments(article.id);
 }
 
+// ========================================
+// 🎯 FONCTION PARTAGE CORRIGÉE - STABLE
+// ========================================
+// ========================================
+// 🎯 FONCTION PARTAGE CORRIGÉE - MODAL STABLE
+// ========================================
 async function partager() {
     try {
+        console.log('🔄 Début fonction partager');
+        
         const articleId = localStorage.getItem('articleActuel');
         if (!articleId) {
             alert('Aucun article sélectionné');
             return;
         }
 
-        console.log('🔗 Génération lien share pour:', articleId);
-        
+        // Afficher un indicateur de chargement
+        const shareBtn = document.querySelector('.btn-share');
+        const originalHTML = shareBtn.innerHTML;
+        shareBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Génération...';
+        shareBtn.disabled = true;
+
+        // Récupérer l'URL de partage
         const shareUrl = await getShareUrl(articleId);
         
-        console.log('📤 Lien de partage:', shareUrl);
-
-        // 🎯 VERSION SIMPLE : juste copier le lien
-        await copyShareLink(shareUrl);
+        console.log('🔗 URL de partage générée:', shareUrl);
         
-        // Optionnel : message de confirmation
-        alert('Lien copié ! Collez-le dans WhatsApp: ' + shareUrl);
+        // Réactiver le bouton
+        shareBtn.innerHTML = originalHTML;
+        shareBtn.disabled = false;
+
+        // 🎯 CORRECTION : NE PAS UTILISER L'API WEB SHARE - UTILISER DIRECTEMENT NOTRE MODAL
+        console.log('🎯 Utilisation du modal personnalisé');
+        fallbackShare(shareUrl);
 
     } catch (error) {
         console.error('❌ Erreur partage:', error);
+        
+        // Réactiver le bouton en cas d'erreur
+        const shareBtn = document.querySelector('.btn-share');
+        shareBtn.innerHTML = '<i class="fas fa-share-alt"></i> Partager';
+        shareBtn.disabled = false;
+        
         alert('Erreur lors de la génération du lien de partage');
     }
 }
@@ -2114,46 +2258,7 @@ async function partager() {
 // ========================================
 // 🎯 FONCTION PARTAGER CORRECTE
 // ========================================
-async function partager() {
-    try {
-        const articleId = localStorage.getItem('articleActuel');
-        if (!articleId) {
-            alert('Aucun article sélectionné');
-            return;
-        }
 
-        console.log('🔗 Génération lien share pour:', articleId);
-        
-        // 🎯 RÉCUPÉRER LE VRAI LIEN DE PARTAGE
-        const shareUrl = await getShareUrl(articleId);
-        
-        console.log('📤 Lien de partage:', shareUrl);
-
-        // Utiliser l'API Web Share si disponible
-        if (navigator.share) {
-            try {
-                await navigator.share({
-                    title: document.querySelector('.article-title').textContent,
-                    text: document.querySelector('.article-excerpt-highlight')?.textContent || 'Découvrez cet article sur CFI 237',
-                    url: shareUrl  // 🎯 LIEN VERS LA PAGE SHARE
-                });
-                console.log('✅ Partage réussi');
-            } catch (shareError) {
-                if (shareError.name !== 'AbortError') {
-                    // Fallback si l'utilisateur annule le partage
-                    fallbackShare(shareUrl);
-                }
-            }
-        } else {
-            // Fallback pour les navigateurs sans API Share
-            fallbackShare(shareUrl);
-        }
-
-    } catch (error) {
-        console.error('❌ Erreur partage:', error);
-        alert('Erreur lors de la génération du lien de partage');
-    }
-}
 
     // ===== FONCTIONS COMMENTAIRES =====
     async function submitComment(articleId, authorName, authorEmail, commentText) {
@@ -2983,7 +3088,6 @@ function handleSwipe() {
 </body>
 
 </html>
-
 
 
 
