@@ -2281,13 +2281,10 @@ document.head.appendChild(styleSheet);
 
     // Submit New Article
 
-// ========================================
-// 🚀 SOUMISSION ARTICLE - VERSION CORRIGÉE
-// ========================================
 async function handleArticleSubmit(e) {
     e.preventDefault();
 
-    // Validation des images
+    // Validation
     if (uploadedImages.length === 0) {
         showAlert('error', 'Veuillez uploader au moins une image');
         return;
@@ -2307,20 +2304,17 @@ async function handleArticleSubmit(e) {
     const contentType = document.querySelector('input[name="contentType"]:checked').value;
     const selectedSections = getSelectedSections();
 
-    // 🎯 PRÉPARATION DONNÉES AVEC TOUTES LES IMAGES
     const payload = {
+        action: 'CREATE_ARTICLE', // ✅ IMPORTANT
         titre: titre,
         categorie: categorie,
         section: selectedSections.join(','),
         contentType: contentType,
-        image: uploadedImages[0], // Première image = couverture
-        images: JSON.stringify(uploadedImages), // Toutes les images
+        image: uploadedImages[0],
+        images: JSON.stringify(uploadedImages),
         extrait: extrait,
         contenu: contenu,
-        auteur: auteur,
-        date: new Date().toISOString(),
-        vue: 0,
-        likes: 0
+        auteur: auteur
     };
 
     if (contentType === 'video') {
@@ -2333,28 +2327,38 @@ async function handleArticleSubmit(e) {
     submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Publication...';
 
     try {
-        // 🎯 ENVOI DIRECT SANS ATTENTE DE RÉPONSE DÉTAILLÉE
-        await fetch(GOOGLE_APPS_SCRIPT_URL, {
+        // 🎯 ENVOI AVEC RÉPONSE LISIBLE
+        const response = await fetch(GOOGLE_APPS_SCRIPT_URL, {
             method: 'POST',
-            mode: 'no-cors',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
         });
 
-        // 🎯 SUCCÈS IMMÉDIAT - On suppose que ça fonctionne
-        showAlert('success', 
-            'Article publié avec succès !', 
-            `${uploadedImages.length} image(s) - Page de partage en cours de génération...`
-        );
+        const result = await response.json();
         
-        console.log('✅ Article envoyé - Génération share en background');
-        
-        // Réinitialiser le formulaire
-        setTimeout(() => resetForm(), 1500);
+        console.log('📦 Réponse reçue:', result);
+
+        if (result.success) {
+            if (result.shareUrl) {
+                showAlert('success', 
+                    '✅ Article publié avec succès !', 
+                    `Page de partage : ${result.shareUrl}`
+                );
+            } else {
+                showAlert('success', 
+                    '✅ Article publié !', 
+                    '⚠️ Page share en cours de génération...'
+                );
+            }
+            
+            setTimeout(() => resetForm(), 2000);
+        } else {
+            showAlert('error', 'Erreur: ' + result.error);
+        }
 
     } catch (error) {
-        console.error('Erreur envoi:', error);
-        showAlert('error', 'Erreur lors de la publication');
+        console.error('❌ Erreur:', error);
+        showAlert('error', 'Erreur de publication');
     } finally {
         submitBtn.disabled = false;
         submitBtn.innerHTML = originalBtnHTML;
@@ -2414,48 +2418,6 @@ async function forceGenerateSharePage(articleId) {
 }
 
 
-
-    function displayArticles(articles) {
-        const container = document.getElementById('articlesContainer');
-        
-        if (articles.length === 0) {
-            container.innerHTML = '<div class="empty-state"><i class="fas fa-search"></i><h3>Aucun résultat</h3><p>Aucun article ne correspond à votre recherche</p></div>';
-            return;
-        }
-        
-        container.innerHTML = articles.map(article => `
-            <div class="article-item">
-                <img src="${article.image}" alt="${article.titre}" class="article-thumbnail">
-                <div class="article-info">
-                    <h3>${article.titre}</h3>
-                    <span class="badge badge-primary">${article.categorie}</span>
-                    <div class="article-meta">
-                        <span><i class="fas fa-calendar"></i> ${article.date}</span>
-                        <span><i class="fas fa-user"></i> ${article.auteur}</span>
-                        <span><i class="fas fa-eye"></i> ${article.vue} vues</span>
-                        <span><i class="fas fa-heart"></i> ${article.likes} likes</span>
-                    </div>
-                </div>
-                <div class="article-actions">
-                    <button class="btn btn-secondary btn-sm" onclick="moveArticle('${article.id}', 'up')" title="Monter">
-                        <i class="fas fa-arrow-up"></i>
-                    </button>
-                    <button class="btn btn-secondary btn-sm" onclick="moveArticle('${article.id}', 'down')" title="Descendre">
-                        <i class="fas fa-arrow-down"></i>
-                    </button>
-                    <button class="btn btn-primary btn-sm" onclick="editArticle('${article.id}')" title="Modifier">
-                        <i class="fas fa-edit"></i>
-                    </button>
-                    <button class="btn btn-danger btn-sm" onclick="deleteArticle('${article.id}')" title="Supprimer">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                      
-                </div>
-            </div>
-        `).join('');
-
-        
-    }
 
     // Search and Filter
     function filterArticles() {
@@ -2914,46 +2876,66 @@ async function loadArticles() {
 
 // 🔹 FONCTION POUR AFFICHER LES ARTICLES
 function displayArticles(articles) {
-    const container = document.getElementById('articlesContainer');
+   const container = document.getElementById('articlesContainer');
     
     if (articles.length === 0) {
-        container.innerHTML = '<div class="empty-state"><i class="fas fa-search"></i><h3>Aucun résultat</h3><p>Aucun article ne correspond à votre recherche</p></div>';
+        container.innerHTML = '<div class="empty-state">...</div>';
         return;
     }
-    
+   
     container.innerHTML = articles.map(article => `
         <div class="article-item">
-            <img src="${article.image}" alt="${article.titre}" class="article-thumbnail" 
-                 onerror="this.src='https://picsum.photos/120/80?random=' + Math.random()">
+            <img src="${article.image}" alt="${article.titre}" class="article-thumbnail">
             <div class="article-info">
                 <h3>${article.titre}</h3>
                 <span class="badge badge-primary">${article.categorie}</span>
                 <div class="article-meta">
-                    <span><i class="fas fa-calendar"></i> ${formatDate(article.date)}</span>
+                    <span><i class="fas fa-calendar"></i> ${article.date}</span>
                     <span><i class="fas fa-user"></i> ${article.auteur}</span>
-                    <span><i class="fas fa-eye"></i> ${article.vue || 0} vues</span>
-                    <span><i class="fas fa-heart"></i> ${article.likes || 0} likes</span>
-                    <span><i class="fas fa-layer-group"></i> ${article.section || 'main'}</span>
+                    <span><i class="fas fa-eye"></i> ${article.vue} vues</span>
                 </div>
             </div>
             <div class="article-actions">
-                <button class="btn btn-secondary btn-sm" onclick="moveArticle('${article.id}', 'up')" title="Monter">
-                    <i class="fas fa-arrow-up"></i>
-                </button>
-                <button class="btn btn-secondary btn-sm" onclick="moveArticle('${article.id}', 'down')" title="Descendre">
-                    <i class="fas fa-arrow-down"></i>
-                </button>
-                <button class="btn btn-primary btn-sm" onclick="editArticle('${article.id}')" title="Modifier">
+                <button class="btn btn-primary btn-sm" onclick="editArticle('${article.id}')">
                     <i class="fas fa-edit"></i>
                 </button>
-                <button class="btn btn-danger btn-sm" onclick="deleteArticle('${article.id}')" title="Supprimer">
+                <button class="btn btn-secondary btn-sm" onclick="regenererShare('${article.id}')" title="Régénérer page share">
+                    <i class="fas fa-share-alt"></i>
+                </button>
+                <button class="btn btn-danger btn-sm" onclick="deleteArticle('${article.id}')">
                     <i class="fas fa-trash"></i>
                 </button>
             </div>
         </div>
     `).join('');
 }
-
+// ✅ FONCTION RÉGÉNÉRATION
+async function regenererShare(articleId) {
+    if (!confirm('Régénérer la page de partage pour cet article ?')) return;
+    
+    try {
+        const response = await fetch(GOOGLE_APPS_SCRIPT_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                action: 'generate_share_page',
+                article_id: articleId
+            })
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            showAlert('success', 'Page share régénérée !', result.shareUrl);
+        } else {
+            showAlert('error', 'Erreur: ' + result.error);
+        }
+        
+    } catch (error) {
+        console.error('Erreur:', error);
+        showAlert('error', 'Erreur de régénération');
+    }
+}
 // 🔹 FONCTION POUR FORMATER LA DATE
 function formatDate(dateString) {
     if (!dateString) return 'Date inconnue';
