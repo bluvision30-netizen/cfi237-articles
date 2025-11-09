@@ -2387,6 +2387,37 @@ async function fetchWithCorsFallback(url, options) {
   }
 }
 
+// ========================================
+// 🔄 FORCER LA GÉNÉRATION DE PAGE SHARE
+// ========================================
+async function forceGenerateSharePage(articleId) {
+    try {
+        console.log('🔄 Forcer génération page share pour:', articleId);
+        
+        const response = await fetch(GOOGLE_APPS_SCRIPT_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                action: 'generate_share_page',
+                article_id: articleId
+            })
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            showAlert('success', 'Page share générée !', result.shareUrl);
+            return result.shareUrl;
+        } else {
+            throw new Error(result.error || 'Erreur inconnue');
+        }
+    } catch (error) {
+        console.error('❌ Erreur génération forcée:', error);
+        showAlert('error', 'Erreur génération page share', error.message);
+        return null;
+    }
+}
+
 
 
     function displayArticles(articles) {
@@ -2423,6 +2454,11 @@ async function fetchWithCorsFallback(url, options) {
                     <button class="btn btn-danger btn-sm" onclick="deleteArticle('${article.id}')" title="Supprimer">
                         <i class="fas fa-trash"></i>
                     </button>
+                      const shareButton = `
+        <button class="btn btn-info btn-sm" onclick="forceGenerateSharePage('${article.id}')" title="Générer page share">
+            <i class="fas fa-share-alt"></i>
+        </button>
+    `;
                 </div>
             </div>
         `).join('');
@@ -3188,4 +3224,5 @@ async function sendNotificationForArticle(articleData) {
 
 </script>
 </body>
+
 </html>
