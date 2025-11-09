@@ -2361,6 +2361,36 @@ async function handleArticleSubmit(e) {
     }
 }
 
+// Dans votre dashboard
+function forceGenerateAllShares() {
+  fetch(GOOGLE_APPS_SCRIPT_URL + '?action=force_generate_all')
+    .then(response => response.json())
+    .then(result => {
+      if (result.success) {
+        showAlert('success', `${result.generated} pages générées!`);
+      }
+    });
+}
+
+// Dans Apps Script
+function forceGenerateAllShares() {
+  var sheet = SpreadsheetApp.openById(CONFIG.SHEET_ID).getActiveSheet();
+  var articles = getAllArticles(sheet);
+  var generated = 0;
+  
+  articles.forEach(article => {
+    try {
+      generateSharePageDirect(article.id, article);
+      generated++;
+      Utilities.sleep(1000); // Éviter rate limits
+    } catch (e) {
+      Logger.log('Erreur article ' + article.id + ': ' + e.toString());
+    }
+  });
+  
+  return { success: true, generated: generated, total: articles.length };
+}
+      
 // Fonction améliorée pour gérer CORS avec fallback
 // ✅ REMPLACER TOUTE LA FONCTION fetchWithCorsFallback
 async function fetchWithCorsFallback(url, options) {
@@ -3219,3 +3249,4 @@ async function sendNotificationForArticle(articleData) {
 </body>
 
 </html>
+
