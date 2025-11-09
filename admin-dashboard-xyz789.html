@@ -2327,83 +2327,129 @@ async function handleArticleSubmit(e) {
     submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Publication...';
 
     try {
-        // 🎯 ENVOI EN MODE NO-CORS
         console.log('📤 Envoi article...');
         
+        // 🎯 ENVOI EN MODE NO-CORS
         await fetch(GOOGLE_APPS_SCRIPT_URL, {
             method: 'POST',
-            mode: 'no-cors', // ✅ OBLIGATOIRE pour Apps Script
+            mode: 'no-cors',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
         });
         
         console.log('✅ Article envoyé (confirmation en attente)');
         
-        // 🎯 ATTENDRE 3 SECONDES pour que Sheets se mette à jour
-        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Vérification...';
-        await new Promise(resolve => setTimeout(resolve, 3000));
+        // 🎯 VÉRIFICATIONS MULTIPLES (jusqu'à 15 secondes)
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Vérification (0/5)...';
         
-        // 🎯 VÉRIFIER QUE L'ARTICLE A ÉTÉ CRÉÉ
-        const verification = await verifierCreationArticle(titre);
+        const maxAttempts = 5;
+        let attempt = 0;
+        let verification = null;
         
-        if (verification.success) {
+        while (attempt < maxAttempts) {
+            attempt++;
+            console.log(`🔍 Tentative ${attempt}/${maxAttempts}...`);
+            
+            submitBtn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Vérification (${attempt}/${maxAttempts})...`;
+            
+            // Attendre 3 secondes entre chaque tentative
+            await new Promise(resolve => setTimeout(resolve, 3000));
+            
+            verification = await verifierCreationArticle(titre);
+            
+            if (verification.success) {
+                console.log('✅ Article trouvé !');
+                break;
+            }
+        }
+        
+        if (verification && verification.success) {
             showAlert('success', 
                 '✅ Article publié avec succès !', 
-                `ID: ${verification.articleId} - Page share: ${verification.shareUrl}`
+                `ID: ${verification.articleId} - Titre: ${verification.titre}`
             );
             
             console.log('🎉 Création confirmée:', verification);
-            setTimeout(() => resetForm(), 2000);
+            
+            // Afficher l'URL de partage si disponible
+            if (verification.shareUrl) {
+                setTimeout(() => {
+                    showAlert('success', 
+                        '🔗 Page de partage disponible', 
+                        verification.shareUrl
+                    );
+                }, 2000);
+            }
+            
+            setTimeout(() => resetForm(), 3000);
         } else {
-            showAlert('error', 
-                '⚠️ Article peut-être créé mais non confirmé', 
-                'Vérifiez la liste des articles'
+            // Si toujours pas trouvé après 5 tentatives
+            showAlert('success', 
+                '✅ Article envoyé !', 
+                '⏳ La confirmation prend plus de temps que prévu. Vérifiez la liste des articles dans quelques instants.'
             );
+            
+            setTimeout(() => {
+                resetForm();
+                // Recharger la liste des articles
+                if (document.getElementById('my-articles').classList.contains('active')) {
+                    loadArticles();
+                }
+            }, 3000);
         }
 
     } catch (error) {
         console.error('❌ Erreur:', error);
-        showAlert('error', 'Erreur de publication');
+        showAlert('error', 'Erreur de publication: ' + error.message);
     } finally {
         submitBtn.disabled = false;
         submitBtn.innerHTML = originalBtnHTML;
     }
 }
 
-// 🔍 FONCTION DE VÉRIFICATION
+// 🔍 FONCTION DE VÉRIFICATION AMÉLIORÉE
 async function verifierCreationArticle(titre) {
     try {
-        console.log('🔍 Vérification création pour:', titre);
+        console.log('🔍 Recherche article:', titre);
         
         // Récupérer tous les articles
-        const response = await fetch(GOOGLE_APPS_SCRIPT_URL);
+        const response = await fetch(GOOGLE_APPS_SCRIPT_URL + '?t=' + Date.now()); // Cache busting
+        
+        if (!response.ok) {
+            throw new Error('Erreur réseau: ' + response.status);
+        }
+        
         const result = await response.json();
         
         if (!result.success || !result.data) {
-            throw new Error('Impossible de récupérer les articles');
+            console.warn('⚠️ Pas de données:', result);
+            return { success: false, error: 'Pas de données' };
         }
         
-        // Chercher l'article par titre (dernier créé)
+        console.log('📊 Articles reçus:', result.data.length);
+        
+        // Chercher l'article par titre exact (le plus récent)
         const articles = result.data;
         const article = articles
-            .sort((a, b) => new Date(b.date) - new Date(a.date))
-            .find(a => a.titre === titre);
+            .filter(a => a.titre && a.titre.trim() === titre.trim())
+            .sort((a, b) => new Date(b.date) - new Date(a.date))[0];
         
         if (article) {
+            console.log('✅ Article trouvé:', article);
+            
             // Construire l'URL de partage
             const slug = generateSlug(article.titre) + '-' + article.id;
-            const shareUrl = `${window.location.origin}/share/${slug}.html`;
+            const shareUrl = `${CONFIG.SITE_URL || window.location.origin}/share/${slug}.html`;
             
             return {
                 success: true,
                 articleId: article.id,
+                titre: article.titre,
                 shareUrl: shareUrl
             };
         } else {
-            return {
-                success: false,
-                error: 'Article non trouvé'
-            };
+            console.warn('⚠️ Article non trouvé dans les résultats');
+            return { success: false, error: 'Article non trouvé' };
         }
         
     } catch (error) {
@@ -2415,7 +2461,7 @@ async function verifierCreationArticle(titre) {
     }
 }
 
-// 🔧 FONCTION generateSlug (si pas déjà présente)
+// 🔧 FONCTION generateSlug
 function generateSlug(text) {
     if (!text) return 'article';
     
@@ -3283,4 +3329,5 @@ async function sendNotificationForArticle(articleData) {
 </body>
 
 </html>
+
 
