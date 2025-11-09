@@ -2305,7 +2305,7 @@ async function handleArticleSubmit(e) {
     const selectedSections = getSelectedSections();
 
     const payload = {
-        action: 'CREATE_ARTICLE', // ✅ IMPORTANT
+        action: 'CREATE_ARTICLE',
         titre: titre,
         categorie: categorie,
         section: selectedSections.join(','),
@@ -2327,33 +2327,38 @@ async function handleArticleSubmit(e) {
     submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Publication...';
 
     try {
-        // 🎯 ENVOI AVEC RÉPONSE LISIBLE
-        const response = await fetch(GOOGLE_APPS_SCRIPT_URL, {
+        // 🎯 ENVOI EN MODE NO-CORS
+        console.log('📤 Envoi article...');
+        
+        await fetch(GOOGLE_APPS_SCRIPT_URL, {
             method: 'POST',
+            mode: 'no-cors', // ✅ OBLIGATOIRE pour Apps Script
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
         });
-
-        const result = await response.json();
         
-        console.log('📦 Réponse reçue:', result);
-
-        if (result.success) {
-            if (result.shareUrl) {
-                showAlert('success', 
-                    '✅ Article publié avec succès !', 
-                    `Page de partage : ${result.shareUrl}`
-                );
-            } else {
-                showAlert('success', 
-                    '✅ Article publié !', 
-                    '⚠️ Page share en cours de génération...'
-                );
-            }
+        console.log('✅ Article envoyé (confirmation en attente)');
+        
+        // 🎯 ATTENDRE 3 SECONDES pour que Sheets se mette à jour
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Vérification...';
+        await new Promise(resolve => setTimeout(resolve, 3000));
+        
+        // 🎯 VÉRIFIER QUE L'ARTICLE A ÉTÉ CRÉÉ
+        const verification = await verifierCreationArticle(titre);
+        
+        if (verification.success) {
+            showAlert('success', 
+                '✅ Article publié avec succès !', 
+                `ID: ${verification.articleId} - Page share: ${verification.shareUrl}`
+            );
             
+            console.log('🎉 Création confirmée:', verification);
             setTimeout(() => resetForm(), 2000);
         } else {
-            showAlert('error', 'Erreur: ' + result.error);
+            showAlert('error', 
+                '⚠️ Article peut-être créé mais non confirmé', 
+                'Vérifiez la liste des articles'
+            );
         }
 
     } catch (error) {
@@ -2363,6 +2368,68 @@ async function handleArticleSubmit(e) {
         submitBtn.disabled = false;
         submitBtn.innerHTML = originalBtnHTML;
     }
+}
+
+// 🔍 FONCTION DE VÉRIFICATION
+async function verifierCreationArticle(titre) {
+    try {
+        console.log('🔍 Vérification création pour:', titre);
+        
+        // Récupérer tous les articles
+        const response = await fetch(GOOGLE_APPS_SCRIPT_URL);
+        const result = await response.json();
+        
+        if (!result.success || !result.data) {
+            throw new Error('Impossible de récupérer les articles');
+        }
+        
+        // Chercher l'article par titre (dernier créé)
+        const articles = result.data;
+        const article = articles
+            .sort((a, b) => new Date(b.date) - new Date(a.date))
+            .find(a => a.titre === titre);
+        
+        if (article) {
+            // Construire l'URL de partage
+            const slug = generateSlug(article.titre) + '-' + article.id;
+            const shareUrl = `${window.location.origin}/share/${slug}.html`;
+            
+            return {
+                success: true,
+                articleId: article.id,
+                shareUrl: shareUrl
+            };
+        } else {
+            return {
+                success: false,
+                error: 'Article non trouvé'
+            };
+        }
+        
+    } catch (error) {
+        console.error('❌ Erreur vérification:', error);
+        return {
+            success: false,
+            error: error.toString()
+        };
+    }
+}
+
+// 🔧 FONCTION generateSlug (si pas déjà présente)
+function generateSlug(text) {
+    if (!text) return 'article';
+    
+    return text
+        .toString()
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/[^a-z0-9 -]/g, '')
+        .replace(/\s+/g, '-')
+        .replace(/-+/g, '-')
+        .replace(/^-+/, '')
+        .replace(/-+$/, '')
+        .substring(0, 50);
 }
 
 // Fonction améliorée pour gérer CORS avec fallback
@@ -2874,15 +2941,14 @@ async function loadArticles() {
     }
 }
 
-// 🔹 FONCTION POUR AFFICHER LES ARTICLES
 function displayArticles(articles) {
-   const container = document.getElementById('articlesContainer');
+    const container = document.getElementById('articlesContainer');
     
     if (articles.length === 0) {
-        container.innerHTML = '<div class="empty-state">...</div>';
+        container.innerHTML = '<div class="empty-state"><i class="fas fa-search"></i><h3>Aucun résultat</h3></div>';
         return;
     }
-   
+    
     container.innerHTML = articles.map(article => `
         <div class="article-item">
             <img src="${article.image}" alt="${article.titre}" class="article-thumbnail">
@@ -2890,32 +2956,40 @@ function displayArticles(articles) {
                 <h3>${article.titre}</h3>
                 <span class="badge badge-primary">${article.categorie}</span>
                 <div class="article-meta">
-                    <span><i class="fas fa-calendar"></i> ${article.date}</span>
+                    <span><i class="fas fa-calendar"></i> ${formatDate(article.date)}</span>
                     <span><i class="fas fa-user"></i> ${article.auteur}</span>
-                    <span><i class="fas fa-eye"></i> ${article.vue} vues</span>
+                    <span><i class="fas fa-eye"></i> ${article.vue || 0} vues</span>
                 </div>
             </div>
             <div class="article-actions">
-                <button class="btn btn-primary btn-sm" onclick="editArticle('${article.id}')">
+                <button class="btn btn-primary btn-sm" onclick="editArticle('${article.id}')" title="Modifier">
                     <i class="fas fa-edit"></i>
                 </button>
-                <button class="btn btn-secondary btn-sm" onclick="regenererShare('${article.id}')" title="Régénérer page share">
-                    <i class="fas fa-share-alt"></i>
+                <button class="btn btn-success btn-sm" onclick="regenererShare('${article.id}')" title="Régénérer page share">
+                    <i class="fas fa-sync"></i>
                 </button>
-                <button class="btn btn-danger btn-sm" onclick="deleteArticle('${article.id}')">
+                <button class="btn btn-danger btn-sm" onclick="deleteArticle('${article.id}')" title="Supprimer">
                     <i class="fas fa-trash"></i>
                 </button>
             </div>
         </div>
     `).join('');
 }
-// ✅ FONCTION RÉGÉNÉRATION
+
+// ✅ RÉGÉNÉRATION MANUELLE
 async function regenererShare(articleId) {
     if (!confirm('Régénérer la page de partage pour cet article ?')) return;
     
+    const btn = event.target.closest('button');
+    const originalHTML = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+    
     try {
-        const response = await fetch(GOOGLE_APPS_SCRIPT_URL, {
+        // Envoyer requête de régénération
+        await fetch(GOOGLE_APPS_SCRIPT_URL, {
             method: 'POST',
+            mode: 'no-cors',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 action: 'generate_share_page',
@@ -2923,17 +2997,25 @@ async function regenererShare(articleId) {
             })
         });
         
+        // Attendre 2 secondes
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        
+        // Récupérer l'URL
+        const response = await fetch(`${GOOGLE_APPS_SCRIPT_URL}?action=get_share_url&article_id=${articleId}`);
         const result = await response.json();
         
-        if (result.success) {
+        if (result.success && result.shareUrl) {
             showAlert('success', 'Page share régénérée !', result.shareUrl);
         } else {
-            showAlert('error', 'Erreur: ' + result.error);
+            showAlert('success', 'Régénération lancée', 'Vérifiez dans quelques instants');
         }
         
     } catch (error) {
         console.error('Erreur:', error);
         showAlert('error', 'Erreur de régénération');
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = originalHTML;
     }
 }
 // 🔹 FONCTION POUR FORMATER LA DATE
@@ -3201,3 +3283,4 @@ async function sendNotificationForArticle(articleData) {
 </body>
 
 </html>
+
