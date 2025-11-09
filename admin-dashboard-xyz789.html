@@ -2498,7 +2498,15 @@ async function fetchWithCorsFallback(url, options) {
     throw error;
   }
 }
-
+async function verifierManuellement(titre) {
+    const result = await verifierCreationArticle(titre);
+    if (result.success) {
+        showAlert('success', 'Article confirmé !', `ID: ${result.articleId}`);
+        loadArticles();
+    } else {
+        showAlert('error', 'Toujours pas trouvé', 'Vérifiez la liste des articles');
+    }
+}
 // ========================================
 // 🔄 FORCER LA GÉNÉRATION DE PAGE SHARE
 // ========================================
@@ -3329,6 +3337,7 @@ async function sendNotificationForArticle(articleData) {
 </body>
 
 </html>
+
 
 
 
