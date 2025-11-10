@@ -1,0 +1,9 @@
+{
+  "name": "cfi237-articles",
+  "version": "1.0.0",
+  "description": "Système de gestion d'articles avec galerie photos",
+  "type": "module",
+  "engines": {
+    "node": ">=18"
+  }
+}
