@@ -60,8 +60,28 @@
       "likes": 0,
       "share_url": "/share/art_1762791815395_mj9iwtw44.html",
       "statut": "publié"
+    },
+    "art_1762797319250_svhrcic2e": {
+      "id": "art_1762797319250_svhrcic2e",
+      "titre": "ca commence a donner",
+      "categorie": "Société",
+      "sections": [
+        "main"
+      ],
+      "contentType": "article",
+      "image": "https://res.cloudinary.com/dkuciagop/image/upload/v1762797256/z4ixaaq0eb947fd4taut.jpg",
+      "images": "[\"https://res.cloudinary.com/dkuciagop/image/upload/v1762797256/z4ixaaq0eb947fd4taut.jpg\"]",
+      "extrait": "ca commence a donner",
+      "contenu": "ca commence a donner",
+      "auteur": "Ben Oway",
+      "video_url": "",
+      "date": "2025-11-10T17:55:19.250Z",
+      "vues": 0,
+      "likes": 0,
+      "share_url": "/share/art_1762797319250_svhrcic2e.html",
+      "statut": "publié"
     }
   },
-  "lastUpdate": "2025-11-10T16:23:35.599Z",
-  "totalArticles": 3
+  "lastUpdate": "2025-11-10T17:55:19.436Z",
+  "totalArticles": 4
 }
