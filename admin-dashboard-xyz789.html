@@ -2282,7 +2282,7 @@ document.head.appendChild(styleSheet);
     // Submit New Article
 
 // ========================================
-// 🚀 SOUMISSION ARTICLE - VERSION NETLIFY FUNCTIONS
+// 🚀 SOUMISSION ARTICLE - VERSION DOUBLE ENVOI
 // ========================================
 async function handleArticleSubmit(e) {
     e.preventDefault();
@@ -2307,17 +2307,20 @@ async function handleArticleSubmit(e) {
     const contentType = document.querySelector('input[name="contentType"]:checked').value;
     const selectedSections = getSelectedSections();
 
-    // 🎯 PRÉPARATION DONNÉES POUR NETLIFY FUNCTION
+    // 🎯 PRÉPARATION DONNÉES
     const articleData = {
         titre: titre,
         categorie: categorie,
         section: selectedSections.join(','),
         contentType: contentType,
-        image: uploadedImages[0], // URL CLOUDINARY DIRECTE
+        image: uploadedImages[0],
         images: JSON.stringify(uploadedImages),
         extrait: extrait,
         contenu: contenu,
-        auteur: auteur
+        auteur: auteur,
+        date: new Date().toISOString(),
+        vue: 0,
+        likes: 0
     };
 
     if (contentType === 'video') {
@@ -2330,38 +2333,46 @@ async function handleArticleSubmit(e) {
     submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Publication...';
 
     try {
-        console.log('🚀 Envoi à Netlify Function...', articleData);
+        console.log('🚀 Double envoi en cours...');
 
-        // 🎯 ENVOI À NETLIFY FUNCTION
-        const response = await fetch('/.netlify/functions/create-share', {
+        // 🎯 ENVOI 1: NETLIFY FUNCTION (page share)
+        const shareResponse = await fetch('/.netlify/functions/create-share', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(articleData)
         });
 
-        const result = await response.json();
+        const shareResult = await shareResponse.json();
         
-        if (result.success) {
+        // 🎯 ENVOI 2: APPS SCRIPT (sauvegarde Sheets)
+        const sheetsResponse = await fetch(GOOGLE_APPS_SCRIPT_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(articleData)
+        });
+
+        const sheetsResult = await sheetsResponse.json();
+
+        // 🎯 RÉSULTAT FINAL
+        if (shareResult.success && sheetsResult.success) {
             showAlert('success', 
                 '✅ Article publié !', 
-                `Page de partage créée: ${result.shareUrl}`
+                `Page de partage: ${shareResult.shareUrl}`
             );
-            console.log('🎉 SUCCÈS:', result.shareUrl);
+            console.log('🎉 SUCCÈS COMPLET');
             
             // Réinitialiser le formulaire
             setTimeout(() => resetForm(), 2000);
         } else {
-            throw new Error(result.error || 'Erreur inconnue de Netlify Function');
+            let errorMessage = '';
+            if (!shareResult.success) errorMessage += `Share: ${shareResult.error} `;
+            if (!sheetsResult.success) errorMessage += `Sheets: ${sheetsResult.error}`;
+            throw new Error(errorMessage);
         }
 
     } catch (error) {
         console.error('❌ Erreur publication:', error);
-        showAlert('error', 
-            'Erreur lors de la publication', 
-            error.message
-        );
+        showAlert('error', 'Erreur lors de la publication', error.message);
     } finally {
         submitBtn.disabled = false;
         submitBtn.innerHTML = originalBtnHTML;
