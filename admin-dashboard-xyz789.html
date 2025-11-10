@@ -2529,7 +2529,7 @@ document.head.appendChild(styleSheet);
 
     // Submit New Article
 
-// Soumission d'article améliorée
+// NOUVELLE VERSION AMÉLIORÉE de handleArticleSubmit
 async function handleArticleSubmit(e) {
     e.preventDefault();
 
@@ -2545,8 +2545,14 @@ async function handleArticleSubmit(e) {
     const extrait = document.getElementById('extrait').value.trim();
     const contenu = document.getElementById('contenu').value.trim();
 
+    // Validation renforcée
     if (!titre || !categorie || !auteur || !extrait || !contenu) {
         showAlert('error', 'Veuillez remplir tous les champs obligatoires');
+        return;
+    }
+
+    if (titre.length < 5) {
+        showAlert('error', 'Le titre doit contenir au moins 5 caractères');
         return;
     }
 
@@ -2594,14 +2600,26 @@ async function handleArticleSubmit(e) {
             contentType: contentType
         });
 
+        // Timeout de 30 secondes pour la requête
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 30000);
+
         const response = await fetch('/.netlify/functions/create-article', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(articleData)
+            headers: { 
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify(articleData),
+            signal: controller.signal
         });
 
+        clearTimeout(timeoutId);
+
         if (!response.ok) {
-            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            const errorText = await response.text();
+            console.error('❌ Réponse erreur:', errorText);
+            throw new Error(`Erreur HTTP ${response.status}: ${response.statusText}`);
         }
 
         const result = await response.json();
@@ -2612,24 +2630,35 @@ async function handleArticleSubmit(e) {
                 `Catégorie: ${categorie}\nSections: ${selectedSections.join(', ')}\nImages: ${imageUrls.length}\nLien: ${result.shareUrl}`
             );
             
-            // Sauvegarder ID pour partage
+            // Sauvegarder pour partage
             localStorage.setItem('lastArticleId', result.articleId);
             localStorage.setItem('lastShareUrl', result.shareUrl);
             
             // Réinitialiser le formulaire après succès
             setTimeout(() => {
                 resetForm();
-                // Afficher les boutons de partage
                 showShareButtons(result.articleId, result.shareUrl);
             }, 2000);
             
         } else {
-            throw new Error(result.error || 'Erreur inconnue');
+            throw new Error(result.error || 'Erreur inconnue du serveur');
         }
 
     } catch (error) {
         console.error('❌ Erreur publication:', error);
-        showAlert('error', 'Erreur lors de la publication', error.message);
+        
+        let errorMessage = 'Erreur lors de la publication';
+        if (error.name === 'AbortError') {
+            errorMessage = 'Timeout: La publication a pris trop de temps';
+        } else if (error.message.includes('Failed to fetch')) {
+            errorMessage = 'Erreur de connexion au serveur. Vérifiez votre internet.';
+        } else if (error.message.includes('HTTP')) {
+            errorMessage = `Erreur serveur: ${error.message}`;
+        } else {
+            errorMessage = error.message;
+        }
+        
+        showAlert('error', 'Erreur publication', errorMessage);
     } finally {
         submitBtn.disabled = false;
         submitBtn.innerHTML = originalBtnHTML;
@@ -2686,19 +2715,7 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('✅ Système upload multiple initialisé');
 });
 
-// Testez avec cette fonction
-async function testCompleteSystem() {
-    console.log('🧪 Test du système complet...');
-    
-    // Test upload image
-    const testFile = new File(['test'], 'test.jpg', { type: 'image/jpeg' });
-    await handleMultipleFiles([testFile]);
-    
-    // Test publication
-    await handleArticleSubmit(new Event('submit'));
-    
-    console.log('✅ Tous les tests passés!');
-}
+
 // ========================================
 // 📂 CHARGEMENT ARTICLES - CORRIGÉ
 // ========================================
@@ -3725,4 +3742,3 @@ async function sendNotificationForArticle(articleData) {
 </body>
 
 </html>
-
