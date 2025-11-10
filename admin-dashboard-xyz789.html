@@ -2770,71 +2770,88 @@ async function testNetlifyFunction() {
 // ========================================
 // 🔍 FILTRAGE ARTICLES PAR CATÉGORIE - CORRIGÉ
 // ========================================
+// FONCTION displayArticles CORRIGÉE
 async function displayArticles(filterCategory = '') {
-    const articles = await loadArticlesFromGitHub();
     const articlesContainer = document.getElementById('articlesContainer');
     
-    // 🎯 CORRECTION : Vérifier si articles existe
-    if (!articles || Object.keys(articles).length === 0) {
-        articlesContainer.innerHTML = `
-            <div class="empty-state">
-                <i class="fas fa-inbox"></i>
-                <h3>Aucun article trouvé</h3>
-                <p>Commencez par créer votre premier article</p>
-            </div>
-        `;
-        return;
-    }
-    
-    let articlesArray = Object.values(articles);
-    
-    // Filtrer par catégorie
-    if (filterCategory) {
-        articlesArray = articlesArray.filter(article => 
-            article && article.categorie === filterCategory // 🎯 Vérifier article existe
-        );
-    }
-    
-    // Trier par date
-    articlesArray.sort((a, b) => new Date(b.date) - new Date(a.date));
-    
-    if (articlesArray.length === 0) {
-        articlesContainer.innerHTML = `
-            <div class="empty-state">
-                <i class="fas fa-inbox"></i>
-                <h3>Aucun article trouvé</h3>
-                <p>${filterCategory ? `Aucun article dans la catégorie "${filterCategory}"` : 'Commencez par créer votre premier article'}</p>
-            </div>
-        `;
-        return;
-    }
-    
-    // Afficher les articles avec vérification
-    articlesContainer.innerHTML = articlesArray.map(article => {
-        if (!article) return ''; // 🎯 Ignorer les articles undefined
-        return `
-        <div class="article-item">
-            <img src="${article.image || 'https://picsum.photos/120/80'}" alt="${article.titre}" class="article-thumbnail">
-            <div class="article-info">
-                <h3>${article.titre || 'Sans titre'}</h3>
-                <span class="badge badge-primary">${article.categorie || 'Non classé'}</span>
-                <div class="article-meta">
-                    <span><i class="fas fa-calendar"></i> ${article.date ? new Date(article.date).toLocaleDateString('fr-FR') : 'Date inconnue'}</span>
-                    <span><i class="fas fa-user"></i> ${article.auteur || 'Anonyme'}</span>
-                    <span><i class="fas fa-layer-group"></i> ${article.sections ? article.sections.join(', ') : 'main'}</span>
+    try {
+        // Charger depuis GitHub
+        const response = await fetch('/articles.json?t=' + Date.now());
+        if (!response.ok) {
+            throw new Error('Fichier articles.json non trouvé');
+        }
+        
+        const data = await response.json();
+        const articles = data.articles || {};
+        
+        console.log('📚 Articles chargés:', Object.keys(articles).length);
+        
+        // Convertir en array et filtrer
+        let articlesArray = Object.values(articles);
+        
+        // CORRECTION: Vérifier que chaque article existe
+        articlesArray = articlesArray.filter(article => article && article.id);
+        
+        if (filterCategory) {
+            articlesArray = articlesArray.filter(article => 
+                article && article.categorie === filterCategory
+            );
+        }
+        
+        // Trier par date
+        articlesArray.sort((a, b) => new Date(b.date) - new Date(a.date));
+        
+        // Afficher
+        if (articlesArray.length === 0) {
+            articlesContainer.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-inbox"></i>
+                    <h3>Aucun article trouvé</h3>
+                    <p>${filterCategory ? `Aucun article dans "${filterCategory}"` : 'Créez votre premier article'}</p>
+                </div>
+            `;
+            return;
+        }
+        
+        articlesContainer.innerHTML = articlesArray.map(article => `
+            <div class="article-item">
+                <img src="${article.image}" alt="${article.titre}" class="article-thumbnail" 
+                     onerror="this.src='https://picsum.photos/120/80?random=' + Math.random()">
+                <div class="article-info">
+                    <h3>${article.titre || 'Sans titre'}</h3>
+                    <span class="badge badge-primary">${article.categorie || 'Non classé'}</span>
+                    <div class="article-meta">
+                        <span><i class="fas fa-calendar"></i> ${formatDate(article.date)}</span>
+                        <span><i class="fas fa-user"></i> ${article.auteur || 'Anonyme'}</span>
+                        <span><i class="fas fa-eye"></i> ${article.vues || 0} vues</span>
+                        <span><i class="fas fa-heart"></i> ${article.likes || 0} likes</span>
+                        <span><i class="fas fa-layer-group"></i> ${article.sections ? article.sections.join(', ') : 'main'}</span>
+                    </div>
+                </div>
+                <div class="article-actions">
+                    <button class="btn btn-primary btn-sm" onclick="editArticle('${article.id}')">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="btn btn-danger btn-sm" onclick="deleteArticle('${article.id}')">
+                        <i class="fas fa-trash"></i>
+                    </button>
                 </div>
             </div>
-            <div class="article-actions">
-                <button class="btn btn-primary btn-sm" onclick="editArticle('${article.id}')">
-                    <i class="fas fa-edit"></i>
-                </button>
-                <button class="btn btn-danger btn-sm" onclick="deleteArticle('${article.id}')">
-                    <i class="fas fa-trash"></i>
+        `).join('');
+        
+    } catch (error) {
+        console.error('❌ Erreur chargement articles:', error);
+        articlesContainer.innerHTML = `
+            <div class="empty-state">
+                <i class="fas fa-exclamation-triangle"></i>
+                <h3>Erreur de chargement</h3>
+                <p>Impossible de charger les articles</p>
+                <button class="btn btn-secondary" onclick="displayArticles()" style="margin-top: 16px;">
+                    <i class="fas fa-redo"></i> Réessayer
                 </button>
             </div>
-        </div>
         `;
-    }).join('');
+    }
 }
 // Initialiser le filtrage
 document.getElementById('filterCategory').addEventListener('change', function() {
