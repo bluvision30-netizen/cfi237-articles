@@ -2686,7 +2686,19 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('✅ Système upload multiple initialisé');
 });
 
-
+// Testez avec cette fonction
+async function testCompleteSystem() {
+    console.log('🧪 Test du système complet...');
+    
+    // Test upload image
+    const testFile = new File(['test'], 'test.jpg', { type: 'image/jpeg' });
+    await handleMultipleFiles([testFile]);
+    
+    // Test publication
+    await handleArticleSubmit(new Event('submit'));
+    
+    console.log('✅ Tous les tests passés!');
+}
 // ========================================
 // 📂 CHARGEMENT ARTICLES - CORRIGÉ
 // ========================================
@@ -3713,3 +3725,4 @@ async function sendNotificationForArticle(articleData) {
 </body>
 
 </html>
+
