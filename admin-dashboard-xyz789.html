@@ -1636,38 +1636,47 @@ function openOneSignal() {
                 <div class="form-group">
                     <label class="form-label">Sections <span class="required">*</span></label>
                     <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:8px;max-height:150px;overflow-y:auto;padding:8px;background:rgba(255,255,255,0.05);border-radius:8px;">
+                       
                         <label style="display:flex;align-items:center;gap:6px;cursor:pointer;padding:8px;font-size:0.9rem;">
                             <input type="checkbox" name="editSections" value="main"> 
                             <span>📰 Principaux</span>
                         </label>
+                       
                         <label style="display:flex;align-items:center;gap:6px;cursor:pointer;padding:8px;font-size:0.9rem;">
                             <input type="checkbox" name="editSections" value="hero"> 
                             <span>🌟 Slider</span>
                         </label>
+                       
                         <label style="display:flex;align-items:center;gap:6px;cursor:pointer;padding:8px;font-size:0.9rem;">
                             <input type="checkbox" name="editSections" value="a-la-une"> 
                             <span>🔥 Carousel</span>
                         </label>
+                        
                         <label style="display:flex;align-items:center;gap:6px;cursor:pointer;padding:8px;font-size:0.9rem;">
                             <input type="checkbox" name="editSections" value="featured"> 
-                            <span>⭐ Important</span>
+                            <span>⭐ Impant</span>
                         </label>
+                       
                         <label style="display:flex;align-items:center;gap:6px;cursor:pointer;padding:8px;font-size:0.9rem;">
                             <input type="checkbox" name="editSections" value="trending"> 
                             <span>📈 Trending</span>
                         </label>
+                       
                         <label style="display:flex;align-items:center;gap:6px;cursor:pointer;padding:8px;font-size:0.9rem;">
                             <input type="checkbox" name="editSections" value="videos"> 
                             <span>🎥 Vidéos</span>
                         </label>
+                       
                         <label style="display:flex;align-items:center;gap:6px;cursor:pointer;padding:8px;font-size:0.9rem;">
                             <input type="checkbox" name="editSections" value="debates"> 
                             <span>💬 Débats</span>
                         </label>
+                      
                         <label style="display:flex;align-items:center;gap:6px;cursor:pointer;padding:8px;font-size:0.9rem;">
                             <input type="checkbox" name="editSections" value="societe"> 
                             <span>👥 Société</span>
                         </label>
+                       
                         <label style="display:flex;align-items:center;gap:6px;cursor:pointer;padding:8px;font-size:0.9rem;">
                             <input type="checkbox" name="editSections" value="events"> 
                             <span>📅 Événements</span>
@@ -2282,12 +2291,14 @@ document.head.appendChild(styleSheet);
     // Submit New Article
 
 // ========================================
-// 🚀 SOUMISSION ARTICLE - VERSION DOUBLE ENVOI
+// 🚀 SOUMISSION ARTICLE - VERSION SECTIONS
+// ========================================
+// ========================================
+// 🚀 SOUMISSION ARTICLE - VERSION SECTIONS/CATÉGORIES
 // ========================================
 async function handleArticleSubmit(e) {
     e.preventDefault();
 
-    // Validation des images
     if (uploadedImages.length === 0) {
         showAlert('error', 'Veuillez uploader au moins une image');
         return;
@@ -2304,23 +2315,25 @@ async function handleArticleSubmit(e) {
         return;
     }
 
-    const contentType = document.querySelector('input[name="contentType"]:checked').value;
+    // 🎯 RÉCUPÉRATION SECTIONS SÉLECTIONNÉES
     const selectedSections = getSelectedSections();
+    if (selectedSections.length === 0) {
+        showAlert('error', 'Veuillez sélectionner au moins une section');
+        return;
+    }
 
-    // 🎯 PRÉPARATION DONNÉES
+    const contentType = document.querySelector('input[name="contentType"]:checked').value;
+
     const articleData = {
         titre: titre,
         categorie: categorie,
-        section: selectedSections.join(','),
+        sections: selectedSections,
         contentType: contentType,
         image: uploadedImages[0],
         images: JSON.stringify(uploadedImages),
         extrait: extrait,
         contenu: contenu,
-        auteur: auteur,
-        date: new Date().toISOString(),
-        vue: 0,
-        likes: 0
+        auteur: auteur
     };
 
     if (contentType === 'video') {
@@ -2333,53 +2346,133 @@ async function handleArticleSubmit(e) {
     submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Publication...';
 
     try {
-        console.log('🚀 Double envoi en cours...');
+        console.log('🚀 Envoi article - Catégorie:', categorie, 'Sections:', selectedSections);
 
-        // 🎯 ENVOI 1: NETLIFY FUNCTION (page share)
-        const shareResponse = await fetch('/.netlify/functions/create-share', {
+        const response = await fetch('/.netlify/functions/create-article', {
             method: 'POST',
-             headers: { 'Content-Type': 'application/json' },
-             body: JSON.stringify(articleData)
-        });
-
-// 🎯 IGNORER la réponse - on suppose que ça fonctionne
-console.log('📝 Envoi Sheets en mode no-cors');
-        const shareResult = await shareResponse.json();
-        
-        // 🎯 ENVOI 2: APPS SCRIPT (sauvegarde Sheets)
-        const sheetsResponse = await fetch(GOOGLE_APPS_SCRIPT_URL, {
-           method: 'POST',
-              mode: 'no-cors', // ← CONTOURNE CORS
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(articleData)
         });
 
-        const sheetsResult = await sheetsResponse.json();
-
-        // 🎯 RÉSULTAT FINAL
-        if (shareResult.success && sheetsResult.success) {
+        const result = await response.json();
+        
+        if (result.success) {
             showAlert('success', 
                 '✅ Article publié !', 
-                `Page de partage: ${shareResult.shareUrl}`
+                `Catégorie: ${categorie}\nSections: ${selectedSections.join(', ')}\nLien: ${result.shareUrl}`
             );
-            console.log('🎉 SUCCÈS COMPLET');
             
-            // Réinitialiser le formulaire
+            // Sauvegarder ID pour partage
+            localStorage.setItem('lastArticleId', result.articleId);
+            
             setTimeout(() => resetForm(), 2000);
         } else {
-            let errorMessage = '';
-            if (!shareResult.success) errorMessage += `Share: ${shareResult.error} `;
-            if (!sheetsResult.success) errorMessage += `Sheets: ${sheetsResult.error}`;
-            throw new Error(errorMessage);
+            throw new Error(result.error);
         }
 
     } catch (error) {
-        console.error('❌ Erreur publication:', error);
-        showAlert('error', 'Erreur lors de la publication', error.message);
+        console.error('❌ Erreur:', error);
+        showAlert('error', 'Erreur publication', error.message);
     } finally {
         submitBtn.disabled = false;
         submitBtn.innerHTML = originalBtnHTML;
     }
+}
+
+
+// ========================================
+// 📂 CHARGEMENT ARTICLES DEPUIS GITHUB
+// ========================================
+async function loadArticlesFromGitHub() {
+    try {
+        const response = await fetch('/articles.json');
+        const data = await response.json();
+        return data.articles || {};
+    } catch (error) {
+        console.error('Erreur chargement articles:', error);
+        return {};
+    }
+}
+
+// ========================================
+// 🔍 FILTRAGE ARTICLES PAR CATÉGORIE
+// ========================================
+async function displayArticles(filterCategory = '') {
+    const articles = await loadArticlesFromGitHub();
+    const articlesContainer = document.getElementById('articlesContainer');
+    
+    let articlesArray = Object.values(articles);
+    
+    // Filtrer par catégorie
+    if (filterCategory) {
+        articlesArray = articlesArray.filter(article => 
+            article.categorie === filterCategory
+        );
+    }
+    
+    // Trier par date
+    articlesArray.sort((a, b) => new Date(b.date) - new Date(a.date));
+    
+    if (articlesArray.length === 0) {
+        articlesContainer.innerHTML = `
+            <div class="empty-state">
+                <i class="fas fa-inbox"></i>
+                <h3>Aucun article trouvé</h3>
+                <p>${filterCategory ? `Aucun article dans la catégorie "${filterCategory}"` : 'Commencez par créer votre premier article'}</p>
+            </div>
+        `;
+        return;
+    }
+    
+    // Afficher les articles
+    articlesContainer.innerHTML = articlesArray.map(article => `
+        <div class="article-item">
+            <img src="${article.image}" alt="${article.titre}" class="article-thumbnail">
+            <div class="article-info">
+                <h3>${article.titre}</h3>
+                <span class="badge badge-primary">${article.categorie}</span>
+                <div class="article-meta">
+                    <span><i class="fas fa-calendar"></i> ${new Date(article.date).toLocaleDateString('fr-FR')}</span>
+                    <span><i class="fas fa-user"></i> ${article.auteur}</span>
+                    <span><i class="fas fa-layer-group"></i> ${article.sections.join(', ')}</span>
+                </div>
+            </div>
+            <div class="article-actions">
+                <button class="btn btn-primary btn-sm" onclick="editArticle('${article.id}')">
+                    <i class="fas fa-edit"></i>
+                </button>
+                <button class="btn btn-danger btn-sm" onclick="deleteArticle('${article.id}')">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+        </div>
+    `).join('');
+}
+
+// Initialiser le filtrage
+document.getElementById('filterCategory').addEventListener('change', function() {
+    displayArticles(this.value);
+});
+
+// Charger au démarrage
+displayArticles();
+
+// 🎯 FONCTION SÉLECTION SECTIONS (EXISTANTE DANS VOTRE CODE)
+function getSelectedSections() {
+    const selected = [];
+    document.querySelectorAll('input[name="sections"]:checked').forEach(checkbox => {
+        selected.push(checkbox.value);
+    });
+    return selected;
+}
+
+// 🎯 FONCTION SÉLECTION SECTIONS
+function getSelectedSections() {
+    const selected = [];
+    document.querySelectorAll('input[name="sections"]:checked').forEach(checkbox => {
+        selected.push(checkbox.value);
+    });
+    return selected;
 }
 
 // Fonction améliorée pour gérer CORS avec fallback
