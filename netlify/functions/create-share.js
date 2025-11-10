@@ -1,5 +1,6 @@
 // netlify/functions/create-share.js
-const fetch = require('node-fetch');
+// SUPPRIMEZ cette ligne : const fetch = require('node-fetch');
+// Netlify a déjà fetch de manière native !
 
 exports.handler = async (event) => {
   // Vérifier la méthode HTTP
@@ -45,7 +46,7 @@ exports.handler = async (event) => {
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="${escapeHtml(articleData.titre)} - CFI 237">
-    <meta property="twitter:description" content="${escapeHtml(articleData.extrait)}">
+    <meta name="twitter:description" content="${escapeHtml(articleData.extrait)}">
     <meta name="twitter:image" content="${articleData.image}">
     
     <!-- Redirection -->
