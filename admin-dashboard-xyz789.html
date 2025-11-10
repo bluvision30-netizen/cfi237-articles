@@ -2282,7 +2282,7 @@ document.head.appendChild(styleSheet);
     // Submit New Article
 
 // ========================================
-// 🚀 SOUMISSION ARTICLE - VERSION CORRIGÉE
+// 🚀 SOUMISSION ARTICLE - NOUVELLE VERSION
 // ========================================
 async function handleArticleSubmit(e) {
     e.preventDefault();
@@ -2307,14 +2307,14 @@ async function handleArticleSubmit(e) {
     const contentType = document.querySelector('input[name="contentType"]:checked').value;
     const selectedSections = getSelectedSections();
 
-    // 🎯 PRÉPARATION DONNÉES AVEC TOUTES LES IMAGES
+    // 🎯 PRÉPARATION DONNÉES AVEC IMAGES DIRECTES
     const payload = {
         titre: titre,
         categorie: categorie,
         section: selectedSections.join(','),
         contentType: contentType,
-        image: uploadedImages[0], // Première image = couverture
-        images: JSON.stringify(uploadedImages), // Toutes les images
+        image: uploadedImages[0], // URL CLOUDINARY DIRECTE
+        images: JSON.stringify(uploadedImages), // TOUTES LES IMAGES
         extrait: extrait,
         contenu: contenu,
         auteur: auteur,
@@ -2333,64 +2333,39 @@ async function handleArticleSubmit(e) {
     submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Publication...';
 
     try {
-        // 🎯 ENVOI DIRECT SANS ATTENTE DE RÉPONSE DÉTAILLÉE
-        await fetch(GOOGLE_APPS_SCRIPT_URL, {
+        // 🎯 ENVOI À APPS SCRIPT
+        const response = await fetch(GOOGLE_APPS_SCRIPT_URL, {
             method: 'POST',
-            mode: 'no-cors',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
         });
 
-        // 🎯 SUCCÈS IMMÉDIAT - On suppose que ça fonctionne
-        showAlert('success', 
-            'Article publié avec succès !', 
-            `${uploadedImages.length} image(s) - Page de partage en cours de génération...`
-        );
+        const result = await response.json();
         
-        console.log('✅ Article envoyé - Génération share en background');
-        
-        // Réinitialiser le formulaire
-        setTimeout(() => resetForm(), 1500);
+        if (result.success) {
+            let message = 'Article publié avec succès !';
+            if (result.shareUrl) {
+                message += `\nPage de partage: ${result.shareUrl}`;
+                console.log('🎉 PAGE SHARE CRÉÉE:', result.shareUrl);
+            }
+            
+            showAlert('success', 'Succès !', message);
+            
+            // Réinitialiser le formulaire
+            setTimeout(() => resetForm(), 1500);
+        } else {
+            throw new Error(result.error || 'Erreur inconnue');
+        }
 
     } catch (error) {
-        console.error('Erreur envoi:', error);
-        showAlert('error', 'Erreur lors de la publication');
+        console.error('Erreur publication:', error);
+        showAlert('error', 'Erreur lors de la publication', error.message);
     } finally {
         submitBtn.disabled = false;
         submitBtn.innerHTML = originalBtnHTML;
     }
 }
 
-// Dans votre dashboard
-function forceGenerateAllShares() {
-  fetch(GOOGLE_APPS_SCRIPT_URL + '?action=force_generate_all')
-    .then(response => response.json())
-    .then(result => {
-      if (result.success) {
-        showAlert('success', `${result.generated} pages générées!`);
-      }
-    });
-}
-
-// Dans Apps Script
-function forceGenerateAllShares() {
-  var sheet = SpreadsheetApp.openById(CONFIG.SHEET_ID).getActiveSheet();
-  var articles = getAllArticles(sheet);
-  var generated = 0;
-  
-  articles.forEach(article => {
-    try {
-      generateSharePageDirect(article.id, article);
-      generated++;
-      Utilities.sleep(1000); // Éviter rate limits
-    } catch (e) {
-      Logger.log('Erreur article ' + article.id + ': ' + e.toString());
-    }
-  });
-  
-  return { success: true, generated: generated, total: articles.length };
-}
-      
 // Fonction améliorée pour gérer CORS avec fallback
 // ✅ REMPLACER TOUTE LA FONCTION fetchWithCorsFallback
 async function fetchWithCorsFallback(url, options) {
@@ -2411,6 +2386,35 @@ async function fetchWithCorsFallback(url, options) {
     throw error;
   }
 }
+
+// ========================================
+// 🔄 BOUTON RÉGÉNÉRATION MANUEL
+// ========================================
+async function regenerateShare(articleId) {
+    if (!confirm('Regénérer la page de partage pour cet article ?')) return;
+    
+    try {
+        const response = await fetch(GOOGLE_APPS_SCRIPT_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                action: 'regenerate_share',
+                article_id: articleId
+            })
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            showAlert('success', 'Page régénérée !', result.shareUrl);
+        } else {
+            throw new Error(result.error);
+        }
+    } catch (error) {
+        showAlert('error', 'Erreur régénération', error.message);
+    }
+}
+
 
 // ========================================
 // 🔄 FORCER LA GÉNÉRATION DE PAGE SHARE
@@ -3249,4 +3253,3 @@ async function sendNotificationForArticle(articleData) {
 </body>
 
 </html>
-
