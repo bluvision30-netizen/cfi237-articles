@@ -2953,50 +2953,6 @@ async function forceGenerateSharePage(articleId) {
     }
 }
 
-
-
-    function displayArticles(articles) {
-        const container = document.getElementById('articlesContainer');
-        
-        if (articles.length === 0) {
-            container.innerHTML = '<div class="empty-state"><i class="fas fa-search"></i><h3>Aucun résultat</h3><p>Aucun article ne correspond à votre recherche</p></div>';
-            return;
-        }
-        
-        container.innerHTML = articles.map(article => `
-            <div class="article-item">
-                <img src="${article.image}" alt="${article.titre}" class="article-thumbnail">
-                <div class="article-info">
-                    <h3>${article.titre}</h3>
-                    <span class="badge badge-primary">${article.categorie}</span>
-                    <div class="article-meta">
-                        <span><i class="fas fa-calendar"></i> ${article.date}</span>
-                        <span><i class="fas fa-user"></i> ${article.auteur}</span>
-                        <span><i class="fas fa-eye"></i> ${article.vue} vues</span>
-                        <span><i class="fas fa-heart"></i> ${article.likes} likes</span>
-                    </div>
-                </div>
-                <div class="article-actions">
-                    <button class="btn btn-secondary btn-sm" onclick="moveArticle('${article.id}', 'up')" title="Monter">
-                        <i class="fas fa-arrow-up"></i>
-                    </button>
-                    <button class="btn btn-secondary btn-sm" onclick="moveArticle('${article.id}', 'down')" title="Descendre">
-                        <i class="fas fa-arrow-down"></i>
-                    </button>
-                    <button class="btn btn-primary btn-sm" onclick="editArticle('${article.id}')" title="Modifier">
-                        <i class="fas fa-edit"></i>
-                    </button>
-                    <button class="btn btn-danger btn-sm" onclick="deleteArticle('${article.id}')" title="Supprimer">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                      
-                </div>
-            </div>
-        `).join('');
-
-        
-    }
-
     // Search and Filter
     function filterArticles() {
         const searchTerm = document.getElementById('searchInput').value.toLowerCase();
