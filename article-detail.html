@@ -5,3090 +5,1152 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Article - Abu Media Group</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-   <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Article - Abu Media Group</title>
-    
-    <!-- ==================== -->
-    <!-- BALISES META OPEN GRAPH (AJOUTEZ CES LIGNES) -->
-    <!-- ==================== -->
-    <meta property="og:title" id="ogTitle" content="CAMER FLASH INFOS - Actualités du Cameroun">
-    <meta property="og:description" id="ogDescription" content="Découvrez les dernières actualités du Cameroun">
-    <meta property="og:image" id="ogImage" content="https://latribunebilingue.com/img/favicon-96x96.png">
-    <meta property="og:url" id="ogUrl" content="">
-    <meta property="og:type" content="article">
-    <meta property="og:site_name" content="CFI 237">
-    <meta property="og:locale" content="fr_FR">
-    
-    <!-- Pour Twitter -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" id="twitterTitle" content="CAMER FLASH INFOS - Actualités du Cameroun">
-    <meta name="twitter:description" id="twitterDescription" content="Découvrez les dernières actualités du Cameroun">
-    <meta name="twitter:image" id="twitterImage" content="https://latribunebilingue.com/img/favicon-96x96.png">
-    <meta name="twitter:site" content="@CFI237">
-    
-    <!-- Balises standards -->
-    <meta name="description" id="metaDescription" content="Découvrez les dernières actualités du Cameroun">
-    
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-   
-
-   
-   
-   
-   <style>
-        :root {
-            --primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            --primary-solid: #667eea;
-            --secondary: #ff6b6b;
-            --accent: #ffd93d;
-            --dark: #1a1a2e;
-            --muted: #94a3b8;
-            --glass: rgba(255,255,255,0.95);
-            --shadow-sm: 0 2px 8px rgba(0,0,0,0.06);
-            --shadow: 0 8px 30px rgba(0,0,0,0.12);
-            --shadow-lg: 0 20px 60px rgba(0,0,0,0.15);
-            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        
+    <style>
         * {
-            box-sizing: border-box;
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1e40af;
+            --secondary: #667eea;
+            --dark: #0f172a;
+            --gray: #64748b;
+            --light-gray: #f1f5f9;
+            --success: #22c55e;
+            --danger: #ef4444;
         }
         
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: linear-gradient(to bottom, #f8fafc 0%, #e2e8f0 100%);
-            color: #1e293b;
-            line-height: 1.8;
-            min-height: 100vh;
+            font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
+            line-height: 1.6;
+            color: var(--dark);
+            background: #fff;
         }
         
-        .container {
-            max-width: 1280px;
-            margin: 0 auto;
-            padding: 0 24px;
-        }
-
         /* Header */
-        header {
-            background: var(--glass);
-            backdrop-filter: blur(20px);
+        .header {
+            background: var(--dark);
+            color: white;
+            padding: 1rem 0;
             position: sticky;
             top: 0;
             z-index: 1000;
-            box-shadow: var(--shadow);
-            border-bottom: 1px solid rgba(255,255,255,0.3);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
         
-        .top-bar {
-            background: var(--primary);
-            font-size: 0.875rem;
-            color: #fff;
-        }
-        
-        .top-bar .container {
+        .header-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 12px 24px;
         }
         
-        .logo-section {
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            padding: 20px 24px;
+            gap: 10px;
         }
         
-        .logo .logo-icon {
-            font-size: 36px;
-            background: var(--primary);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+        .logo i {
+            color: var(--primary);
         }
-
+        
+        .nav-menu {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+        
+        .nav-menu a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        .nav-menu a:hover {
+            color: var(--primary);
+        }
+        
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
         /* Breadcrumb */
         .breadcrumb {
-            padding: 20px 0;
+            padding: 1.5rem 0;
+            color: var(--gray);
             font-size: 0.9rem;
-            color: var(--muted);
         }
         
         .breadcrumb a {
-            color: var(--primary-solid);
+            color: var(--primary);
             text-decoration: none;
-            transition: var(--transition);
         }
         
-        .breadcrumb a:hover {
-            text-decoration: underline;
-        }
-
-        /* Article Layout */
-        .article-layout {
-            display: grid;
-            grid-template-columns: 1fr 350px;
-            gap: 40px;
-            margin: 40px 0;
-        }
-
-        /* Article Main */
-        .article-main {
-            background: #fff;
-            border-radius: 20px;
-            padding: 48px;
-            box-shadow: var(--shadow);
-        }
-
+        /* Article Header */
         .article-header {
-            margin-bottom: 32px;
+            margin-bottom: 2rem;
         }
-
-        .article-category-badge {
+        
+        .article-category {
             display: inline-block;
-            background: var(--secondary);
-            color: #fff;
-            padding: 8px 16px;
+            background: var(--primary);
+            color: white;
+            padding: 0.5rem 1rem;
             border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 16px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
         }
-
+        
         .article-title {
             font-size: 2.5rem;
-            font-weight: 800;
+            font-weight: 700;
             line-height: 1.2;
-            margin-bottom: 20px;
-            color: var(--dark);
+            margin-bottom: 1rem;
         }
-
+        
         .article-meta {
             display: flex;
-            gap: 24px;
-            flex-wrap: wrap;
-            align-items: center;
-            padding: 20px 0;
-            border-top: 1px solid #e2e8f0;
-            border-bottom: 1px solid #e2e8f0;
-            font-size: 0.95rem;
-            color: var(--muted);
+            gap: 1.5rem;
+            font-size: 0.9rem;
+            color: var(--gray);
+            margin-bottom: 1.5rem;
         }
-
-        .article-meta-item {
+        
+        .article-meta span {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 0.5rem;
         }
-
-        .article-meta-item i {
-            color: var(--primary-solid);
-        }
-
-        .article-featured-image {
-            width: 100%;
-            height: 500px;
-            border-radius: 16px;
-            overflow: hidden;
-            margin: 32px 0;
-            box-shadow: var(--shadow-lg);
-        }
-
-        .article-featured-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .article-content {
-            font-size: 1.1rem;
-            line-height: 1.8;
-            color: #334155;
-        }
-
-        .article-content p {
-            margin-bottom: 20px;
-        }
-
-        .article-content h2 {
-            font-size: 1.8rem;
-            margin: 32px 0 16px;
-            color: var(--dark);
-        }
-
-        .article-content h3 {
-            font-size: 1.4rem;
-            margin: 24px 0 12px;
-            color: var(--dark);
-        }
-
-        .article-actions {
-            display: flex;
-            gap: 16px;
-            margin-top: 40px;
-            padding-top: 40px;
-            border-top: 2px solid #e2e8f0;
-            flex-wrap: wrap;
-        }
-
-        .action-btn {
-            flex: 1;
-            min-width: 150px;
-            padding: 14px 24px;
-            border-radius: 12px;
-            border: none;
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition);
+        
+        .author-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            font-weight: 600;
         }
-
-        .btn-like {
-            background: var(--secondary);
-            color: #fff;
+        
+        /* Article Content */
+        .article-content {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 2rem;
+            margin: 3rem 0;
         }
-
-        .btn-like.liked {
-            background: #e74c3c;
-            transform: scale(1.05);
+        
+        .main-content {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
         }
-
-        .btn-share {
-            background: var(--primary);
-            color: #fff;
+        
+        .featured-image {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            border-radius: 12px;
+            margin-bottom: 2rem;
         }
-
-        .btn-print {
-            background: #2c3e50;
-            color: #fff;
+        
+        .article-body {
+            font-size: 1.125rem;
+            line-height: 1.7;
         }
-
-        .btn-comment {
-            background: #3498db;
-            color: #fff;
+        
+        .article-body p {
+            margin-bottom: 1.5rem;
         }
-
-        .action-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow);
-        }
-
-        .action-btn:active {
-            transform: translateY(0);
-        }
-
-        /* Print Styles */
-        @media print {
-            header, .breadcrumb, .article-actions, .article-sidebar, footer {
-                display: none !important;
-            }
-            
-            .article-main {
-                box-shadow: none;
-                padding: 0;
-            }
-            
-            .article-featured-image {
-                page-break-inside: avoid;
-            }
-        }
-
-        /* Sidebar */
-        .article-sidebar {
-            display: flex;
-            flex-direction: column;
-            gap: 24px;
-        }
-
-        .sidebar-widget {
-            background: #fff;
-            border-radius: 20px;
-            padding: 24px;
-            box-shadow: var(--shadow-sm);
-        }
-
-        .sidebar-widget h3 {
-            margin-bottom: 20px;
-            font-size: 1.3rem;
-            color: var(--dark);
-        }
-
-        .related-article, .debate-item {
-            display: flex;
-            gap: 12px;
-            padding: 12px 0;
-            border-bottom: 1px solid #e2e8f0;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .related-article:last-child, .debate-item:last-child {
-            border-bottom: none;
-        }
-
-        .related-article:hover, .debate-item:hover {
-            background: #f8fafc;
-            padding-left: 8px;
-            margin-left: -8px;
-            padding-right: 8px;
-            margin-right: -8px;
+        
+        .article-body img {
+            max-width: 100%;
+            height: auto;
             border-radius: 8px;
+            margin: 1.5rem 0;
         }
-
-        .related-thumb, .debate-thumb {
-            width: 80px;
-            height: 80px;
+        
+        /* Gallery */
+        .gallery-section {
+            margin: 3rem 0;
+        }
+        
+        .gallery-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--light-gray);
+        }
+        
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+        
+        .gallery-item {
             border-radius: 8px;
             overflow: hidden;
-            flex-shrink: 0;
-            position: relative;
+            cursor: pointer;
+            transition: transform 0.3s;
         }
-
-        .related-thumb img, .debate-thumb img {
+        
+        .gallery-item:hover {
+            transform: scale(1.03);
+        }
+        
+        .gallery-item img {
             width: 100%;
-            height: 100%;
+            height: 200px;
             object-fit: cover;
         }
-
-        .video-indicator {
+        
+        /* Video Player */
+        .video-container {
+            position: relative;
+            width: 100%;
+            height: 0;
+            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+            margin: 2rem 0;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        
+        .video-container iframe {
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(255, 255, 255, 0.9);
-            width: 30px;
-            height: 30px;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        
+        /* Actions Bar */
+        .actions-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 0;
+            border-top: 1px solid var(--light-gray);
+            border-bottom: 1px solid var(--light-gray);
+            margin: 2rem 0;
+        }
+        
+        .like-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: none;
+            border: 1px solid var(--light-gray);
+            padding: 0.75rem 1.5rem;
+            border-radius: 30px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .like-btn:hover {
+            background: rgba(239, 68, 68, 0.1);
+            border-color: var(--danger);
+            color: var(--danger);
+        }
+        
+        .like-btn.liked {
+            background: rgba(239, 68, 68, 0.1);
+            border-color: var(--danger);
+            color: var(--danger);
+        }
+        
+        .share-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .share-btn {
+            width: 44px;
+            height: 44px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: var(--primary-solid);
-            font-size: 12px;
+            background: var(--light-gray);
+            color: var(--dark);
+            text-decoration: none;
+            transition: all 0.3s;
         }
-
-        .related-info h4, .debate-info h4 {
-            font-size: 0.95rem;
-            line-height: 1.4;
-            margin-bottom: 8px;
+        
+        .share-btn:hover {
+            transform: translateY(-3px);
+        }
+        
+        .share-whatsapp:hover {
+            background: #25D366;
+            color: white;
+        }
+        
+        .share-facebook:hover {
+            background: #1877F2;
+            color: white;
+        }
+        
+        .share-twitter:hover {
+            background: #1DA1F2;
+            color: white;
+        }
+        
+        /* Comments Section */
+        .comments-section {
+            margin: 3rem 0;
+        }
+        
+        .section-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 3px solid var(--primary);
+            display: inline-block;
+        }
+        
+        .comment-form {
+            background: var(--light-gray);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 1rem;
+        }
+        
+        textarea.form-control {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .btn:hover {
+            background: var(--primary-dark);
+        }
+        
+        .comments-list {
+            margin-top: 2rem;
+        }
+        
+        .comment {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .comment-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+        
+        .comment-author {
+            font-weight: 600;
+        }
+        
+        .comment-date {
+            color: var(--gray);
+            font-size: 0.875rem;
+        }
+        
+        .comment-body {
+            line-height: 1.6;
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            position: sticky;
+            top: 100px;
+            height: fit-content;
+        }
+        
+        .sidebar-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .sidebar-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 1.25rem;
             color: var(--dark);
         }
-
-        .related-date, .debate-date {
-            font-size: 0.8rem;
-            color: var(--muted);
+        
+        /* Related Articles */
+        .related-article {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--light-gray);
+            cursor: pointer;
+            transition: background 0.3s;
         }
-
-        /* Debates Widget Styling */
-        .debates-widget {
-            background: linear-gradient(135deg, #1a1a2e 0%, #2d2d44 100%);
-            color: #fff;
+        
+        .related-article:last-child {
+            border-bottom: none;
         }
-
-        .debates-widget h3 {
-            color: #fff;
+        
+        .related-article:hover {
+            background: var(--light-gray);
+            padding: 1rem;
+            margin: 0 -1rem;
+        }
+        
+        .related-article img {
+            width: 80px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 6px;
+        }
+        
+        .related-article h4 {
+            font-size: 0.9rem;
+            font-weight: 600;
+            line-height: 1.4;
+        }
+        
+        /* Footer */
+        .footer {
+            background: var(--dark);
+            color: white;
+            padding: 3rem 0 1.5rem;
+            margin-top: 4rem;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .footer-section h3 {
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .footer-links a {
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-links a:hover {
+            color: white;
+        }
+        
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            color: rgba(255,255,255,0.6);
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .social-links a {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.1);
             display: flex;
             align-items: center;
-            gap: 8px;
+            justify-content: center;
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s;
         }
-
-        .debates-widget h3 i {
-            color: var(--accent);
+        
+        .social-links a:hover {
+            background: var(--primary);
+            transform: translateY(-3px);
         }
-
-        .debate-item {
-            border-bottom-color: rgba(255, 255, 255, 0.1);
-        }
-
-        .debate-item:hover {
-            background: rgba(255, 255, 255, 0.05);
-        }
-
-        .debate-info h4 {
-            color: #fff;
-        }
-
-        .debate-date {
-            color: #94a3b8;
-        }
-
+        
         /* Loading */
-        .loading-container {
+        .loading {
             text-align: center;
-            padding: 100px 20px;
+            padding: 4rem;
+            color: var(--gray);
         }
-
-        .loading-container i {
+        
+        .loading i {
             font-size: 3rem;
-            color: var(--primary-solid);
             animation: spin 1s linear infinite;
-            margin-bottom: 20px;
         }
-
+        
         @keyframes spin {
-            from { transform: rotate(0deg); }
             to { transform: rotate(360deg); }
         }
-
+        
         /* Error State */
-        .error-container {
+        .error-state {
             text-align: center;
-            padding: 100px 20px;
+            padding: 4rem 2rem;
+            color: var(--gray);
         }
-
-        .error-container i {
+        
+        .error-state i {
             font-size: 4rem;
-            color: var(--secondary);
-            margin-bottom: 20px;
+            margin-bottom: 1rem;
+            color: var(--danger);
         }
-
-        .error-container h2 {
-            font-size: 2rem;
-            color: var(--dark);
-            margin-bottom: 12px;
-        }
-
-        .error-container p {
-            color: var(--muted);
-            margin-bottom: 24px;
-        }
-
-        .btn-back {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: var(--primary);
-            color: #fff;
-            padding: 12px 24px;
-            border-radius: 12px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: var(--transition);
-        }
-
-        .btn-back:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow);
-        }
-
+        
         /* Responsive */
-        @media(max-width: 1024px) {
-            .article-layout {
+        @media (max-width: 1024px) {
+            .article-content {
                 grid-template-columns: 1fr;
             }
             
-            .article-main {
-                padding: 32px;
+            .sidebar {
+                position: static;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .nav-menu {
+                display: none;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
             }
             
             .article-title {
                 font-size: 2rem;
             }
+            
+            .featured-image {
+                height: 300px;
+            }
+            
+            .actions-bar {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+            
+            .share-buttons {
+                align-self: flex-end;
+            }
         }
-
-        @media(max-width: 768px) {
-            .article-main {
-                padding: 24px;
+        
+        @media (max-width: 480px) {
+            .header-container {
+                padding: 0 15px;
+            }
+            
+            .container {
+                padding: 0 15px;
             }
             
             .article-title {
                 font-size: 1.75rem;
             }
             
-            .article-featured-image {
-                height: 300px;
-            }
-            
-            .article-content {
-                font-size: 1rem;
-            }
-            
-            .article-actions {
+            .article-meta {
                 flex-direction: column;
+                gap: 0.75rem;
+            }
+            
+            .gallery-grid {
+                grid-template-columns: 1fr;
             }
         }
-
-        /* Styles pour le bouton like */
-        .btn-like.liked {
-            background: #e74c3c !important;
-            transform: scale(1.05);
-            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.4);
-        }
-
-        .btn-like:disabled {
-            opacity: 0.7;
-            cursor: not-allowed;
-            transform: none !important;
-        }
-
-        /* Animation pour le like */
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
-        }
-
-        .btn-like.liked i {
-            animation: pulse 0.3s ease-in-out;
-        }
-
-/* ========================================
-   📌 AJOUTER CE CSS DANS article-detail.html
-   ======================================== */
-
-/* Badge vidéo dans le header */
-.article-video-badge {
-    display: inline-block;
-    background: linear-gradient(135deg, #FF0000, #CC0000);
-    color: #fff;
-    padding: 8px 16px;
-    border-radius: 20px;
-    font-size: 0.85rem;
-    font-weight: 700;
-    margin-left: 12px;
-    box-shadow: 0 4px 12px rgba(255, 0, 0, 0.3);
-}
-
-.article-video-badge i {
-    margin-right: 6px;
-}
-
-/* Container pour le player vidéo intégré */
-.video-embed-container {
-    position: relative;
-    width: 100%;
-    padding-bottom: 56.25%; /* Ratio 16:9 */
-    height: 0;
-    margin: 32px 0;
-    border-radius: 20px;
-    overflow: hidden;
-    box-shadow: 0 12px 40px rgba(0,0,0,0.2);
-    background: #000;
-}
-
-.video-embed-container iframe {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    border: none;
-}
-
-/* Fallback si la vidéo ne peut pas être intégrée */
-.video-fallback {
-    text-align: center;
-    padding: 80px 40px;
-    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-    border-radius: 20px;
-    margin: 32px 0;
-}
-
-/* Bouton pour regarder sur la plateforme externe */
-.video-external-link {
-    display: flex;
-    justify-content: center;
-    margin: 32px 0;
-}
-
-.btn-watch-external {
-    display: inline-flex;
-    align-items: center;
-    gap: 12px;
-    background: linear-gradient(135deg, #FF0000, #CC0000);
-    color: white;
-    padding: 16px 32px;
-    border-radius: 12px;
-    text-decoration: none;
-    font-weight: 700;
-    font-size: 1.05rem;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 16px rgba(255, 0, 0, 0.3);
-}
-
-.btn-watch-external:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 24px rgba(255, 0, 0, 0.4);
-}
-
-.btn-watch-external i {
-    font-size: 1.3rem;
-}
-
-/* Badge Facebook */
-.btn-watch-external i.fa-facebook {
-    color: #fff;
-}
-
-/* Mise en évidence de l'extrait */
-.article-excerpt-highlight {
-    font-size: 1.25rem !important;
-    font-weight: 600 !important;
-    color: var(--dark) !important;
-    line-height: 1.6 !important;
-    margin-bottom: 28px !important;
-    padding: 24px;
-    background: linear-gradient(135deg, rgba(102,126,234,0.05) 0%, rgba(118,75,162,0.05) 100%);
-    border-left: 4px solid var(--primary-solid);
-    border-radius: 12px;
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-    .video-embed-container {
-        border-radius: 12px;
-        margin: 24px 0;
-    }
-    
-    .btn-watch-external {
-        width: 100%;
-        justify-content: center;
-        padding: 14px 24px;
-        font-size: 1rem;
-    }
-    
-    .article-video-badge {
-        display: block;
-        margin: 12px 0 0 0;
-        text-align: center;
-    }
-    
-    .video-fallback {
-        padding: 60px 20px;
-    }
-}
-
-@media (max-width: 480px) {
-    .video-embed-container {
-        margin: 20px 0;
-    }
-    
-    .btn-watch-external {
-        padding: 12px 20px;
-        font-size: 0.95rem;
-    }
-    
-    .article-excerpt-highlight {
-        font-size: 1.1rem !important;
-        padding: 20px 16px;
-    }
-}
-      
-/* Logo du site */
-.site-logo {
-    width: 50px;
-    height: 50px;
-    object-fit: contain;
-    border-radius: 8px;
-    transition: transform 0.3s ease;
-}
-
-.site-logo:hover {
-    transform: scale(1.1) rotate(5deg);
-}
-
-/* Logo icon de secours */
-.logo-icon {
-    font-size: 36px;
-    background: var(--primary);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    animation: pulse 2s ease-in-out infinite;
-}
-
-/* Responsive logo */
-@media (max-width: 768px) {
-    .site-logo {
-        width: 40px;
-        height: 40px;
-    }
-    
-    .logo-icon {
-        font-size: 28px;
-    }
-}
-
-@media (max-width: 480px) {
-    .site-logo {
-        width: 36px;
-        height: 36px;
-    }
-    
-    .logo-icon {
-        font-size: 24px;
-    }
-}
-
-/* Styles essentiels pour la galerie */
-.facebook-gallery {
-    box-shadow: 0 2px 12px rgba(0,0,0,0.1);
-    border: 1px solid #e2e8f0;
-    transition: all 0.3s ease;
-}
-
-.facebook-gallery:hover {
-    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-}
-
-.facebook-gallery img {
-    transition: transform 0.3s ease, opacity 0.3s ease;
-}
-
-.facebook-gallery img:hover {
-    transform: scale(1.02);
-    opacity: 0.9;
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-    .facebook-gallery {
-        border-radius: 8px;
-    }
-    
-    .facebook-gallery div[style*="grid-template"] {
-        height: 300px !important;
-    }
-}
     </style>
 </head>
 <body>
-    <header>
-        <div class="top-bar">
-            <div class="container">
-                <div id="currentDate">Chargement...</div>
-                <div style="display:flex;gap:12px;align-items:center">
-                    <a href="#" style="color:#fff"><i class="fab fa-facebook-f"></i></a>
-                    <a href="https://www.youtube.com/@abutv613" style="color:#fff"><i class="fab fa-youtube"></i></a>
-                </div>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-container">
+            <div class="logo">
+                <i class="fas fa-newspaper"></i>
+                <span>Abu Media Group</span>
             </div>
-        </div>
-        <div class="logo-section container">
-            <div style="display:flex;align-items:center;gap:12px">
-    <img src="img/favicon-96x96.png" 
-         alt="CFI 237 Logo" 
-         class="site-logo"
-         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
-    <i class="fas fa-newspaper logo-icon" style="display:none"></i>
-    <div>
-        <h1 style="margin:0;font-size:20px">CFI 237</h1>
-        <p style="font-size:12px;margin:0;color:var(--muted)">Actualités du Cameroun</p>
-    </div>
-</div>
-            <a href="index.html" class="btn-back">
-                <i class="fas fa-home"></i> Accueil
-            </a>
+            <nav>
+                <ul class="nav-menu">
+                    <li><a href="index.html">Accueil</a></li>
+                    <li><a href="index.html#actualites">Actualités</a></li>
+                    <li><a href="index.html#videos">Vidéos</a></li>
+                    <li><a href="index.html#societe">Société</a></li>
+                    <li><a href="index.html#contact">Contact</a></li>
+                </ul>
+            </nav>
+            <button class="mobile-menu-btn">
+                <i class="fas fa-bars"></i>
+            </button>
         </div>
     </header>
 
-    <!-- Breadcrumb -->
     <div class="container">
-        <div class="breadcrumb" id="breadcrumb">
+        <!-- Breadcrumb -->
+        <div class="breadcrumb">
             <a href="index.html">Accueil</a> / 
-            <a href="articles.html">Articles</a> / 
-            <span id="breadcrumbCategory">Chargement...</span>
+            <span id="breadcrumbCategory">Actualités</span> / 
+            <span id="breadcrumbTitle">Article</span>
         </div>
-    </div>
 
-    <!-- Article Content -->
-    <div class="container">
-        <div id="articleContainer">
-            <div class="loading-container">
-                <i class="fas fa-spinner fa-spin"></i>
-                <p style="color: var(--muted); font-size: 1.1rem;">Chargement de l'article...</p>
-            </div>
-        </div>
-    </div>
-
-  <script>
-    const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyzLICM5pJGLJ6msC6A2R0eR8TAeRP-jU2RkTG7C_CDnIjtIJHnGgJHFx0bbzI6Ua4_gw/exec';
-
-    // ===== VARIABLES GLOBALES =====
-    let currentArticleId = null;
-    let viewsTracked = false;
-    let userHasLiked = false;
-    let allComments = [];
-    let commentsLoaded = false;
-
-    // ===== FONCTION UNIQUE POUR OUVRIR LES ARTICLES ===
-    function ouvrirArticle(articleId) {
-        console.log('🚨 OUVERTURE ARTICLE:', articleId);
-        
-        // VALIDATION
-        if (!articleId || articleId === 'undefined' || articleId === 'null') {
-            console.error('❌ ID ARTICLE INVALIDE');
-            return;
-        }
-        
-        // NETTOYAGE COMPLET
-        localStorage.removeItem('articleActuel');
-        
-        // SAUVEGARDE
-        localStorage.setItem('articleActuel', articleId);
-        
-        // VÉRIFICATION
-        const savedId = localStorage.getItem('articleActuel');
-        console.log('💾 ID SAUVEGARDÉ:', savedId);
-        
-        // REDIRECTION VERS LA PAGE DÉTAIL
-        window.location.href = 'article-detail.html';
-    }
-// ========================================
-// 🎯 MISE À JOUR DES BALISES META DYNAMIQUES
-// ========================================
-
-function updateMetaTags(article) {
-    console.log('🔄 Mise à jour des meta tags pour:', article.titre);
-    
-    // Préparer les données
-    const title = article.titre || 'Abu Media Group - Actualités du Cameroun';
-    const description = article.extrait || 'Découvrez les dernières actualités du Cameroun';
-    const image = article.image || 'https://latribunebilingue.com/img/favicon-96x96.png';
-    const currentUrl = window.location.href;
-    
-    // Mettre à jour les balises Open Graph
-    document.getElementById('ogTitle').setAttribute('content', title);
-    document.getElementById('ogDescription').setAttribute('content', description);
-    document.getElementById('ogImage').setAttribute('content', image);
-    document.getElementById('ogUrl').setAttribute('content', currentUrl);
-    
-    // Mettre à jour les balises Twitter
-    document.getElementById('twitterTitle').setAttribute('content', title);
-    document.getElementById('twitterDescription').setAttribute('content', description);
-    document.getElementById('twitterImage').setAttribute('content', image);
-    
-    // Mettre à jour la meta description standard
-    document.getElementById('metaDescription').setAttribute('content', description);
-    
-    console.log('✅ Meta tags mis à jour:', {
-        title: title,
-        description: description.substring(0, 100) + '...',
-        image: image
-    });
-}
-    // ===== FONCTION 1 : Incrémenter les vues =====
-    async function trackArticleView(articleId) {
-        if (viewsTracked) return;
-        
-        try {
-            await fetch(GOOGLE_APPS_SCRIPT_URL, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    action: 'increment_views',
-                    id: articleId
-                })
-            });
-            
-            viewsTracked = true;
-            console.log('✅ Vue comptabilisée pour:', articleId);
-        } catch (error) {
-            console.error('❌ Erreur incrémentation vues:', error);
-        }
-    }
-
-    // ===== FONCTION 2 : Incrémenter les likes =====
-    async function incrementLikes(articleId) {
-        try {
-            const response = await fetch(GOOGLE_APPS_SCRIPT_URL, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    action: 'increment_likes',
-                    id: articleId
-                })
-            });
-            
-            console.log('✅ Like ajouté pour:', articleId);
-            return true;
-        } catch (error) {
-            console.error('❌ Erreur incrémentation likes:', error);
-            return false;
-        }
-    }
-
-    // ===== FONCTION 3 : Vérifier si l'utilisateur a déjà liké =====
-    function hasUserLiked(articleId) {
-        return localStorage.getItem(`liked_${articleId}`) === 'true';
-    }
-
-    // ===== FONCTION 4 : Marquer un article comme liké =====
-    function markArticleAsLiked(articleId) {
-        localStorage.setItem(`liked_${articleId}`, 'true');
-    }
-
-    // ===== FONCTION 5 : Initialiser l'état du bouton Like =====
-    function initializeLikeButton(articleId, currentLikes) {
-        const likeBtn = document.getElementById('likeBtn');
-        
-        if (hasUserLiked(articleId)) {
-            likeBtn.classList.add('liked');
-            document.getElementById('likeText').textContent = 'J\'aime ✓';
-        } else {
-            likeBtn.classList.remove('liked');
-            document.getElementById('likeText').textContent = 'J\'aime';
-        }
-        
-        document.getElementById('likeCount').textContent = currentLikes;
-    }
-
-    // ===== FONCTION 6 : Toggle Like =====
-    async function toggleLike() {
-        const articleId = localStorage.getItem('articleActuel');
-        if (!articleId) {
-            console.error('❌ Aucun article sélectionné');
-            return;
-        }
-        
-        // Vérifier si déjà liké
-        if (hasUserLiked(articleId)) {
-            alert('Vous avez déjà liké cet article !');
-            return;
-        }
-        
-        const likeBtn = document.getElementById('likeBtn');
-        const likeCount = document.getElementById('likeCount');
-        const likeText = document.getElementById('likeText');
-        
-        // Désactiver le bouton pendant l'opération
-        likeBtn.disabled = true;
-        
-        // Incrémenter les likes
-        const success = await incrementLikes(articleId);
-        
-        if (success) {
-            // Mettre à jour l'interface
-            const currentLikes = parseInt(likeCount.textContent);
-            likeCount.textContent = currentLikes + 1;
-            likeText.textContent = 'J\'aime ✓';
-            likeBtn.classList.add('liked');
-            
-            // Marquer comme liké dans localStorage
-            markArticleAsLiked(articleId);
-            
-            console.log('✅ Like enregistré avec succès');
-        } else {
-            alert('Erreur lors de l\'ajout du like');
-        }
-        
-        // Réactiver le bouton
-        likeBtn.disabled = false;
-    }
-
-    // Mettre à jour la date
-    function updateCurrentDate() {
-        const days = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
-        const months = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
-        const now = new Date();
-        const dateStr = `${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
-        document.getElementById('currentDate').textContent = dateStr;
-    }
-
-    // Formater la date
-    function formaterDate(dateString) {
-        if (!dateString) return 'Date inconnue';
-        try {
-            const date = new Date(dateString);
-            if (isNaN(date.getTime())) return dateString;
-            
-            return date.toLocaleDateString('fr-FR', {
-                weekday: 'long',
-                day: 'numeric',
-                month: 'long',
-                year: 'numeric'
-            });
-        } catch (error) {
-            return dateString;
-        }
-    }
-
-    // Vérifier si un article est dans une section
-    function articleInSection(article, sectionName) {
-        if (!article.section) return false;
-        const sections = article.section.split(',').map(s => s.trim().toLowerCase());
-        
-        const sectionMap = {
-            'debates': ['debates', 'débats', 'grands débats']
-        };
-        
-        const keywords = sectionMap[sectionName] || [sectionName];
-        return keywords.some(keyword => sections.some(s => s.includes(keyword)));
-    }
-
-      // ========================================
-// 🎯 FONCTION generateSlug MANQUANTE
-// ========================================
-function generateSlug(text) {
-    if (!text) return 'article';
-    
-    return text
-        .toString()
-        .toLowerCase()
-        .normalize('NFD')
-        .replace(/[\u0300-\u036f]/g, '') // Remove accents
-        .replace(/[^a-z0-9 -]/g, '') // Remove invalid chars
-        .replace(/\s+/g, '-') // Replace spaces with -
-        .replace(/-+/g, '-') // Replace multiple - with single -
-        .replace(/^-+/, '') // Trim - from start of text
-        .replace(/-+$/, '') // Trim - from end of text
-        .substring(0, 50); // Limit length
-}
-      
-// ========================================
-// 🎯 FONCTION getShareUrl CORRIGÉE
-// ========================================
-async function getShareUrl(articleId) {
-    try {
-        console.log('🔗 Récupération URL share pour:', articleId);
-        
-        const response = await fetch(`${GOOGLE_APPS_SCRIPT_URL}?action=get_share_url&article_id=${articleId}`);
-        const result = await response.json();
-        
-        console.log('📦 Réponse COMPLÈTE:', result);
-        
-        // 🎯 VÉRIFIER SI shareUrl EXISTE
-        if (result.success && result.shareUrl) {
-            console.log('✅ URL share trouvée:', result.shareUrl);
-            return result.shareUrl;
-        } 
-        // 🎯 FALLBACK : CHERCHER DANS LES DONNÉES
-        else if (result.success && result.data) {
-            const article = result.data.find(a => String(a.id) === String(articleId));
-            if (article) {
-                const slug = generateSlug(article.titre) + '-' + articleId;
-                const fallbackUrl = `https://cfiupload.netlify.app/share/${slug}.html`;
-                console.log('🔄 URL générée depuis données:', fallbackUrl);
-                return fallbackUrl;
-            }
-        }
-        
-        throw new Error('URL de partage non disponible dans la réponse');
-        
-    } catch (error) {
-        console.error('❌ Erreur getShareUrl:', error);
-        
-        // 🎯 FALLBACK ULTIME : utiliser le titre de la page
-        try {
-            const articleTitle = document.querySelector('.article-title')?.textContent || 'article';
-            const slug = generateSlug(articleTitle) + '-' + articleId;
-            const fallbackUrl = `https://cfiupload.netlify.app/share/${slug}.html`;
-            console.log('🔄 Utilisation URL fallback ultime:', fallbackUrl);
-            return fallbackUrl;
-        } catch (fallbackError) {
-            console.error('💥 Fallback échoué:', fallbackError);
-            // Dernier recours
-            return `https://cfiupload.netlify.app/share/article-${articleId}.html`;
-        }
-    }
-}
-
-// ========================================
-// 🎯 FONCTIONS MANQUANTES POUR LE PARTAGE
-// ========================================
-
-// ========================================
-// 🎯 FALLBACKSHARE AMÉLIORÉ - MODAL STABLE
-// ========================================
-function fallbackShare(shareUrl) {
-    console.log('🔄 Fallback share avec URL:', shareUrl);
-    
-    try {
-        // Fermer tout modal existant d'abord
-        closeShareModal();
-        
-        // Récupérer les données de l'article
-        const articleTitle = document.querySelector('.article-title')?.textContent?.trim() || 'Article CFI 237';
-        
-        // Créer un modal de partage STABLE
-        const shareModal = document.createElement('div');
-        shareModal.id = 'shareModalOverlay';
-        shareModal.style.cssText = `
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.9);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 10000;
-            backdrop-filter: blur(10px);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        `;
-        
-        shareModal.innerHTML = `
-            <div style="
-                background: white;
-                padding: 30px;
-                border-radius: 20px;
-                max-width: 500px;
-                width: 90%;
-                text-align: center;
-                box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-                transform: scale(0.9);
-                transition: transform 0.3s ease;
-            " id="shareModalContent">
-                <h3 style="margin: 0 0 20px 0; color: var(--dark); font-size: 1.4rem;">
-                    <i class="fas fa-share-alt" style="color: var(--primary-solid);"></i>
-                    Partager cet article
-                </h3>
-                
-                <div style="
-                    background: #f8fafc;
-                    padding: 15px;
-                    border-radius: 12px;
-                    margin: 20px 0;
-                    border: 2px dashed #e2e8f0;
-                    word-break: break-all;
-                    font-size: 0.85rem;
-                    color: var(--dark);
-                    text-align: left;
-                    max-height: 80px;
-                    overflow-y: auto;
-                ">
-                    ${shareUrl}
+        <!-- Article Content -->
+        <div class="article-content">
+            <!-- Main Content -->
+            <div class="main-content">
+                <div id="articleContainer">
+                    <div class="loading">
+                        <i class="fas fa-spinner"></i>
+                        <p style="margin-top: 1rem;">Chargement de l'article...</p>
+                    </div>
                 </div>
-                
-                <button onclick="handleCopyLink('${shareUrl.replace(/'/g, "\\'")}')" style="
-                    width: 100%;
-                    padding: 14px;
-                    background: var(--primary);
-                    color: white;
-                    border: none;
-                    border-radius: 12px;
-                    font-weight: 600;
-                    font-size: 1rem;
-                    cursor: pointer;
-                    margin-bottom: 12px;
-                    transition: all 0.3s ease;
-                " onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 24px rgba(102,126,234,0.4)'" 
-                   onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
-                    <i class="fas fa-copy"></i>
-                    Copier le lien
-                </button>
-                
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px;">
-                    <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}" 
-                       target="_blank" 
-                       style="
-                        padding: 12px;
-                        background: #1877F2;
-                        color: white;
-                        border-radius: 10px;
-                        text-decoration: none;
-                        font-weight: 600;
-                        transition: all 0.3s ease;
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        gap: 8px;
-                    " onmouseover="this.style.transform='translateY(-2px)'" 
-                       onmouseout="this.style.transform='translateY(0)'">
-                        <i class="fab fa-facebook-f"></i>
-                        Facebook
-                    </a>
-                    
-                    <a href="https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(articleTitle)}" 
-                       target="_blank"
-                       style="
-                        padding: 12px;
-                        background: #1DA1F2;
-                        color: white;
-                        border-radius: 10px;
-                        text-decoration: none;
-                        font-weight: 600;
-                        transition: all 0.3s ease;
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        gap: 8px;
-                    " onmouseover="this.style.transform='translateY(-2px)'" 
-                       onmouseout="this.style.transform='translateY(0)'">
-                        <i class="fab fa-twitter"></i>
-                        Twitter
-                    </a>
-                </div>
-                
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px;">
-                    <a href="https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}" 
-                       target="_blank"
-                       style="
-                        padding: 12px;
-                        background: #0A66C2;
-                        color: white;
-                        border-radius: 10px;
-                        text-decoration: none;
-                        font-weight: 600;
-                        transition: all 0.3s ease;
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        gap: 8px;
-                    " onmouseover="this.style.transform='translateY(-2px)'" 
-                       onmouseout="this.style.transform='translateY(0)'">
-                        <i class="fab fa-linkedin-in"></i>
-                        LinkedIn
-                    </a>
-                    
-                    <button onclick="handleWhatsAppShare('${shareUrl.replace(/'/g, "\\'")}', '${articleTitle.replace(/'/g, "\\'")}')" 
-                            style="
-                        padding: 12px;
-                        background: #25D366;
-                        color: white;
-                        border-radius: 10px;
-                        text-decoration: none;
-                        font-weight: 600;
-                        transition: all 0.3s ease;
-                        border: none;
-                        cursor: pointer;
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        gap: 8px;
-                    " onmouseover="this.style.transform='translateY(-2px)'" 
-                       onmouseout="this.style.transform='translateY(0)'">
-                        <i class="fab fa-whatsapp"></i>
-                        WhatsApp
+
+                <!-- Actions Bar -->
+                <div class="actions-bar">
+                    <button class="like-btn" id="likeBtn">
+                        <i class="far fa-heart"></i>
+                        <span id="likeCount">0</span> J'aime
                     </button>
-                </div>
-                
-                <button onclick="closeShareModal()" style="
-                    width: 100%;
-                    padding: 12px;
-                    background: transparent;
-                    color: var(--muted);
-                    border: 2px solid #e2e8f0;
-                    border-radius: 10px;
-                    font-weight: 600;
-                    cursor: pointer;
-                    margin-top: 10px;
-                    transition: all 0.3s ease;
-                " onmouseover="this.style.borderColor='var(--secondary)'; this.style.color='var(--secondary)'" 
-                   onmouseout="this.style.borderColor='#e2e8f0'; this.style.color='var(--muted)'">
-                    Fermer
-                </button>
-            </div>
-        `;
-        
-        document.body.appendChild(shareModal);
-        
-        // Animation d'entrée
-        setTimeout(() => {
-            shareModal.style.opacity = '1';
-            const content = document.getElementById('shareModalContent');
-            if (content) {
-                content.style.transform = 'scale(1)';
-            }
-        }, 10);
-        
-        // Gestionnaire de fermeture au clic sur l'overlay
-        shareModal.addEventListener('click', function(e) {
-            if (e.target === shareModal) {
-                closeShareModal();
-            }
-        });
-        
-        // 🎯 EMPÊCHER LA PROPAGATION DES CLICS DANS LE CONTENU
-        const modalContent = document.getElementById('shareModalContent');
-        if (modalContent) {
-            modalContent.addEventListener('click', function(e) {
-                e.stopPropagation();
-            });
-        }
-        
-        console.log('✅ Modal de partage affiché avec succès');
-        
-    } catch (error) {
-        console.error('❌ Erreur fallbackShare:', error);
-        // Fallback ultra-simple
-        copyShareLink(shareUrl);
-    }
-}
-
-// ========================================
-// 🎯 FONCTIONS DE GESTION DU MODAL
-// ========================================
-
-// Fonction pour fermer le modal
-function closeShareModal() {
-    console.log('🔒 Fermeture du modal');
-    const modal = document.getElementById('shareModalOverlay');
-    if (modal) {
-        modal.style.opacity = '0';
-        const content = document.getElementById('shareModalContent');
-        if (content) {
-            content.style.transform = 'scale(0.9)';
-        }
-        setTimeout(() => {
-            if (modal.parentElement) {
-                modal.parentElement.removeChild(modal);
-            }
-        }, 300);
-    }
-}
-
-// Gestionnaire pour copier le lien
-function handleCopyLink(url) {
-    console.log('📋 Copie du lien depuis le modal');
-    copyShareLink(url);
-    // Ne pas fermer le modal après la copie
-}
-
-// Gestionnaire pour WhatsApp
-function handleWhatsAppShare(url, title) {
-    console.log('📱 Partage WhatsApp depuis le modal');
-    shareOnWhatsApp(url, title);
-    // Fermer le modal après le partage
-    setTimeout(() => {
-        closeShareModal();
-    }, 1000);
-}
-
-// Fonction pour copier le lien (inchangée mais importante)
-function copyShareLink(url) {
-    console.log('📋 Copie du lien:', url);
-    
-    navigator.clipboard.writeText(url).then(() => {
-        showNotification('✅ Lien copié dans le presse-papier !');
-    }).catch((err) => {
-        console.error('❌ Erreur clipboard:', err);
-        // Fallback pour les anciens navigateurs
-        const textArea = document.createElement('textarea');
-        textArea.value = url;
-        textArea.style.position = 'fixed';
-        textArea.style.opacity = '0';
-        document.body.appendChild(textArea);
-        textArea.select();
-        document.execCommand('copy');
-        document.body.removeChild(textArea);
-        showNotification('✅ Lien copié !');
-    });
-}
-
-// Fonction WhatsApp (inchangée)
-function shareOnWhatsApp(shareUrl, articleTitle) {
-    try {
-        console.log('📱 Partage WhatsApp:', shareUrl);
-        
-        // Encoder le texte pour WhatsApp
-        const shareText = `${articleTitle} - ${shareUrl}`;
-        const encodedText = encodeURIComponent(shareText);
-        
-        // URL WhatsApp
-        const whatsappUrl = `https://wa.me/?text=${encodedText}`;
-        
-        // Ouvrir dans un nouvel onglet
-        window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
-        
-        showNotification('✅ Ouverture de WhatsApp...');
-        
-    } catch (error) {
-        console.error('❌ Erreur WhatsApp:', error);
-        // Fallback : copier le lien
-        copyShareLink(shareUrl);
-        showNotification('✅ Lien copié ! Collez-le dans WhatsApp');
-    }
-}
-
-// Fonction de notification (inchangée)
-function showNotification(message) {
-    console.log('🔔 Notification:', message);
-    
-    const notification = document.createElement('div');
-    notification.style.cssText = `
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        background: var(--primary);
-        color: white;
-        padding: 16px 24px;
-        border-radius: 12px;
-        font-weight: 600;
-        z-index: 10001;
-        box-shadow: 0 8px 30px rgba(0,0,0,0.2);
-        transform: translateX(400px);
-        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        max-width: 300px;
-        word-wrap: break-word;
-    `;
-    notification.textContent = message;
-    
-    // Supprimer les notifications existantes
-    const existingNotifications = document.querySelectorAll('div[style*="position: fixed; top: 20px; right: 20px"]');
-    existingNotifications.forEach(notif => notif.remove());
-    
-    document.body.appendChild(notification);
-    
-    // Animation d'entrée
-    setTimeout(() => {
-        notification.style.transform = 'translateX(0)';
-    }, 10);
-    
-    // Animation de sortie après 3 secondes
-    setTimeout(() => {
-        notification.style.transform = 'translateX(400px)';
-        setTimeout(() => {
-            if (notification.parentElement) {
-                notification.parentElement.removeChild(notification);
-            }
-        }, 300);
-    }, 3000);
-}
-// ========================================
-// ✅ CHARGEMENT D'ARTICLE AMÉLIORÉ
-// ========================================
-async function chargerArticle() {
-    try {
-        // 🎯 RÉCUPÉRER L'ID DE MULTIPLES SOURCES
-        let articleId = localStorage.getItem('articleActuel');
-        
-        // Fallback : vérifier l'URL
-        if (!articleId || articleId === 'null' || articleId === 'undefined') {
-            const urlParams = new URLSearchParams(window.location.search);
-            articleId = urlParams.get('id') || urlParams.get('article');
-        }
-        
-        console.log('🔍 ID récupéré:', articleId, 'Type:', typeof articleId);
-        
-        if (!articleId) {
-            afficherErreur('Aucun article sélectionné. Retournez à la page d\'accueil.');
-            return;
-        }
-
-        // 🎯 CHARGER TOUS LES ARTICLES
-        const response = await fetch(GOOGLE_APPS_SCRIPT_URL);
-        const result = await response.json();
-        
-        console.log('📦 Résultat API:', result.data?.length, 'articles chargés');
-        
-        if (!result.success) {
-            throw new Error(result.error || 'Erreur de chargement des articles');
-        }
-
-        // 🎯 RECHERCHE ROBUSTE DE L'ARTICLE
-        const articles = result.data || [];
-        let article = null;
-        
-        // Méthodes de recherche multiples
-        article = articles.find(a => 
-            String(a.id).trim() === String(articleId).trim() ||
-            String(a.id) === String(articleId) ||
-            a.id == articleId // Comparaison lâche
-        );
-        
-        if (!article) {
-            console.warn('⚠️ Article non trouvé avec méthodes standards, recherche étendue...');
-            // Recherche par index si ID numérique
-            if (!isNaN(articleId)) {
-                const index = parseInt(articleId) - 1;
-                if (index >= 0 && index < articles.length) {
-                    article = articles[index];
-                    console.log('📍 Article trouvé par index:', index);
-                }
-            }
-        }
-        
-        console.log('🎯 Article trouvé:', article ? 'OUI' : 'NON');
-        
-        if (!article) {
-            afficherErreur(`Article non trouvé (ID: ${articleId}). L'article a peut-être été supprimé.`);
-            return;
-        }
-
-        // ✅ AFFICHER L'ARTICLE
-        afficherArticle(article, articles);
-
-    } catch (error) {
-        console.error('❌ Erreur chargement article:', error);
-        afficherErreur('Erreur de chargement de l\'article: ' + error.message);
-    }
-}
-
-
-// ========================================
-// 📊 FONCTION DE DEBUG
-// ========================================
-// Ajouter cette fonction pour débugger
-function debugArticleLoading() {
-    console.log('=== 🔍 DEBUG ARTICLE LOADING ===');
-    console.log('localStorage.articleActuel:', localStorage.getItem('articleActuel'));
-    console.log('Type:', typeof localStorage.getItem('articleActuel'));
-    
-    // Tester le chargement
-    chargerArticle();
-}
-
-// ========================================
-// 🔍 LIGHTBOX SIMPLIFIÉE ET FONCTIONNELLE
-// (DOIT ÊTRE DÉCLARÉE AVANT afficherArticle)
-// ========================================
-
-let currentGalleryImages = [];
-let currentImageIndex = 0;
-
-// Fonction pour ouvrir la lightbox
-function openImageLightbox(clickedIndex) {
-    console.log('🖼️ Ouverture lightbox, index:', clickedIndex);
-    
-    // Récupérer toutes les images de la galerie actuelle
-    const galleryContainer = document.querySelector('.facebook-gallery');
-    if (!galleryContainer) {
-        console.error('❌ Galerie non trouvée');
-        return;
-    }
-    
-    // Récupérer toutes les images src de la galerie
-    const imageElements = galleryContainer.querySelectorAll('img');
-    currentGalleryImages = Array.from(imageElements).map(img => img.src);
-    currentImageIndex = clickedIndex;
-    
-    console.log('📸 Images trouvées:', currentGalleryImages.length, currentGalleryImages);
-    
-    if (currentGalleryImages.length === 0) {
-        console.error('❌ Aucune image trouvée');
-        return;
-    }
-    
-    // Créer la lightbox
-    const lightboxHTML = `
-        <div id="simpleLightbox" style="
-            position: fixed; 
-            top: 0; 
-            left: 0; 
-            width: 100%; 
-            height: 100%; 
-            background: rgba(0,0,0,0.95); 
-            z-index: 9999; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        ">
-            <!-- Bouton fermer -->
-            <button onclick="closeSimpleLightbox()" style="
-                position: absolute; 
-                top: 20px; 
-                right: 20px; 
-                background: rgba(255,255,255,0.2); 
-                border: none; 
-                color: white; 
-                width: 50px; 
-                height: 50px; 
-                border-radius: 50%; 
-                font-size: 1.3rem; 
-                cursor: pointer; 
-                z-index: 10000; 
-                transition: all 0.3s ease;
-            " onmouseover="this.style.background='rgba(255,255,255,0.3)'; this.style.transform='scale(1.1)'" 
-               onmouseout="this.style.background='rgba(255,255,255,0.2)'; this.style.transform='scale(1)'">
-                <i class="fas fa-times"></i>
-            </button>
-            
-            <!-- Bouton précédent -->
-            <button onclick="prevSimpleImage()" style="
-                position: absolute; 
-                left: 20px; 
-                top: 50%; 
-                transform: translateY(-50%); 
-                background: rgba(255,255,255,0.2); 
-                border: none; 
-                color: white; 
-                width: 50px; 
-                height: 50px; 
-                border-radius: 50%; 
-                font-size: 1.3rem; 
-                cursor: pointer; 
-                z-index: 10000; 
-                transition: all 0.3s ease;
-            " onmouseover="this.style.background='rgba(255,255,255,0.3)'; this.style.transform='scale(1.1)'" 
-               onmouseout="this.style.background='rgba(255,255,255,0.2)'; this.style.transform='scale(1)'">
-                <i class="fas fa-chevron-left"></i>
-            </button>
-            
-            <!-- Bouton suivant -->
-            <button onclick="nextSimpleImage()" style="
-                position: absolute; 
-                right: 20px; 
-                top: 50%; 
-                transform: translateY(-50%); 
-                background: rgba(255,255,255,0.2); 
-                border: none; 
-                color: white; 
-                width: 50px; 
-                height: 50px; 
-                border-radius: 50%; 
-                font-size: 1.3rem; 
-                cursor: pointer; 
-                z-index: 10000; 
-                transition: all 0.3s ease;
-            " onmouseover="this.style.background='rgba(255,255,255,0.3)'; this.style.transform='scale(1.1)'" 
-               onmouseout="this.style.background='rgba(255,255,255,0.2)'; this.style.transform='scale(1)'">
-                <i class="fas fa-chevron-right"></i>
-            </button>
-            
-            <!-- Compteur -->
-            <div style="
-                position: absolute; 
-                top: 20px; 
-                left: 20px; 
-                background: rgba(255,255,255,0.2); 
-                color: white; 
-                padding: 8px 16px; 
-                border-radius: 20px; 
-                font-size: 0.9rem; 
-                font-weight: 600; 
-                backdrop-filter: blur(10px);
-            ">
-                <span id="simpleLightboxCounter">${currentImageIndex + 1} / ${currentGalleryImages.length}</span>
-            </div>
-            
-            <!-- Image -->
-            <div style="position: relative; max-width: 90%; max-height: 90%; display: flex; align-items: center; justify-content: center;">
-                <img id="simpleLightboxImage" 
-                     src="${currentGalleryImages[currentImageIndex]}" 
-                     style="max-width: 100%; max-height: 90vh; object-fit: contain; border-radius: 8px; box-shadow: 0 20px 60px rgba(0,0,0,0.5);"
-                     alt="Image ${currentImageIndex + 1}">
-            </div>
-        </div>
-    `;
-    
-    // Supprimer toute lightbox existante
-    const existingLightbox = document.getElementById('simpleLightbox');
-    if (existingLightbox) {
-        existingLightbox.remove();
-    }
-    
-    document.body.insertAdjacentHTML('beforeend', lightboxHTML);
-    document.body.style.overflow = 'hidden';
-    
-    // Animation d'entrée
-    setTimeout(() => {
-        const lightbox = document.getElementById('simpleLightbox');
-        if (lightbox) {
-            lightbox.style.opacity = '1';
-        }
-    }, 10);
-    
-    console.log('✅ Lightbox ouverte avec succès');
-}
-
-function closeSimpleLightbox() {
-    const lightbox = document.getElementById('simpleLightbox');
-    if (lightbox) {
-        lightbox.style.opacity = '0';
-        setTimeout(() => {
-            lightbox.remove();
-        }, 300);
-    }
-    document.body.style.overflow = 'auto';
-}
-
-function prevSimpleImage() {
-    if (currentGalleryImages.length === 0) return;
-    currentImageIndex = (currentImageIndex - 1 + currentGalleryImages.length) % currentGalleryImages.length;
-    updateSimpleLightboxImage();
-}
-
-function nextSimpleImage() {
-    if (currentGalleryImages.length === 0) return;
-    currentImageIndex = (currentImageIndex + 1) % currentGalleryImages.length;
-    updateSimpleLightboxImage();
-}
-
-function updateSimpleLightboxImage() {
-    const imgElement = document.getElementById('simpleLightboxImage');
-    const counterElement = document.getElementById('simpleLightboxCounter');
-    
-    if (imgElement) {
-        imgElement.style.opacity = '0.5';
-        setTimeout(() => {
-            imgElement.src = currentGalleryImages[currentImageIndex];
-            imgElement.alt = `Image ${currentImageIndex + 1}`;
-            imgElement.style.opacity = '1';
-        }, 150);
-    }
-    
-    // Mettre à jour le compteur
-    if (counterElement) {
-        counterElement.textContent = `${currentImageIndex + 1} / ${currentGalleryImages.length}`;
-    }
-}
-
-// Navigation clavier
-document.addEventListener('keydown', function(e) {
-    const lightbox = document.getElementById('simpleLightbox');
-    if (!lightbox) return;
-    
-    switch(e.key) {
-        case 'Escape':
-            closeSimpleLightbox();
-            break;
-        case 'ArrowLeft':
-            prevSimpleImage();
-            break;
-        case 'ArrowRight':
-            nextSimpleImage();
-            break;
-    }
-});
-
-// ========================================
-// 🖼️ GALERIE FACEBOOK-LIKE CORRIGÉE
-// (DOIT ÊTRE DÉCLARÉE AVANT afficherArticle)
-// ========================================
-
-function displayImageGallery(article) {
-    console.log('🖼️ Données article pour galerie:', article);
-    
-    // Vérifier s'il y a des images supplémentaires
-    let allImages = [];
-    
-    try {
-        if (article.images && article.images !== '[]' && article.images !== '' && article.images !== 'undefined') {
-            console.log('📦 Données images brutes:', article.images);
-            
-            // Parser le JSON
-            allImages = JSON.parse(article.images);
-            console.log('🖼️ Toutes les images:', allImages);
-            
-            // Retirer la première image (déjà affichée comme couverture)
-            if (allImages.length > 1) {
-                allImages = allImages.slice(1);
-            } else {
-                allImages = [];
-            }
-        }
-    } catch (error) {
-        console.error('❌ Erreur parsing galerie:', error);
-        console.error('Données problématiques:', article.images);
-        allImages = [];
-    }
-    
-    console.log('🎨 Images pour galerie:', allImages.length, allImages);
-    
-    if (allImages.length === 0) {
-        return ''; // Pas de galerie
-    }
-    
-    return createFacebookStyleGallery(allImages);
-}
-
-// Créer une galerie style Facebook
-function createFacebookStyleGallery(images) {
-    const totalImages = images.length;
-    console.log('📐 Création galerie avec', totalImages, 'images');
-    
-    // Déterminer la disposition en fonction du nombre d'images
-    let galleryHTML = '';
-    
-    if (totalImages === 1) {
-        galleryHTML = createSingleImageLayout(images[0], 0, images);
-    } else if (totalImages === 2) {
-        galleryHTML = createTwoImagesLayout(images);
-    } else if (totalImages === 3) {
-        galleryHTML = createThreeImagesLayout(images);
-    } else if (totalImages === 4) {
-        galleryHTML = createFourImagesLayout(images);
-    } else {
-        galleryHTML = createMultipleImagesLayout(images);
-    }
-    
-    return `
-        <div class="article-gallery" style="margin: 40px 0; padding-top: 30px; border-top: 2px solid #e2e8f0;">
-            <h3 style="font-size: 1.3rem; font-weight: 700; color: var(--dark); margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
-                <i class="fas fa-images" style="color: var(--primary-solid);"></i>
-                Galerie Photos
-                <span style="font-size: 0.9rem; color: var(--muted); font-weight: 500;">(${totalImages})</span>
-            </h3>
-            
-            <div class="facebook-gallery" style="border-radius: 12px; overflow: hidden; background: #f8fafc;">
-                ${galleryHTML}
-            </div>
-        </div>
-    `;
-}
-
-// Layout pour 1 image
-function createSingleImageLayout(image, index, allImages) {
-    return `
-        <div class="gallery-single" onclick="openImageLightbox(${index})" 
-             style="cursor: pointer; transition: opacity 0.3s ease;">
-            <img src="${image}" 
-                 alt="Image galerie"
-                 style="width: 100%; max-height: 500px; object-fit: cover; display: block;"
-                 onerror="this.src='https://picsum.photos/800/500?random=${Math.random()}'">
-        </div>
-    `;
-}
-
-// Layout pour 2 images
-function createTwoImagesLayout(images) {
-    return `
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2px; height: 300px;">
-            ${images.map((img, index) => `
-                <div onclick="openImageLightbox(${index})" 
-                     style="cursor: pointer; overflow: hidden; transition: opacity 0.3s ease;">
-                    <img src="${img}" 
-                         alt="Image ${index + 1}"
-                         style="width: 100%; height: 100%; object-fit: cover;"
-                         onerror="this.src='https://picsum.photos/400/300?random=${Math.random()}'">
-                </div>
-            `).join('')}
-        </div>
-    `;
-}
-
-// Layout pour 3 images
-function createThreeImagesLayout(images) {
-    return `
-        <div style="display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 2px; height: 400px;">
-            <div onclick="openImageLightbox(0)" 
-                 style="grid-column: 1; grid-row: 1 / span 2; cursor: pointer; overflow: hidden;">
-                <img src="${images[0]}" 
-                     alt="Image 1"
-                     style="width: 100%; height: 100%; object-fit: cover;"
-                     onerror="this.src='https://picsum.photos/400/400?random=${Math.random()}'">
-            </div>
-            <div onclick="openImageLightbox(1)" 
-                 style="grid-column: 2; grid-row: 1; cursor: pointer; overflow: hidden;">
-                <img src="${images[1]}" 
-                     alt="Image 2"
-                     style="width: 100%; height: 100%; object-fit: cover;"
-                     onerror="this.src='https://picsum.photos/200/200?random=${Math.random()}'">
-            </div>
-            <div onclick="openImageLightbox(2)" 
-                 style="grid-column: 2; grid-row: 2; cursor: pointer; overflow: hidden;">
-                <img src="${images[2]}" 
-                     alt="Image 3"
-                     style="width: 100%; height: 100%; object-fit: cover;"
-                     onerror="this.src='https://picsum.photos/200/200?random=${Math.random()}'">
-            </div>
-        </div>
-    `;
-}
-
-// Layout pour 4 images
-function createFourImagesLayout(images) {
-    return `
-        <div style="display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 2px; height: 400px;">
-            ${images.map((img, index) => `
-                <div onclick="openImageLightbox(${index})" 
-                     style="cursor: pointer; overflow: hidden; transition: opacity 0.3s ease;">
-                    <img src="${img}" 
-                         alt="Image ${index + 1}"
-                         style="width: 100%; height: 100%; object-fit: cover;"
-                         onerror="this.src='https://picsum.photos/200/200?random=${Math.random()}'">
-                </div>
-            `).join('')}
-        </div>
-    `;
-}
-
-// Layout pour 5+ images (CORRIGÉ pour afficher correctement le compteur)
-function createMultipleImagesLayout(images) {
-    const displayedImages = images.slice(0, 5); // Montrer max 5 images dans la grille
-    const remainingCount = images.length - 5;
-    
-    console.log('🔢 Images affichées:', displayedImages.length, 'Restantes:', remainingCount);
-    
-    return `
-        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 2px; height: 400px; position: relative;">
-            ${displayedImages.map((img, index) => {
-                let gridStyle = '';
-                
-                // Layout pour 5+ images (2x3 grid)
-                if (index === 0) {
-                    gridStyle = 'grid-column: 1 / span 2; grid-row: 1 / span 2;';
-                } else if (index === 1) {
-                    gridStyle = 'grid-column: 3; grid-row: 1;';
-                } else if (index === 2) {
-                    gridStyle = 'grid-column: 3; grid-row: 2;';
-                } else if (index === 3) {
-                    gridStyle = 'grid-column: 1; grid-row: 3;';
-                } else if (index === 4) {
-                    gridStyle = 'grid-column: 2 / span 2; grid-row: 3; position: relative;';
-                }
-                
-                return `
-                    <div onclick="openImageLightbox(${index})" 
-                         style="${gridStyle} cursor: pointer; overflow: hidden; position: relative; transition: opacity 0.3s ease;">
-                        <img src="${img}" 
-                             alt="Image ${index + 1}"
-                             style="width: 100%; height: 100%; object-fit: cover;"
-                             onerror="this.src='https://picsum.photos/300/300?random=${Math.random()}'">
-                        ${index === 4 && remainingCount > 0 ? `
-                            <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.8rem; font-weight: 700; cursor: pointer;">
-                                +${remainingCount}
-                            </div>
-                        ` : ''}
-                    </div>
-                `;
-            }).join('')}
-        </div>
-    `;
-}
-
-
-// Appeler automatiquement après 1 seconde
-setTimeout(debugArticleLoading, 1000);
-
-function afficherArticle(article, tousLesArticles) {
-    const container = document.getElementById('articleContainer');
-    
-    // Stocker l'ID de l'article courant
-    currentArticleId = article.id;
-     // 🎯 APPELER LA MISE À JOUR DES META TAGS
-    updateMetaTags(article);
-    // Mettre à jour le breadcrumb
-    document.getElementById('breadcrumbCategory').textContent = article.categorie || 'Général';
-    
-    // Détecter si c'est une vidéo
-    const isVideo = article.contentType === 'video' && article.video_url;
-    
-    // Générer la galerie
-    const galleryHTML = displayImageGallery(article);
-    
-    container.innerHTML = `
-        <div class="article-layout">
-            <article class="article-main">
-                <div class="article-header">
-                    <span class="article-category-badge">${article.categorie || 'Général'}</span>
-                    ${isVideo ? '<span class="article-video-badge"><i class="fas fa-play-circle"></i> Vidéo</span>' : ''}
-                    <h1 class="article-title">${article.titre || 'Sans titre'}</h1>
-                    
-                    <div class="article-meta">
-                        <div class="article-meta-item">
-                            <i class="fas fa-user"></i>
-                            <span>Par ${article.auteur || 'Rédaction'}</span>
-                        </div>
-                        <div class="article-meta-item">
-                            <i class="far fa-calendar"></i>
-                            <span>${formaterDate(article.date)}</span>
-                        </div>
-                        <div class="article-meta-item">
-                            <i class="far fa-eye"></i>
-                            <span id="viewsDisplay">${article.vue || '0'} vues</span>
-                        </div>
-                        <div class="article-meta-item">
-                            <i class="fas fa-heart"></i>
-                            <span id="likesDisplay">${article.likes || '0'} j'aime</span>
-                        </div>
-                    </div>
-                </div>
-
-                ${isVideo ? `
-                    <!-- SECTION VIDÉO -->
-                    ${getEmbedCode(article.video_url)}
-                    
-                    <!-- Bouton externe optionnel -->
-                    <div class="video-external-link">
-                        <a href="${article.video_url}" target="_blank" class="btn-watch-external">
-                            <i class="${getPlatformIcon(article.video_url)}"></i>
-                            Regarder sur ${getPlatformName(article.video_url)}
+                    <div class="share-buttons">
+                        <a href="#" class="share-btn share-whatsapp" id="shareWhatsapp">
+                            <i class="fab fa-whatsapp"></i>
+                        </a>
+                        <a href="#" class="share-btn share-facebook" id="shareFacebook">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="share-btn share-twitter" id="shareTwitter">
+                            <i class="fab fa-twitter"></i>
                         </a>
                     </div>
-                ` : `
-                    <!-- IMAGE DE COUVERTURE -->
-                    ${article.image ? `
-                        <div class="article-featured-image">
-                            <img src="${article.image}" 
-                                 alt="${article.titre}"
-                                 onerror="this.src='https://picsum.photos/1200/600?random=${Math.random()}'">
-                        </div>
-                    ` : ''}
-                `}
+                </div>
 
-                <div class="article-content">
-                    ${article.extrait ? `<p class="article-excerpt-highlight">${article.extrait}</p>` : ''}
-                    ${article.contenu || '<p>Contenu de l\'article non disponible.</p>'}
+                <!-- Comments Section -->
+                <section class="comments-section">
+                    <h2 class="section-title">💬 Commentaires</h2>
                     
-                    <!-- GALERIE APRÈS LE CONTENU -->
-                    ${galleryHTML}
-                </div>
-
-                <div class="article-actions">
-                    <button class="action-btn btn-like" id="likeBtn" onclick="toggleLike()">
-                        <i class="fas fa-heart"></i>
-                        <span id="likeText">J'aime</span> (<span id="likeCount">${article.likes || '0'}</span>)
-                    </button>
-                    <button class="action-btn btn-comment" onclick="openCommentSection()">
-                        <i class="fas fa-comment"></i>
-                        Commenter
-                    </button>
-                    <button class="action-btn btn-share" onclick="partager()">
-                        <i class="fas fa-share-alt"></i>
-                        Partager
-                    </button>
-                    <button class="action-btn btn-print" onclick="imprimerArticle()">
-                        <i class="fas fa-print"></i>
-                        Imprimer
-                    </button>
-                </div>
-
-                ${createCommentsSection(article.id)}
-            </article>
-
-            <aside class="article-sidebar">
-                <div class="sidebar-widget">
-                    <h3>Articles similaires</h3>
-                    <div id="relatedArticles">
-                        <div style="text-align: center; padding: 20px; color: var(--muted);">
-                            <i class="fas fa-spinner fa-spin"></i>
-                            <p>Chargement...</p>
+                    <div class="comment-form">
+                        <div class="form-group">
+                            <input type="text" class="form-control" id="commentName" placeholder="Votre nom">
+                        </div>
+                        <div class="form-group">
+                            <textarea class="form-control" id="commentText" placeholder="Votre commentaire"></textarea>
+                        </div>
+                        <button class="btn" id="submitComment">Publier le commentaire</button>
+                    </div>
+                    
+                    <div class="comments-list" id="commentsList">
+                        <div class="empty-state">
+                            <i class="fas fa-comments"></i>
+                            <p>Soyez le premier à commenter cet article</p>
                         </div>
                     </div>
-                </div>
+                </section>
+            </div>
 
-                <div class="sidebar-widget debates-widget">
-                    <h3><i class="fas fa-comments"></i> Grands Débats</h3>
-                    <div id="debatesSection">
-                        <div style="text-align: center; padding: 20px; color: rgba(255,255,255,0.7);">
-                            <i class="fas fa-spinner fa-spin"></i>
-                            <p>Chargement...</p>
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <div class="sidebar-card">
+                    <h3 class="sidebar-title">📈 Articles Similaires</h3>
+                    <div id="relatedArticles">
+                        <div class="loading">
+                            <i class="fas fa-spinner"></i>
                         </div>
                     </div>
                 </div>
             </aside>
         </div>
-    `;
+    </div>
 
-    // Mettre à jour le titre de la page
-    document.title = `${article.titre} - Abu Media Group`;
-    
-    // Initialiser le bouton Like
-    initializeLikeButton(article.id, article.likes || 0);
-    
-    // Charger les contenus de sidebar
-    chargerArticlesSimilaires(article, tousLesArticles);
-    chargerDebats(tousLesArticles);
-    
-    // Compter la vue
-    trackArticleView(article.id);
-    
-    // Charger les commentaires
-    loadAndDisplayComments(article.id);
-}
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Abu Media Group</h3>
+                    <p>Votre source d'information fiable au Cameroun. Suivez l'actualité en temps réel.</p>
+                    <div class="social-links" style="margin-top: 1rem;">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h3>Navigation</h3>
+                    <ul class="footer-links">
+                        <li><a href="index.html">Accueil</a></li>
+                        <li><a href="index.html#actualites">Actualités</a></li>
+                        <li><a href="index.html#videos">Vidéos</a></li>
+                        <li><a href="index.html#societe">Société</a></li>
+                        <li><a href="index.html#contact">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Catégories</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Politique</a></li>
+                        <li><a href="#">Économie</a></li>
+                        <li><a href="#">Sports</a></li>
+                        <li><a href="#">Culture</a></li>
+                        <li><a href="#">International</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Contact</h3>
+                    <ul class="footer-links">
+                        <li><i class="fas fa-envelope"></i> contact@abumedia.cm</li>
+                        <li><i class="fas fa-phone"></i> +237 6XX XX XX XX</li>
+                        <li><i class="fas fa-map-marker-alt"></i> Douala, Cameroun</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Abu Media Group. Tous droits réservés.</p>
+            </div>
+        </div>
+    </footer>
 
-// ========================================
-// 🎯 FONCTION PARTAGE CORRIGÉE - STABLE
-// ========================================
-// ========================================
-// 🎯 FONCTION PARTAGE CORRIGÉE - MODAL STABLE
-// ========================================
-async function partager() {
-    try {
-        console.log('🔄 Début fonction partager');
-        
-        const articleId = localStorage.getItem('articleActuel');
-        if (!articleId) {
-            alert('Aucun article sélectionné');
-            return;
-        }
+    <script>
+        // Récupérer l'ID de l'article depuis l'URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const articleId = urlParams.get('id');
 
-        // Afficher un indicateur de chargement
-        const shareBtn = document.querySelector('.btn-share');
-        const originalHTML = shareBtn.innerHTML;
-        shareBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Génération...';
-        shareBtn.disabled = true;
+        // Variables globales
+        let currentArticle = null;
+        let allArticles = [];
+        let likedArticles = JSON.parse(localStorage.getItem('likedArticles') || '{}');
 
-        // Récupérer l'URL de partage
-        const shareUrl = await getShareUrl(articleId);
-        
-        console.log('🔗 URL de partage générée:', shareUrl);
-        
-        // Réactiver le bouton
-        shareBtn.innerHTML = originalHTML;
-        shareBtn.disabled = false;
-
-        // 🎯 CORRECTION : NE PAS UTILISER L'API WEB SHARE - UTILISER DIRECTEMENT NOTRE MODAL
-        console.log('🎯 Utilisation du modal personnalisé');
-        fallbackShare(shareUrl);
-
-    } catch (error) {
-        console.error('❌ Erreur partage:', error);
-        
-        // Réactiver le bouton en cas d'erreur
-        const shareBtn = document.querySelector('.btn-share');
-        shareBtn.innerHTML = '<i class="fas fa-share-alt"></i> Partager';
-        shareBtn.disabled = false;
-        
-        alert('Erreur lors de la génération du lien de partage');
-    }
-}
-
-    
-    // ===== FONCTION : Charger et afficher les commentaires =====
-    async function loadAndDisplayComments(articleId) {
-        try {
-            console.log('🔄 Chargement des commentaires pour:', articleId);
-            
-            const commentsUrl = GOOGLE_APPS_SCRIPT_URL + '?action=get_comments&article_id=' + articleId;
-            console.log('📡 URL commentaires:', commentsUrl);
-            
-            const response = await fetch(commentsUrl);
-            const result = await response.json();
-            
-            console.log('📦 Résultat commentaires COMPLET:', result);
-            
-            if (!result.success) {
-                console.error('❌ Erreur API commentaires:', result.error);
-                displayComments([]);
+        // Charger l'article
+        async function loadArticle() {
+            if (!articleId) {
+                showError('Aucun article spécifié');
                 return;
             }
 
-            console.log('✅ Commentaires reçus:', result.comments);
-            
-            // Afficher les commentaires
-            displayComments(result.comments || []);
-            
-            // Mettre à jour le compteur
-            const commentCount = document.getElementById('commentCount');
-            if (commentCount) {
-                commentCount.textContent = (result.comments || []).length;
-                console.log('🔢 Nombre de commentaires:', (result.comments || []).length);
+            try {
+                const response = await fetch('/articles.json?t=' + Date.now());
+                if (!response.ok) throw new Error('Erreur de chargement');
+                
+                const data = await response.json();
+                allArticles = Object.values(data.articles || {});
+                
+                // Trouver l'article par ID
+                currentArticle = allArticles.find(a => a.id == articleId);
+                
+                if (!currentArticle) {
+                    showError('Article non trouvé');
+                    return;
+                }
+                
+                displayArticle();
+                updateShareLinks();
+                updateBreadcrumb();
+                loadRelatedArticles();
+                updateLikeButton();
+                
+            } catch (error) {
+                console.error('❌ Erreur:', error);
+                showError('Impossible de charger l\'article');
             }
-
-        } catch (error) {
-            console.error('❌ Erreur loadAndDisplayComments:', error);
-            displayComments([]);
-        }
-    }
-
-    // Charger les articles similaires
-    function chargerArticlesSimilaires(articleActuel, tousLesArticles) {
-        const similaires = tousLesArticles
-            .filter(a => a.id !== articleActuel.id && a.categorie === articleActuel.categorie)
-            .slice(0, 5);
-
-        const container = document.getElementById('relatedArticles');
-
-        if (similaires.length === 0) {
-            container.innerHTML = '<p style="color: var(--muted); font-size: 0.9rem;">Aucun article similaire</p>';
-            return;
         }
 
-        container.innerHTML = similaires.map(article => `
-            <div class="related-article" onclick="ouvrirArticle('${article.id}')">
-                <div class="related-thumb">
-                    <img src="${article.image || 'https://picsum.photos/80/80?random=' + Math.random()}" 
-                         alt="${article.titre}"
-                         onerror="this.src='https://picsum.photos/80/80?random=' + Math.random()">
-                </div>
-                <div class="related-info">
-                    <h4>${article.titre}</h4>
-                    <div class="related-date">${formaterDate(article.date)}</div>
-                </div>
-            </div>
-        `).join('');
-    }
-
-    // Charger les débats
-    function chargerDebats(tousLesArticles) {
-        const debates = tousLesArticles
-            .filter(a => articleInSection(a, 'debates'))
-            .slice(0, 4);
-
-        const container = document.getElementById('debatesSection');
-
-        if (debates.length === 0) {
-            container.innerHTML = '<p style="color: rgba(255,255,255,0.7); font-size: 0.9rem;">Aucun débat disponible</p>';
-            return;
-        }
-
-        container.innerHTML = debates.map(debate => {
-            const isVideo = debate.contentType === 'video';
-            return `
-                <div class="debate-item" onclick="${isVideo ? `ouvrirVideo('${debate.video_url}')` : `ouvrirArticle('${debate.id}')`}">
-                    <div class="debate-thumb">
-                        <img src="${debate.image || 'https://picsum.photos/80/80?random=' + Math.random()}" 
-                             alt="${debate.titre}"
-                             onerror="this.src='https://picsum.photos/80/80?random=' + Math.random()">
-                        ${isVideo ? '<div class="video-indicator"><i class="fas fa-play"></i></div>' : ''}
-                    </div>
-                    <div class="debate-info">
-                        <h4>${debate.titre}</h4>
-                        <div class="debate-date">${formaterDate(debate.date)}</div>
+        // Afficher l'article
+        function displayArticle() {
+            const container = document.getElementById('articleContainer');
+            
+            // Calculer le temps de lecture
+            const readingTime = calculateReadingTime(currentArticle.contenu);
+            
+            // Formater la date
+            const formattedDate = formatDate(currentArticle.date);
+            
+            // Générer le contenu HTML
+            let contentHTML = `
+                <div class="article-header">
+                    <span class="article-category">${currentArticle.categorie}</span>
+                    <h1 class="article-title">${currentArticle.titre}</h1>
+                    <div class="article-meta">
+                        <span><i class="fas fa-user"></i> ${currentArticle.auteur}</span>
+                        <span><i class="fas fa-calendar"></i> ${formattedDate}</span>
+                        <span><i class="fas fa-clock"></i> ${readingTime} min de lecture</span>
+                        <span><i class="fas fa-eye"></i> ${currentArticle.vues || 0} vues</span>
                     </div>
                 </div>
             `;
-        }).join('');
-    }
-
-    // Ouvrir une vidéo
-    function ouvrirVideo(videoUrl) {
-        if (videoUrl) {
-            window.open(videoUrl, '_blank');
+            
+            // Image de couverture
+            if (currentArticle.image) {
+                contentHTML += `<img src="${currentArticle.image}" alt="${currentArticle.titre}" class="featured-image">`;
+            }
+            
+            // Contenu de l'article
+            contentHTML += `<div class="article-body">`;
+            
+            // Extraire les images du contenu
+            const images = currentArticle.images ? JSON.parse(currentArticle.images) : [];
+            
+            // Afficher le contenu avec paragraphes
+            if (currentArticle.contenu) {
+                const paragraphs = currentArticle.contenu.split('\n\n');
+                paragraphs.forEach(paragraph => {
+                    if (paragraph.trim()) {
+                        contentHTML += `<p>${paragraph}</p>`;
+                    }
+                });
+            }
+            
+            contentHTML += `</div>`;
+            
+            // Galerie d'images (si plusieurs images)
+            if (images.length > 1) {
+                contentHTML += `
+                    <div class="gallery-section">
+                        <h3 class="gallery-title">📸 Galerie Photos</h3>
+                        <div class="gallery-grid">
+                            ${images.map((img, index) => `
+                                <div class="gallery-item" onclick="openImageGallery(${index})">
+                                    <img src="${img}" alt="Image ${index + 1}">
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+            
+            // Vidéo (si c'est un contenu vidéo)
+            if (currentArticle.contentType === 'video' && currentArticle.video_url) {
+                const videoId = extractYouTubeId(currentArticle.video_url);
+                if (videoId) {
+                    contentHTML += `
+                        <div class="video-container">
+                            <iframe 
+                                src="https://www.youtube.com/embed/${videoId}" 
+                                frameborder="0" 
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                allowfullscreen>
+                            </iframe>
+                        </div>
+                    `;
+                }
+            }
+            
+            container.innerHTML = contentHTML;
+            
+            // Incrémenter le compteur de vues
+            incrementViewCount();
         }
-    }
 
-    // Afficher une erreur
-    function afficherErreur(message) {
-        const container = document.getElementById('articleContainer');
-        container.innerHTML = `
-            <div class="error-container">
-                <i class="fas fa-exclamation-triangle"></i>
-                <h2>Article introuvable</h2>
-                <p>${message}</p>
-                <a href="articles.html" class="btn-back">
-                    <i class="fas fa-arrow-left"></i>
-                    Retour aux articles
-                </a>
-            </div>
-        `;
-    }
-
-    // Fonction d'impression
-    function imprimerArticle() {
-        window.print();
-    }
-
-// ========================================
-// 🎯 FONCTION PARTAGER CORRECTE
-// ========================================
-
-
-    // ===== FONCTIONS COMMENTAIRES =====
-    async function submitComment(articleId, authorName, authorEmail, commentText) {
-        // Validation
-        if (!authorName.trim()) {
-            alert('Veuillez entrer votre nom');
-            return false;
-        }
-        if (!authorEmail.trim()) {
-            alert('Veuillez entrer votre email');
-            return false;
-        }
-        if (!commentText.trim()) {
-            alert('Veuillez écrire un commentaire');
-            return false;
-        }
-        if (commentText.trim().length < 10) {
-            alert('Le commentaire doit contenir au moins 10 caractères');
-            return false;
+        // Calculer le temps de lecture
+        function calculateReadingTime(text) {
+            const wordsPerMinute = 200;
+            const wordCount = text.split(/\s+/).length;
+            return Math.ceil(wordCount / wordsPerMinute);
         }
 
-        try {
-            const commentData = {
-                action: 'add_comment',
-                article_id: String(articleId),
-                author_name: authorName.trim(),
-                author_email: authorEmail.trim(),
-                comment_text: commentText.trim(),
+        // Formater la date
+        function formatDate(dateString) {
+            if (!dateString) return 'Date inconnue';
+            try {
+                const date = new Date(dateString);
+                return date.toLocaleDateString('fr-FR', {
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric'
+                });
+            } catch (error) {
+                return dateString;
+            }
+        }
+
+        // Extraire l'ID YouTube
+        function extractYouTubeId(url) {
+            if (!url) return null;
+            const patterns = [
+                /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/,
+                /youtube\.com\/watch\?v=([^"&?\/\s]{11})/,
+                /youtube\.com\/embed\/([^"&?\/\s]{11})/,
+                /youtu\.be\/([^"&?\/\s]{11})/
+            ];
+            
+            for (let pattern of patterns) {
+                const match = url.match(pattern);
+                if (match && match[1]) {
+                    return match[1];
+                }
+            }
+            return null;
+        }
+
+        // Incrémenter le compteur de vues
+        function incrementViewCount() {
+            // Dans une vraie application, on enverrait une requête au serveur
+            // Pour cette démo, on simule juste l'incrémentation
+            if (currentArticle) {
+                currentArticle.vues = (currentArticle.vues || 0) + 1;
+                document.querySelector('.article-meta span:nth-child(4)').innerHTML = 
+                    `<i class="fas fa-eye"></i> ${currentArticle.vues} vues`;
+            }
+        }
+
+        // Mettre à jour les liens de partage
+        function updateShareLinks() {
+            const pageUrl = encodeURIComponent(window.location.href);
+            const title = encodeURIComponent(currentArticle.titre);
+            
+            document.getElementById('shareWhatsapp').href = 
+                `https://wa.me/?text=${title}%20${pageUrl}`;
+            
+            document.getElementById('shareFacebook').href = 
+                `https://www.facebook.com/sharer/sharer.php?u=${pageUrl}`;
+            
+            document.getElementById('shareTwitter').href = 
+                `https://twitter.com/intent/tweet?text=${title}&url=${pageUrl}`;
+        }
+
+        // Mettre à jour le fil d'Ariane
+        function updateBreadcrumb() {
+            document.getElementById('breadcrumbCategory').textContent = currentArticle.categorie;
+            document.getElementById('breadcrumbTitle').textContent = currentArticle.titre;
+        }
+
+        // Gestion des likes
+        function updateLikeButton() {
+            const likeBtn = document.getElementById('likeBtn');
+            const likeCount = document.getElementById('likeCount');
+            
+            const isLiked = likedArticles[articleId] || false;
+            const currentLikes = currentArticle.likes || 0;
+            
+            likeBtn.classList.toggle('liked', isLiked);
+            likeBtn.innerHTML = isLiked ? 
+                `<i class="fas fa-heart"></i> <span id="likeCount">${currentLikes}</span> J'aime` :
+                `<i class="far fa-heart"></i> <span id="likeCount">${currentLikes}</span> J'aime`;
+        }
+
+        // Gestion du clic sur le bouton like
+        document.getElementById('likeBtn').addEventListener('click', function() {
+            const isLiked = likedArticles[articleId] || false;
+            
+            if (isLiked) {
+                // Retirer le like
+                likedArticles[articleId] = false;
+                currentArticle.likes = Math.max(0, (currentArticle.likes || 0) - 1);
+            } else {
+                // Ajouter le like
+                likedArticles[articleId] = true;
+                currentArticle.likes = (currentArticle.likes || 0) + 1;
+            }
+            
+            localStorage.setItem('likedArticles', JSON.stringify(likedArticles));
+            updateLikeButton();
+        });
+
+        // Charger les articles similaires
+        function loadRelatedArticles() {
+            const container = document.getElementById('relatedArticles');
+            
+            if (!currentArticle) {
+                container.innerHTML = '<p style="color: var(--gray);">Aucun article similaire</p>';
+                return;
+            }
+            
+            // Filtrer les articles par catégorie (exclure l'article actuel)
+            const related = allArticles
+                .filter(a => a.id !== articleId && a.categorie === currentArticle.categorie)
+                .slice(0, 5);
+            
+            if (related.length === 0) {
+                container.innerHTML = '<p style="color: var(--gray);">Aucun article similaire</p>';
+                return;
+            }
+            
+            container.innerHTML = related.map(article => `
+                <div class="related-article" onclick="openArticle('${article.id}')">
+                    <img src="${article.image}" alt="${article.titre}">
+                    <div>
+                        <h4>${article.titre}</h4>
+                        <div style="font-size: 0.75rem; color: var(--gray); margin-top: 0.25rem;">
+                            ${formatDate(article.date)}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Gestion des commentaires
+        document.getElementById('submitComment').addEventListener('click', function() {
+            const nameInput = document.getElementById('commentName');
+            const textInput = document.getElementById('commentText');
+            
+            const name = nameInput.value.trim();
+            const text = textInput.value.trim();
+            
+            if (!name || !text) {
+                alert('Veuillez remplir tous les champs');
+                return;
+            }
+            
+            // Récupérer les commentaires existants
+            const comments = JSON.parse(localStorage.getItem(`comments_${articleId}`) || '[]');
+            
+            // Ajouter le nouveau commentaire
+            const newComment = {
+                id: Date.now().toString(),
+                name: name,
+                text: text,
                 date: new Date().toISOString()
             };
-
-            const response = await fetch(GOOGLE_APPS_SCRIPT_URL, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(commentData)
-            });
-
-            console.log('✅ Commentaire envoyé');
             
-            // Recharger les commentaires après envoi
-            setTimeout(() => {
-                loadAndDisplayComments(articleId);
-            }, 1000);
+            comments.unshift(newComment);
+            localStorage.setItem(`comments_${articleId}`, JSON.stringify(comments));
             
-            return true;
-
-        } catch (error) {
-            console.error('❌ Erreur submitComment:', error);
-            return false;
-        }
-    }
-
-    function displayComments(comments) {
-        const commentsContainer = document.getElementById('commentsContainer');
-        
-        if (!commentsContainer) {
-            console.error('❌ Conteneur commentsContainer non trouvé');
-            return;
-        }
-
-        console.log('🎯 Affichage de', comments.length, 'commentaires');
-        
-        if (comments.length === 0) {
-            commentsContainer.innerHTML = `
-                <div style="text-align: center; padding: 40px 20px; color: var(--muted);">
-                    <i class="fas fa-comment-slash" style="font-size: 2rem; margin-bottom: 12px;"></i>
-                    <p>Aucun commentaire pour le moment.</p>
-                    <p style="font-size: 0.9rem;">Soyez le premier à commenter !</p>
-                </div>
-            `;
-            return;
-        }
-
-        commentsContainer.innerHTML = comments.map((comment, index) => `
-            <div class="comment-item" style="
-                background: #f8fafc;
-                border-left: 4px solid var(--primary-solid);
-                border-radius: 8px;
-                padding: 20px;
-                margin-bottom: 16px;
-                transition: var(--transition);
-            ">
-                <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 12px;">
-                    <div>
-                        <h4 style="margin: 0 0 4px 0; color: var(--dark); font-weight: 600;">
-                            ${comment.author_name || 'Anonyme'}
-                        </h4>
-                        <div style="font-size: 0.8rem; color: var(--muted);">
-                            ${formatRelativeDate(comment.date)}
-                        </div>
-                    </div>
-                    ${comment.approved === false ? `
-                        <span style="background: #fef3c7; color: #92400e; padding: 4px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: 600;">
-                            En attente
-                        </span>
-                    ` : ''}
-                </div>
-                <p style="margin: 0; color: #334155; line-height: 1.6;">
-                    ${comment.comment_text || ''}
-                </p>
-            </div>
-        `).join('');
-        
-        console.log('✅ Commentaires affichés avec succès');
-    }
-
-    // ===== FONCTION : Créer la section commentaires =====
-    function createCommentsSection(articleId) {
-        return `
-            <div id="commentsSection" style="margin-top: 60px; padding-top: 40px; border-top: 2px solid #e2e8f0;">
-                <!-- Titre -->
-                <h2 style="font-size: 1.8rem; font-weight: 800; color: var(--dark); margin-bottom: 32px; display: flex; align-items: center; gap: 12px;">
-                    <i class="fas fa-comments" style="color: var(--primary-solid);"></i>
-                    Commentaires
-                </h2>
-
-                <!-- Formulaire commentaire -->
-                <div id="commentFormContainer" style="background: linear-gradient(135deg, rgba(102,126,234,0.05) 0%, rgba(118,75,162,0.05) 100%); border-radius: 16px; padding: 32px; margin-bottom: 40px; border: 2px solid rgba(102,126,234,0.1);">
-                    <h3 style="font-size: 1.2rem; font-weight: 700; color: var(--dark); margin-bottom: 24px;">Laissez un commentaire</h3>
-                    
-                    <form id="commentForm" onsubmit="handleCommentSubmit(event, '${articleId}')">
-                        <!-- Nom -->
-                        <div style="margin-bottom: 16px;">
-                            <label style="display: block; font-weight: 600; color: var(--dark); margin-bottom: 8px;">
-                                Votre nom <span style="color: var(--secondary);">*</span>
-                            </label>
-                            <input type="text" id="commentAuthorName" placeholder="Ex: Jean Dupont"
-                                style="width: 100%; padding: 12px 16px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 1rem; transition: var(--transition);"
-                                onFocus="this.style.borderColor='var(--primary-solid)'"
-                                onBlur="this.style.borderColor='#e2e8f0'"
-                            />
-                        </div>
-
-                        <!-- Email -->
-                        <div style="margin-bottom: 16px;">
-                            <label style="display: block; font-weight: 600; color: var(--dark); margin-bottom: 8px;">
-                                Votre email <span style="color: var(--secondary);">*</span>
-                            </label>
-                            <input type="email" id="commentAuthorEmail" placeholder="exemple@email.com"
-                                style="width: 100%; padding: 12px 16px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 1rem; transition: var(--transition);"
-                                onFocus="this.style.borderColor='var(--primary-solid)'"
-                                onBlur="this.style.borderColor='#e2e8f0'"
-                            />
-                            <div style="font-size: 0.8rem; color: var(--muted); margin-top: 6px;">
-                                <i class="fas fa-lock" style="margin-right: 4px;"></i>
-                                Votre email ne sera pas publié
-                            </div>
-                        </div>
-
-                        <!-- Texte commentaire -->
-                        <div style="margin-bottom: 16px;">
-                            <label style="display: block; font-weight: 600; color: var(--dark); margin-bottom: 8px;">
-                                Votre commentaire <span style="color: var(--secondary);">*</span>
-                            </label>
-                            <textarea id="commentText" placeholder="Partagez votre avis..." 
-                                style="width: 100%; padding: 12px 16px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 1rem; min-height: 120px; resize: vertical; transition: var(--transition); font-family: inherit;"
-                                onFocus="this.style.borderColor='var(--primary-solid)'"
-                                onBlur="this.style.borderColor='#e2e8f0'"
-                                onInput="updateCharCount()"
-                            ></textarea>
-                            <div style="display: flex; justify-content: space-between; margin-top: 8px; font-size: 0.85rem; color: var(--muted);">
-                                <span id="charCount">0/500 caractères</span>
-                                <span>Minimum 10 caractères</span>
-                            </div>
-                        </div>
-
-                        <!-- Bouton envoyer -->
-                        <button type="submit" id="submitCommentBtn" 
-                            style="width: 100%; padding: 14px 24px; background: var(--primary); color: #fff; border: none; border-radius: 10px; font-weight: 700; font-size: 1rem; cursor: pointer; transition: var(--transition); display: flex; align-items: center; justify-content: center; gap: 8px;"
-                            onMouseEnter="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 24px rgba(102,126,234,0.4)'"
-                            onMouseLeave="this.style.transform='translateY(0)'; this.style.boxShadow='none'"
-                        >
-                            <i class="fas fa-paper-plane"></i>
-                            Envoyer le commentaire
-                        </button>
-
-                        <!-- Message validation -->
-                        <div id="commentMessage" style="margin-top: 16px; padding: 12px 16px; border-radius: 10px; display: none; text-align: center; font-weight: 600;"></div>
-                    </form>
-                </div>
-
-                <!-- Liste des commentaires -->
-                <div>
-                    <h3 style="font-size: 1.2rem; font-weight: 700; color: var(--dark); margin-bottom: 24px;">
-                        <span id="commentCount">0</span> commentaire(s)
-                    </h3>
-                    <div id="commentsContainer">
-                        <div style="text-align: center; padding: 40px 20px; color: var(--muted);">
-                            <i class="fas fa-spinner fa-spin" style="font-size: 2rem; margin-bottom: 12px;"></i>
-                            <p>Chargement des commentaires...</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        `;
-    }
-
-    // ===== FONCTION : Gérer l'envoi du formulaire =====
-    async function handleCommentSubmit(event, articleId) {
-        event.preventDefault();
-
-        const authorName = document.getElementById('commentAuthorName').value;
-        const authorEmail = document.getElementById('commentAuthorEmail').value;
-        const commentText = document.getElementById('commentText').value;
-        const submitBtn = document.getElementById('submitCommentBtn');
-        const messageDiv = document.getElementById('commentMessage');
-
-        // Désactiver le bouton
-        submitBtn.disabled = true;
-        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Envoi en cours...';
-
-        // Envoyer le commentaire
-        const success = await submitComment(articleId, authorName, authorEmail, commentText);
-
-        if (success) {
-            // Afficher le message de succès
-            messageDiv.style.display = 'block';
-            messageDiv.style.background = '#dcfce7';
-            messageDiv.style.color = '#166534';
-            messageDiv.style.border = '2px solid #86efac';
-            messageDiv.textContent = '✅ Merci ! Votre commentaire a été publié.';
-
-            // Réinitialiser le formulaire
-            document.getElementById('commentForm').reset();
-            document.getElementById('charCount').textContent = '0/500 caractères';
-
-            // Masquer le message après 5 secondes
-            setTimeout(() => {
-                messageDiv.style.display = 'none';
-            }, 5000);
+            // Réinitialiser les champs
+            nameInput.value = '';
+            textInput.value = '';
             
-            // Recharger les commentaires
-            setTimeout(() => {
-                loadAndDisplayComments(articleId);
-            }, 1500);
-        }
+            // Afficher les commentaires
+            displayComments();
+        });
 
-        // Réactiver le bouton
-        submitBtn.disabled = false;
-        submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Envoyer le commentaire';
-    }
-
-    // ===== FONCTION : Mettre à jour le compteur de caractères =====
-    function updateCharCount() {
-        const textarea = document.getElementById('commentText');
-        const charCount = document.getElementById('charCount');
-        const maxChars = 500;
-        const currentChars = textarea.value.length;
-        
-        charCount.textContent = `${currentChars}/${maxChars} caractères`;
-        
-        // Limiter à 500 caractères
-        if (currentChars > maxChars) {
-            textarea.value = textarea.value.substring(0, maxChars);
-            charCount.textContent = `${maxChars}/${maxChars} caractères`;
-        }
-        
-        // Changer la couleur si on est près de la limite
-        if (currentChars > maxChars * 0.9) {
-            charCount.style.color = 'var(--secondary)';
-        } else {
-            charCount.style.color = 'var(--muted)';
-        }
-    }
-
-    // ===== FONCTION : Ouvrir la section commentaires =====
-    async function openCommentSection() {
-        const commentsSection = document.getElementById('commentsSection');
-        
-        if (commentsSection) {
-            // Scroller vers la section
-            commentsSection.scrollIntoView({ behavior: 'smooth' });
+        // Afficher les commentaires
+        function displayComments() {
+            const container = document.getElementById('commentsList');
+            const comments = JSON.parse(localStorage.getItem(`comments_${articleId}`) || '[]');
             
-            // Focus sur le champ de nom après un petit délai
-            setTimeout(() => {
-                const nameField = document.getElementById('commentAuthorName');
-                if (nameField) {
-                    nameField.focus();
-                }
-            }, 500);
-        } else {
-            console.error('❌ Section commentaires non trouvée');
-            alert('Section commentaires non disponible');
-        }
-    }
-
-    // ===== FONCTION : Formater la date relative =====
-    function formatRelativeDate(dateString) {
-        if (!dateString) return 'Date inconnue';
-        
-        try {
-            const date = new Date(dateString);
-            const now = new Date();
-            const diffTime = Math.abs(now - date);
-            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-            const diffHours = Math.ceil(diffTime / (1000 * 60 * 60));
-            const diffMinutes = Math.ceil(diffTime / (1000 * 60));
-            
-            if (diffMinutes < 1) return 'À l\'instant';
-            if (diffMinutes < 60) return `Il y a ${diffMinutes} minute${diffMinutes > 1 ? 's' : ''}`;
-            if (diffHours < 24) return `Il y a ${diffHours} heure${diffHours > 1 ? 's' : ''}`;
-            if (diffDays < 7) return `Il y a ${diffDays} jour${diffDays > 1 ? 's' : ''}`;
-            
-            return date.toLocaleDateString('fr-FR', {
-                day: 'numeric',
-                month: 'short',
-                year: 'numeric'
-            });
-        } catch (error) {
-            return 'Date inconnue';
-        }
-    }
-
-    function getEmbedCode(url) {
-        if (!url) return '';
-        
-        // YouTube
-        if (url.includes('youtube.com') || url.includes('youtu.be')) {
-            const videoId = extractYouTubeId(url);
-            if (videoId) {
-                return `
-                    <div class="video-embed-container">
-                        <iframe 
-                            src="https://www.youtube.com/embed/${videoId}?rel=0&modestbranding=1" 
-                            frameborder="0" 
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                            allowfullscreen>
-                        </iframe>
+            if (comments.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-comments"></i>
+                        <p>Soyez le premier à commenter cet article</p>
                     </div>
                 `;
+                return;
             }
+            
+            container.innerHTML = comments.map(comment => `
+                <div class="comment">
+                    <div class="comment-header">
+                        <div class="comment-author">${comment.name}</div>
+                        <div class="comment-date">${formatDate(comment.date)}</div>
+                    </div>
+                    <div class="comment-body">${comment.text}</div>
+                </div>
+            `).join('');
         }
-        
-        // Facebook
-        if (url.includes('facebook.com') || url.includes('fb.watch')) {
-            return `
-                <div class="video-embed-container">
-                    <iframe 
-                        src="https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(url)}&show_text=false&appId" 
-                        frameborder="0" 
-                        allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share" 
-                        allowfullscreen>
-                    </iframe>
+
+        // Ouvrir une galerie d'images (fonctionnalité avancée)
+        function openImageGallery(index) {
+            const images = currentArticle.images ? JSON.parse(currentArticle.images) : [];
+            if (images.length === 0) return;
+            
+            // Dans une vraie application, on créerait une lightbox
+            // Pour cette démo, on ouvre simplement l'image dans un nouvel onglet
+            window.open(images[index], '_blank');
+        }
+
+        // Ouvrir un article
+        function openArticle(id) {
+            window.location.href = `/article-detail.html?id=${id}`;
+        }
+
+        // Afficher une erreur
+        function showError(message) {
+            document.getElementById('articleContainer').innerHTML = `
+                <div class="error-state">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <h3>Erreur</h3>
+                    <p>${message}</p>
+                    <button class="btn" onclick="window.location.href='index.html'" style="margin-top: 1rem;">
+                        Retour à l'accueil
+                    </button>
                 </div>
             `;
         }
-        
-        // Fallback : lien direct
-        return `
-            <div class="video-fallback">
-                <i class="fas fa-video" style="font-size: 3rem; color: var(--muted); margin-bottom: 16px;"></i>
-                <p>Cette vidéo ne peut pas être intégrée</p>
-                <a href="${url}" target="_blank" class="btn btn-primary">
-                    <i class="fas fa-external-link-alt"></i> Voir la vidéo
-                </a>
-            </div>
-        `;
-    }
 
-    function extractYouTubeId(url) {
-        const patterns = [
-            /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/,
-            /youtube\.com\/watch\?v=([^"&?\/\s]{11})/,
-            /youtube\.com\/embed\/([^"&?\/\s]{11})/,
-            /youtu\.be\/([^"&?\/\s]{11})/
-        ];
-        
-        for (let pattern of patterns) {
-            const match = url.match(pattern);
-            if (match && match[1]) {
-                return match[1];
-            }
-        }
-        return null;
-    }
-
-    function getPlatformName(url) {
-        if (url.includes('youtube.com') || url.includes('youtu.be')) return 'YouTube';
-        if (url.includes('facebook.com')) return 'Facebook';
-        return 'la plateforme';
-    }
-
-    function getPlatformIcon(url) {
-        if (url.includes('youtube.com') || url.includes('youtu.be')) return 'fab fa-youtube';
-        if (url.includes('facebook.com')) return 'fab fa-facebook';
-        return 'fas fa-external-link-alt';
-    }
-
-    // Initialisation
-    document.addEventListener('DOMContentLoaded', () => {
-        updateCurrentDate();
-        chargerArticle();
-    });
-
-
-// ========================================
-// 🖼️ GALERIE FACEBOOK-LIKE CORRIGÉE
-// ========================================
-
-// ========================================
-// 🖼️ GALERIE FACEBOOK-LIKE CORRIGÉE POUR 7+ IMAGES
-// ========================================
-
-// ========================================
-// 🖼️ GALERIE CORRIGÉE POUR 7+ IMAGES
-// ========================================
-
-function displayImageGallery(article) {
-    console.log('🖼️ Données article pour galerie:', article);
-    
-    // Vérifier s'il y a des images supplémentaires
-    let allImages = [];
-    
-    try {
-        if (article.images && article.images !== '[]' && article.images !== '' && article.images !== 'undefined') {
-            console.log('📦 Données images brutes:', article.images);
-            
-            // Parser le JSON
-            allImages = JSON.parse(article.images);
-            console.log('🖼️ Toutes les images:', allImages);
-            
-            // Retirer la première image (déjà affichée comme couverture)
-            if (allImages.length > 1) {
-                allImages = allImages.slice(1);
+        // Menu mobile
+        document.querySelector('.mobile-menu-btn').addEventListener('click', function() {
+            const nav = document.querySelector('.nav-menu');
+            if (nav.style.display === 'flex') {
+                nav.style.display = 'none';
             } else {
-                allImages = [];
+                nav.style.display = 'flex';
+                nav.style.flexDirection = 'column';
+                nav.style.position = 'absolute';
+                nav.style.top = '100%';
+                nav.style.left = '0';
+                nav.style.right = '0';
+                nav.style.background = 'var(--dark)';
+                nav.style.padding = '1rem';
+                nav.style.boxShadow = '0 4px 10px rgba(0,0,0,0.2)';
             }
-        }
-    } catch (error) {
-        console.error('❌ Erreur parsing galerie:', error);
-        console.error('Données problématiques:', article.images);
-        allImages = [];
-    }
-    
-    console.log('🎨 Images pour galerie:', allImages.length, allImages);
-    
-    if (allImages.length === 0) {
-        return ''; // Pas de galerie
-    }
-    
-    return createFacebookStyleGallery(allImages);
-}
+        });
 
-// Créer une galerie style Facebook
-function createFacebookStyleGallery(images) {
-    const totalImages = images.length;
-    console.log('📐 Création galerie avec', totalImages, 'images');
-    
-    // Déterminer la disposition en fonction du nombre d'images
-    let galleryHTML = '';
-    
-    if (totalImages === 1) {
-        galleryHTML = createSingleImageLayout(images[0], 0, images);
-    } else if (totalImages === 2) {
-        galleryHTML = createTwoImagesLayout(images);
-    } else if (totalImages === 3) {
-        galleryHTML = createThreeImagesLayout(images);
-    } else if (totalImages === 4) {
-        galleryHTML = createFourImagesLayout(images);
-    } else {
-        galleryHTML = createMultipleImagesLayout(images);
-    }
-    
-    return `
-        <div class="article-gallery" style="margin: 40px 0; padding-top: 30px; border-top: 2px solid #e2e8f0;">
-            <h3 style="font-size: 1.3rem; font-weight: 700; color: var(--dark); margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
-                <i class="fas fa-images" style="color: var(--primary-solid);"></i>
-                Galerie Photos
-                <span style="font-size: 0.9rem; color: var(--muted); font-weight: 500;">(${totalImages})</span>
-            </h3>
-            
-            <div class="facebook-gallery" style="border-radius: 12px; overflow: hidden; background: #f8fafc;">
-                ${galleryHTML}
-            </div>
-        </div>
-    `;
-}
-
-// Layout pour 1 image
-function createSingleImageLayout(image, index, allImages) {
-    return `
-        <div class="gallery-single" onclick="openImageLightbox(${index})" 
-             style="cursor: pointer; transition: opacity 0.3s ease;">
-            <img src="${image}" 
-                 alt="Image galerie"
-                 style="width: 100%; max-height: 500px; object-fit: cover; display: block;"
-                 onerror="this.src='https://picsum.photos/800/500?random=${Math.random()}'">
-        </div>
-    `;
-}
-
-// Layout pour 2 images
-function createTwoImagesLayout(images) {
-    return `
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2px; height: 300px;">
-            ${images.map((img, index) => `
-                <div onclick="openImageLightbox(${index})" 
-                     style="cursor: pointer; overflow: hidden; transition: opacity 0.3s ease;">
-                    <img src="${img}" 
-                         alt="Image ${index + 1}"
-                         style="width: 100%; height: 100%; object-fit: cover;"
-                         onerror="this.src='https://picsum.photos/400/300?random=${Math.random()}'">
-                </div>
-            `).join('')}
-        </div>
-    `;
-}
-
-// Layout pour 3 images
-function createThreeImagesLayout(images) {
-    return `
-        <div style="display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 2px; height: 400px;">
-            <div onclick="openImageLightbox(0)" 
-                 style="grid-column: 1; grid-row: 1 / span 2; cursor: pointer; overflow: hidden;">
-                <img src="${images[0]}" 
-                     alt="Image 1"
-                     style="width: 100%; height: 100%; object-fit: cover;"
-                     onerror="this.src='https://picsum.photos/400/400?random=${Math.random()}'">
-            </div>
-            <div onclick="openImageLightbox(1)" 
-                 style="grid-column: 2; grid-row: 1; cursor: pointer; overflow: hidden;">
-                <img src="${images[1]}" 
-                     alt="Image 2"
-                     style="width: 100%; height: 100%; object-fit: cover;"
-                     onerror="this.src='https://picsum.photos/200/200?random=${Math.random()}'">
-            </div>
-            <div onclick="openImageLightbox(2)" 
-                 style="grid-column: 2; grid-row: 2; cursor: pointer; overflow: hidden;">
-                <img src="${images[2]}" 
-                     alt="Image 3"
-                     style="width: 100%; height: 100%; object-fit: cover;"
-                     onerror="this.src='https://picsum.photos/200/200?random=${Math.random()}'">
-            </div>
-        </div>
-    `;
-}
-
-// Layout pour 4 images
-function createFourImagesLayout(images) {
-    return `
-        <div style="display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 2px; height: 400px;">
-            ${images.map((img, index) => `
-                <div onclick="openImageLightbox(${index})" 
-                     style="cursor: pointer; overflow: hidden; transition: opacity 0.3s ease;">
-                    <img src="${img}" 
-                         alt="Image ${index + 1}"
-                         style="width: 100%; height: 100%; object-fit: cover;"
-                         onerror="this.src='https://picsum.photos/200/200?random=${Math.random()}'">
-                </div>
-            `).join('')}
-        </div>
-    `;
-}
-
-// Layout pour 5+ images (CORRIGÉ pour afficher correctement le compteur)
-function createMultipleImagesLayout(images) {
-    const displayedImages = images.slice(0, 5); // Montrer max 5 images dans la grille
-    const remainingCount = images.length - 5;
-    
-    console.log('🔢 Images affichées:', displayedImages.length, 'Restantes:', remainingCount);
-    
-    return `
-        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 2px; height: 400px; position: relative;">
-            ${displayedImages.map((img, index) => {
-                let gridStyle = '';
-                
-                // Layout pour 5+ images (2x3 grid)
-                if (index === 0) {
-                    gridStyle = 'grid-column: 1 / span 2; grid-row: 1 / span 2;';
-                } else if (index === 1) {
-                    gridStyle = 'grid-column: 3; grid-row: 1;';
-                } else if (index === 2) {
-                    gridStyle = 'grid-column: 3; grid-row: 2;';
-                } else if (index === 3) {
-                    gridStyle = 'grid-column: 1; grid-row: 3;';
-                } else if (index === 4) {
-                    gridStyle = 'grid-column: 2 / span 2; grid-row: 3; position: relative;';
-                }
-                
-                return `
-                    <div onclick="openImageLightbox(${index})" 
-                         style="${gridStyle} cursor: pointer; overflow: hidden; position: relative; transition: opacity 0.3s ease;">
-                        <img src="${img}" 
-                             alt="Image ${index + 1}"
-                             style="width: 100%; height: 100%; object-fit: cover;"
-                             onerror="this.src='https://picsum.photos/300/300?random=${Math.random()}'">
-                        ${index === 4 && remainingCount > 0 ? `
-                            <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.8rem; font-weight: 700; cursor: pointer;">
-                                +${remainingCount}
-                            </div>
-                        ` : ''}
-                    </div>
-                `;
-            }).join('')}
-        </div>
-    `;
-}
-// ========================================
-// 🖼️ GALERIE CORRIGÉE POUR 7+ IMAGES
-// ========================================
-
-function displayImageGallery(article) {
-    console.log('🖼️ Données article pour galerie:', article);
-    
-    // Vérifier s'il y a des images supplémentaires
-    let allImages = [];
-    
-    try {
-        if (article.images && article.images !== '[]' && article.images !== '' && article.images !== 'undefined') {
-            console.log('📦 Données images brutes:', article.images);
-            
-            // Parser le JSON
-            allImages = JSON.parse(article.images);
-            console.log('🖼️ Toutes les images:', allImages);
-            
-            // Retirer la première image (déjà affichée comme couverture)
-            if (allImages.length > 1) {
-                allImages = allImages.slice(1);
-            } else {
-                allImages = [];
-            }
-        }
-    } catch (error) {
-        console.error('❌ Erreur parsing galerie:', error);
-        console.error('Données problématiques:', article.images);
-        allImages = [];
-    }
-    
-    console.log('🎨 Images pour galerie:', allImages.length, allImages);
-    
-    if (allImages.length === 0) {
-        return ''; // Pas de galerie
-    }
-    
-    return createFacebookStyleGallery(allImages);
-}
-
-// Créer une galerie style Facebook
-function createFacebookStyleGallery(images) {
-    const totalImages = images.length;
-    console.log('📐 Création galerie avec', totalImages, 'images');
-    
-    // Déterminer la disposition en fonction du nombre d'images
-    let galleryHTML = '';
-    
-    if (totalImages === 1) {
-        galleryHTML = createSingleImageLayout(images[0], 0, images);
-    } else if (totalImages === 2) {
-        galleryHTML = createTwoImagesLayout(images);
-    } else if (totalImages === 3) {
-        galleryHTML = createThreeImagesLayout(images);
-    } else if (totalImages === 4) {
-        galleryHTML = createFourImagesLayout(images);
-    } else {
-        galleryHTML = createMultipleImagesLayout(images);
-    }
-    
-    return `
-        <div class="article-gallery" style="margin: 40px 0; padding-top: 30px; border-top: 2px solid #e2e8f0;">
-            <h3 style="font-size: 1.3rem; font-weight: 700; color: var(--dark); margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
-                <i class="fas fa-images" style="color: var(--primary-solid);"></i>
-                Galerie Photos
-                <span style="font-size: 0.9rem; color: var(--muted); font-weight: 500;">(${totalImages})</span>
-            </h3>
-            
-            <div class="facebook-gallery" style="border-radius: 12px; overflow: hidden; background: #f8fafc;">
-                ${galleryHTML}
-            </div>
-        </div>
-    `;
-}
-
-// Layout pour 1 image
-function createSingleImageLayout(image, index, allImages) {
-    return `
-        <div class="gallery-single" onclick="openImageLightbox(${index})" 
-             style="cursor: pointer; transition: opacity 0.3s ease;">
-            <img src="${image}" 
-                 alt="Image galerie"
-                 style="width: 100%; max-height: 500px; object-fit: cover; display: block;"
-                 onerror="this.src='https://picsum.photos/800/500?random=${Math.random()}'">
-        </div>
-    `;
-}
-
-// Layout pour 2 images
-function createTwoImagesLayout(images) {
-    return `
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2px; height: 300px;">
-            ${images.map((img, index) => `
-                <div onclick="openImageLightbox(${index})" 
-                     style="cursor: pointer; overflow: hidden; transition: opacity 0.3s ease;">
-                    <img src="${img}" 
-                         alt="Image ${index + 1}"
-                         style="width: 100%; height: 100%; object-fit: cover;"
-                         onerror="this.src='https://picsum.photos/400/300?random=${Math.random()}'">
-                </div>
-            `).join('')}
-        </div>
-    `;
-}
-
-// Layout pour 3 images
-function createThreeImagesLayout(images) {
-    return `
-        <div style="display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 2px; height: 400px;">
-            <div onclick="openImageLightbox(0)" 
-                 style="grid-column: 1; grid-row: 1 / span 2; cursor: pointer; overflow: hidden;">
-                <img src="${images[0]}" 
-                     alt="Image 1"
-                     style="width: 100%; height: 100%; object-fit: cover;"
-                     onerror="this.src='https://picsum.photos/400/400?random=${Math.random()}'">
-            </div>
-            <div onclick="openImageLightbox(1)" 
-                 style="grid-column: 2; grid-row: 1; cursor: pointer; overflow: hidden;">
-                <img src="${images[1]}" 
-                     alt="Image 2"
-                     style="width: 100%; height: 100%; object-fit: cover;"
-                     onerror="this.src='https://picsum.photos/200/200?random=${Math.random()}'">
-            </div>
-            <div onclick="openImageLightbox(2)" 
-                 style="grid-column: 2; grid-row: 2; cursor: pointer; overflow: hidden;">
-                <img src="${images[2]}" 
-                     alt="Image 3"
-                     style="width: 100%; height: 100%; object-fit: cover;"
-                     onerror="this.src='https://picsum.photos/200/200?random=${Math.random()}'">
-            </div>
-        </div>
-    `;
-}
-
-// Layout pour 4 images
-function createFourImagesLayout(images) {
-    return `
-        <div style="display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 2px; height: 400px;">
-            ${images.map((img, index) => `
-                <div onclick="openImageLightbox(${index})" 
-                     style="cursor: pointer; overflow: hidden; transition: opacity 0.3s ease;">
-                    <img src="${img}" 
-                         alt="Image ${index + 1}"
-                         style="width: 100%; height: 100%; object-fit: cover;"
-                         onerror="this.src='https://picsum.photos/200/200?random=${Math.random()}'">
-                </div>
-            `).join('')}
-        </div>
-    `;
-}
-
-// Layout pour 5+ images (CORRIGÉ pour afficher correctement le compteur)
-function createMultipleImagesLayout(images) {
-    const displayedImages = images.slice(0, 5); // Montrer max 5 images dans la grille
-    const remainingCount = images.length - 5;
-    
-    console.log('🔢 Images affichées:', displayedImages.length, 'Restantes:', remainingCount);
-    
-    return `
-        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 2px; height: 400px; position: relative;">
-            ${displayedImages.map((img, index) => {
-                let gridStyle = '';
-                
-                // Layout pour 5+ images (2x3 grid)
-                if (index === 0) {
-                    gridStyle = 'grid-column: 1 / span 2; grid-row: 1 / span 2;';
-                } else if (index === 1) {
-                    gridStyle = 'grid-column: 3; grid-row: 1;';
-                } else if (index === 2) {
-                    gridStyle = 'grid-column: 3; grid-row: 2;';
-                } else if (index === 3) {
-                    gridStyle = 'grid-column: 1; grid-row: 3;';
-                } else if (index === 4) {
-                    gridStyle = 'grid-column: 2 / span 2; grid-row: 3; position: relative;';
-                }
-                
-                return `
-                    <div onclick="openImageLightbox(${index})" 
-                         style="${gridStyle} cursor: pointer; overflow: hidden; position: relative; transition: opacity 0.3s ease;">
-                        <img src="${img}" 
-                             alt="Image ${index + 1}"
-                             style="width: 100%; height: 100%; object-fit: cover;"
-                             onerror="this.src='https://picsum.photos/300/300?random=${Math.random()}'">
-                        ${index === 4 && remainingCount > 0 ? `
-                            <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.8rem; font-weight: 700; cursor: pointer;">
-                                +${remainingCount}
-                            </div>
-                        ` : ''}
-                    </div>
-                `;
-            }).join('')}
-        </div>
-    `;
-}
-
-// Swipe sur mobile
-let touchStartX = 0;
-let touchEndX = 0;
-
-document.addEventListener('touchstart', function(e) {
-    const lightbox = document.getElementById('galleryLightbox');
-    if (!lightbox) return;
-    
-    touchStartX = e.changedTouches[0].screenX;
-});
-
-document.addEventListener('touchend', function(e) {
-    const lightbox = document.getElementById('galleryLightbox');
-    if (!lightbox) return;
-    
-    touchEndX = e.changedTouches[0].screenX;
-    handleSwipe();
-});
-
-function handleSwipe() {
-    const swipeThreshold = 50;
-    const diff = touchStartX - touchEndX;
-    
-    if (Math.abs(diff) > swipeThreshold) {
-        if (diff > 0) {
-            lightboxNextImage(); // Swipe gauche = image suivante
-        } else {
-            lightboxPrevImage(); // Swipe droite = image précédente
-        }
-    }
-}
-
-</script>
+        // Charger au démarrage
+        document.addEventListener('DOMContentLoaded', function() {
+            loadArticle();
+            displayComments();
+        });
+    </script>
 </body>
-
 </html>
-
-
-
-
