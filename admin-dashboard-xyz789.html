@@ -2381,11 +2381,15 @@ async function handleArticleSubmit(e) {
 
 
 // ========================================
-// 📂 CHARGEMENT ARTICLES DEPUIS GITHUB
+// 📂 CHARGEMENT ARTICLES - CORRIGÉ
 // ========================================
 async function loadArticlesFromGitHub() {
     try {
         const response = await fetch('/articles.json');
+        if (!response.ok) {
+            console.warn('articles.json non trouvé, création fichier...');
+            return {};
+        }
         const data = await response.json();
         return data.articles || {};
     } catch (error) {
@@ -2393,6 +2397,39 @@ async function loadArticlesFromGitHub() {
         return {};
     }
 }
+
+
+// ========================================
+// 🧪 TEST NETLIFY FUNCTION
+// ========================================
+async function testNetlifyFunction() {
+    try {
+        const testData = {
+            titre: 'TEST ' + new Date().toISOString(),
+            categorie: 'Politique',
+            sections: ['main'],
+            image: 'https://picsum.photos/600/400',
+            extrait: 'Article de test',
+            contenu: 'Contenu test',
+            auteur: 'Test'
+        };
+
+        const response = await fetch('/.netlify/functions/create-article', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(testData)
+        });
+
+        const result = await response.json();
+        console.log('🧪 Test résultat:', result);
+        return result;
+    } catch (error) {
+        console.error('❌ Test échoué:', error);
+        return { success: false, error: error.message };
+    }
+}
+
+// Exécutez dans la console : testNetlifyFunction()
 
 // ========================================
 // 🔍 FILTRAGE ARTICLES PAR CATÉGORIE - CORRIGÉ
@@ -2463,7 +2500,6 @@ async function displayArticles(filterCategory = '') {
         `;
     }).join('');
 }
-
 // Initialiser le filtrage
 document.getElementById('filterCategory').addEventListener('change', function() {
     displayArticles(this.value);
@@ -3370,4 +3406,3 @@ async function sendNotificationForArticle(articleData) {
 </body>
 
 </html>
-
