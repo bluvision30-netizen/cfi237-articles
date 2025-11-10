@@ -11,9 +11,10 @@
   to = "/articles.json"
   status = 200
 
-# Configuration des fonctions
+# Configuration des fonctions - VERSION CORRIGÉE
 [functions]
-  node_bundle = true
+  # node_bundle n'est plus nécessaire pour cette configuration simple
+  directory = "netlify/functions"
 
 # Headers de sécurité
 [[headers]]
@@ -28,6 +29,6 @@
   [headers.values]
     Cache-Control = "public, max-age=3600"
 
-# Configuration d'environnement (optionnel)
-[context.production.environment]
+# Configuration build
+[build.environment]
   NODE_VERSION = "18"
