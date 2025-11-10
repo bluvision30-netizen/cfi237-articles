@@ -2681,7 +2681,7 @@ function showShareButtons(articleId, shareUrl) {
                 <i class="fas fa-share-alt"></i> Partager l'article
             </h4>
             <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
-                <a href="https://wa.me/?text=${encodeURIComponent('Découvrez cet article: ' + shareUrl)}" 
+                <a href="https://api.whatsapp.com/send?text=${encodeURIComponent(titre + ' - ' + window.location.origin + '/article-detail.html?id=' + articleId)}" 
                    target="_blank" class="btn btn-success btn-sm">
                     <i class="fab fa-whatsapp"></i> WhatsApp
                 </a>
@@ -3715,3 +3715,4 @@ async function sendNotificationForArticle(articleData) {
 </body>
 
 </html>
+
