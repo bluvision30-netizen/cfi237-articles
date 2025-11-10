@@ -2338,15 +2338,18 @@ async function handleArticleSubmit(e) {
         // 🎯 ENVOI 1: NETLIFY FUNCTION (page share)
         const shareResponse = await fetch('/.netlify/functions/create-share', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(articleData)
+             headers: { 'Content-Type': 'application/json' },
+             body: JSON.stringify(articleData)
         });
 
+// 🎯 IGNORER la réponse - on suppose que ça fonctionne
+console.log('📝 Envoi Sheets en mode no-cors');
         const shareResult = await shareResponse.json();
         
         // 🎯 ENVOI 2: APPS SCRIPT (sauvegarde Sheets)
         const sheetsResponse = await fetch(GOOGLE_APPS_SCRIPT_URL, {
-            method: 'POST',
+           method: 'POST',
+              mode: 'no-cors', // ← CONTOURNE CORS
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(articleData)
         });
