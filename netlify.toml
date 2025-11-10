@@ -27,3 +27,7 @@
   for = "/share/*.html"
   [headers.values]
     Cache-Control = "public, max-age=3600"
+
+# Configuration d'environnement (optionnel)
+[context.production.environment]
+  NODE_VERSION = "18"
