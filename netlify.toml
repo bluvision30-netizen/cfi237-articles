@@ -1,0 +1,29 @@
+[build]
+  publish = "."
+
+[[redirects]]
+  from = "/share/*"
+  to = "/share/:splat"
+  status = 200
+
+[[redirects]]
+  from = "/articles.json"
+  to = "/articles.json"
+  status = 200
+
+# Configuration des fonctions
+[functions]
+  node_bundle = true
+
+# Headers de sécurité
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-XSS-Protection = "1; mode=block"
+    X-Content-Type-Options = "nosniff"
+
+[[headers]]
+  for = "/share/*.html"
+  [headers.values]
+    Cache-Control = "public, max-age=3600"
