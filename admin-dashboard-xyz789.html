@@ -2282,7 +2282,7 @@ document.head.appendChild(styleSheet);
     // Submit New Article
 
 // ========================================
-// 🚀 SOUMISSION ARTICLE - VERSION CORS CORRIGÉE
+// 🚀 SOUMISSION ARTICLE - VERSION NETLIFY FUNCTIONS
 // ========================================
 async function handleArticleSubmit(e) {
     e.preventDefault();
@@ -2307,24 +2307,21 @@ async function handleArticleSubmit(e) {
     const contentType = document.querySelector('input[name="contentType"]:checked').value;
     const selectedSections = getSelectedSections();
 
-    // 🎯 PRÉPARATION DONNÉES
-    const payload = {
+    // 🎯 PRÉPARATION DONNÉES POUR NETLIFY FUNCTION
+    const articleData = {
         titre: titre,
         categorie: categorie,
         section: selectedSections.join(','),
         contentType: contentType,
-        image: uploadedImages[0],
+        image: uploadedImages[0], // URL CLOUDINARY DIRECTE
         images: JSON.stringify(uploadedImages),
         extrait: extrait,
         contenu: contenu,
-        auteur: auteur,
-        date: new Date().toISOString(),
-        vue: 0,
-        likes: 0
+        auteur: auteur
     };
 
     if (contentType === 'video') {
-        payload.video_url = document.getElementById('videoUrl').value.trim();
+        articleData.video_url = document.getElementById('videoUrl').value.trim();
     }
 
     const submitBtn = document.getElementById('submitBtn');
@@ -2333,58 +2330,43 @@ async function handleArticleSubmit(e) {
     submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Publication...';
 
     try {
-        // 🎯 SOLUTION CORS - Utiliser mode 'no-cors' et ignorer la réponse
-        await fetch(GOOGLE_APPS_SCRIPT_URL, {
+        console.log('🚀 Envoi à Netlify Function...', articleData);
+
+        // 🎯 ENVOI À NETLIFY FUNCTION
+        const response = await fetch('/.netlify/functions/create-share', {
             method: 'POST',
-            mode: 'no-cors', // ← CRITIQUE POUR CORS
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(articleData)
         });
 
-        // 🎯 SUCCÈS IMMÉDIAT - On suppose que ça fonctionne
-        showAlert('success', 
-            'Article publié avec succès !', 
-            'Page de partage en cours de génération...\nVérifiez les logs Apps Script.'
-        );
+        const result = await response.json();
         
-        console.log('✅ Article envoyé - Génération en background');
-        
-        // Réinitialiser le formulaire
-        setTimeout(() => resetForm(), 2000);
+        if (result.success) {
+            showAlert('success', 
+                '✅ Article publié !', 
+                `Page de partage créée: ${result.shareUrl}`
+            );
+            console.log('🎉 SUCCÈS:', result.shareUrl);
+            
+            // Réinitialiser le formulaire
+            setTimeout(() => resetForm(), 2000);
+        } else {
+            throw new Error(result.error || 'Erreur inconnue de Netlify Function');
+        }
 
     } catch (error) {
-        console.error('Erreur envoi:', error);
-        // Même en erreur, on suppose que l'article est créé
-        showAlert('warning', 
-            'Article potentiellement publié', 
-            'Vérifiez dans "Mes Articles" et les logs Apps Script.'
+        console.error('❌ Erreur publication:', error);
+        showAlert('error', 
+            'Erreur lors de la publication', 
+            error.message
         );
     } finally {
         submitBtn.disabled = false;
         submitBtn.innerHTML = originalBtnHTML;
     }
 }
-// ========================================
-// 🔍 VÉRIFIER SI L'ARTICLE EST CRÉÉ
-// ========================================
-async function verifierArticles() {
-    try {
-        const response = await fetch(GOOGLE_APPS_SCRIPT_URL);
-        const result = await response.json();
-        
-        if (result.success) {
-            console.log('📊 Articles dans Sheets:', result.data.length);
-            return result.data;
-        }
-    } catch (error) {
-        console.error('Erreur vérification:', error);
-    }
-    return [];
-}
-
-// Appeler cette fonction après publication
-// setTimeout(verifierArticles, 5000);
-
 
 // Fonction améliorée pour gérer CORS avec fallback
 // ✅ REMPLACER TOUTE LA FONCTION fetchWithCorsFallback
@@ -2406,35 +2388,6 @@ async function fetchWithCorsFallback(url, options) {
     throw error;
   }
 }
-
-// ========================================
-// 🔄 BOUTON RÉGÉNÉRATION MANUEL
-// ========================================
-async function regenerateShare(articleId) {
-    if (!confirm('Regénérer la page de partage pour cet article ?')) return;
-    
-    try {
-        const response = await fetch(GOOGLE_APPS_SCRIPT_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                action: 'regenerate_share',
-                article_id: articleId
-            })
-        });
-        
-        const result = await response.json();
-        
-        if (result.success) {
-            showAlert('success', 'Page régénérée !', result.shareUrl);
-        } else {
-            throw new Error(result.error);
-        }
-    } catch (error) {
-        showAlert('error', 'Erreur régénération', error.message);
-    }
-}
-
 
 // ========================================
 // 🔄 FORCER LA GÉNÉRATION DE PAGE SHARE
