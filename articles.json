@@ -1,5 +1,26 @@
 {
-  "articles": {},
-  "lastUpdate": "2024-01-01T00:00:00.000Z",
-  "totalArticles": 0
+  "articles": {
+    "art_1762785670248_d448tmrit": {
+      "id": "art_1762785670248_d448tmrit",
+      "titre": "Test de github et netifly",
+      "categorie": "Économie",
+      "sections": [
+        "main"
+      ],
+      "contentType": "article",
+      "image": "https://res.cloudinary.com/dkuciagop/image/upload/v1762785647/jln692bdxdefonc4oict.jpg",
+      "images": "[\"https://res.cloudinary.com/dkuciagop/image/upload/v1762785647/jln692bdxdefonc4oict.jpg\"]",
+      "extrait": "Test de github et netifly",
+      "contenu": "Test de github et netifly",
+      "auteur": "Orlus Fosso",
+      "video_url": "",
+      "date": "2025-11-10T14:41:10.248Z",
+      "vues": 0,
+      "likes": 0,
+      "share_url": "/share/art_1762785670248_d448tmrit.html",
+      "statut": "publié"
+    }
+  },
+  "lastUpdate": "2025-11-10T14:41:10.501Z",
+  "totalArticles": 1
 }
