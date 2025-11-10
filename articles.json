@@ -39,8 +39,29 @@
       "likes": 0,
       "share_url": "/share/art_1762787087226_0sg1botlv.html",
       "statut": "publié"
+    },
+    "art_1762791815395_mj9iwtw44": {
+      "id": "art_1762791815395_mj9iwtw44",
+      "titre": "teint parfait by nadege paris frappe fort",
+      "categorie": "Société",
+      "sections": [
+        "main",
+        "a-la-une"
+      ],
+      "contentType": "article",
+      "image": "https://res.cloudinary.com/dkuciagop/image/upload/v1762791752/fm88uhfhnedj73snjtgb.jpg",
+      "images": "[\"https://res.cloudinary.com/dkuciagop/image/upload/v1762791752/fm88uhfhnedj73snjtgb.jpg\"]",
+      "extrait": "teint parfait by nadege paris frappe fort",
+      "contenu": "teint parfait by nadege paris frappe fort",
+      "auteur": "Orlus Fosso",
+      "video_url": "",
+      "date": "2025-11-10T16:23:35.396Z",
+      "vues": 0,
+      "likes": 0,
+      "share_url": "/share/art_1762791815395_mj9iwtw44.html",
+      "statut": "publié"
     }
   },
-  "lastUpdate": "2025-11-10T15:04:47.477Z",
-  "totalArticles": 2
+  "lastUpdate": "2025-11-10T16:23:35.599Z",
+  "totalArticles": 3
 }
