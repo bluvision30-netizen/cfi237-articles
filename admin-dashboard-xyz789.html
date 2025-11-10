@@ -998,6 +998,156 @@
         padding: 8px 12px;
     }
 }
+
+/* STYLES GALERIE MULTI-IMAGES */
+.images-preview {
+    display: none;
+    margin-top: 20px;
+}
+
+.images-preview.show {
+    display: block;
+}
+
+.images-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.image-preview-item {
+    position: relative;
+    border-radius: 12px;
+    overflow: hidden;
+    aspect-ratio: 4/3;
+    border: 3px solid rgba(255,255,255,0.1);
+    transition: all 0.3s ease;
+    background: #0f172a;
+}
+
+.image-preview-item.cover-image {
+    border-color: #667eea;
+    box-shadow: 0 4px 16px rgba(102, 126, 234, 0.4);
+}
+
+.image-preview-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.image-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.image-preview-item:hover .image-overlay {
+    opacity: 1;
+}
+
+.cover-badge {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    background: #667eea;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 0.7rem;
+    font-weight: 600;
+}
+
+.remove-single-image {
+    background: #ef4444;
+    color: white;
+    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.remove-single-image:hover {
+    transform: scale(1.1);
+    background: #dc2626;
+}
+
+.image-info {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0,0,0,0.8);
+    padding: 8px;
+    font-size: 0.7rem;
+}
+
+.image-name {
+    color: white;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 2px;
+}
+
+.image-size {
+    color: #94a3b8;
+    font-size: 0.65rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .images-grid {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 12px;
+    }
+}
+
+/* Styles pour la barre de progression */
+.upload-progress {
+    display: none;
+    margin-top: 16px;
+}
+
+.upload-progress.show {
+    display: block;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 8px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #667eea, #764ba2);
+    width: 0%;
+    transition: width 0.3s ease;
+}
+
+.progress-text {
+    text-align: center;
+    margin-top: 8px;
+    color: #94a3b8;
+    font-size: 0.9rem;
+}
     </style>
 </head>
 <body>
@@ -1942,14 +2092,19 @@ function initMultipleImageUpload() {
     uploadArea.addEventListener('dragover', (e) => {
         e.preventDefault();
         uploadArea.style.borderColor = '#667eea';
+        uploadArea.style.background = 'rgba(102, 126, 234, 0.1)';
     });
     
     uploadArea.addEventListener('dragleave', () => {
         uploadArea.style.borderColor = 'rgba(255,255,255,0.2)';
+        uploadArea.style.background = 'rgba(102, 126, 234, 0.05)';
     });
     
     uploadArea.addEventListener('drop', (e) => {
         e.preventDefault();
+        uploadArea.style.borderColor = 'rgba(255,255,255,0.2)';
+        uploadArea.style.background = 'rgba(102, 126, 234, 0.05)';
+        
         const files = Array.from(e.dataTransfer.files);
         handleMultipleFiles(files);
     });
@@ -1959,13 +2114,11 @@ function initMultipleImageUpload() {
         handleMultipleFiles(files);
     });
 }
-
-// Gérer plusieurs fichiers
-function handleMultipleFiles(files) {
+async function handleMultipleFiles(files) {
     const imageFiles = files.filter(file => file.type.startsWith('image/'));
     
     if (imageFiles.length === 0) {
-        showAlert('error', 'Veuillez sélectionner des images valides');
+        showAlert('error', 'Veuillez sélectionner des images valides (JPG, PNG, WEBP)');
         return;
     }
     
@@ -1985,76 +2138,146 @@ function handleMultipleFiles(files) {
     totalUploads = imageFiles.length;
     
     // Afficher la barre de progression
-    document.getElementById('uploadProgress').classList.add('show');
-    document.getElementById('progressText').textContent = `Upload 1/${totalUploads}...`;
+    const progressElement = document.getElementById('uploadProgress');
+    const progressFill = document.getElementById('progressFill');
+    const progressText = document.getElementById('progressText');
     
-    // Commencer l'upload séquentiel
-    uploadNextImage(imageFiles);
-}
-
-// Upload séquentiel des images
-async function uploadNextImage(files) {
-    if (currentUploadIndex >= files.length) {
+    progressElement.classList.add('show');
+    progressText.textContent = `Upload 1/${totalUploads}...`;
+    
+    try {
+        // Upload séquentiel avec timeout
+        await uploadNextImage(imageFiles, progressFill, progressText);
+        
         // Tous les uploads sont terminés
-        document.getElementById('uploadProgress').classList.remove('show');
+        progressElement.classList.remove('show');
         document.getElementById('uploadArea').style.display = 'block';
         updateImageFields();
         displayImagesPreview();
-        return;
+        
+        showAlert('success', 
+            `${uploadedImages.length} image(s) uploadée(s) avec succès!`, 
+            'La première image sera utilisée comme couverture'
+        );
+        
+    } catch (error) {
+        console.error('❌ Erreur upload multiple:', error);
+        showAlert('error', 'Erreur lors de l\'upload des images', error.message);
+        progressElement.classList.remove('show');
+        document.getElementById('uploadArea').style.display = 'block';
+    }
+}
+
+
+async function uploadNextImage(files, progressFill, progressText) {
+    if (currentUploadIndex >= files.length) {
+        return; // Terminé
     }
     
     const file = files[currentUploadIndex];
     const progressPercent = ((currentUploadIndex + 1) / totalUploads) * 100;
-    document.getElementById('progressFill').style.width = `${progressPercent}%`;
-    document.getElementById('progressText').textContent = `Upload ${currentUploadIndex + 1}/${totalUploads}...`;
+    
+    progressFill.style.width = `${progressPercent}%`;
+    progressText.textContent = `Upload ${currentUploadIndex + 1}/${totalUploads}: ${file.name}`;
     
     try {
-        const imageUrl = await uploadSingleImage(file);
-        uploadedImages.push(imageUrl);
+        // Timeout de 30 secondes maximum par image
+        const imageUrl = await Promise.race([
+            uploadSingleImage(file),
+            new Promise((_, reject) => 
+                setTimeout(() => reject(new Error('Timeout upload image')), 30000)
+            )
+        ]);
+        
+        uploadedImages.push({
+            url: imageUrl,
+            name: file.name,
+            size: file.size
+        });
+        
         currentUploadIndex++;
         
-        // Uploader l'image suivante
-        setTimeout(() => uploadNextImage(files), 500);
+        // Uploader l'image suivante avec un délai
+        await new Promise(resolve => setTimeout(resolve, 500));
+        await uploadNextImage(files, progressFill, progressText);
         
     } catch (error) {
-        console.error(`Erreur upload image ${currentUploadIndex + 1}:`, error);
-        showAlert('error', `Erreur lors de l'upload de l'image ${currentUploadIndex + 1}`);
+        console.error(`❌ Erreur upload image ${currentUploadIndex + 1}:`, error);
+        
+        // Continuer avec l'image suivante même en cas d'erreur
         currentUploadIndex++;
-        setTimeout(() => uploadNextImage(files), 500);
+        if (currentUploadIndex < files.length) {
+            await uploadNextImage(files, progressFill, progressText);
+        } else {
+            throw error; // Propager l'erreur si c'est la dernière image
+        }
     }
 }
 
-// Upload d'une seule image vers Cloudinary
-async function uploadSingleImage(file) {
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
-    
-    const response = await fetch(
-        `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`,
-        { method: 'POST', body: formData }
-    );
-    
-    if (!response.ok) {
-        throw new Error(`HTTP ${response.status}`);
+// Upload d'une seule image vers Cloudinary avec retry
+async function uploadSingleImage(file, retryCount = 3) {
+    for (let attempt = 1; attempt <= retryCount; attempt++) {
+        try {
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+            formData.append('cloud_name', CLOUDINARY_CLOUD_NAME);
+            
+            console.log(`📤 Upload image ${file.name} (tentative ${attempt}/${retryCount})`);
+            
+            const response = await fetch(
+                `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`,
+                { 
+                    method: 'POST', 
+                    body: formData,
+                    signal: AbortSignal.timeout(25000) // Timeout 25s
+                }
+            );
+            
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+            
+            const data = await response.json();
+            
+            if (data.secure_url) {
+                console.log(`✅ Upload réussi: ${data.secure_url}`);
+                return data.secure_url;
+            } else {
+                throw new Error('URL sécurisée manquante dans la réponse');
+            }
+            
+        } catch (error) {
+            console.warn(`⚠️ Tentative ${attempt} échouée:`, error.message);
+            
+            if (attempt === retryCount) {
+                throw new Error(`Échec upload après ${retryCount} tentatives: ${error.message}`);
+            }
+            
+            // Attendre avant de réessayer (backoff exponentiel)
+            await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
+        }
     }
-    
-    const data = await response.json();
-    return data.secure_url;
 }
 
-// Mettre à jour les champs cachés avec les URLs
 function updateImageFields() {
     if (uploadedImages.length > 0) {
+        const imageUrls = uploadedImages.map(img => img.url);
+        
         // Première image = couverture
-        document.getElementById('imageUrl').value = uploadedImages[0];
+        document.getElementById('imageUrl').value = imageUrls[0];
         
         // Toutes les images en JSON stringifié
-        document.getElementById('imagesUrls').value = JSON.stringify(uploadedImages);
+        document.getElementById('imagesUrls').value = JSON.stringify(imageUrls);
         
-        showAlert('success', `${uploadedImages.length} image(s) uploadée(s) avec succès!`, 'La première image est la couverture');
+        console.log('🖼️ Images mises à jour:', {
+            couverture: imageUrls[0],
+            total: imageUrls.length,
+            toutes: imageUrls
+        });
     }
 }
+
 
 // Afficher l'aperçu de toutes les images
 function displayImagesPreview() {
@@ -2069,19 +2292,24 @@ function displayImagesPreview() {
     previewContainer.classList.add('show');
     
     previewContainer.innerHTML = `
-        <div style="margin-bottom: 16px; color: #e2e8f0; font-weight: 600;">
-            <i class="fas fa-info-circle"></i> 
-            ${uploadedImages.length} image(s) - <span style="color: #667eea">La première est la couverture</span>
+        <div style="margin-bottom: 16px; color: #e2e8f0; font-weight: 600; display: flex; align-items: center; gap: 8px;">
+            <i class="fas fa-check-circle" style="color: #22c55e;"></i>
+            ${uploadedImages.length} image(s) uploadée(s) - 
+            <span style="color: #667eea">La première est la couverture</span>
         </div>
         <div class="images-grid">
-            ${uploadedImages.map((url, index) => `
+            ${uploadedImages.map((img, index) => `
                 <div class="image-preview-item ${index === 0 ? 'cover-image' : ''}">
-                    <img src="${url}" alt="Preview ${index + 1}">
+                    <img src="${img.url}" alt="Preview ${index + 1}" loading="lazy">
                     <div class="image-overlay">
                         ${index === 0 ? '<div class="cover-badge">Couverture</div>' : ''}
                         <button type="button" class="remove-single-image" onclick="removeSingleImage(${index})" title="Supprimer">
                             <i class="fas fa-times"></i>
                         </button>
+                    </div>
+                    <div class="image-info">
+                        <div class="image-name">${img.name}</div>
+                        <div class="image-size">${formatFileSize(img.size)}</div>
                     </div>
                 </div>
             `).join('')}
@@ -2090,6 +2318,16 @@ function displayImagesPreview() {
             <i class="fas fa-trash"></i> Supprimer toutes les images
         </button>
     `;
+}
+
+
+// Formater la taille du fichier
+function formatFileSize(bytes) {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 }
 
 // Supprimer une image spécifique
@@ -2103,7 +2341,6 @@ function removeSingleImage(index) {
         displayImagesPreview();
     }
 }
-
 // Supprimer toutes les images
 function clearAllImages() {
     uploadedImages = [];
@@ -2112,6 +2349,8 @@ function clearAllImages() {
     document.getElementById('imagesPreview').classList.remove('show');
     document.getElementById('uploadArea').style.display = 'block';
     document.getElementById('imageInput').value = '';
+    
+    console.log('🔄 Toutes les images supprimées');
 }
 
 // CSS pour la galerie d'images
@@ -2290,15 +2529,11 @@ document.head.appendChild(styleSheet);
 
     // Submit New Article
 
-// ========================================
-// 🚀 SOUMISSION ARTICLE - VERSION SECTIONS
-// ========================================
-// ========================================
-// 🚀 SOUMISSION ARTICLE - VERSION SECTIONS/CATÉGORIES
-// ========================================
+// Soumission d'article améliorée
 async function handleArticleSubmit(e) {
     e.preventDefault();
 
+    // Validation des images
     if (uploadedImages.length === 0) {
         showAlert('error', 'Veuillez uploader au moins une image');
         return;
@@ -2315,7 +2550,7 @@ async function handleArticleSubmit(e) {
         return;
     }
 
-    // 🎯 RÉCUPÉRATION SECTIONS SÉLECTIONNÉES
+    // Récupération sections sélectionnées
     const selectedSections = getSelectedSections();
     if (selectedSections.length === 0) {
         showAlert('error', 'Veuillez sélectionner au moins une section');
@@ -2323,21 +2558,27 @@ async function handleArticleSubmit(e) {
     }
 
     const contentType = document.querySelector('input[name="contentType"]:checked').value;
+    const imageUrls = uploadedImages.map(img => img.url);
 
     const articleData = {
         titre: titre,
         categorie: categorie,
         sections: selectedSections,
         contentType: contentType,
-        image: uploadedImages[0],
-        images: JSON.stringify(uploadedImages),
+        image: imageUrls[0], // Première image = couverture
+        images: JSON.stringify(imageUrls), // Toutes les images
         extrait: extrait,
         contenu: contenu,
         auteur: auteur
     };
 
     if (contentType === 'video') {
-        articleData.video_url = document.getElementById('videoUrl').value.trim();
+        const videoUrl = document.getElementById('videoUrl').value.trim();
+        if (!videoUrl) {
+            showAlert('error', 'Veuillez fournir une URL vidéo');
+            return;
+        }
+        articleData.video_url = videoUrl;
     }
 
     const submitBtn = document.getElementById('submitBtn');
@@ -2346,7 +2587,12 @@ async function handleArticleSubmit(e) {
     submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Publication...';
 
     try {
-        console.log('🚀 Envoi article - Catégorie:', categorie, 'Sections:', selectedSections);
+        console.log('🚀 Envoi article:', {
+            categorie: categorie,
+            sections: selectedSections,
+            images: imageUrls.length,
+            contentType: contentType
+        });
 
         const response = await fetch('/.netlify/functions/create-article', {
             method: 'POST',
@@ -2354,30 +2600,91 @@ async function handleArticleSubmit(e) {
             body: JSON.stringify(articleData)
         });
 
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+
         const result = await response.json();
         
         if (result.success) {
             showAlert('success', 
-                '✅ Article publié !', 
-                `Catégorie: ${categorie}\nSections: ${selectedSections.join(', ')}\nLien: ${result.shareUrl}`
+                '✅ Article publié avec succès!', 
+                `Catégorie: ${categorie}\nSections: ${selectedSections.join(', ')}\nImages: ${imageUrls.length}\nLien: ${result.shareUrl}`
             );
             
             // Sauvegarder ID pour partage
             localStorage.setItem('lastArticleId', result.articleId);
+            localStorage.setItem('lastShareUrl', result.shareUrl);
             
-            setTimeout(() => resetForm(), 2000);
+            // Réinitialiser le formulaire après succès
+            setTimeout(() => {
+                resetForm();
+                // Afficher les boutons de partage
+                showShareButtons(result.articleId, result.shareUrl);
+            }, 2000);
+            
         } else {
-            throw new Error(result.error);
+            throw new Error(result.error || 'Erreur inconnue');
         }
 
     } catch (error) {
-        console.error('❌ Erreur:', error);
-        showAlert('error', 'Erreur publication', error.message);
+        console.error('❌ Erreur publication:', error);
+        showAlert('error', 'Erreur lors de la publication', error.message);
     } finally {
         submitBtn.disabled = false;
         submitBtn.innerHTML = originalBtnHTML;
     }
 }
+
+
+// Afficher les boutons de partage après publication
+function showShareButtons(articleId, shareUrl) {
+    const shareHTML = `
+        <div class="share-success" style="
+            background: rgba(34, 197, 94, 0.1);
+            border: 2px solid #22c55e;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+            text-align: center;
+        ">
+            <h4 style="color: #22c55e; margin-bottom: 15px;">
+                <i class="fas fa-share-alt"></i> Partager l'article
+            </h4>
+            <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+                <a href="https://wa.me/?text=${encodeURIComponent('Découvrez cet article: ' + shareUrl)}" 
+                   target="_blank" class="btn btn-success btn-sm">
+                    <i class="fab fa-whatsapp"></i> WhatsApp
+                </a>
+                <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}" 
+                   target="_blank" class="btn btn-primary btn-sm">
+                    <i class="fab fa-facebook"></i> Facebook
+                </a>
+                <a href="${shareUrl}" 
+                   target="_blank" class="btn btn-secondary btn-sm">
+                    <i class="fas fa-external-link-alt"></i> Voir la page
+                </a>
+            </div>
+            <div style="margin-top: 10px; font-size: 0.9em; color: #64748b;">
+                Lien: <code style="background: rgba(0,0,0,0.1); padding: 2px 6px; border-radius: 4px;">${shareUrl}</code>
+            </div>
+        </div>
+    `;
+    
+    // Ajouter après le formulaire
+    const formCard = document.querySelector('.form-card');
+    const existingShare = formCard.querySelector('.share-success');
+    if (existingShare) {
+        existingShare.remove();
+    }
+    formCard.insertAdjacentHTML('beforeend', shareHTML);
+}
+
+// Initialisation au chargement
+document.addEventListener('DOMContentLoaded', function() {
+    initMultipleImageUpload();
+    console.log('✅ Système upload multiple initialisé');
+});
 
 
 // ========================================
