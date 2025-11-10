@@ -2395,18 +2395,30 @@ async function loadArticlesFromGitHub() {
 }
 
 // ========================================
-// 🔍 FILTRAGE ARTICLES PAR CATÉGORIE
+// 🔍 FILTRAGE ARTICLES PAR CATÉGORIE - CORRIGÉ
 // ========================================
 async function displayArticles(filterCategory = '') {
     const articles = await loadArticlesFromGitHub();
     const articlesContainer = document.getElementById('articlesContainer');
+    
+    // 🎯 CORRECTION : Vérifier si articles existe
+    if (!articles || Object.keys(articles).length === 0) {
+        articlesContainer.innerHTML = `
+            <div class="empty-state">
+                <i class="fas fa-inbox"></i>
+                <h3>Aucun article trouvé</h3>
+                <p>Commencez par créer votre premier article</p>
+            </div>
+        `;
+        return;
+    }
     
     let articlesArray = Object.values(articles);
     
     // Filtrer par catégorie
     if (filterCategory) {
         articlesArray = articlesArray.filter(article => 
-            article.categorie === filterCategory
+            article && article.categorie === filterCategory // 🎯 Vérifier article existe
         );
     }
     
@@ -2424,17 +2436,19 @@ async function displayArticles(filterCategory = '') {
         return;
     }
     
-    // Afficher les articles
-    articlesContainer.innerHTML = articlesArray.map(article => `
+    // Afficher les articles avec vérification
+    articlesContainer.innerHTML = articlesArray.map(article => {
+        if (!article) return ''; // 🎯 Ignorer les articles undefined
+        return `
         <div class="article-item">
-            <img src="${article.image}" alt="${article.titre}" class="article-thumbnail">
+            <img src="${article.image || 'https://picsum.photos/120/80'}" alt="${article.titre}" class="article-thumbnail">
             <div class="article-info">
-                <h3>${article.titre}</h3>
-                <span class="badge badge-primary">${article.categorie}</span>
+                <h3>${article.titre || 'Sans titre'}</h3>
+                <span class="badge badge-primary">${article.categorie || 'Non classé'}</span>
                 <div class="article-meta">
-                    <span><i class="fas fa-calendar"></i> ${new Date(article.date).toLocaleDateString('fr-FR')}</span>
-                    <span><i class="fas fa-user"></i> ${article.auteur}</span>
-                    <span><i class="fas fa-layer-group"></i> ${article.sections.join(', ')}</span>
+                    <span><i class="fas fa-calendar"></i> ${article.date ? new Date(article.date).toLocaleDateString('fr-FR') : 'Date inconnue'}</span>
+                    <span><i class="fas fa-user"></i> ${article.auteur || 'Anonyme'}</span>
+                    <span><i class="fas fa-layer-group"></i> ${article.sections ? article.sections.join(', ') : 'main'}</span>
                 </div>
             </div>
             <div class="article-actions">
@@ -2446,7 +2460,8 @@ async function displayArticles(filterCategory = '') {
                 </button>
             </div>
         </div>
-    `).join('');
+        `;
+    }).join('');
 }
 
 // Initialiser le filtrage
@@ -3355,3 +3370,4 @@ async function sendNotificationForArticle(articleData) {
 </body>
 
 </html>
+
