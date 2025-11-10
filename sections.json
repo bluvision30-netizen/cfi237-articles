@@ -1,0 +1,13 @@
+{
+  "sections": {
+    "main": "📰 Articles principaux",
+    "hero": "🌟 À la une (Slider)", 
+    "a-la-une": "🔥 Carousel À la Une",
+    "featured": "⭐ À ne pas manquer",
+    "trending": "📈 Trending",
+    "videos": "🎥 Vidéos",
+    "debates": "💬 Grands Débats",
+    "societe": "👥 Société",
+    "events": "📅 Événements"
+  }
+}
