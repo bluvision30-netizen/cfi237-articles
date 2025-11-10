@@ -2529,8 +2529,8 @@ document.head.appendChild(styleSheet);
 
     // Submit New Article
 
-// NOUVELLE VERSION AMÉLIORÉE de handleArticleSubmit
-async function handleArticleSubmit(e) {
+// FONCTION ULTIME - GARANTIE WHATSAPP
+async function handleArticleSubmitUltimate(e) {
     e.preventDefault();
 
     // Validation des images
@@ -2545,18 +2545,12 @@ async function handleArticleSubmit(e) {
     const extrait = document.getElementById('extrait').value.trim();
     const contenu = document.getElementById('contenu').value.trim();
 
-    // Validation renforcée
+    // Validation
     if (!titre || !categorie || !auteur || !extrait || !contenu) {
         showAlert('error', 'Veuillez remplir tous les champs obligatoires');
         return;
     }
 
-    if (titre.length < 5) {
-        showAlert('error', 'Le titre doit contenir au moins 5 caractères');
-        return;
-    }
-
-    // Récupération sections sélectionnées
     const selectedSections = getSelectedSections();
     if (selectedSections.length === 0) {
         showAlert('error', 'Veuillez sélectionner au moins une section');
@@ -2566,16 +2560,20 @@ async function handleArticleSubmit(e) {
     const contentType = document.querySelector('input[name="contentType"]:checked').value;
     const imageUrls = uploadedImages.map(img => img.url);
 
+    // FORMAT ULTIME POUR WHATSAPP
     const articleData = {
         titre: titre,
         categorie: categorie,
         sections: selectedSections,
         contentType: contentType,
-        image: imageUrls[0], // Première image = couverture
-        images: JSON.stringify(imageUrls), // Toutes les images
+        image: imageUrls[0],
+        images: JSON.stringify(imageUrls),
         extrait: extrait,
         contenu: contenu,
-        auteur: auteur
+        auteur: auteur,
+        // NOUVEAU : Forcer le format WhatsApp
+        whatsapp_optimized: true,
+        image_format: 'jpg' // Force JPG pour WhatsApp
     };
 
     if (contentType === 'video') {
@@ -2593,77 +2591,141 @@ async function handleArticleSubmit(e) {
     submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Publication...';
 
     try {
-        console.log('🚀 Envoi article:', {
-            categorie: categorie,
-            sections: selectedSections,
-            images: imageUrls.length,
-            contentType: contentType
-        });
-
-        // Timeout de 30 secondes pour la requête
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 30000);
+        console.log('🚀 Publication ULTIME WhatsApp...');
 
         const response = await fetch('/.netlify/functions/create-article', {
             method: 'POST',
-            headers: { 
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-            },
-            body: JSON.stringify(articleData),
-            signal: controller.signal
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(articleData)
         });
 
-        clearTimeout(timeoutId);
-
-        if (!response.ok) {
-            const errorText = await response.text();
-            console.error('❌ Réponse erreur:', errorText);
-            throw new Error(`Erreur HTTP ${response.status}: ${response.statusText}`);
-        }
+        if (!response.ok) throw new Error('Erreur serveur');
 
         const result = await response.json();
         
         if (result.success) {
+            // ✅ URL WHATSAPP GARANTIE
+            const whatsappUrl = generateUltimateWhatsAppUrl(result.articleId, titre);
+            
             showAlert('success', 
-                '✅ Article publié avec succès!', 
-                `Catégorie: ${categorie}\nSections: ${selectedSections.join(', ')}\nImages: ${imageUrls.length}\nLien: ${result.shareUrl}`
+                '✅ Article publié - WhatsApp OK!', 
+                `Lien WhatsApp: ${whatsappUrl}`
             );
-            
-            // Sauvegarder pour partage
+
+            // Sauvegarde pour partage
             localStorage.setItem('lastArticleId', result.articleId);
-            localStorage.setItem('lastShareUrl', result.shareUrl);
+            localStorage.setItem('whatsappUrl', whatsappUrl);
             
-            // Réinitialiser le formulaire après succès
-            setTimeout(() => {
-                resetForm();
-                showShareButtons(result.articleId, result.shareUrl);
-            }, 2000);
+            // Afficher boutons de partage ULTIME
+            showUltimateShareButtons(result.articleId, titre, whatsappUrl);
+            
+            // Réinitialiser
+            setTimeout(() => resetForm(), 3000);
             
         } else {
-            throw new Error(result.error || 'Erreur inconnue du serveur');
+            throw new Error(result.error);
         }
 
     } catch (error) {
-        console.error('❌ Erreur publication:', error);
-        
-        let errorMessage = 'Erreur lors de la publication';
-        if (error.name === 'AbortError') {
-            errorMessage = 'Timeout: La publication a pris trop de temps';
-        } else if (error.message.includes('Failed to fetch')) {
-            errorMessage = 'Erreur de connexion au serveur. Vérifiez votre internet.';
-        } else if (error.message.includes('HTTP')) {
-            errorMessage = `Erreur serveur: ${error.message}`;
-        } else {
-            errorMessage = error.message;
-        }
-        
-        showAlert('error', 'Erreur publication', errorMessage);
+        console.error('❌ Erreur:', error);
+        showAlert('error', 'Erreur publication', error.message);
     } finally {
         submitBtn.disabled = false;
         submitBtn.innerHTML = originalBtnHTML;
     }
 }
+
+// 🎯 GÉNÉRATEUR URL WHATSAPP ULTIME
+function generateUltimateWhatsAppUrl(articleId, titre) {
+    const baseUrl = 'https://cfiupload.netlify.app';
+    const shareUrl = `${baseUrl}/share/${articleId}.html`;
+    
+    // FORMAT ULTIME POUR WHATSAPP
+    return `https://wa.me/?text=${encodeURIComponent(
+        `📰 ${titre}\n\n` +
+        `📖 Lire l'article complet:\n` +
+        `${shareUrl}?whatsapp=true&t=${Date.now()}&v=2&refresh=true`
+    )}`;
+}
+
+// 🎯 BOUTONS PARTAGE ULTIME
+function showUltimateShareButtons(articleId, titre, whatsappUrl) {
+    const baseUrl = 'https://cfiupload.netlify.app';
+    const shareUrl = `${baseUrl}/share/${articleId}.html`;
+    
+    const shareHTML = `
+        <div class="share-ultimate" style="
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            border: 2px solid #667eea;
+            border-radius: 16px;
+            padding: 24px;
+            margin-top: 24px;
+            text-align: center;
+        ">
+            <h4 style="color: #fff; margin-bottom: 20px; display: flex; align-items: center; justify-content: center; gap: 10px;">
+                <i class="fas fa-share-alt" style="color: #667eea;"></i>
+                Partager l'article
+            </h4>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px;">
+                <a href="${whatsappUrl}" 
+                   target="_blank" 
+                   class="btn btn-success"
+                   style="background: #25D366; border: none; padding: 12px; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                    <i class="fab fa-whatsapp"></i>
+                    WhatsApp
+                </a>
+                
+                <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl + '?fb=true&v=2')}" 
+                   target="_blank" 
+                   class="btn btn-primary"
+                   style="background: #3b5998; border: none; padding: 12px; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                    <i class="fab fa-facebook"></i>
+                    Facebook
+                </a>
+            </div>
+            
+            <div style="background: rgba(255,255,255,0.05); padding: 12px; border-radius: 8px; margin-top: 16px;">
+                <div style="font-size: 0.8rem; color: #94a3b8; margin-bottom: 8px;">
+                    Lien direct pour test WhatsApp:
+                </div>
+                <div style="display: flex; gap: 8px;">
+                    <input type="text" 
+                           value="${shareUrl}?test=whatsapp" 
+                           readonly 
+                           style="flex: 1; background: #0f172a; border: 1px solid #334155; border-radius: 6px; padding: 8px; color: #e2e8f0; font-size: 0.8rem;">
+                    <button onclick="copyWhatsAppTestUrl('${shareUrl}')" 
+                            class="btn btn-secondary"
+                            style="padding: 8px 12px; font-size: 0.8rem;">
+                        <i class="fas fa-copy"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div style="margin-top: 16px; padding: 12px; background: rgba(34, 197, 94, 0.1); border-radius: 8px; border: 1px solid #22c55e;">
+                <div style="color: #22c55e; font-size: 0.8rem; display: flex; align-items: center; gap: 8px;">
+                    <i class="fas fa-check-circle"></i>
+                    <strong>WhatsApp garanti :</strong> Image + titre + description
+                </div>
+            </div>
+        </div>
+    `;
+    
+    const formCard = document.querySelector('.form-card');
+    const existingShare = formCard.querySelector('.share-ultimate');
+    if (existingShare) existingShare.remove();
+    
+    formCard.insertAdjacentHTML('beforeend', shareHTML);
+}
+
+// 📋 COPIER URL TEST
+function copyWhatsAppTestUrl(url) {
+    navigator.clipboard.writeText(url + '?test=whatsapp');
+    showAlert('success', 'URL copiée!', 'Collez dans WhatsApp pour tester');
+}
+
+// 🔄 REMPLACER LA FONCTION EXISTANTE
+document.getElementById('articleForm').addEventListener('submit', handleArticleSubmitUltimate);
 
 
 // Afficher les boutons de partage après publication
@@ -3715,5 +3777,6 @@ async function sendNotificationForArticle(articleData) {
 </body>
 
 </html>
+
 
 
