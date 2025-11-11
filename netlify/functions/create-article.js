@@ -1,4 +1,4 @@
-// netlify/functions/create-article.js - VERSION COMPLÈTE
+// netlify/functions/create-article.js - VERSION CORRIGÉE AVEC VIDÉOS
 const fetch = require('node-fetch');
 
 exports.handler = async function(event, context) {
@@ -64,12 +64,12 @@ exports.handler = async function(event, context) {
   }
 };
 
-// SAUVEGARDE GITHUB
+// 🔧 CORRECTION : Sauvegarder TOUS les champs incluant video_url et contentType
 async function saveToGitHub(articleData, articleId) {
   try {
     const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
     if (!GITHUB_TOKEN) {
-      console.log('🔑 GITHUB_TOKEN manquant - simulation');
+      console.log('🔒 GITHUB_TOKEN manquant - simulation');
       return { success: true, simulated: true };
     }
 
@@ -91,10 +91,10 @@ async function saveToGitHub(articleData, articleId) {
         sha = fileData.sha;
       }
     } catch (e) {
-      console.log('📁 Création nouveau articles.json');
+      console.log('📝 Création nouveau articles.json');
     }
 
-    // Ajouter nouvel article
+    // ✅ CORRECTION : Ajouter TOUS les champs nécessaires
     const completeArticle = {
       id: articleId,
       titre: articleData.titre,
@@ -107,7 +107,10 @@ async function saveToGitHub(articleData, articleId) {
       auteur: articleData.auteur,
       date: new Date().toISOString(),
       vues: 0,
-      likes: 0
+      likes: 0,
+      // ⭐ AJOUT DES CHAMPS VIDÉO
+      contentType: articleData.contentType || 'article',
+      video_url: articleData.video_url || null
     };
 
     existingData.articles[articleId] = completeArticle;
@@ -122,13 +125,13 @@ async function saveToGitHub(articleData, articleId) {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        message: `📝 Ajout: ${articleData.titre}`,
+        message: `📝 Ajout: ${articleData.titre}${articleData.contentType === 'video' ? ' [VIDÉO]' : ''}`,
         content: Buffer.from(JSON.stringify(existingData, null, 2)).toString('base64'),
         sha: sha
       })
     });
 
-    console.log('✅ Article sauvegardé dans GitHub');
+    console.log('✅ Article sauvegardé dans GitHub avec champs vidéo');
     return { success: true };
 
   } catch (error) {
@@ -137,7 +140,7 @@ async function saveToGitHub(articleData, articleId) {
   }
 }
 
-// CRÉER PAGE SHARE
+// 🔧 CORRECTION : Page share adaptée pour les vidéos
 async function createSharePage(articleData, articleId) {
   try {
     const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
@@ -149,8 +152,11 @@ async function createSharePage(articleData, articleId) {
     const images = JSON.parse(articleData.images || '[]');
     const firstImage = images[0] || articleData.image;
 
-   // Dans createSharePage - MODIFIE le HTML
-const shareHTML = `<!DOCTYPE html>
+    // ⭐ Détection type de contenu
+    const isVideo = articleData.contentType === 'video' && articleData.video_url;
+    const contentTypeLabel = isVideo ? '🎥 VIDÉO' : '📰 ARTICLE';
+
+    const shareHTML = `<!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
@@ -158,11 +164,12 @@ const shareHTML = `<!DOCTYPE html>
     <title>${articleData.titre} - Abu Media Group</title>
     
     <!-- META TAGS POUR RÉSEAUX SOCIAUX -->
-    <meta property="og:title" content="${articleData.titre}">
+    <meta property="og:title" content="${contentTypeLabel} ${articleData.titre}">
     <meta property="og:description" content="${articleData.extrait}">
     <meta property="og:image" content="${firstImage}">
     <meta property="og:url" content="https://cfiupload.netlify.app/article-detail.html?id=${articleId}">
-    <meta property="og:type" content="article">
+    <meta property="og:type" content="${isVideo ? 'video.other' : 'article'}">
+    ${isVideo ? `<meta property="og:video" content="${articleData.video_url}">` : ''}
     
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
@@ -172,51 +179,40 @@ const shareHTML = `<!DOCTYPE html>
         body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: #f5f5f5; text-align: center; }
         .container { max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; }
         img { max-width: 100%; height: auto; border-radius: 8px; margin-bottom: 20px; }
+        .video-badge { display: inline-block; background: #ef4444; color: white; padding: 6px 12px; border-radius: 6px; font-weight: bold; margin-bottom: 15px; }
         h1 { color: #333; margin-bottom: 15px; }
         .extrait { color: #666; font-size: 16px; line-height: 1.5; margin-bottom: 25px; }
         .share-btn { display: inline-block; padding: 12px 24px; margin: 8px; border-radius: 6px; color: white; text-decoration: none; font-weight: bold; }
         .whatsapp { background: #25D366; }
         .facebook { background: #3b5998; }
         .read-article { display: inline-block; padding: 15px 30px; background: #667eea; color: white; text-decoration: none; border-radius: 6px; font-weight: bold; margin-top: 20px; }
-        
-        /* Animation de redirection */
-        .redirect-message { 
-            background: #f0f9ff; 
-            border: 1px solid #bae6fd; 
-            border-radius: 8px; 
-            padding: 15px; 
-            margin: 20px 0; 
-            color: #0369a1;
-        }
+        .redirect-message { background: #f0f9ff; border: 1px solid #bae6fd; border-radius: 8px; padding: 15px; margin: 20px 0; color: #0369a1; }
     </style>
 </head>
 <body>
     <div class="container">
+        ${isVideo ? '<div class="video-badge">🎥 VIDÉO</div>' : ''}
         <img src="${firstImage}" alt="${articleData.titre}">
         <h1>${articleData.titre}</h1>
         <div class="extrait">${articleData.extrait}</div>
         
-        <!-- Message de redirection -->
         <div class="redirect-message">
-            <p>🔄 Redirection vers l'article complet dans <span id="countdown">5</span> secondes...</p>
+            <p>📄 Redirection vers ${isVideo ? 'la vidéo' : "l'article"} complet dans <span id="countdown">5</span> secondes...</p>
         </div>
         
-        <!-- Boutons de partage -->
         <div style="margin-bottom: 20px;">
-            <a href="https://wa.me/?text=${encodeURIComponent(articleData.titre + ' - https://cfiupload.netlify.app/article-detail.html?id=' + articleId)}" 
+            <a href="https://wa.me/?text=${encodeURIComponent(contentTypeLabel + ' ' + articleData.titre + ' - https://cfiupload.netlify.app/article-detail.html?id=' + articleId)}" 
                class="share-btn whatsapp" target="_blank">📱 Partager sur WhatsApp</a>
             <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent('https://cfiupload.netlify.app/article-detail.html?id=' + articleId)}" 
                class="share-btn facebook" target="_blank">📘 Partager sur Facebook</a>
         </div>
         
-        <!-- Bouton lecture immédiate -->
         <a href="https://cfiupload.netlify.app/article-detail.html?id=${articleId}" class="read-article">
-            📖 Lire l'article maintenant
+            ${isVideo ? '🎬 Voir la vidéo maintenant' : '📖 Lire l\'article maintenant'}
         </a>
     </div>
 
     <script>
-        // REDIRECTION AUTOMATIQUE
         let seconds = 5;
         const countdownElement = document.getElementById('countdown');
         const countdownInterval = setInterval(() => {
@@ -228,14 +224,6 @@ const shareHTML = `<!DOCTYPE html>
                 window.location.href = 'https://cfiupload.netlify.app/article-detail.html?id=${articleId}';
             }
         }, 1000);
-        
-        // Redirection immédiate si c'est un bot réseau social
-        if (navigator.userAgent.includes('WhatsApp') || 
-            navigator.userAgent.includes('Facebot') ||
-            navigator.userAgent.includes('Twitter')) {
-            // Les bots voient la page mais les utilisateurs sont redirigés
-            console.log('🤖 Bot détecté - meta tags affichés');
-        }
     </script>
 </body>
 </html>`;
@@ -249,7 +237,7 @@ const shareHTML = `<!DOCTYPE html>
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        message: `🌐 Page share: ${articleData.titre}`,
+        message: `🌐 Page share: ${articleData.titre}${isVideo ? ' [VIDÉO]' : ''}`,
         content: Buffer.from(shareHTML).toString('base64')
       })
     });
