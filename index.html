@@ -1318,6 +1318,130 @@
     border: 6px solid transparent;
     border-top-color: rgba(0, 0, 0, 0.95);
 }
+
+/* Container avec scroll horizontal */
+.videos-scroll-container {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    padding: 10px 0;
+}
+
+.videos-scroll-wrapper {
+    display: flex;
+    gap: 24px;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
+    padding: 0 5px 20px 5px;
+}
+
+.videos-scroll-wrapper::-webkit-scrollbar {
+    display: none; /* Chrome/Safari */
+}
+
+/* Chaque carte vidéo */
+.videos-scroll-wrapper .video-card,
+.videos-scroll-wrapper .article-card {
+    flex: 0 0 380px; /* Largeur fixe */
+    min-width: 380px;
+    max-width: 380px;
+    scroll-snap-align: start;
+}
+
+/* Boutons de scroll */
+.scroll-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.scroll-btn {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    border: 2px solid var(--primary);
+    background: white;
+    color: var(--primary);
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.scroll-btn:hover {
+    background: var(--primary);
+    color: white;
+    transform: scale(1.1);
+}
+
+.scroll-btn:active {
+    transform: scale(0.95);
+}
+
+.scroll-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+    transform: scale(1);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .videos-scroll-wrapper .video-card,
+    .videos-scroll-wrapper .article-card {
+        flex: 0 0 320px;
+        min-width: 320px;
+        max-width: 320px;
+    }
+    
+    .scroll-buttons {
+        display: none; /* Masquer sur mobile, scroll tactile */
+    }
+}
+
+@media (max-width: 480px) {
+    .videos-scroll-wrapper .video-card,
+    .videos-scroll-wrapper .article-card {
+        flex: 0 0 280px;
+        min-width: 280px;
+        max-width: 280px;
+    }
+}
+
+/* Indicateur de scroll */
+.videos-scroll-container::before,
+.videos-scroll-container::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 20px;
+    width: 60px;
+    pointer-events: none;
+    z-index: 10;
+    transition: opacity 0.3s ease;
+}
+
+.videos-scroll-container::before {
+    left: 0;
+    background: linear-gradient(to right, rgba(255,255,255,1), rgba(255,255,255,0));
+    opacity: 0;
+}
+
+.videos-scroll-container::after {
+    right: 0;
+    background: linear-gradient(to left, rgba(255,255,255,1), rgba(255,255,255,0));
+}
+
+.videos-scroll-container.can-scroll-left::before {
+    opacity: 1;
+}
+
+.videos-scroll-container.can-scroll-right::after {
+    opacity: 1;
+}
     </style>
 </head>
 <body>
@@ -1469,17 +1593,29 @@
             </aside>
         </div>
 
-        <!-- Vidéos Section -->
-        <section>
-            <h2 class="section-title">🎥 Vidéos</h2>
-            <div class="articles-grid" id="videosGrid">
-                <div class="empty-state">
-                    <i class="fas fa-video"></i>
-                    <p>Aucune vidéo disponible pour le moment</p>
-                </div>
+      <!-- VidÃ©os Section -->
+<section style="margin: 3rem 0;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+        <h2 class="section-title">🎥 Vidéos</h2>
+        <div class="scroll-buttons">
+            <button class="scroll-btn scroll-left" onclick="scrollVideosLeft()">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <button class="scroll-btn scroll-right" onclick="scrollVideosRight()">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+    </div>
+    
+    <div class="videos-scroll-container" id="videosScrollContainer">
+        <div class="videos-scroll-wrapper" id="videosGrid">
+            <div class="empty-state">
+                <i class="fas fa-video"></i>
+                <p>Aucune vidéo disponible pour le moment</p>
             </div>
-        </section>
-
+        </div>
+    </div>
+</section>
         <!-- Politique Section -->
         <section class="section-politique section-colored">
             <div class="container">
@@ -1596,6 +1732,18 @@
         let allArticles = [];
         let currentSlide = 0;
         let heroArticles = [];
+let videosContainer;
+let videosWrapper;// Initialiser après chargement
+document.addEventListener('DOMContentLoaded', function() {
+    videosContainer = document.getElementById('videosScrollContainer');
+    videosWrapper = document.getElementById('videosGrid');
+    
+    // Écouter le scroll pour mettre à jour les indicateurs
+    if (videosWrapper) {
+        videosWrapper.addEventListener('scroll', updateScrollIndicators);
+        updateScrollIndicators();
+    }
+});
 
         // Charger les articles depuis GitHub
         // Charger les articles depuis GitHub
@@ -1781,56 +1929,232 @@ async function loadArticles() {
             `).join('');
         }
 
-   // Vidéos - Version corrigée avec l'affichage original
-function displayVideos() {
+ async function displayVideos() {
     const videos = allArticles
         .filter(a => a.contentType === 'video' || (a.sections && a.sections.includes('videos')))
-        .slice(0, 6);
+        .slice(0, 12); // Augmenter à 12 pour le scroll
     
     const grid = document.getElementById('videosGrid');
     
     if (videos.length === 0) {
-        grid.innerHTML = '<div class="empty-state"><i class="fas fa-video"></i><p>Aucune vidéo disponible pour le moment</p></div>';
+        grid.innerHTML = `
+            <div class="empty-state" style="flex: 1; text-align: center; padding: 60px 20px;">
+                <i class="fas fa-video"></i>
+                <p>Aucune vidéo disponible pour le moment</p>
+            </div>
+        `;
         return;
     }
     
-    grid.innerHTML = videos.map(article => `
-        <article class="article-card video-card" onclick="openArticle('${article.id}')">
-            <div class="video-thumbnail">
-                <img src="${article.image}" alt="${article.titre}" class="article-image" loading="lazy">
-                <div class="video-overlay">
-                    <div class="play-button">
-                        <i class="fas fa-play"></i>
+    // Afficher loading
+    grid.innerHTML = `
+        <div class="loading" style="flex: 1; text-align: center; padding: 40px;">
+            <i class="fas fa-spinner"></i>
+            <p style="margin-top: 1rem;">Chargement des vidéos HD...</p>
+        </div>
+    `;
+    
+    // Récupérer miniatures HD
+    const videosWithThumbnails = await Promise.all(
+        videos.map(async (article) => {
+            let thumbnailData = {
+                url: article.image,
+                quality: 'standard',
+                isYouTube: false
+            };
+            
+            if (article.video_url) {
+                const platform = detectVideoPlatform(article.video_url);
+                
+                if (platform === 'youtube') {
+                    const thumbnail = await getYouTubeThumbnail(article.video_url);
+                    if (thumbnail) {
+                        thumbnailData = {
+                            url: thumbnail.url,
+                            quality: thumbnail.quality,
+                            width: thumbnail.width,
+                            height: thumbnail.height,
+                            isYouTube: true
+                        };
+                    }
+                }
+            }
+            
+            return { ...article, thumbnailData };
+        })
+    );
+    
+    // Générer HTML
+    grid.innerHTML = videosWithThumbnails.map(article => {
+        const thumb = article.thumbnailData;
+        const qualityBadge = thumb.isYouTube ? 
+            `<div class="quality-badge">${thumb.quality === 'maxresdefault' ? 'HD' : 'SD'}</div>` : '';
+        
+        return `
+            <article class="article-card video-card" onclick="openArticle('${article.id}')">
+                <div class="video-thumbnail">
+                    <img src="${thumb.url}" 
+                         alt="${article.titre}" 
+                         class="article-image" 
+                         loading="lazy">
+                    
+                    <div class="video-overlay">
+                        <div class="play-button">
+                            <i class="fas fa-play"></i>
+                        </div>
+                    </div>
+                    
+                    ${qualityBadge}
+                    
+                    ${thumb.isYouTube ? `
+                        <div class="platform-badge youtube">
+                            <i class="fab fa-youtube"></i> YouTube
+                        </div>
+                    ` : ''}
+                    
+                    <div class="duration-badge">
+                        <i class="fas fa-play-circle"></i> VIDÉO
                     </div>
                 </div>
-                <!-- Badges vidéo -->
-                <div class="quality-badge">HD</div>
-                <div class="platform-badge youtube">
-                    <i class="fab fa-youtube"></i> YouTube
-                </div>
-                <div class="duration-badge">
-                    <i class="fas fa-clock"></i> 10:30
-                </div>
-            </div>
-            <div class="article-content">
-                <span class="category-badge video-badge">🎥 ${article.categorie}</span>
-                <h3 class="article-title">${article.titre}</h3>
-                <p class="article-excerpt">${article.extrait}</p>
-                <div class="article-meta">
-                    <div class="article-author">
-                        <div class="author-avatar">${getInitial(article.auteur)}</div>
-                        <span>${article.auteur}</span>
-                    </div>
-                    <div class="article-stats">
-                        <span class="stat"><i class="fas fa-eye"></i> ${article.vues || 0}</span>
-                        <span class="stat"><i class="fas fa-heart"></i> ${article.likes || 0}</span>
+                
+                <div class="article-content">
+                    <span class="category-badge video-badge">
+                        🎥 ${article.categorie}
+                    </span>
+                    <h3 class="article-title">${article.titre}</h3>
+                    <p class="article-excerpt">${article.extrait}</p>
+                    <div class="article-meta">
+                        <div class="article-author">
+                            <div class="author-avatar">${getInitial(article.auteur)}</div>
+                            <span>${article.auteur}</span>
+                        </div>
+                        <div class="article-stats">
+                            <span class="stat"><i class="fas fa-eye"></i> ${article.vues || 0}</span>
+                            <span class="stat"><i class="fas fa-heart"></i> ${article.likes || 0}</span>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </article>
-    `).join('');
+            </article>
+        `;
+    }).join('');
+    
+    // Mettre à jour après rendu
+    setTimeout(() => {
+        updateScrollIndicators();
+    }, 100);
+    
+    console.log(`✅ ${videosWithThumbnails.length} vidéos affichées en scroll horizontal`);
 }
 
+// Support scroll au clavier
+document.addEventListener('keydown', function(e) {
+    if (!videosWrapper) return;
+    
+    if (e.key === 'ArrowLeft') {
+        scrollVideosLeft();
+    } else if (e.key === 'ArrowRight') {
+        scrollVideosRight();
+    }
+});
+
+// Support scroll tactile avec détection de direction
+let touchStartX = 0;
+let touchEndX = 0;
+
+if (videosWrapper) {
+    videosWrapper.addEventListener('touchstart', function(e) {
+        touchStartX = e.changedTouches[0].screenX;
+    }, { passive: true });
+    
+    videosWrapper.addEventListener('touchend', function(e) {
+        touchEndX = e.changedTouches[0].screenX;
+        handleSwipe();
+    }, { passive: true });
+}
+
+function handleSwipe() {
+    if (touchEndX < touchStartX - 50) {
+        // Swipe gauche
+        updateScrollIndicators();
+    }
+    if (touchEndX > touchStartX + 50) {
+        // Swipe droite
+        updateScrollIndicators();
+    }
+}
+/**
+ * Scroll vers la gauche
+ */
+function scrollVideosLeft() {
+    if (!videosWrapper) return;
+    
+    const scrollAmount = 400; // Distance de scroll
+    videosWrapper.scrollBy({
+        left: -scrollAmount,
+        behavior: 'smooth'
+    });
+}
+
+/**
+ * Scroll vers la droite
+ */
+function scrollVideosRight() {
+    if (!videosWrapper) return;
+    
+    const scrollAmount = 400;
+    videosWrapper.scrollBy({
+        left: scrollAmount,
+        behavior: 'smooth'
+    });
+}
+
+/**
+ * Mettre à jour les indicateurs de scroll
+ */
+function updateScrollIndicators() {
+    if (!videosWrapper || !videosContainer) return;
+    
+    const scrollLeft = videosWrapper.scrollLeft;
+    const scrollWidth = videosWrapper.scrollWidth;
+    const clientWidth = videosWrapper.clientWidth;
+    
+    // Peut scroller à gauche ?
+    if (scrollLeft > 10) {
+        videosContainer.classList.add('can-scroll-left');
+    } else {
+        videosContainer.classList.remove('can-scroll-left');
+    }
+    
+    // Peut scroller à droite ?
+    if (scrollLeft < scrollWidth - clientWidth - 10) {
+        videosContainer.classList.add('can-scroll-right');
+    } else {
+        videosContainer.classList.remove('can-scroll-right');
+    }
+    
+    // Mettre à jour les boutons
+    updateScrollButtons();
+}
+
+/**
+ * Mettre à jour l'état des boutons
+ */
+function updateScrollButtons() {
+    const leftBtn = document.querySelector('.scroll-left');
+    const rightBtn = document.querySelector('.scroll-right');
+    
+    if (!videosWrapper || !leftBtn || !rightBtn) return;
+    
+    const scrollLeft = videosWrapper.scrollLeft;
+    const scrollWidth = videosWrapper.scrollWidth;
+    const clientWidth = videosWrapper.clientWidth;
+    
+    // Désactiver bouton gauche si au début
+    leftBtn.disabled = scrollLeft <= 10;
+    
+    // Désactiver bouton droite si à la fin
+    rightBtn.disabled = scrollLeft >= scrollWidth - clientWidth - 10;
+}
         // Société redesigned
         function displaySociete() {
             const societe = allArticles
