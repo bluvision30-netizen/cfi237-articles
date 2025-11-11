@@ -2528,7 +2528,6 @@ document.head.appendChild(styleSheet);
 
     // Submit New Article
 
-// FONCTION ULTIME - GARANTIE WHATSAPP
 async function handleArticleSubmitUltimate(e) {
     e.preventDefault();
 
@@ -2559,36 +2558,42 @@ async function handleArticleSubmitUltimate(e) {
     const contentType = document.querySelector('input[name="contentType"]:checked').value;
     const imageUrls = uploadedImages.map(img => img.url);
 
-    // FORMAT ULTIME POUR WHATSAPP
+    // ⭐ CORRECTION : Construction de l'objet avec TOUS les champs
     const articleData = {
         titre: titre,
         categorie: categorie,
         sections: selectedSections,
-        contentType: contentType,
+        contentType: contentType,  // ✅ Toujours inclus
         image: imageUrls[0],
         images: JSON.stringify(imageUrls),
         extrait: extrait,
         contenu: contenu,
         auteur: auteur,
-        // NOUVEAU : Forcer le format WhatsApp
         whatsapp_optimized: true,
-        image_format: 'jpg' // Force JPG pour WhatsApp
+        image_format: 'jpg'
     };
 
-  // AJOUTER CE BLOC
-if (contentType === 'video') {
-    const videoUrl = document.getElementById('videoUrl').value.trim();
-    if (videoUrl) {
-        articleData.video_url = videoUrl;  // ← DOIT ÊTRE INCLU
+    // ⭐ CORRECTION : Toujours ajouter video_url (null si article normal)
+    if (contentType === 'video') {
+        const videoUrl = document.getElementById('videoUrl').value.trim();
+        if (!videoUrl) {
+            showAlert('error', 'Veuillez entrer l\'URL de la vidéo');
+            return;
+        }
+        articleData.video_url = videoUrl;
+        console.log('🎥 Article vidéo avec URL:', videoUrl);
+    } else {
+        articleData.video_url = null;  // ✅ Explicitement null pour les articles
+        console.log('📰 Article texte standard');
     }
-}
+
     const submitBtn = document.getElementById('submitBtn');
     const originalBtnHTML = submitBtn.innerHTML;
     submitBtn.disabled = true;
     submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Publication...';
 
     try {
-        console.log('🚀 Publication ULTIME WhatsApp...');
+        console.log('🚀 Publication avec données:', articleData);
 
         const response = await fetch('/.netlify/functions/create-article', {
             method: 'POST',
@@ -2601,22 +2606,18 @@ if (contentType === 'video') {
         const result = await response.json();
         
         if (result.success) {
-            // ✅ URL WHATSAPP GARANTIE
             const whatsappUrl = generateUltimateWhatsAppUrl(result.articleId, titre);
             
             showAlert('success', 
-                '✅ Article publié - WhatsApp OK!', 
-                `Lien WhatsApp: ${whatsappUrl}`
+                `✅ ${contentType === 'video' ? 'Vidéo' : 'Article'} publié!`, 
+                `ID: ${result.articleId}`
             );
 
-            // Sauvegarde pour partage
             localStorage.setItem('lastArticleId', result.articleId);
             localStorage.setItem('whatsappUrl', whatsappUrl);
             
-            // Afficher boutons de partage ULTIME
             showUltimateShareButtons(result.articleId, titre, whatsappUrl);
             
-            // Réinitialiser
             setTimeout(() => resetForm(), 3000);
             
         } else {
@@ -2630,6 +2631,15 @@ if (contentType === 'video') {
         submitBtn.disabled = false;
         submitBtn.innerHTML = originalBtnHTML;
     }
+}
+
+// ⭐ NOUVELLE FONCTION : Récupérer sections correctement
+function getSelectedSections() {
+    const selected = [];
+    document.querySelectorAll('input[name="sections"]:checked').forEach(checkbox => {
+        selected.push(checkbox.value);
+    });
+    return selected.length > 0 ? selected : ['main'];
 }
 
 // 🎯 GÉNÉRATEUR URL WHATSAPP ULTIME
@@ -3027,10 +3037,13 @@ async function forceGenerateSharePage(articleId) {
         displayArticles(filtered);
     }
 
-    // Edit Article
-   function editArticle(id) {
+  // ⭐ CORRECTION : Fonction editArticle mise à jour
+function editArticle(id) {
     const article = allArticles.find(a => a.id == id);
-    if (!article) return;
+    if (!article) {
+        showAlert('error', 'Article non trouvé');
+        return;
+    }
     
     editingArticleId = id;
     document.getElementById('editArticleId').value = id;
@@ -3045,16 +3058,21 @@ async function forceGenerateSharePage(articleId) {
     // Gérer les sections multiples
     setSelectedSections(article.section);
     
-    // Gérer le type de contenu - CORRIGÉ
-    const isVideo = article.video_url;
+    // ⭐ CORRECTION : Gérer le type de contenu correctement
+    const isVideo = article.contentType === 'video' || article.video_url;
+    
     if (isVideo) {
         document.querySelector('input[name="editContentType"][value="video"]').checked = true;
         document.getElementById('editVideoUrlField').style.display = 'block';
         document.getElementById('editVideoUrl').value = article.video_url || '';
+        document.getElementById('editVideoUrl').required = true;
+        console.log('🎥 Mode édition vidéo:', article.video_url);
     } else {
         document.querySelector('input[name="editContentType"][value="article"]').checked = true;
         document.getElementById('editVideoUrlField').style.display = 'none';
         document.getElementById('editVideoUrl').value = '';
+        document.getElementById('editVideoUrl').required = false;
+        console.log('📰 Mode édition article');
     }
     
     document.getElementById('editTitreCount').textContent = article.titre.length;
