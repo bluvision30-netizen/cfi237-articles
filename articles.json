@@ -207,8 +207,26 @@
       "likes": 0,
       "contentType": "video",
       "video_url": "https://youtu.be/S1HqHFcTEbY?list=RDS1HqHFcTEbY"
+    },
+    "art_1762841980390_210qt6qvw": {
+      "id": "art_1762841980390_210qt6qvw",
+      "titre": "lancement des awarsd",
+      "categorie": "Économie",
+      "sections": [
+        "main"
+      ],
+      "image": "https://res.cloudinary.com/dkuciagop/image/upload/v1762841947/ebcrytyqjlwuulris9xm.jpg",
+      "images": "[\"https://res.cloudinary.com/dkuciagop/image/upload/v1762841947/ebcrytyqjlwuulris9xm.jpg\"]",
+      "extrait": "lancement des awarsd",
+      "contenu": "lancement des awarsd",
+      "auteur": "franky fosso",
+      "date": "2025-11-11T06:19:40.610Z",
+      "vues": 0,
+      "likes": 0,
+      "contentType": "video",
+      "video_url": "https://youtu.be/wNgHu-_O-_E?list=RDNFYXVcRLaDQ"
     }
   },
-  "lastUpdate": "2025-11-11T05:16:16.815Z",
-  "totalArticles": 11
+  "lastUpdate": "2025-11-11T06:19:40.610Z",
+  "totalArticles": 12
 }
