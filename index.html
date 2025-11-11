@@ -842,427 +842,30 @@
             opacity: 0.5;
         }
         
-        /* AJOUTER CES STYLES DANS LES FICHIERS EXISTANTS */
-
-        /* Améliorations pour les vidéos */
-        .video-container {
-            position: relative;
-            width: 100%;
-            height: 0;
-            padding-bottom: 56.25%; /* 16:9 aspect ratio */
-            margin: 2rem 0;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-        }
-
-        .video-container iframe {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
-
-        /* Badge vidéo amélioré */
-        .category-badge.video {
-            background: linear-gradient(135deg, #ff0000, #cc0000) !important;
-        }
-
-        /* Animation pour le bouton play */
-        .article-card:hover .fa-play {
-            transform: scale(1.1);
-            transition: transform 0.3s ease;
-        }
-
-        /* ========================================
-           🎬 STYLES POUR VIDÉOS HD
-           ======================================== */
-
-        /* Carte vidéo */
-        .video-card {
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-
-        .video-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 8px 30px rgba(0,0,0,0.2);
-        }
-
-        /* Container miniature */
-        .video-thumbnail {
-            position: relative;
-            overflow: hidden;
-            background: #000;
-        }
-
-        .video-thumbnail img {
-            transition: transform 0.3s ease, filter 0.3s ease;
-        }
-
-        .video-card:hover .video-thumbnail img {
-            transform: scale(1.1);
-            filter: brightness(0.7);
-        }
-
-        /* Overlay vidéo */
-        .video-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .video-card:hover .video-overlay {
-            opacity: 1;
-        }
-
-        /* Bouton play animé */
-        .play-button {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            background: rgba(255, 0, 0, 0.9);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 20px rgba(255, 0, 0, 0.4);
-            transition: all 0.3s ease;
-            animation: pulse-play 2s ease-in-out infinite;
-        }
-
-        .video-card:hover .play-button {
-            background: rgba(255, 0, 0, 1);
-            transform: scale(1.15);
-            animation: none;
-        }
-
-        .play-button i {
-            color: white;
-            font-size: 2rem;
-            margin-left: 6px;
-        }
-
-        @keyframes pulse-play {
-            0%, 100% { 
-                box-shadow: 0 4px 20px rgba(255, 0, 0, 0.4);
-                transform: scale(1);
-            }
-            50% { 
-                box-shadow: 0 4px 30px rgba(255, 0, 0, 0.6);
-                transform: scale(1.05);
-            }
-        }
-
-        /* Badge qualité (HD/SD) */
-        .quality-badge {
-            position: absolute;
-            top: 12px;
-            right: 12px;
-            background: linear-gradient(135deg, #22c55e, #16a34a);
-            color: white;
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-size: 0.75rem;
-            font-weight: bold;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-            z-index: 10;
-        }
-
-        /* Badge plateforme (YouTube) */
-        .platform-badge {
-            position: absolute;
-            top: 12px;
-            left: 12px;
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-size: 0.7rem;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-            z-index: 10;
-        }
-
-        .platform-badge.youtube {
-            background: rgba(255, 0, 0, 0.95);
-            color: white;
-        }
-
-        .platform-badge i {
-            font-size: 0.9rem;
-        }
-
-        /* Badge durée */
-        .duration-badge {
-            position: absolute;
-            bottom: 12px;
-            right: 12px;
-            background: rgba(0, 0, 0, 0.85);
-            color: white;
-            padding: 6px 10px;
-            border-radius: 6px;
-            font-size: 0.7rem;
-            font-weight: bold;
-            backdrop-filter: blur(4px);
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        /* Badge catégorie vidéo */
-        .category-badge.video-badge {
-            background: linear-gradient(135deg, #ef4444, #dc2626);
-            color: white;
-        }
-
-        /* Animation au chargement */
-        @keyframes fadeInVideo {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .video-card {
-            animation: fadeInVideo 0.5s ease-out;
-        }
-
-        .video-card:nth-child(1) { animation-delay: 0.1s; }
-        .video-card:nth-child(2) { animation-delay: 0.2s; }
-        .video-card:nth-child(3) { animation-delay: 0.3s; }
-        .video-card:nth-child(4) { animation-delay: 0.4s; }
-        .video-card:nth-child(5) { animation-delay: 0.5s; }
-        .video-card:nth-child(6) { animation-delay: 0.6s; }
-
-        /* Effet shine sur hover */
-        .video-thumbnail::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(
-                90deg,
-                transparent,
-                rgba(255, 255, 255, 0.2),
-                transparent
-            );
-            transition: left 0.5s ease;
-        }
-
-        .video-card:hover .video-thumbnail::before {
-            left: 100%;
-        }
-
-        /* Badge "NOUVEAU" pour vidéos récentes */
-        .new-badge {
-            position: absolute;
-            top: 12px;
-            left: 12px;
-            background: linear-gradient(135deg, #f59e0b, #d97706);
-            color: white;
-            padding: 4px 10px;
-            border-radius: 6px;
-            font-size: 0.65rem;
-            font-weight: bold;
-            text-transform: uppercase;
-            box-shadow: 0 2px 8px rgba(245, 158, 11, 0.4);
-            animation: blink-new 2s ease-in-out infinite;
-        }
-
-        @keyframes blink-new {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.7; }
-        }
-
-        /* Loading skeleton pour vidéos */
-        .video-skeleton {
-            background: linear-gradient(
-                90deg,
-                #f0f0f0 0%,
-                #e0e0e0 50%,
-                #f0f0f0 100%
-            );
-            background-size: 200% 100%;
-            animation: loading-skeleton 1.5s ease-in-out infinite;
-        }
-
-        @keyframes loading-skeleton {
-            0% { background-position: 200% 0; }
-            100% { background-position: -200% 0; }
-        }
-
-        /* Badge "LIVE" pour vidéos en direct (optionnel) */
-        .live-badge {
-            position: absolute;
-            top: 12px;
-            left: 12px;
-            background: #ef4444;
-            color: white;
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-size: 0.7rem;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            box-shadow: 0 2px 10px rgba(239, 68, 68, 0.4);
-            animation: pulse-live 1.5s ease-in-out infinite;
-        }
-
-        .live-badge::before {
-            content: '';
-            width: 8px;
-            height: 8px;
-            background: white;
-            border-radius: 50%;
-            animation: blink-live 1s ease-in-out infinite;
-        }
-
-        @keyframes pulse-live {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-        }
-
-        @keyframes blink-live {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.3; }
-        }
-
-        /* Tooltip pour infos vidéo */
-        .video-info-tooltip {
-            position: absolute;
-            bottom: 100%;
-            left: 50%;
-            transform: translateX(-50%) translateY(-10px);
-            background: rgba(0, 0, 0, 0.95);
-            color: white;
-            padding: 10px 15px;
-            border-radius: 8px;
-            font-size: 0.75rem;
-            white-space: nowrap;
-            opacity: 0;
-            pointer-events: none;
-            transition: all 0.3s ease;
-            z-index: 1000;
-        }
-
-        .video-card:hover .video-info-tooltip {
-            opacity: 1;
-            transform: translateX(-50%) translateY(-15px);
-        }
-
-        .video-info-tooltip::after {
-            content: '';
-            position: absolute;
-            top: 100%;
-            left: 50%;
-            transform: translateX(-50%);
-            border: 6px solid transparent;
-            border-top-color: rgba(0, 0, 0, 0.95);
-        }
-
-        /* ========================================
-           🎯 ANIMATIONS MOBILE UNIQUEMENT
-           ======================================== */
-        
-        /* Styles pour mobile uniquement */
-        @media (max-width: 768px) {
-            /* 1. Scroll horizontal automatique pour Vidéos & Société */
-            .mobile-horizontal-scroll {
-                display: flex;
-                overflow-x: auto;
-                gap: 1rem;
-                padding: 1rem 0;
-                scroll-behavior: smooth;
-                scroll-snap-type: x mandatory;
-                -webkit-overflow-scrolling: touch;
-                scrollbar-width: none;
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .content-grid {
+                grid-template-columns: 1fr;
             }
             
-            .mobile-horizontal-scroll::-webkit-scrollbar {
-                display: none;
-            }
-            
-            .mobile-horizontal-scroll > * {
-                flex: 0 0 85%;
-                scroll-snap-align: start;
-            }
-            
-            /* Animation de défilement automatique */
-            @keyframes auto-scroll {
-                0% {
-                    transform: translateX(0);
-                }
-                100% {
-                    transform: translateX(calc(-100% - 1rem));
-                }
-            }
-            
-            .auto-scroll-container {
-                animation: auto-scroll 30s linear infinite;
-                display: flex;
-                gap: 1rem;
-            }
-            
-            .mobile-horizontal-scroll:hover .auto-scroll-container,
-            .mobile-horizontal-scroll:active .auto-scroll-container {
-                animation-play-state: paused;
-            }
-            
-            /* 2. Animation d'empilement pour les événements */
-            .events-stacking-container {
-                position: relative;
-                height: 400px;
-                overflow-y: auto;
-                padding: 1rem 0;
-            }
-            
-            .event-stack-item {
-                position: sticky;
-                top: 0;
-                transform-origin: top center;
-                transition: all 0.3s ease;
-                margin-bottom: 1rem;
-                z-index: 1;
-                opacity: 1;
-            }
-            
-            .event-stack-item:nth-child(1) { top: 0; z-index: 5; }
-            .event-stack-item:nth-child(2) { top: 20px; z-index: 4; opacity: 0.9; transform: scale(0.95); }
-            .event-stack-item:nth-child(3) { top: 40px; z-index: 3; opacity: 0.8; transform: scale(0.9); }
-            .event-stack-item:nth-child(4) { top: 60px; z-index: 2; opacity: 0.7; transform: scale(0.85); }
-            .event-stack-item:nth-child(5) { top: 80px; z-index: 1; opacity: 0.6; transform: scale(0.8); }
-            
-            /* Style des cartes événements identique aux articles */
-            .event-stack-item .article-card {
-                margin: 0;
-                box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            }
-            
-            /* 3. Scroll vertical normal pour sidebar générale */
             .sidebar {
-                overflow-x: hidden;
-                overflow-y: auto;
+                position: static;
+                max-height: none;
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+                gap: 1.5rem;
             }
             
-            /* Styles responsive existants */
+            .sidebar-card {
+                margin-bottom: 0;
+            }
+            
+            .societe-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
             .nav-menu {
                 display: none;
             }
@@ -1314,49 +917,6 @@
             .societe-grid {
                 gap: 1rem;
             }
-            
-            .video-container {
-                margin: 1rem 0;
-                border-radius: 8px;
-            }
-            
-            .play-button {
-                width: 60px;
-                height: 60px;
-            }
-            
-            .play-button i {
-                font-size: 1.5rem;
-            }
-            
-            .quality-badge,
-            .platform-badge,
-            .duration-badge {
-                font-size: 0.65rem;
-                padding: 4px 8px;
-            }
-        }
-        
-        @media (max-width: 1024px) {
-            .content-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .sidebar {
-                position: static;
-                max-height: none;
-                display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-                gap: 1.5rem;
-            }
-            
-            .sidebar-card {
-                margin-bottom: 0;
-            }
-            
-            .societe-grid {
-                grid-template-columns: 1fr;
-            }
         }
         
         @media (max-width: 480px) {
@@ -1385,6 +945,379 @@
                 flex: 0 0 250px;
             }
         }
+
+/* AJOUTER CES STYLES DANS LES FICHIERS EXISTANTS */
+
+/* Améliorations pour les vidéos */
+.video-container {
+    position: relative;
+    width: 100%;
+    height: 0;
+    padding-bottom: 56.25%; /* 16:9 aspect ratio */
+    margin: 2rem 0;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+.video-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+/* Badge vidéo amélioré */
+.category-badge.video {
+    background: linear-gradient(135deg, #ff0000, #cc0000) !important;
+}
+
+/* Animation pour le bouton play */
+.article-card:hover .fa-play {
+    transform: scale(1.1);
+    transition: transform 0.3s ease;
+}
+
+/* Responsive pour mobile */
+@media (max-width: 768px) {
+    .video-container {
+        margin: 1rem 0;
+        border-radius: 8px;
+    }
+}
+/* ========================================
+   🎬 STYLES POUR VIDÉOS HD
+   ======================================== */
+
+/* Carte vidéo */
+.video-card {
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.video-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+}
+
+/* Container miniature */
+.video-thumbnail {
+    position: relative;
+    overflow: hidden;
+    background: #000;
+}
+
+.video-thumbnail img {
+    transition: transform 0.3s ease, filter 0.3s ease;
+}
+
+.video-card:hover .video-thumbnail img {
+    transform: scale(1.1);
+    filter: brightness(0.7);
+}
+
+/* Overlay vidéo */
+.video-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.video-card:hover .video-overlay {
+    opacity: 1;
+}
+
+/* Bouton play animé */
+.play-button {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: rgba(255, 0, 0, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 20px rgba(255, 0, 0, 0.4);
+    transition: all 0.3s ease;
+    animation: pulse-play 2s ease-in-out infinite;
+}
+
+.video-card:hover .play-button {
+    background: rgba(255, 0, 0, 1);
+    transform: scale(1.15);
+    animation: none;
+}
+
+.play-button i {
+    color: white;
+    font-size: 2rem;
+    margin-left: 6px;
+}
+
+@keyframes pulse-play {
+    0%, 100% { 
+        box-shadow: 0 4px 20px rgba(255, 0, 0, 0.4);
+        transform: scale(1);
+    }
+    50% { 
+        box-shadow: 0 4px 30px rgba(255, 0, 0, 0.6);
+        transform: scale(1.05);
+    }
+}
+
+/* Badge qualité (HD/SD) */
+.quality-badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    z-index: 10;
+}
+
+/* Badge plateforme (YouTube) */
+.platform-badge {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 0.7rem;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    z-index: 10;
+}
+
+.platform-badge.youtube {
+    background: rgba(255, 0, 0, 0.95);
+    color: white;
+}
+
+.platform-badge i {
+    font-size: 0.9rem;
+}
+
+/* Badge durée */
+.duration-badge {
+    position: absolute;
+    bottom: 12px;
+    right: 12px;
+    background: rgba(0, 0, 0, 0.85);
+    color: white;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 0.7rem;
+    font-weight: bold;
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Badge catégorie vidéo */
+.category-badge.video-badge {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: white;
+}
+
+/* Animation au chargement */
+@keyframes fadeInVideo {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.video-card {
+    animation: fadeInVideo 0.5s ease-out;
+}
+
+.video-card:nth-child(1) { animation-delay: 0.1s; }
+.video-card:nth-child(2) { animation-delay: 0.2s; }
+.video-card:nth-child(3) { animation-delay: 0.3s; }
+.video-card:nth-child(4) { animation-delay: 0.4s; }
+.video-card:nth-child(5) { animation-delay: 0.5s; }
+.video-card:nth-child(6) { animation-delay: 0.6s; }
+
+/* Effet shine sur hover */
+.video-thumbnail::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.2),
+        transparent
+    );
+    transition: left 0.5s ease;
+}
+
+.video-card:hover .video-thumbnail::before {
+    left: 100%;
+}
+
+/* Badge "NOUVEAU" pour vidéos récentes */
+.new-badge {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    color: white;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 0.65rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    box-shadow: 0 2px 8px rgba(245, 158, 11, 0.4);
+    animation: blink-new 2s ease-in-out infinite;
+}
+
+@keyframes blink-new {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+/* Responsive pour mobile */
+@media (max-width: 768px) {
+    .play-button {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .play-button i {
+        font-size: 1.5rem;
+    }
+    
+    .quality-badge,
+    .platform-badge,
+    .duration-badge {
+        font-size: 0.65rem;
+        padding: 4px 8px;
+    }
+}
+
+/* Effet de sélection */
+.video-card:active {
+    transform: translateY(-4px) scale(0.98);
+}
+
+/* Loading skeleton pour vidéos */
+.video-skeleton {
+    background: linear-gradient(
+        90deg,
+        #f0f0f0 0%,
+        #e0e0e0 50%,
+        #f0f0f0 100%
+    );
+    background-size: 200% 100%;
+    animation: loading-skeleton 1.5s ease-in-out infinite;
+}
+
+@keyframes loading-skeleton {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* Compteur de vues animé */
+.video-card:hover .stat {
+    transform: translateY(-2px);
+    transition: transform 0.2s ease;
+}
+
+/* Badge "LIVE" pour vidéos en direct (optionnel) */
+.live-badge {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    background: #ef4444;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 0.7rem;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    box-shadow: 0 2px 10px rgba(239, 68, 68, 0.4);
+    animation: pulse-live 1.5s ease-in-out infinite;
+}
+
+.live-badge::before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    background: white;
+    border-radius: 50%;
+    animation: blink-live 1s ease-in-out infinite;
+}
+
+@keyframes pulse-live {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+@keyframes blink-live {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+}
+
+/* Tooltip pour infos vidéo */
+.video-info-tooltip {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-10px);
+    background: rgba(0, 0, 0, 0.95);
+    color: white;
+    padding: 10px 15px;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.3s ease;
+    z-index: 1000;
+}
+
+.video-card:hover .video-info-tooltip {
+    opacity: 1;
+    transform: translateX(-50%) translateY(-15px);
+}
+
+.video-info-tooltip::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 6px solid transparent;
+    border-top-color: rgba(0, 0, 0, 0.95);
+}
     </style>
 </head>
 <body>
@@ -1539,12 +1472,10 @@
         <!-- Vidéos Section -->
         <section>
             <h2 class="section-title">🎥 Vidéos</h2>
-            <div class="mobile-horizontal-scroll" id="videosContainer">
-                <div class="articles-grid" id="videosGrid">
-                    <div class="empty-state">
-                        <i class="fas fa-video"></i>
-                        <p>Aucune vidéo disponible pour le moment</p>
-                    </div>
+            <div class="articles-grid" id="videosGrid">
+                <div class="empty-state">
+                    <i class="fas fa-video"></i>
+                    <p>Aucune vidéo disponible pour le moment</p>
                 </div>
             </div>
         </section>
@@ -1587,12 +1518,10 @@
                 <i class="fas fa-users"></i>
                 Société
             </h2>
-            <div class="mobile-horizontal-scroll" id="societeContainer">
-                <div class="societe-grid" id="societeGrid">
-                    <div class="empty-state">
-                        <i class="fas fa-user-friends"></i>
-                        <p>Aucun article de société disponible</p>
-                    </div>
+            <div class="societe-grid" id="societeGrid">
+                <div class="empty-state">
+                    <i class="fas fa-user-friends"></i>
+                    <p>Aucun article de société disponible</p>
                 </div>
             </div>
         </section>
@@ -1667,161 +1596,40 @@
         let allArticles = [];
         let currentSlide = 0;
         let heroArticles = [];
-        let isMobile = window.innerWidth <= 768;
 
         // Charger les articles depuis GitHub
-        async function loadArticles() {
-            try {
-                const response = await fetch('/articles.json?t=' + Date.now());
-                if (!response.ok) throw new Error('Erreur chargement');
-                
-                const data = await response.json();
-                allArticles = Object.values(data.articles || {})
-                    .filter(article => article && article.id)
-                    .sort((a, b) => new Date(b.date) - new Date(a.date));
-                
-                console.log('📰 Articles chargés:', allArticles.length);
-                
-                displayHeroSlider();
-                displayCarousel();
-                displayArticles();
-                displayTrending();
-                displayVideos();
-                displaySociete();
-                displayFeatured();
-                displayEvents();
-                displayCategories();
-                displayPolitique();
-                displaySports();
-                displayInternational();
-                updateAboutStats();
-                
-                // Initialiser les animations mobiles après chargement
-                if (isMobile) {
-                    initMobileAnimations();
-                }
-                
-            } catch (error) {
-                console.error('❌ Erreur:', error);
-                showError();
-            }
-        }
-
-        // ========================================
-        // 🎯 ANIMATIONS MOBILE
-        // ========================================
-
-        function initMobileAnimations() {
-            console.log('📱 Initialisation des animations mobiles');
-            
-            // 1. Scroll horizontal automatique pour Vidéos & Société
-            initAutoHorizontalScroll();
-            
-            // 2. Animation d'empilement pour les événements
-            initEventsStacking();
-            
-            // 3. Scroll vertical normal pour sidebar (déjà géré par CSS)
-        }
-
-        function initAutoHorizontalScroll() {
-            const videosContainer = document.getElementById('videosContainer');
-            const societeContainer = document.getElementById('societeContainer');
-            
-            if (videosContainer) {
-                setupAutoScrollContainer(videosContainer, 'videosGrid');
-            }
-            
-            if (societeContainer) {
-                setupAutoScrollContainer(societeContainer, 'societeGrid');
-            }
-        }
-
-        function setupAutoScrollContainer(container, gridId) {
-            const grid = document.getElementById(gridId);
-            if (!grid || grid.children.length === 0) return;
-            
-            // Créer une copie des éléments pour le défilement infini
-            const items = Array.from(grid.children);
-            const clonedItems = items.map(item => item.cloneNode(true));
-            
-            // Vider le conteneur et ajouter les éléments dans un wrapper d'animation
-            container.innerHTML = '';
-            const autoScrollWrapper = document.createElement('div');
-            autoScrollWrapper.className = 'auto-scroll-container';
-            
-            // Ajouter les éléments originaux et clonés pour l'effet infini
-            items.forEach(item => autoScrollWrapper.appendChild(item));
-            clonedItems.forEach(item => autoScrollWrapper.appendChild(item));
-            
-            container.appendChild(autoScrollWrapper);
-            
-            // Ajuster la largeur du wrapper pour correspondre au contenu
-            const itemWidth = items[0].offsetWidth + 16; // 16px pour le gap
-            autoScrollWrapper.style.width = `${items.length * itemWidth * 2}px`;
-        }
-
-        function initEventsStacking() {
-            const eventsContainer = document.getElementById('eventsList');
-            if (!eventsContainer) return;
-            
-            // Remplacer le contenu par un conteneur d'empilement
-            const stackingContainer = document.createElement('div');
-            stackingContainer.className = 'events-stacking-container';
-            
-            // Récupérer les événements existants ou créer des exemples
-            const events = allArticles
-                .filter(a => a.sections && a.sections.includes('events'))
-                .slice(0, 5);
-            
-            if (events.length === 0) {
-                // Créer des événements d'exemple si aucun n'existe
-                for (let i = 0; i < 3; i++) {
-                    const eventArticle = {
-                        id: `event-${i}`,
-                        titre: `Événement ${i + 1}`,
-                        image: `https://picsum.photos/300/200?random=${i}`,
-                        categorie: 'Événement',
-                        auteur: 'Abu Media',
-                        vues: Math.floor(Math.random() * 1000),
-                        likes: Math.floor(Math.random() * 100),
-                        extrait: 'Description de l\'événement...'
-                    };
-                    events.push(eventArticle);
-                }
-            }
-            
-            // Créer les cartes d'événements avec le style des articles
-            stackingContainer.innerHTML = events.map((event, index) => `
-                <div class="event-stack-item" onclick="openArticle('${event.id}')">
-                    <article class="article-card">
-                        <img src="${event.image}" alt="${event.titre}" class="article-image" loading="lazy">
-                        <div class="article-content">
-                            <span class="category-badge">${event.categorie}</span>
-                            <h3 class="article-title">${event.titre}</h3>
-                            <p class="article-excerpt">${event.extrait}</p>
-                            <div class="article-meta">
-                                <div class="article-author">
-                                    <div class="author-avatar">${getInitial(event.auteur)}</div>
-                                    <span>${event.auteur}</span>
-                                </div>
-                                <div class="article-stats">
-                                    <span class="stat"><i class="fas fa-eye"></i> ${event.vues || 0}</span>
-                                    <span class="stat"><i class="fas fa-heart"></i> ${event.likes || 0}</span>
-                                </div>
-                            </div>
-                        </div>
-                    </article>
-                </div>
-            `).join('');
-            
-            eventsContainer.innerHTML = '';
-            eventsContainer.appendChild(stackingContainer);
-        }
-
-        // ========================================
-        // FONCTIONS EXISTANTES
-        // ========================================
-
+        // Charger les articles depuis GitHub
+async function loadArticles() {
+    try {
+        const response = await fetch('/articles.json?t=' + Date.now());
+        if (!response.ok) throw new Error('Erreur chargement');
+        
+        const data = await response.json();
+        allArticles = Object.values(data.articles || {})
+            .filter(article => article && article.id)
+            .sort((a, b) => new Date(b.date) - new Date(a.date));
+        
+        console.log('📰 Articles chargés:', allArticles.length);
+        
+        displayHeroSlider();
+        displayCarousel();
+        displayArticles();
+        displayTrending();
+        displayVideos(); // ← Cette fonction est maintenant corrigée
+        displaySociete();
+        displayFeatured();
+        displayEvents();
+        displayCategories();
+        displayPolitique();
+        displaySports();
+        displayInternational();
+        updateAboutStats();
+        
+    } catch (error) {
+        console.error('❌ Erreur:', error);
+        showError();
+    }
+}
         // Hero Slider
         function displayHeroSlider() {
             heroArticles = allArticles
@@ -1973,55 +1781,55 @@
             `).join('');
         }
 
-        // Vidéos
-        function displayVideos() {
-            const videos = allArticles
-                .filter(a => a.contentType === 'video' || (a.sections && a.sections.includes('videos')))
-                .slice(0, 6);
-            
-            const grid = document.getElementById('videosGrid');
-            
-            if (videos.length === 0) {
-                grid.innerHTML = '<div class="empty-state"><i class="fas fa-video"></i><p>Aucune vidéo disponible pour le moment</p></div>';
-                return;
-            }
-            
-            grid.innerHTML = videos.map(article => `
-                <article class="article-card video-card" onclick="openArticle('${article.id}')">
-                    <div class="video-thumbnail">
-                        <img src="${article.image}" alt="${article.titre}" class="article-image" loading="lazy">
-                        <div class="video-overlay">
-                            <div class="play-button">
-                                <i class="fas fa-play"></i>
-                            </div>
-                        </div>
-                        <!-- Badges vidéo -->
-                        <div class="quality-badge">HD</div>
-                        <div class="platform-badge youtube">
-                            <i class="fab fa-youtube"></i> YouTube
-                        </div>
-                        <div class="duration-badge">
-                            <i class="fas fa-clock"></i> 10:30
-                        </div>
+   // Vidéos - Version corrigée avec l'affichage original
+function displayVideos() {
+    const videos = allArticles
+        .filter(a => a.contentType === 'video' || (a.sections && a.sections.includes('videos')))
+        .slice(0, 6);
+    
+    const grid = document.getElementById('videosGrid');
+    
+    if (videos.length === 0) {
+        grid.innerHTML = '<div class="empty-state"><i class="fas fa-video"></i><p>Aucune vidéo disponible pour le moment</p></div>';
+        return;
+    }
+    
+    grid.innerHTML = videos.map(article => `
+        <article class="article-card video-card" onclick="openArticle('${article.id}')">
+            <div class="video-thumbnail">
+                <img src="${article.image}" alt="${article.titre}" class="article-image" loading="lazy">
+                <div class="video-overlay">
+                    <div class="play-button">
+                        <i class="fas fa-play"></i>
                     </div>
-                    <div class="article-content">
-                        <span class="category-badge video-badge">🎥 ${article.categorie}</span>
-                        <h3 class="article-title">${article.titre}</h3>
-                        <p class="article-excerpt">${article.extrait}</p>
-                        <div class="article-meta">
-                            <div class="article-author">
-                                <div class="author-avatar">${getInitial(article.auteur)}</div>
-                                <span>${article.auteur}</span>
-                            </div>
-                            <div class="article-stats">
-                                <span class="stat"><i class="fas fa-eye"></i> ${article.vues || 0}</span>
-                                <span class="stat"><i class="fas fa-heart"></i> ${article.likes || 0}</span>
-                            </div>
-                        </div>
+                </div>
+                <!-- Badges vidéo -->
+                <div class="quality-badge">HD</div>
+                <div class="platform-badge youtube">
+                    <i class="fab fa-youtube"></i> YouTube
+                </div>
+                <div class="duration-badge">
+                    <i class="fas fa-clock"></i> 10:30
+                </div>
+            </div>
+            <div class="article-content">
+                <span class="category-badge video-badge">🎥 ${article.categorie}</span>
+                <h3 class="article-title">${article.titre}</h3>
+                <p class="article-excerpt">${article.extrait}</p>
+                <div class="article-meta">
+                    <div class="article-author">
+                        <div class="author-avatar">${getInitial(article.auteur)}</div>
+                        <span>${article.auteur}</span>
                     </div>
-                </article>
-            `).join('');
-        }
+                    <div class="article-stats">
+                        <span class="stat"><i class="fas fa-eye"></i> ${article.vues || 0}</span>
+                        <span class="stat"><i class="fas fa-heart"></i> ${article.likes || 0}</span>
+                    </div>
+                </div>
+            </div>
+        </article>
+    `).join('');
+}
 
         // Société redesigned
         function displaySociete() {
@@ -2093,29 +1901,26 @@
 
         // Events
         function displayEvents() {
-            // Cette fonction est maintenant gérée par initEventsStacking() sur mobile
-            if (!isMobile) {
-                const events = allArticles
-                    .filter(a => a.sections && a.sections.includes('events'))
-                    .slice(0, 4);
-                
-                const container = document.getElementById('eventsList');
-                
-                if (events.length === 0) {
-                    container.innerHTML = '<p style="color: var(--gray); font-size: 0.9rem;">Aucun événement à venir</p>';
-                    return;
-                }
-                
-                container.innerHTML = events.map(article => `
-                    <div class="event-item" onclick="openArticle('${article.id}')">
-                        <div class="event-date">
-                            <i class="fas fa-calendar"></i>
-                            ${formatDate(article.date)}
-                        </div>
-                        <div class="event-title">${article.titre}</div>
-                    </div>
-                `).join('');
+            const events = allArticles
+                .filter(a => a.sections && a.sections.includes('events'))
+                .slice(0, 4);
+            
+            const container = document.getElementById('eventsList');
+            
+            if (events.length === 0) {
+                container.innerHTML = '<p style="color: var(--gray); font-size: 0.9rem;">Aucun événement à venir</p>';
+                return;
             }
+            
+            container.innerHTML = events.map(article => `
+                <div class="event-item" onclick="openArticle('${article.id}')">
+                    <div class="event-date">
+                        <i class="fas fa-calendar"></i>
+                        ${formatDate(article.date)}
+                    </div>
+                    <div class="event-title">${article.titre}</div>
+                </div>
+            `).join('');
         }
 
         // Categories
@@ -2317,16 +2122,261 @@
             });
         }
 
-        // Détection du redimensionnement pour réinitialiser les animations
-        window.addEventListener('resize', function() {
-            const newIsMobile = window.innerWidth <= 768;
-            if (newIsMobile !== isMobile) {
-                isMobile = newIsMobile;
-                if (isMobile) {
-                    initMobileAnimations();
+        // ========================================
+        // 1️⃣ FONCTIONS UTILITAIRES VIDÉO
+        // ========================================
+
+        /**
+         * Extraire l'ID YouTube depuis n'importe quelle URL
+         */
+        function extractYouTubeId(url) {
+            if (!url) return null;
+            
+            const patterns = [
+                /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/,
+                /youtube\.com\/watch\?v=([^"&?\/\s]{11})/,
+                /youtube\.com\/embed\/([^"&?\/\s]{11})/,
+                /youtu\.be\/([^"&?\/\s]{11})/,
+                /youtube\.com\/shorts\/([^"&?\/\s]{11})/
+            ];
+            
+            for (let pattern of patterns) {
+                const match = url.match(pattern);
+                if (match && match[1]) {
+                    return match[1];
                 }
             }
-        });
+            return null;
+        }
+/**
+ * Afficher les vidéos avec miniatures YouTube HD
+ */
+async function displayVideos() {
+    const videos = allArticles
+        .filter(a => a.contentType === 'video' || (a.sections && a.sections.includes('videos')))
+        .slice(0, 6);
+    
+    const grid = document.getElementById('videosGrid');
+    
+    if (videos.length === 0) {
+        grid.innerHTML = `
+            <div class="empty-state">
+                <i class="fas fa-video"></i>
+                <p>Aucune vidéo disponible pour le moment</p>
+            </div>
+        `;
+        return;
+    }
+    
+    // Afficher d'abord un loading
+    grid.innerHTML = `
+        <div class="loading">
+            <i class="fas fa-spinner"></i>
+            <p style="margin-top: 1rem;">Chargement des vidéos HD...</p>
+        </div>
+    `;
+    
+    // Récupérer les miniatures HD pour chaque vidéo
+    const videosWithThumbnails = await Promise.all(
+        videos.map(async (article) => {
+            let thumbnailData = {
+                url: article.image,
+                quality: 'standard',
+                isYouTube: false
+            };
+            
+            // Si c'est une vidéo YouTube, récupérer la vraie miniature
+            if (article.video_url) {
+                const platform = detectVideoPlatform(article.video_url);
+                
+                if (platform === 'youtube') {
+                    const thumbnail = await getYouTubeThumbnail(article.video_url);
+                    if (thumbnail) {
+                        thumbnailData = {
+                            url: thumbnail.url,
+                            quality: thumbnail.quality,
+                            width: thumbnail.width,
+                            height: thumbnail.height,
+                            isYouTube: true
+                        };
+                    }
+                }
+            }
+            
+            return { ...article, thumbnailData };
+        })
+    );
+    
+    // Générer le HTML avec les miniatures HD
+    grid.innerHTML = videosWithThumbnails.map(article => {
+        const thumb = article.thumbnailData;
+        const qualityBadge = thumb.isYouTube ? 
+            `<div class="quality-badge">${thumb.quality === 'maxresdefault' ? 'HD' : 'SD'}</div>` : '';
+        
+        return `
+            <article class="article-card video-card" onclick="openArticle('${article.id}')">
+                <div class="video-thumbnail">
+                    <img src="${thumb.url}" 
+                         alt="${article.titre}" 
+                         class="article-image" 
+                         loading="lazy">
+                    
+                    <!-- Overlay avec gradient -->
+                    <div class="video-overlay">
+                        <!-- Bouton play animé -->
+                        <div class="play-button">
+                            <i class="fas fa-play"></i>
+                        </div>
+                    </div>
+                    
+                    ${qualityBadge}
+                    
+                    <!-- Badge YouTube -->
+                    ${thumb.isYouTube ? `
+                        <div class="platform-badge youtube">
+                            <i class="fab fa-youtube"></i> YouTube
+                        </div>
+                    ` : ''}
+                    
+                    <!-- Badge durée (optionnel) -->
+                    <div class="duration-badge">
+                        <i class="fas fa-play-circle"></i> VIDÉO
+                    </div>
+                </div>
+                
+                <div class="article-content">
+                    <span class="category-badge video-badge">
+                        🎥 ${article.categorie}
+                    </span>
+                    <h3 class="article-title">${article.titre}</h3>
+                    <p class="article-excerpt">${article.extrait}</p>
+                    <div class="article-meta">
+                        <div class="article-author">
+                            <div class="author-avatar">${getInitial(article.auteur)}</div>
+                            <span>${article.auteur}</span>
+                        </div>
+                        <div class="article-stats">
+                            <span class="stat"><i class="fas fa-eye"></i> ${article.vues || 0}</span>
+                            <span class="stat"><i class="fas fa-heart"></i> ${article.likes || 0}</span>
+                        </div>
+                    </div>
+                </div>
+            </article>
+        `;
+    }).join('');
+    
+    console.log(`✅ ${videosWithThumbnails.length} vidéos affichées avec miniatures HD`);
+}
+      
+/**
+ * Obtenir miniature YouTube HD
+ */
+async function getYouTubeThumbnail(videoUrl) {
+    const videoId = extractYouTubeId(videoUrl);
+    if (!videoId) return null;
+    
+    const qualities = [
+        { name: 'maxresdefault', width: 1280, height: 720 },
+        { name: 'sddefault', width: 640, height: 480 },
+        { name: 'hqdefault', width: 480, height: 360 }
+    ];
+    
+    for (let quality of qualities) {
+        const thumbnailUrl = `https://img.youtube.com/vi/${videoId}/${quality.name}.jpg`;
+        const exists = await checkImageExists(thumbnailUrl);
+        
+        if (exists) {
+            return {
+                url: thumbnailUrl,
+                quality: quality.name,
+                width: quality.width,
+                height: quality.height,
+                videoId: videoId
+            };
+        }
+    }
+    
+    // Fallback
+    return {
+        url: `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`,
+        quality: 'hqdefault',
+        width: 480,
+        height: 360,
+        videoId: videoId
+    };
+}
+
+     /**
+ * Vérifier si une image existe
+ */
+function checkImageExists(url) {
+    return new Promise((resolve) => {
+        const img = new Image();
+        img.onload = () => resolve(true);
+        img.onerror = () => resolve(false);
+        img.src = url;
+        setTimeout(() => resolve(false), 2000);
+    });
+}
+
+        /**
+         * Détecter la plateforme vidéo
+         */
+        function detectVideoPlatform(url) {
+            if (!url) return null;
+            
+            if (url.includes('youtube.com') || url.includes('youtu.be')) {
+                return 'youtube';
+            }
+            if (url.includes('facebook.com') || url.includes('fb.watch')) {
+                return 'facebook';
+            }
+            if (url.includes('vimeo.com')) {
+                return 'vimeo';
+            }
+            if (url.includes('dailymotion.com')) {
+                return 'dailymotion';
+            }
+            return 'unknown';
+        }
+
+        /**
+         * Obtenir l'URL d'embed YouTube
+         */
+        function getYouTubeEmbedUrl(videoUrl) {
+            const videoId = extractYouTubeId(videoUrl);
+            if (!videoId) return null;
+            
+            return `https://www.youtube.com/embed/${videoId}?autoplay=0&rel=0&modestbranding=1`;
+        }
+
+        /**
+         * Obtenir l'URL d'embed Facebook
+         */
+        function getFacebookEmbedUrl(videoUrl) {
+            return `https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(videoUrl)}&show_text=false&width=734`;
+        }
+
+        // FONCTION DE DÉTECTION VIDÉO AMÉLIORÉE
+        function isVideoArticle(article) {
+            // Méthode 1: Vérifier contentType
+            if (article.contentType === 'video') return true;
+            
+            // Méthode 2: Vérifier video_url
+            if (article.video_url) return true;
+            
+            // Méthode 3: Vérifier sections
+            if (article.sections && article.sections.includes('videos')) return true;
+            
+            return false;
+        }
+
+        function getVideoUrl(article) {
+            // Retourne l'URL vidéo si elle existe
+            return article.video_url || null;
+        }
+
+        console.log('✅ Système de miniatures vidéo HD chargé');
     </script>
 </body>
 </html>
