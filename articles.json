@@ -80,8 +80,25 @@
       "likes": 0,
       "share_url": "/share/art_1762797319250_svhrcic2e.html",
       "statut": "publié"
+    },
+    "art_1762830245344_9krf07i8z": {
+      "id": "art_1762830245344_9krf07i8z",
+      "titre": "merime kenne pdg fondation",
+      "categorie": "Sports",
+      "sections": [
+        "main",
+        "debates"
+      ],
+      "image": "https://res.cloudinary.com/dkuciagop/image/upload/v1762830220/nv56iypcrvoncj07f01q.jpg",
+      "images": "[\"https://res.cloudinary.com/dkuciagop/image/upload/v1762830220/nv56iypcrvoncj07f01q.jpg\"]",
+      "extrait": "merime kenne pdg fondation",
+      "contenu": "merime kenne pdg fondation",
+      "auteur": "franky fosso",
+      "date": "2025-11-11T03:04:05.523Z",
+      "vues": 0,
+      "likes": 0
     }
   },
-  "lastUpdate": "2025-11-10T17:55:19.436Z",
-  "totalArticles": 4
+  "lastUpdate": "2025-11-11T03:04:05.523Z",
+  "totalArticles": 5
 }
