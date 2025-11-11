@@ -155,8 +155,25 @@
       "date": "2025-11-11T03:55:33.056Z",
       "vues": 0,
       "likes": 0
+    },
+    "art_1762835250042_2pjwt4fwr": {
+      "id": "art_1762835250042_2pjwt4fwr",
+      "titre": "anicet ekané a encore frapper",
+      "categorie": "Société",
+      "sections": [
+        "main",
+        "videos"
+      ],
+      "image": "https://res.cloudinary.com/dkuciagop/image/upload/v1762835243/qsyi7yjpchqgh9bx4f62.jpg",
+      "images": "[\"https://res.cloudinary.com/dkuciagop/image/upload/v1762835243/qsyi7yjpchqgh9bx4f62.jpg\"]",
+      "extrait": "anicet ekané a encore frapper",
+      "contenu": "anicet ekané a encore frapper",
+      "auteur": "franky fosso",
+      "date": "2025-11-11T04:27:30.228Z",
+      "vues": 0,
+      "likes": 0
     }
   },
-  "lastUpdate": "2025-11-11T03:55:33.056Z",
-  "totalArticles": 8
+  "lastUpdate": "2025-11-11T04:27:30.228Z",
+  "totalArticles": 9
 }
