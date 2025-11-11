@@ -115,8 +115,28 @@
       "date": "2025-11-11T03:08:32.785Z",
       "vues": 0,
       "likes": 0
+    },
+    "art_1762831860345_ymtanxn59": {
+      "id": "art_1762831860345_ymtanxn59",
+      "titre": "PDG AFROBIZ UNIVERSAL AWARDS",
+      "categorie": "Politique",
+      "sections": [
+        "main",
+        "a-la-une",
+        "featured",
+        "societe",
+        "events"
+      ],
+      "image": "https://res.cloudinary.com/dkuciagop/image/upload/v1762831823/bhktx5ua9zu16qo0ewlo.jpg",
+      "images": "[\"https://res.cloudinary.com/dkuciagop/image/upload/v1762831823/bhktx5ua9zu16qo0ewlo.jpg\"]",
+      "extrait": "PDG AFROBIZ UNIVERSAL AWARDS",
+      "contenu": "PDG AFROBIZ UNIVERSAL AWARDS",
+      "auteur": "franky fosso",
+      "date": "2025-11-11T03:31:00.540Z",
+      "vues": 0,
+      "likes": 0
     }
   },
-  "lastUpdate": "2025-11-11T03:08:32.785Z",
-  "totalArticles": 6
+  "lastUpdate": "2025-11-11T03:31:00.540Z",
+  "totalArticles": 7
 }
