@@ -149,17 +149,19 @@ async function createSharePage(articleData, articleId) {
     const images = JSON.parse(articleData.images || '[]');
     const firstImage = images[0] || articleData.image;
 
-    const shareHTML = `<!DOCTYPE html>
+   // Dans createSharePage - MODIFIE le HTML
+const shareHTML = `<!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>${articleData.titre} - Abu Media Group</title>
     
+    <!-- META TAGS POUR RÉSEAUX SOCIAUX -->
     <meta property="og:title" content="${articleData.titre}">
     <meta property="og:description" content="${articleData.extrait}">
     <meta property="og:image" content="${firstImage}">
-    <meta property="og:url" content="https://cfiupload.netlify.app/share/${articleId}.html">
+    <meta property="og:url" content="https://cfiupload.netlify.app/article-detail.html?id=${articleId}">
     <meta property="og:type" content="article">
     
     <meta property="og:image:width" content="1200">
@@ -175,6 +177,17 @@ async function createSharePage(articleData, articleId) {
         .share-btn { display: inline-block; padding: 12px 24px; margin: 8px; border-radius: 6px; color: white; text-decoration: none; font-weight: bold; }
         .whatsapp { background: #25D366; }
         .facebook { background: #3b5998; }
+        .read-article { display: inline-block; padding: 15px 30px; background: #667eea; color: white; text-decoration: none; border-radius: 6px; font-weight: bold; margin-top: 20px; }
+        
+        /* Animation de redirection */
+        .redirect-message { 
+            background: #f0f9ff; 
+            border: 1px solid #bae6fd; 
+            border-radius: 8px; 
+            padding: 15px; 
+            margin: 20px 0; 
+            color: #0369a1;
+        }
     </style>
 </head>
 <body>
@@ -183,13 +196,47 @@ async function createSharePage(articleData, articleId) {
         <h1>${articleData.titre}</h1>
         <div class="extrait">${articleData.extrait}</div>
         
-        <div>
-            <a href="https://wa.me/?text=${encodeURIComponent(articleData.titre + ' - https://cfiupload.netlify.app/share/' + articleId + '.html')}" 
-               class="share-btn whatsapp">📱 WhatsApp</a>
-            <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent('https://cfiupload.netlify.app/share/' + articleId + '.html')}" 
-               class="share-btn facebook">📘 Facebook</a>
+        <!-- Message de redirection -->
+        <div class="redirect-message">
+            <p>🔄 Redirection vers l'article complet dans <span id="countdown">5</span> secondes...</p>
         </div>
+        
+        <!-- Boutons de partage -->
+        <div style="margin-bottom: 20px;">
+            <a href="https://wa.me/?text=${encodeURIComponent(articleData.titre + ' - https://cfiupload.netlify.app/article-detail.html?id=' + articleId)}" 
+               class="share-btn whatsapp" target="_blank">📱 Partager sur WhatsApp</a>
+            <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent('https://cfiupload.netlify.app/article-detail.html?id=' + articleId)}" 
+               class="share-btn facebook" target="_blank">📘 Partager sur Facebook</a>
+        </div>
+        
+        <!-- Bouton lecture immédiate -->
+        <a href="https://cfiupload.netlify.app/article-detail.html?id=${articleId}" class="read-article">
+            📖 Lire l'article maintenant
+        </a>
     </div>
+
+    <script>
+        // REDIRECTION AUTOMATIQUE
+        let seconds = 5;
+        const countdownElement = document.getElementById('countdown');
+        const countdownInterval = setInterval(() => {
+            seconds--;
+            countdownElement.textContent = seconds;
+            
+            if (seconds <= 0) {
+                clearInterval(countdownInterval);
+                window.location.href = 'https://cfiupload.netlify.app/article-detail.html?id=${articleId}';
+            }
+        }, 1000);
+        
+        // Redirection immédiate si c'est un bot réseau social
+        if (navigator.userAgent.includes('WhatsApp') || 
+            navigator.userAgent.includes('Facebot') ||
+            navigator.userAgent.includes('Twitter')) {
+            // Les bots voient la page mais les utilisateurs sont redirigés
+            console.log('🤖 Bot détecté - meta tags affichés');
+        }
+    </script>
 </body>
 </html>`;
 
