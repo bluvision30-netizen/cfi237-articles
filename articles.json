@@ -135,8 +135,28 @@
       "date": "2025-11-11T03:31:00.540Z",
       "vues": 0,
       "likes": 0
+    },
+    "art_1762833332883_qwu9jas1m": {
+      "id": "art_1762833332883_qwu9jas1m",
+      "titre": "lancement des awarsd",
+      "categorie": "Culture",
+      "sections": [
+        "main",
+        "featured",
+        "videos",
+        "debates",
+        "societe"
+      ],
+      "image": "https://res.cloudinary.com/dkuciagop/image/upload/v1762833321/tgge2myrr6a9jgqmyjpn.jpg",
+      "images": "[\"https://res.cloudinary.com/dkuciagop/image/upload/v1762833321/tgge2myrr6a9jgqmyjpn.jpg\",\"https://res.cloudinary.com/dkuciagop/image/upload/v1762833322/zyme8rckp7ydlca5wvqx.jpg\"]",
+      "extrait": "lancement des awarsd",
+      "contenu": "lancement des awarsd",
+      "auteur": "franky fosso",
+      "date": "2025-11-11T03:55:33.056Z",
+      "vues": 0,
+      "likes": 0
     }
   },
-  "lastUpdate": "2025-11-11T03:31:00.540Z",
-  "totalArticles": 7
+  "lastUpdate": "2025-11-11T03:55:33.056Z",
+  "totalArticles": 8
 }
