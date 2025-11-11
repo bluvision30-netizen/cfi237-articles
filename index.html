@@ -860,40 +860,46 @@
             `).join('');
         }
 
-        // Articles principaux
-        function displayArticles() {
-            const mainArticles = allArticles
-                .filter(a => !a.sections || a.sections.includes('main'))
-                .slice(0, 12);
-            
-            const grid = document.getElementById('articlesGrid');
-            
-            if (mainArticles.length === 0) {
-                grid.innerHTML = '<div class="empty-state"><i class="fas fa-inbox"></i><p>Aucun article disponible</p></div>';
-                return;
-            }
-            
-            grid.innerHTML = mainArticles.map(article => `
-                <article class="article-card" onclick="openArticle('${article.id}')">
-                    <img src="${article.image}" alt="${article.titre}" class="article-image" loading="lazy">
-                    <div class="article-content">
-                        <span class="category-badge">${article.categorie}</span>
-                        <h3 class="article-title">${article.titre}</h3>
-                        <p class="article-excerpt">${article.extrait}</p>
-                        <div class="article-meta">
-                            <div class="article-author">
-                                <div class="author-avatar">${getInitial(article.auteur)}</div>
-                                <span>${article.auteur}</span>
-                            </div>
-                            <div class="article-stats">
-                                <span class="stat"><i class="fas fa-eye"></i> ${article.vues || 0}</span>
-                                <span class="stat"><i class="fas fa-heart"></i> ${article.likes || 0}</span>
-                            </div>
+     function displayArticles() {
+    const mainArticles = allArticles
+        .filter(a => !a.sections || a.sections.includes('main'))
+        .slice(0, 12);
+    
+    const grid = document.getElementById('articlesGrid');
+    
+    if (mainArticles.length === 0) {
+        grid.innerHTML = '<div class="empty-state"><i class="fas fa-inbox"></i><p>Aucun article disponible</p></div>';
+        return;
+    }
+    
+    grid.innerHTML = mainArticles.map(article => {
+        // Badge vidéo si c'est une vidéo
+        const videoBadge = article.contentType === 'video' ? 
+            '<span class="category-badge" style="background: #ef4444;">🎥 Vidéo</span>' : 
+            `<span class="category-badge">${article.categorie}</span>`;
+        
+        return `
+            <article class="article-card" onclick="openArticle('${article.id}')">
+                <img src="${article.image}" alt="${article.titre}" class="article-image" loading="lazy">
+                <div class="article-content">
+                    ${videoBadge}
+                    <h3 class="article-title">${article.titre}</h3>
+                    <p class="article-excerpt">${article.extrait}</p>
+                    <div class="article-meta">
+                        <div class="article-author">
+                            <div class="author-avatar">${getInitial(article.auteur)}</div>
+                            <span>${article.auteur}</span>
+                        </div>
+                        <div class="article-stats">
+                            <span class="stat"><i class="fas fa-eye"></i> ${article.vues || 0}</span>
+                            <span class="stat"><i class="fas fa-heart"></i> ${article.likes || 0}</span>
                         </div>
                     </div>
-                </article>
-            `).join('');
-        }
+                </div>
+            </article>
+        `;
+    }).join('');
+}
 
         // Trending
         function displayTrending() {
@@ -926,47 +932,46 @@
             `).join('');
         }
 
-        // Vidéos
-        function displayVideos() {
-            const videos = allArticles
-                .filter(a => a.contentType === 'video' || (a.sections && a.sections.includes('videos')))
-                .slice(0, 6);
-            
-            const grid = document.getElementById('videosGrid');
-            
-            if (videos.length === 0) {
-                grid.innerHTML = '<div class="empty-state"><i class="fas fa-video"></i><p>Aucune vidéo disponible pour le moment</p></div>';
-                return;
-            }
-            
-            grid.innerHTML = videos.map(article => `
-                <article class="article-card" onclick="openArticle('${article.id}')">
-                    <div style="position: relative;">
-                        <img src="${article.image}" alt="${article.titre}" class="article-image" loading="lazy">
-                        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); 
-                                    background: rgba(0,0,0,0.7); border-radius: 50%; width: 60px; height: 60px; 
-                                    display: flex; align-items: center; justify-content: center;">
-                            <i class="fas fa-play" style="color: white; font-size: 1.5rem; margin-left: 4px;"></i>
-                        </div>
+      function displayVideos() {
+    const videos = allArticles
+        .filter(a => a.contentType === 'video' || (a.sections && a.sections.includes('videos')))
+        .slice(0, 6);
+    
+    const grid = document.getElementById('videosGrid');
+    
+    if (videos.length === 0) {
+        grid.innerHTML = '<div class="empty-state"><i class="fas fa-video"></i><p>Aucune vidéo disponible pour le moment</p></div>';
+        return;
+    }
+    
+    grid.innerHTML = videos.map(article => `
+        <article class="article-card" onclick="openArticle('${article.id}')">
+            <div style="position: relative;">
+                <img src="${article.image}" alt="${article.titre}" class="article-image" loading="lazy">
+                <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); 
+                            background: rgba(0,0,0,0.7); border-radius: 50%; width: 60px; height: 60px; 
+                            display: flex; align-items: center; justify-content: center;">
+                    <i class="fas fa-play" style="color: white; font-size: 1.5rem; margin-left: 4px;"></i>
+                </div>
+            </div>
+            <div class="article-content">
+                <span class="category-badge" style="background: #ef4444;">🎥 Vidéo</span>
+                <h3 class="article-title">${article.titre}</h3>
+                <p class="article-excerpt">${article.extrait}</p>
+                <div class="article-meta">
+                    <div class="article-author">
+                        <div class="author-avatar">${getInitial(article.auteur)}</div>
+                        <span>${article.auteur}</span>
                     </div>
-                    <div class="article-content">
-                        <span class="category-badge" style="background: #ef4444;">🎥 Vidéo</span>
-                        <h3 class="article-title">${article.titre}</h3>
-                        <p class="article-excerpt">${article.extrait}</p>
-                        <div class="article-meta">
-                            <div class="article-author">
-                                <div class="author-avatar">${getInitial(article.auteur)}</div>
-                                <span>${article.auteur}</span>
-                            </div>
-                            <div class="article-stats">
-                                <span class="stat"><i class="fas fa-eye"></i> ${article.vues || 0}</span>
-                                <span class="stat"><i class="fas fa-heart"></i> ${article.likes || 0}</span>
-                            </div>
-                        </div>
+                    <div class="article-stats">
+                        <span class="stat"><i class="fas fa-eye"></i> ${article.vues || 0}</span>
+                        <span class="stat"><i class="fas fa-heart"></i> ${article.likes || 0}</span>
                     </div>
-                </article>
-            `).join('');
-        }
+                </div>
+            </div>
+        </article>
+    `).join('');
+}
 
         // Société
         function displaySociete() {
