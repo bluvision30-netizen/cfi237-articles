@@ -22,8 +22,6 @@
             --light-gray: #f1f5f9;
             --success: #22c55e;
             --danger: #ef4444;
-            --warning: #f59e0b;
-            --purple: #8b5cf6;
         }
         
         body {
@@ -257,7 +255,7 @@
         /* Grid Layout */
         .content-grid {
             display: grid;
-            grid-template-columns: 1fr 380px;
+            grid-template-columns: 1fr 350px;
             gap: 2rem;
             margin: 2rem 0;
         }
@@ -276,18 +274,6 @@
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             transition: all 0.3s;
             cursor: pointer;
-            animation: fadeInUp 0.5s ease-out;
-        }
-        
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
         }
         
         .article-card:hover {
@@ -393,6 +379,7 @@
         
         .sidebar::-webkit-scrollbar-track {
             background: var(--light-gray);
+            border-radius: 3px;
         }
         
         .sidebar::-webkit-scrollbar-thumb {
@@ -406,17 +393,17 @@
             padding: 1.5rem;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             margin-bottom: 2rem;
-            animation: slideInRight 0.5s ease-out;
+            animation: fadeInUp 0.6s ease;
         }
         
-        @keyframes slideInRight {
+        @keyframes fadeInUp {
             from {
                 opacity: 0;
-                transform: translateX(20px);
+                transform: translateY(20px);
             }
             to {
                 opacity: 1;
-                transform: translateX(0);
+                transform: translateY(0);
             }
         }
         
@@ -470,226 +457,294 @@
             font-size: 0.75rem;
             color: var(--gray);
         }
-
-        /* Featured Section */
+        
+        /* Featured Articles */
         .featured-item {
             display: flex;
             gap: 1rem;
-            padding: 1rem;
-            border-radius: 8px;
-            margin-bottom: 1rem;
-            background: var(--light-gray);
-            transition: all 0.3s;
+            margin-bottom: 1.25rem;
+            padding-bottom: 1.25rem;
+            border-bottom: 1px solid var(--light-gray);
             cursor: pointer;
+            transition: all 0.3s;
         }
-
+        
+        .featured-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        
         .featured-item:hover {
-            background: #e2e8f0;
             transform: translateX(5px);
         }
-
-        .featured-item img {
+        
+        .featured-thumb {
             width: 80px;
             height: 80px;
             border-radius: 8px;
             object-fit: cover;
+            flex-shrink: 0;
         }
-
-        .featured-content {
-            flex: 1;
-        }
-
+        
         .featured-content h4 {
             font-size: 0.9rem;
             font-weight: 600;
+            line-height: 1.4;
             margin-bottom: 0.5rem;
-            line-height: 1.3;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
         }
-
+        
         .featured-meta {
-            display: flex;
-            gap: 1rem;
             font-size: 0.75rem;
             color: var(--gray);
+            display: flex;
+            gap: 0.75rem;
         }
-
-        /* Events Section */
+        
+        /* Events */
         .event-item {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
             padding: 1rem;
-            border-left: 4px solid var(--warning);
-            background: #fef3c7;
-            border-radius: 8px;
+            border-radius: 10px;
             margin-bottom: 1rem;
-            transition: all 0.3s;
             cursor: pointer;
+            transition: all 0.3s;
         }
-
+        
         .event-item:hover {
-            transform: translateX(5px);
-            box-shadow: 0 2px 10px rgba(245, 158, 11, 0.2);
+            transform: scale(1.02);
+            box-shadow: 0 5px 15px rgba(37, 99, 235, 0.3);
         }
-
+        
         .event-date {
             display: flex;
             align-items: center;
             gap: 0.5rem;
-            color: var(--warning);
-            font-weight: 600;
             font-size: 0.85rem;
             margin-bottom: 0.5rem;
+            opacity: 0.9;
         }
-
+        
         .event-title {
-            font-weight: 600;
             font-size: 0.95rem;
-            margin-bottom: 0.25rem;
-            color: var(--dark);
+            font-weight: 600;
+            line-height: 1.4;
         }
-
-        .event-location {
-            font-size: 0.8rem;
-            color: var(--gray);
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
+        
         /* Categories Grid */
         .categories-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 0.75rem;
         }
-
+        
         .category-item {
+            background: var(--light-gray);
             padding: 0.75rem;
             border-radius: 8px;
-            background: var(--light-gray);
             text-align: center;
-            transition: all 0.3s;
             cursor: pointer;
-            font-weight: 600;
-            font-size: 0.85rem;
+            transition: all 0.3s;
+            border: 2px solid transparent;
         }
-
+        
         .category-item:hover {
             background: var(--primary);
             color: white;
+            border-color: var(--primary-dark);
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
         }
-
+        
         .category-item i {
             display: block;
             font-size: 1.5rem;
             margin-bottom: 0.5rem;
         }
-
-        /* About Section */
-        .about-card {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white;
+        
+        .category-name {
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        
+        .category-count {
+            font-size: 0.75rem;
+            opacity: 0.7;
+        }
+        
+        /* About Card */
+        .about-content {
             text-align: center;
-            padding: 2rem 1.5rem;
         }
-
-        .about-card .logo {
-            font-size: 2rem;
-            margin-bottom: 1rem;
-            justify-content: center;
-        }
-
-        .about-card p {
-            font-size: 0.9rem;
-            line-height: 1.6;
-            margin-bottom: 1.5rem;
-            opacity: 0.95;
-        }
-
-        .about-card .social-links {
-            display: flex;
-            gap: 0.75rem;
-            justify-content: center;
-        }
-
-        .about-card .social-links a {
-            width: 36px;
-            height: 36px;
+        
+        .about-logo {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 1rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
             border-radius: 50%;
-            background: rgba(255,255,255,0.2);
             display: flex;
             align-items: center;
             justify-content: center;
+            font-size: 2.5rem;
             color: white;
-            text-decoration: none;
-            transition: all 0.3s;
         }
-
-        .about-card .social-links a:hover {
-            background: white;
+        
+        .about-content p {
+            font-size: 0.9rem;
+            color: var(--gray);
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+        
+        .about-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .about-stat {
+            text-align: center;
+        }
+        
+        .about-stat-number {
+            font-size: 1.5rem;
+            font-weight: 700;
             color: var(--primary);
-            transform: translateY(-3px);
         }
-
-        /* Section-specific Styles */
-        .politique-section .article-card {
-            border-top: 3px solid #dc2626;
+        
+        .about-stat-label {
+            font-size: 0.75rem;
+            color: var(--gray);
         }
-
-        .sports-section .article-card {
-            border-top: 3px solid #16a34a;
+        
+        /* Sections spécifiques */
+        .section-politique {
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            padding: 3rem 0;
+            margin: 3rem 0;
+            color: white;
         }
-
-        .international-section .article-card {
-            border-top: 3px solid var(--purple);
+        
+        .section-sports {
+            background: linear-gradient(135deg, #15803d, #22c55e);
+            padding: 3rem 0;
+            margin: 3rem 0;
+            color: white;
         }
-
-        /* Video styles */
-        .video-overlay {
+        
+        .section-international {
+            background: linear-gradient(135deg, #7c2d12, #f97316);
+            padding: 3rem 0;
+            margin: 3rem 0;
+            color: white;
+        }
+        
+        .section-colored .section-title {
+            color: white;
+            border-color: rgba(255,255,255,0.3);
+        }
+        
+        .colored-card {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .colored-card:hover {
+            background: rgba(255,255,255,0.15);
+            transform: translateY(-5px);
+        }
+        
+        .colored-card .article-title,
+        .colored-card .article-excerpt {
+            color: white;
+        }
+        
+        .colored-card .article-meta,
+        .colored-card .article-meta span {
+            color: rgba(255,255,255,0.8);
+        }
+        
+        .colored-card .category-badge {
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+        
+        /* Société redesign */
+        .societe-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+        }
+        
+        .societe-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: all 0.4s;
+            position: relative;
+        }
+        
+        .societe-card:hover {
+            transform: scale(1.03);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        
+        .societe-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #8b5cf6, #ec4899);
+        }
+        
+        .societe-image-wrapper {
+            position: relative;
+            height: 250px;
+            overflow: hidden;
+        }
+        
+        .societe-image-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s;
+        }
+        
+        .societe-card:hover .societe-image-wrapper img {
+            transform: scale(1.1);
+        }
+        
+        .societe-overlay {
             position: absolute;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+            background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.7));
             display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            transition: opacity 0.3s;
+            align-items: flex-end;
+            padding: 1.5rem;
         }
-
-        .article-card:hover .video-overlay {
-            opacity: 1;
-        }
-
-        .play-button {
-            width: 70px;
-            height: 70px;
-            border-radius: 50%;
-            background: rgba(255,0,0,0.9);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 20px rgba(255,0,0,0.4);
-            animation: pulse-play 2s ease-in-out infinite;
-        }
-
-        @keyframes pulse-play {
-            0%, 100% {
-                transform: scale(1);
-            }
-            50% {
-                transform: scale(1.05);
-            }
-        }
-
-        .play-button i {
+        
+        .societe-tag {
+            background: #8b5cf6;
             color: white;
-            font-size: 1.8rem;
-            margin-left: 5px;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
         }
-
+        
         /* Footer */
         .footer {
             background: var(--dark);
@@ -797,8 +852,16 @@
                 position: static;
                 max-height: none;
                 display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
                 gap: 1.5rem;
+            }
+            
+            .sidebar-card {
+                margin-bottom: 0;
+            }
+            
+            .societe-grid {
+                grid-template-columns: 1fr;
             }
         }
         
@@ -834,19 +897,25 @@
             .section-title {
                 font-size: 1.5rem;
             }
-
+            
             .sidebar {
                 overflow-x: auto;
                 display: flex;
                 gap: 1rem;
+                grid-template-columns: none;
             }
-
+            
             .sidebar-card {
-                min-width: 300px;
+                min-width: 280px;
+                flex-shrink: 0;
             }
-
+            
             .categories-grid {
                 grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .societe-grid {
+                gap: 1rem;
             }
         }
         
@@ -875,10 +944,6 @@
             .carousel-card {
                 flex: 0 0 250px;
             }
-
-            .categories-grid {
-                grid-template-columns: 1fr;
-            }
         }
     </style>
 </head>
@@ -895,9 +960,8 @@
                     <li><a href="#accueil">Accueil</a></li>
                     <li><a href="#actualites">Actualités</a></li>
                     <li><a href="#videos">Vidéos</a></li>
-                    <li><a href="#politique">Politique</a></li>
-                    <li><a href="#sports">Sports</a></li>
-                    <li><a href="#international">International</a></li>
+                    <li><a href="#societe">Société</a></li>
+                    <li><a href="#contact">Contact</a></li>
                 </ul>
             </nav>
             <button class="mobile-menu-btn">
@@ -935,11 +999,10 @@
             </div>
         </section>
 
-        <!-- Main Content Grid -->
+        <!-- Main Content -->
         <div class="content-grid">
-            <!-- Main Column -->
+            <!-- Articles Grid -->
             <div>
-                <!-- Articles Récents -->
                 <h2 class="section-title">📰 Articles Récents</h2>
                 <div class="articles-grid" id="articlesGrid">
                     <div class="loading">
@@ -947,61 +1010,6 @@
                         <p style="margin-top: 1rem;">Chargement des articles...</p>
                     </div>
                 </div>
-
-                <!-- Politique Section -->
-                <section id="politique" class="politique-section">
-                    <h2 class="section-title" style="border-color: #dc2626;">🏛️ Politique</h2>
-                    <div class="articles-grid" id="politiqueGrid">
-                        <div class="empty-state">
-                            <i class="fas fa-landmark"></i>
-                            <p>Aucun article politique disponible</p>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- Sports Section -->
-                <section id="sports" class="sports-section">
-                    <h2 class="section-title" style="border-color: #16a34a;">⚽ Sports</h2>
-                    <div class="articles-grid" id="sportsGrid">
-                        <div class="empty-state">
-                            <i class="fas fa-futbol"></i>
-                            <p>Aucun article sportif disponible</p>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- Vidéos Section -->
-                <section id="videos">
-                    <h2 class="section-title">🎥 Vidéos</h2>
-                    <div class="articles-grid" id="videosGrid">
-                        <div class="empty-state">
-                            <i class="fas fa-video"></i>
-                            <p>Aucune vidéo disponible pour le moment</p>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- Société Section -->
-                <section id="societe">
-                    <h2 class="section-title">👥 Société</h2>
-                    <div class="articles-grid" id="societeGrid">
-                        <div class="empty-state">
-                            <i class="fas fa-users"></i>
-                            <p>Aucun article de société disponible</p>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- International Section -->
-                <section id="international" class="international-section">
-                    <h2 class="section-title" style="border-color: var(--purple);">🌍 International</h2>
-                    <div class="articles-grid" id="internationalGrid">
-                        <div class="empty-state">
-                            <i class="fas fa-globe"></i>
-                            <p>Aucun article international disponible</p>
-                        </div>
-                    </div>
-                </section>
             </div>
 
             <!-- Sidebar -->
@@ -1009,7 +1017,7 @@
                 <!-- Trending -->
                 <div class="sidebar-card">
                     <h3 class="sidebar-title">
-                        <i class="fas fa-fire"></i>
+                        <i class="fas fa-fire" style="color: #ef4444;"></i>
                         Trending
                     </h3>
                     <div id="trendingList">
@@ -1018,11 +1026,11 @@
                         </div>
                     </div>
                 </div>
-
+                
                 <!-- À ne pas manquer -->
                 <div class="sidebar-card">
                     <h3 class="sidebar-title">
-                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star" style="color: #f59e0b;"></i>
                         À ne pas manquer
                     </h3>
                     <div id="featuredList">
@@ -1031,84 +1039,135 @@
                         </div>
                     </div>
                 </div>
-
+                
                 <!-- Événements -->
                 <div class="sidebar-card">
                     <h3 class="sidebar-title">
-                        <i class="fas fa-calendar-alt"></i>
+                        <i class="fas fa-calendar-alt" style="color: #8b5cf6;"></i>
                         Événements à venir
                     </h3>
                     <div id="eventsList">
-                        <div class="empty-state" style="padding: 2rem 1rem;">
-                            <i class="fas fa-calendar-check"></i>
-                            <p style="font-size: 0.85rem;">Aucun événement prévu</p>
+                        <div class="loading">
+                            <i class="fas fa-spinner"></i>
                         </div>
                     </div>
                 </div>
-
+                
                 <!-- Catégories -->
                 <div class="sidebar-card">
                     <h3 class="sidebar-title">
-                        <i class="fas fa-th-large"></i>
+                        <i class="fas fa-th-large" style="color: #06b6d4;"></i>
                         Catégories
                     </h3>
-                    <div class="categories-grid">
-                        <div class="category-item" onclick="filterByCategory('Politique')">
-                            <i class="fas fa-landmark"></i>
-                            <span>Politique</span>
-                        </div>
-                        <div class="category-item" onclick="filterByCategory('Économie')">
-                            <i class="fas fa-chart-line"></i>
-                            <span>Économie</span>
-                        </div>
-                        <div class="category-item" onclick="filterByCategory('Sports')">
-                            <i class="fas fa-futbol"></i>
-                            <span>Sports</span>
-                        </div>
-                        <div class="category-item" onclick="filterByCategory('Société')">
-                            <i class="fas fa-users"></i>
-                            <span>Société</span>
-                        </div>
-                        <div class="category-item" onclick="filterByCategory('Culture')">
-                            <i class="fas fa-palette"></i>
-                            <span>Culture</span>
-                        </div>
-                        <div class="category-item" onclick="filterByCategory('Santé')">
-                            <i class="fas fa-heartbeat"></i>
-                            <span>Santé</span>
-                        </div>
-                        <div class="category-item" onclick="filterByCategory('Technologie')">
-                            <i class="fas fa-laptop-code"></i>
-                            <span>Tech</span>
-                        </div>
-                        <div class="category-item" onclick="filterByCategory('International')">
-                            <i class="fas fa-globe"></i>
-                            <span>International</span>
+                    <div class="categories-grid" id="categoriesGrid">
+                        <div class="loading">
+                            <i class="fas fa-spinner"></i>
                         </div>
                     </div>
                 </div>
-
+                
                 <!-- À propos -->
-                <div class="sidebar-card about-card">
-                    <div class="logo">
-                        <i class="fas fa-newspaper"></i>
-                        <span>Abu Media Group</span>
-                    </div>
-                    <p>
-                        Votre source d'information fiable au Cameroun. 
-                        Suivez l'actualité en temps réel avec des analyses approfondies 
-                        et des reportages exclusifs.
-                    </p>
-                    <div class="social-links">
-                        <a href="#" title="Facebook"><i class="fab fa-facebook"></i></a>
-                        <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
-                        <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
-                        <a href="#" title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
-                        <a href="#" title="YouTube"><i class="fab fa-youtube"></i></a>
+                <div class="sidebar-card">
+                    <h3 class="sidebar-title">
+                        <i class="fas fa-info-circle" style="color: var(--primary);"></i>
+                        À propos
+                    </h3>
+                    <div class="about-content">
+                        <div class="about-logo">
+                            <i class="fas fa-newspaper"></i>
+                        </div>
+                        <p>Votre source d'information fiable au Cameroun. Suivez l'actualité en temps réel avec Abu Media Group.</p>
+                        <div class="about-stats">
+                            <div class="about-stat">
+                                <div class="about-stat-number" id="totalArticlesStat">0</div>
+                                <div class="about-stat-label">Articles</div>
+                            </div>
+                            <div class="about-stat">
+                                <div class="about-stat-number" id="totalViewsStat">0</div>
+                                <div class="about-stat-label">Vues</div>
+                            </div>
+                            <div class="about-stat">
+                                <div class="about-stat-number" id="totalCategoriesStat">8</div>
+                                <div class="about-stat-label">Catégories</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </aside>
         </div>
+
+        <!-- Vidéos Section -->
+        <section>
+            <h2 class="section-title">🎥 Vidéos</h2>
+            <div class="articles-grid" id="videosGrid">
+                <div class="empty-state">
+                    <i class="fas fa-video"></i>
+                    <p>Aucune vidéo disponible pour le moment</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Politique Section -->
+        <section class="section-politique section-colored">
+            <div class="container">
+                <h2 class="section-title">
+                    <i class="fas fa-landmark"></i>
+                    Politique
+                </h2>
+                <div class="articles-grid" id="politiqueGrid">
+                    <div class="empty-state">
+                        <i class="fas fa-vote-yea"></i>
+                        <p style="color: rgba(255,255,255,0.8);">Aucun article politique disponible</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sports Section -->
+        <section class="section-sports section-colored">
+            <div class="container">
+                <h2 class="section-title">
+                    <i class="fas fa-futbol"></i>
+                    Sports
+                </h2>
+                <div class="articles-grid" id="sportsGrid">
+                    <div class="empty-state">
+                        <i class="fas fa-trophy"></i>
+                        <p style="color: rgba(255,255,255,0.8);">Aucun article sportif disponible</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Société Section Redesigned -->
+        <section>
+            <h2 class="section-title">
+                <i class="fas fa-users"></i>
+                Société
+            </h2>
+            <div class="societe-grid" id="societeGrid">
+                <div class="empty-state">
+                    <i class="fas fa-user-friends"></i>
+                    <p>Aucun article de société disponible</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- International Section -->
+        <section class="section-international section-colored">
+            <div class="container">
+                <h2 class="section-title">
+                    <i class="fas fa-globe-americas"></i>
+                    International
+                </h2>
+                <div class="articles-grid" id="internationalGrid">
+                    <div class="empty-state">
+                        <i class="fas fa-globe"></i>
+                        <p style="color: rgba(255,255,255,0.8);">Aucun article international disponible</p>
+                    </div>
+                </div>
+            </div>
+        </section>
     </div>
 
     <!-- Footer -->
@@ -1131,9 +1190,8 @@
                         <li><a href="#accueil">Accueil</a></li>
                         <li><a href="#actualites">Actualités</a></li>
                         <li><a href="#videos">Vidéos</a></li>
-                        <li><a href="#politique">Politique</a></li>
-                        <li><a href="#sports">Sports</a></li>
-                        <li><a href="#international">International</a></li>
+                        <li><a href="#societe">Société</a></li>
+                        <li><a href="#contact">Contact</a></li>
                     </ul>
                 </div>
                 <div class="footer-section">
@@ -1183,13 +1241,15 @@
                 displayCarousel();
                 displayArticles();
                 displayTrending();
+                displayVideos();
+                displaySociete();
                 displayFeatured();
                 displayEvents();
-                displayVideos();
+                displayCategories();
                 displayPolitique();
                 displaySports();
-                displaySociete();
                 displayInternational();
+                updateAboutStats();
                 
             } catch (error) {
                 console.error('❌ Erreur:', error);
@@ -1209,7 +1269,7 @@
             
             const slider = document.getElementById('heroSlider');
             slider.innerHTML = heroArticles.map((article, index) => `
-                <div class="hero-slide ${index === 0 ? 'active' : ''}" onclick="openArticle('${article.id}')">
+                <div class="hero-slide ${index === 0 ? 'active' : ''}">
                     <img src="${article.image}" alt="${article.titre}" loading="${index === 0 ? 'eager' : 'lazy'}">
                     <div class="hero-content">
                         <span class="hero-category">${article.categorie}</span>
@@ -1257,15 +1317,11 @@
             const container = document.getElementById('carouselALaUne');
             
             if (carousel.length === 0) {
-                container.innerHTML = '<p style="color: var(--gray); padding: 2rem;">Aucun article en carousel</p>';
+                container.innerHTML = '<p style="color: var(--gray);">Aucun article en carousel</p>';
                 return;
             }
             
-            container.innerHTML = carousel.map(article => createCarouselCard(article)).join('');
-        }
-
-        function createCarouselCard(article) {
-            return `
+            container.innerHTML = carousel.map(article => `
                 <div class="carousel-card" onclick="openArticle('${article.id}')">
                     <img src="${article.image}" alt="${article.titre}" loading="lazy">
                     <div class="carousel-card-content">
@@ -1283,7 +1339,7 @@
                         </div>
                     </div>
                 </div>
-            `;
+            `).join('');
         }
 
         // Articles principaux
@@ -1299,30 +1355,11 @@
                 return;
             }
             
-            grid.innerHTML = mainArticles.map(article => createArticleCard(article)).join('');
-        }
-
-        function createArticleCard(article, sectionClass = '') {
-            const isVideo = article.contentType === 'video' || (article.sections && article.sections.includes('videos'));
-            const videoBadge = isVideo ? 'style="background: #ef4444;"' : '';
-            const videoOverlay = isVideo ? `
-                <div class="video-overlay">
-                    <div class="play-button">
-                        <i class="fas fa-play"></i>
-                    </div>
-                </div>
-            ` : '';
-            
-            return `
-                <article class="article-card ${sectionClass}" onclick="openArticle('${article.id}')">
-                    <div style="position: relative;">
-                        <img src="${article.image}" alt="${article.titre}" class="article-image" loading="lazy">
-                        ${videoOverlay}
-                    </div>
+            grid.innerHTML = mainArticles.map(article => `
+                <article class="article-card" onclick="openArticle('${article.id}')">
+                    <img src="${article.image}" alt="${article.titre}" class="article-image" loading="lazy">
                     <div class="article-content">
-                        <span class="category-badge" ${videoBadge}>
-                            ${isVideo ? '🎥 ' : ''}${article.categorie}
-                        </span>
+                        <span class="category-badge">${article.categorie}</span>
                         <h3 class="article-title">${article.titre}</h3>
                         <p class="article-excerpt">${article.extrait}</p>
                         <div class="article-meta">
@@ -1337,7 +1374,7 @@
                         </div>
                     </div>
                 </article>
-            `;
+            `).join('');
         }
 
         // Trending
@@ -1371,61 +1408,6 @@
             `).join('');
         }
 
-        // À ne pas manquer (Featured)
-        function displayFeatured() {
-            const featured = allArticles
-                .filter(a => a.sections && a.sections.includes('featured'))
-                .slice(0, 5);
-            
-            const container = document.getElementById('featuredList');
-            
-            if (featured.length === 0) {
-                container.innerHTML = '<p style="color: var(--gray); font-size: 0.9rem;">Aucun article à la une</p>';
-                return;
-            }
-            
-            container.innerHTML = featured.map(article => `
-                <div class="featured-item" onclick="openArticle('${article.id}')">
-                    <img src="${article.image}" alt="${article.titre}">
-                    <div class="featured-content">
-                        <h4>${article.titre}</h4>
-                        <div class="featured-meta">
-                            <span><i class="fas fa-user"></i> ${article.auteur}</span>
-                            <span><i class="fas fa-eye"></i> ${article.vues || 0}</span>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        // Événements
-        function displayEvents() {
-            const events = allArticles
-                .filter(a => a.sections && a.sections.includes('events'))
-                .slice(0, 5);
-            
-            const container = document.getElementById('eventsList');
-            
-            if (events.length === 0) {
-                container.innerHTML = '<div class="empty-state" style="padding: 2rem 1rem;"><i class="fas fa-calendar-check"></i><p style="font-size: 0.85rem;">Aucun événement prévu</p></div>';
-                return;
-            }
-            
-            container.innerHTML = events.map(article => `
-                <div class="event-item" onclick="openArticle('${article.id}')">
-                    <div class="event-date">
-                        <i class="fas fa-calendar-day"></i>
-                        <span>${formatDate(article.date)}</span>
-                    </div>
-                    <div class="event-title">${article.titre}</div>
-                    <div class="event-location">
-                        <i class="fas fa-map-marker-alt"></i>
-                        <span>${article.categorie}</span>
-                    </div>
-                </div>
-            `).join('');
-        }
-
         // Vidéos
         function displayVideos() {
             const videos = allArticles
@@ -1439,7 +1421,154 @@
                 return;
             }
             
-            grid.innerHTML = videos.map(article => createArticleCard(article)).join('');
+            grid.innerHTML = videos.map(article => `
+                <article class="article-card" onclick="openArticle('${article.id}')">
+                    <div style="position: relative;">
+                        <img src="${article.image}" alt="${article.titre}" class="article-image" loading="lazy">
+                        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); 
+                                    background: rgba(0,0,0,0.7); border-radius: 50%; width: 60px; height: 60px; 
+                                    display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-play" style="color: white; font-size: 1.5rem; margin-left: 4px;"></i>
+                        </div>
+                    </div>
+                    <div class="article-content">
+                        <span class="category-badge" style="background: #ef4444;">🎥 Vidéo</span>
+                        <h3 class="article-title">${article.titre}</h3>
+                        <p class="article-excerpt">${article.extrait}</p>
+                        <div class="article-meta">
+                            <div class="article-author">
+                                <div class="author-avatar">${getInitial(article.auteur)}</div>
+                                <span>${article.auteur}</span>
+                            </div>
+                            <div class="article-stats">
+                                <span class="stat"><i class="fas fa-eye"></i> ${article.vues || 0}</span>
+                                <span class="stat"><i class="fas fa-heart"></i> ${article.likes || 0}</span>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            `).join('');
+        }
+
+        // Société redesigned
+        function displaySociete() {
+            const societe = allArticles
+                .filter(a => a.sections && a.sections.includes('societe'))
+                .slice(0, 6);
+            
+            const grid = document.getElementById('societeGrid');
+            
+            if (societe.length === 0) {
+                grid.innerHTML = '<div class="empty-state"><i class="fas fa-users"></i><p>Aucun article de société disponible</p></div>';
+                return;
+            }
+            
+            grid.innerHTML = societe.map(article => `
+                <article class="societe-card" onclick="openArticle('${article.id}')">
+                    <div class="societe-image-wrapper">
+                        <img src="${article.image}" alt="${article.titre}" loading="lazy">
+                        <div class="societe-overlay">
+                            <span class="societe-tag">
+                                <i class="fas fa-users"></i> Société
+                            </span>
+                        </div>
+                    </div>
+                    <div class="article-content">
+                        <h3 class="article-title">${article.titre}</h3>
+                        <p class="article-excerpt">${article.extrait}</p>
+                        <div class="article-meta">
+                            <div class="article-author">
+                                <div class="author-avatar">${getInitial(article.auteur)}</div>
+                                <span>${article.auteur}</span>
+                            </div>
+                            <div class="article-stats">
+                                <span class="stat"><i class="fas fa-eye"></i> ${article.vues || 0}</span>
+                                <span class="stat"><i class="fas fa-heart"></i> ${article.likes || 0}</span>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            `).join('');
+        }
+
+        // Featured (À ne pas manquer)
+        function displayFeatured() {
+            const featured = allArticles
+                .filter(a => a.sections && a.sections.includes('featured'))
+                .slice(0, 5);
+            
+            const container = document.getElementById('featuredList');
+            
+            if (featured.length === 0) {
+                container.innerHTML = '<p style="color: var(--gray); font-size: 0.9rem;">Aucun article vedette</p>';
+                return;
+            }
+            
+            container.innerHTML = featured.map(article => `
+                <div class="featured-item" onclick="openArticle('${article.id}')">
+                    <img src="${article.image}" alt="${article.titre}" class="featured-thumb" loading="lazy">
+                    <div class="featured-content">
+                        <h4>${article.titre}</h4>
+                        <div class="featured-meta">
+                            <span><i class="fas fa-eye"></i> ${article.vues || 0}</span>
+                            <span><i class="fas fa-heart"></i> ${article.likes || 0}</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Events
+        function displayEvents() {
+            const events = allArticles
+                .filter(a => a.sections && a.sections.includes('events'))
+                .slice(0, 4);
+            
+            const container = document.getElementById('eventsList');
+            
+            if (events.length === 0) {
+                container.innerHTML = '<p style="color: var(--gray); font-size: 0.9rem;">Aucun événement à venir</p>';
+                return;
+            }
+            
+            container.innerHTML = events.map(article => `
+                <div class="event-item" onclick="openArticle('${article.id}')">
+                    <div class="event-date">
+                        <i class="fas fa-calendar"></i>
+                        ${formatDate(article.date)}
+                    </div>
+                    <div class="event-title">${article.titre}</div>
+                </div>
+            `).join('');
+        }
+
+        // Categories
+        function displayCategories() {
+            const categories = {
+                'Politique': { icon: 'fa-landmark', color: '#3b82f6' },
+                'Économie': { icon: 'fa-chart-line', color: '#10b981' },
+                'Sports': { icon: 'fa-futbol', color: '#22c55e' },
+                'Société': { icon: 'fa-users', color: '#8b5cf6' },
+                'Culture': { icon: 'fa-palette', color: '#ec4899' },
+                'Santé': { icon: 'fa-heartbeat', color: '#ef4444' },
+                'Technologie': { icon: 'fa-laptop-code', color: '#06b6d4' },
+                'International': { icon: 'fa-globe', color: '#f97316' }
+            };
+            
+            const container = document.getElementById('categoriesGrid');
+            const categoryCounts = {};
+            
+            allArticles.forEach(article => {
+                categoryCounts[article.categorie] = (categoryCounts[article.categorie] || 0) + 1;
+            });
+            
+            container.innerHTML = Object.entries(categories).map(([name, data]) => `
+                <div class="category-item" onclick="filterByCategory('${name}')" style="border-color: ${data.color};">
+                    <i class="fas ${data.icon}" style="color: ${data.color};"></i>
+                    <div class="category-name">${name}</div>
+                    <div class="category-count">${categoryCounts[name] || 0} articles</div>
+                </div>
+            `).join('');
         }
 
         // Politique
@@ -1451,11 +1580,11 @@
             const grid = document.getElementById('politiqueGrid');
             
             if (politique.length === 0) {
-                grid.innerHTML = '<div class="empty-state"><i class="fas fa-landmark"></i><p>Aucun article politique disponible</p></div>';
+                grid.innerHTML = '<div class="empty-state"><i class="fas fa-vote-yea"></i><p style="color: rgba(255,255,255,0.8);">Aucun article politique</p></div>';
                 return;
             }
             
-            grid.innerHTML = politique.map(article => createArticleCard(article)).join('');
+            grid.innerHTML = politique.map(article => createColoredCard(article)).join('');
         }
 
         // Sports
@@ -1467,27 +1596,11 @@
             const grid = document.getElementById('sportsGrid');
             
             if (sports.length === 0) {
-                grid.innerHTML = '<div class="empty-state"><i class="fas fa-futbol"></i><p>Aucun article sportif disponible</p></div>';
+                grid.innerHTML = '<div class="empty-state"><i class="fas fa-trophy"></i><p style="color: rgba(255,255,255,0.8);">Aucun article sportif</p></div>';
                 return;
             }
             
-            grid.innerHTML = sports.map(article => createArticleCard(article)).join('');
-        }
-
-        // Société
-        function displaySociete() {
-            const societe = allArticles
-                .filter(a => a.categorie === 'Société' || (a.sections && a.sections.includes('societe')))
-                .slice(0, 6);
-            
-            const grid = document.getElementById('societeGrid');
-            
-            if (societe.length === 0) {
-                grid.innerHTML = '<div class="empty-state"><i class="fas fa-users"></i><p>Aucun article de société disponible</p></div>';
-                return;
-            }
-            
-            grid.innerHTML = societe.map(article => createArticleCard(article)).join('');
+            grid.innerHTML = sports.map(article => createColoredCard(article)).join('');
         }
 
         // International
@@ -1499,48 +1612,66 @@
             const grid = document.getElementById('internationalGrid');
             
             if (international.length === 0) {
-                grid.innerHTML = '<div class="empty-state"><i class="fas fa-globe"></i><p>Aucun article international disponible</p></div>';
+                grid.innerHTML = '<div class="empty-state"><i class="fas fa-globe"></i><p style="color: rgba(255,255,255,0.8);">Aucun article international</p></div>';
                 return;
             }
             
-            grid.innerHTML = international.map(article => createArticleCard(article)).join('');
+            grid.innerHTML = international.map(article => createColoredCard(article)).join('');
         }
 
-        // Filtrer par catégorie
+        // Helper pour créer une carte colorée
+        function createColoredCard(article) {
+            return `
+                <article class="article-card colored-card" onclick="openArticle('${article.id}')">
+                    <img src="${article.image}" alt="${article.titre}" class="article-image" loading="lazy">
+                    <div class="article-content">
+                        <span class="category-badge">${article.categorie}</span>
+                        <h3 class="article-title">${article.titre}</h3>
+                        <p class="article-excerpt">${article.extrait}</p>
+                        <div class="article-meta">
+                            <div class="article-author">
+                                <div class="author-avatar">${getInitial(article.auteur)}</div>
+                                <span>${article.auteur}</span>
+                            </div>
+                            <div class="article-stats">
+                                <span class="stat"><i class="fas fa-eye"></i> ${article.vues || 0}</span>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            `;
+        }
+
+        // Update About Stats
+        function updateAboutStats() {
+            const totalArticles = allArticles.length;
+            const totalViews = allArticles.reduce((sum, a) => sum + (a.vues || 0), 0);
+            
+            document.getElementById('totalArticlesStat').textContent = totalArticles;
+            document.getElementById('totalViewsStat').textContent = formatNumber(totalViews);
+        }
+
+        function formatNumber(num) {
+            if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+            if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
+            return num;
+        }
+
         function filterByCategory(category) {
-            const filtered = allArticles.filter(a => a.categorie === category);
-            
-            if (filtered.length === 0) {
-                alert(`Aucun article dans la catégorie "${category}"`);
-                return;
-            }
-            
-            // Scroll vers les articles et les afficher
-            document.getElementById('articlesGrid').scrollIntoView({ behavior: 'smooth' });
-            
-            setTimeout(() => {
-                document.getElementById('articlesGrid').innerHTML = 
-                    filtered.slice(0, 12).map(article => createArticleCard(article)).join('');
-            }, 500);
+            document.querySelector('#articlesGrid').scrollIntoView({ behavior: 'smooth' });
+            console.log('Filtrer par:', category);
+        }
+
+        function formatDate(dateString) {
+            if (!dateString) return 'Date inconnue';
+            const date = new Date(dateString);
+            const options = { day: 'numeric', month: 'short', year: 'numeric' };
+            return date.toLocaleDateString('fr-FR', options);
         }
 
         // Utilitaires
         function getInitial(name) {
             return name ? name.charAt(0).toUpperCase() : 'A';
-        }
-
-        function formatDate(dateString) {
-            if (!dateString) return 'Date inconnue';
-            try {
-                const date = new Date(dateString);
-                return date.toLocaleDateString('fr-FR', {
-                    day: 'numeric',
-                    month: 'short',
-                    year: 'numeric'
-                });
-            } catch (error) {
-                return dateString;
-            }
         }
 
         function openArticle(id) {
