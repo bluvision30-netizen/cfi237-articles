@@ -622,7 +622,300 @@
             font-size: 0.75rem;
             color: var(--gray);
         }
-        
+         .section-politique {
+            position: relative;
+            min-height: 200vh; /* Pour permettre le scroll */
+            padding: 3rem 0;
+        }
+
+        /* Wrapper sticky pour les cartes */
+        .politique-stack-wrapper {
+            position: sticky;
+            top: 100px;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        /* Container des cartes empilées */
+        .politique-cards-stack {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            height: 600px;
+            perspective: 1000px;
+        }
+
+        /* Chaque carte dans la pile */
+        .politique-stack-card {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-origin: center bottom;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+        }
+
+        /* États de progression des cartes */
+        .politique-stack-card[data-index="0"] {
+            transform: translateY(0) scale(1) rotateX(0deg);
+            opacity: 1;
+            z-index: 6;
+        }
+
+        .politique-stack-card[data-index="1"] {
+            transform: translateY(-20px) scale(0.95) rotateX(2deg);
+            opacity: 0.9;
+            z-index: 5;
+        }
+
+        .politique-stack-card[data-index="2"] {
+            transform: translateY(-40px) scale(0.9) rotateX(4deg);
+            opacity: 0.7;
+            z-index: 4;
+        }
+
+        .politique-stack-card[data-index="3"] {
+            transform: translateY(-60px) scale(0.85) rotateX(6deg);
+            opacity: 0.5;
+            z-index: 3;
+        }
+
+        .politique-stack-card[data-index="4"] {
+            transform: translateY(-80px) scale(0.8) rotateX(8deg);
+            opacity: 0.3;
+            z-index: 2;
+        }
+
+        .politique-stack-card[data-index="5"] {
+            transform: translateY(-100px) scale(0.75) rotateX(10deg);
+            opacity: 0.15;
+            z-index: 1;
+        }
+
+        /* Carte qui sort (scrollée) */
+        .politique-stack-card.exited {
+            transform: translateY(-150px) scale(0.7) rotateX(15deg);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* Image de la carte */
+        .politique-card-image {
+            width: 100%;
+            height: 50%;
+            object-fit: cover;
+            position: relative;
+        }
+
+        .politique-card-image::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 100px;
+            background: linear-gradient(to top, rgba(30, 58, 138, 0.9), transparent);
+        }
+
+        /* Contenu de la carte */
+        .politique-card-content {
+            padding: 2rem;
+            height: 50%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            color: white;
+        }
+
+        .politique-card-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            width: fit-content;
+        }
+
+        .politique-card-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            line-height: 1.3;
+            margin-bottom: 1rem;
+        }
+
+        .politique-card-excerpt {
+            font-size: 0.95rem;
+            opacity: 0.9;
+            line-height: 1.5;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .politique-card-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            font-size: 0.85rem;
+        }
+
+        .politique-card-author {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .politique-author-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+        }
+
+        .politique-card-stats {
+            display: flex;
+            gap: 1rem;
+            opacity: 0.9;
+        }
+
+        /* Indicateur de progression */
+        .stack-progress {
+            position: fixed;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 8px;
+            z-index: 100;
+            background: rgba(30, 58, 138, 0.9);
+            padding: 12px 20px;
+            border-radius: 30px;
+            backdrop-filter: blur(10px);
+        }
+
+        .stack-progress-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .stack-progress-dot.active {
+            background: white;
+            width: 30px;
+            border-radius: 5px;
+        }
+
+        /* Effet hover sur carte active */
+        .politique-stack-card[data-index="0"]:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Responsive Mobile */
+        @media (max-width: 768px) {
+            .section-politique {
+                min-height: 150vh;
+            }
+
+            .politique-stack-wrapper {
+                top: 80px;
+                padding: 1rem;
+            }
+
+            .politique-cards-stack {
+                max-width: 100%;
+                height: 500px;
+            }
+
+            .politique-card-content {
+                padding: 1.5rem;
+            }
+
+            .politique-card-title {
+                font-size: 1.2rem;
+            }
+
+            .politique-card-excerpt {
+                font-size: 0.9rem;
+                -webkit-line-clamp: 2;
+            }
+
+            /* Ajustement des états pour mobile */
+            .politique-stack-card[data-index="1"] {
+                transform: translateY(-15px) scale(0.96);
+            }
+
+            .politique-stack-card[data-index="2"] {
+                transform: translateY(-30px) scale(0.92);
+            }
+
+            .politique-stack-card[data-index="3"] {
+                transform: translateY(-45px) scale(0.88);
+            }
+
+            .politique-stack-card[data-index="4"],
+            .politique-stack-card[data-index="5"] {
+                opacity: 0;
+            }
+
+            .stack-progress {
+                bottom: 20px;
+                padding: 8px 16px;
+            }
+
+            .stack-progress-dot {
+                width: 8px;
+                height: 8px;
+            }
+
+            .stack-progress-dot.active {
+                width: 24px;
+            }
+        }
+
+        /* Animation au chargement */
+        @keyframes cardSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(100px) scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .politique-stack-card {
+            animation: cardSlideIn 0.6s ease-out backwards;
+        }
+
+        .politique-stack-card:nth-child(1) { animation-delay: 0.1s; }
+        .politique-stack-card:nth-child(2) { animation-delay: 0.2s; }
+        .politique-stack-card:nth-child(3) { animation-delay: 0.3s; }
+        .politique-stack-card:nth-child(4) { animation-delay: 0.4s; }
+        .politique-stack-card:nth-child(5) { animation-delay: 0.5s; }
+        .politique-stack-card:nth-child(6) { animation-delay: 0.6s; }
         /* Sections spécifiques */
         .section-politique {
             background: linear-gradient(135deg, #1e3a8a, #3b82f6);
@@ -1442,281 +1735,6 @@
 .videos-scroll-container.can-scroll-right::after {
     opacity: 1;
 }
-
-
-.stacking-cards-container {
-    position: relative;
-    width: 100%;
-    min-height: 100vh;
-    padding: 40px 0;
-}
-
-.stacking-cards-wrapper {
-    position: relative;
-    width: 100%;
-    max-width: 900px;
-    margin: 0 auto;
-    padding: 0 20px;
-}
-
-/* Chaque carte politique */
-.politics-card {
-    position: sticky;
-    width: 100%;
-    background: white;
-    border-radius: 20px;
-    overflow: hidden;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.15);
-    margin-bottom: 40px;
-    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-    will-change: transform, opacity;
-}
-
-/* Positionnement sticky progressif */
-.politics-card:nth-child(1) { top: 80px; }
-.politics-card:nth-child(2) { top: 90px; }
-.politics-card:nth-child(3) { top: 100px; }
-.politics-card:nth-child(4) { top: 110px; }
-.politics-card:nth-child(5) { top: 120px; }
-.politics-card:nth-child(6) { top: 130px; }
-
-/* États de scroll */
-.politics-card.card-active {
-    opacity: 1;
-    transform: scale(1) translateY(0);
-}
-
-.politics-card.card-stacking {
-    opacity: 0.7;
-    transform: scale(0.95) translateY(-10px);
-}
-
-.politics-card.card-passed {
-    opacity: 0.3;
-    transform: scale(0.9) translateY(-20px);
-}
-
-/* Image de la carte politique */
-.politics-card-image {
-    width: 100%;
-    height: 400px;
-    object-fit: cover;
-    transition: transform 0.5s ease;
-}
-
-.politics-card:hover .politics-card-image {
-    transform: scale(1.05);
-}
-
-/* Contenu de la carte */
-.politics-card-content {
-    padding: 30px;
-    position: relative;
-}
-
-.politics-card-category {
-    display: inline-block;
-    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
-    color: white;
-    padding: 8px 16px;
-    border-radius: 20px;
-    font-size: 0.85rem;
-    font-weight: 600;
-    margin-bottom: 15px;
-}
-
-.politics-card-title {
-    font-size: 1.8rem;
-    font-weight: 700;
-    line-height: 1.3;
-    margin-bottom: 15px;
-    color: #1f2937;
-}
-
-.politics-card-excerpt {
-    font-size: 1.05rem;
-    line-height: 1.7;
-    color: #6b7280;
-    margin-bottom: 20px;
-}
-
-.politics-card-meta {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-top: 20px;
-    border-top: 2px solid #e5e7eb;
-}
-
-.politics-card-author {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.politics-author-avatar {
-    width: 45px;
-    height: 45px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 700;
-    font-size: 1.1rem;
-}
-
-.politics-card-stats {
-    display: flex;
-    gap: 20px;
-    font-size: 0.95rem;
-    color: #6b7280;
-}
-
-.politics-stat {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-
-/* Badge index */
-.card-index {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.5rem;
-    font-weight: 700;
-    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
-}
-
-/* Responsive Mobile */
-@media (max-width: 768px) {
-    .stacking-cards-container {
-        min-height: auto;
-        padding: 20px 0;
-    }
-    
-    .stacking-cards-wrapper {
-        padding: 0 15px;
-    }
-    
-    .politics-card {
-        margin-bottom: 30px;
-    }
-    
-    .politics-card:nth-child(n) { 
-        top: 70px; 
-    }
-    
-    .politics-card-image {
-        height: 250px;
-    }
-    
-    .politics-card-content {
-        padding: 20px;
-    }
-    
-    .politics-card-title {
-        font-size: 1.3rem;
-    }
-    
-    .politics-card-excerpt {
-        font-size: 0.95rem;
-    }
-    
-    .politics-card-meta {
-        flex-direction: column;
-        gap: 15px;
-        align-items: flex-start;
-    }
-}
-
-/* ========================================
-   AUTO-SCROLL VIDÉOS
-   ======================================== */
-
-.auto-scroll-controls {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    margin-left: auto;
-}
-
-.auto-scroll-toggle {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 10px 20px;
-    background: rgba(37, 99, 235, 0.1);
-    border: 2px solid #2563eb;
-    border-radius: 25px;
-    color: #2563eb;
-    font-weight: 600;
-    font-size: 0.9rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.auto-scroll-toggle:hover {
-    background: rgba(37, 99, 235, 0.2);
-}
-
-.auto-scroll-toggle.active {
-    background: #2563eb;
-    color: white;
-}
-
-.auto-scroll-toggle i {
-    font-size: 1.1rem;
-}
-
-/* Indicateur de lecture */
-.scroll-indicator {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 0.85rem;
-    color: #64748b;
-    font-weight: 500;
-}
-
-.scroll-indicator-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: #64748b;
-    animation: blink 1.5s ease-in-out infinite;
-}
-
-@keyframes blink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.3; }
-}
-
-/* Responsive auto-scroll */
-@media (max-width: 768px) {
-    .auto-scroll-controls {
-        margin-left: 0;
-        margin-top: 15px;
-        width: 100%;
-        justify-content: center;
-    }
-    
-    .auto-scroll-toggle {
-        font-size: 0.85rem;
-        padding: 8px 16px;
-    }
-}
-
     </style>
 </head>
 <body>
@@ -1891,19 +1909,21 @@
         </div>
     </div>
 </section>
-      
-<!-- Section Politique -->
-<section id="politique-section" style="margin: 4rem 0;">
-    <h2 class="section-title">🏛️ Politique</h2>
-    <div class="stacking-cards-container" id="politicsContainer">
-        <div class="stacking-cards-wrapper" id="politicsGrid">
-            <div class="loading">
-                <i class="fas fa-spinner"></i>
-                <p style="margin-top: 1rem;">Chargement...</p>
+        <!-- Politique Section -->
+        <section class="section-politique section-colored">
+            <div class="container">
+                <h2 class="section-title">
+                    <i class="fas fa-landmark"></i>
+                    Politique
+                </h2>
+                <div class="articles-grid" id="politiqueGrid">
+                    <div class="empty-state">
+                        <i class="fas fa-vote-yea"></i>
+                        <p style="color: rgba(255,255,255,0.8);">Aucun article politique disponible</p>
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
-</section>
+        </section>
 
         <!-- Sports Section -->
         <section class="section-sports section-colored">
@@ -2017,10 +2037,7 @@ document.addEventListener('DOMContentLoaded', function() {
         updateScrollIndicators();
     }
 });
-let politicsCards = [];
-let autoScrollInterval = null;
-let isAutoScrolling = false;
-const AUTO_SCROLL_SPEED = 3000; 
+
         // Charger les articles depuis GitHub
         // Charger les articles depuis GitHub
 async function loadArticles() {
@@ -2034,13 +2051,13 @@ async function loadArticles() {
             .sort((a, b) => new Date(b.date) - new Date(a.date));
         
         console.log('📰 Articles chargés:', allArticles.length);
-          displayHeroSlider();
+        
+        displayHeroSlider();
         displayCarousel();
         displayArticles();
         displayTrending();
-        displayVideos();
+        displayVideos(); // ← Cette fonction est maintenant corrigée
         displaySociete();
-        displayPoliticsCards();
         displayFeatured();
         displayEvents();
         displayCategories();
@@ -2975,232 +2992,214 @@ function checkImageExists(url) {
             // Retourne l'URL vidéo si elle existe
             return article.video_url || null;
         }
-   console.log('✅ Système de miniatures vidéo HD chargé');
-    
-    async function displayPoliticsCards() {
-    const politics = allArticles
-        .filter(a => a.categorie === 'Politique')
-        .slice(0, 8); // Maximum 8 cartes
-    
-    const container = document.getElementById('politicsGrid');
-    
-    if (politics.length === 0) {
-        container.innerHTML = `
-            <div class="empty-state">
-                <i class="fas fa-landmark"></i>
-                <p>Aucun article politique disponible</p>
-            </div>
-        `;
-        return;
-    }
-    
-    container.innerHTML = politics.map((article, index) => `
-        <article class="politics-card" data-card-index="${index}" onclick="openArticle('${article.id}')">
-            <div class="card-index">${index + 1}</div>
-            <img src="${article.image}" alt="${article.titre}" class="politics-card-image" loading="lazy">
-            <div class="politics-card-content">
-                <span class="politics-card-category">🏛️ ${article.categorie}</span>
-                <h3 class="politics-card-title">${article.titre}</h3>
-                <p class="politics-card-excerpt">${article.extrait}</p>
-                <div class="politics-card-meta">
-                    <div class="politics-card-author">
-                        <div class="politics-author-avatar">${getInitial(article.auteur)}</div>
+
+        console.log('✅ Système de miniatures vidéo HD chargé');
+  
+  class PolitiqueStackCards {
+            constructor() {
+                this.section = null;
+                this.wrapper = null;
+                this.cards = [];
+                this.currentIndex = 0;
+                this.isScrolling = false;
+                this.scrollTimeout = null;
+            }
+
+            init() {
+                // Attendre que le DOM soit chargé
+                if (document.readyState === 'loading') {
+                    document.addEventListener('DOMContentLoaded', () => this.setup());
+                } else {
+                    this.setup();
+                }
+            }
+
+            setup() {
+                this.section = document.querySelector('.section-politique');
+                if (!this.section) {
+                    console.warn('⚠️ Section politique non trouvée');
+                    return;
+                }
+
+                // Créer la structure d'empilement
+                this.createStackStructure();
+                
+                // Écouter le scroll
+                window.addEventListener('scroll', () => this.handleScroll(), { passive: true });
+                
+                // Responsive
+                window.addEventListener('resize', () => this.updateLayout());
+                
+                console.log('✅ Animation empilement politique initialisée');
+            }
+
+            createStackStructure() {
+                // Récupérer la grille existante
+                const grid = this.section.querySelector('#politiqueGrid');
+                if (!grid) return;
+
+                const articles = grid.querySelectorAll('.article-card');
+                if (articles.length === 0) return;
+
+                // Créer le wrapper sticky
+                const wrapper = document.createElement('div');
+                wrapper.className = 'politique-stack-wrapper';
+
+                const stack = document.createElement('div');
+                stack.className = 'politique-cards-stack';
+
+                // Convertir les articles en cartes empilées
+                articles.forEach((article, index) => {
+                    const card = this.createStackCard(article, index);
+                    stack.appendChild(card);
+                    this.cards.push(card);
+                });
+
+                wrapper.appendChild(stack);
+
+                // Remplacer la grille par le wrapper
+                grid.replaceWith(wrapper);
+                this.wrapper = wrapper;
+
+                // Ajouter l'indicateur de progression
+                this.createProgressIndicator();
+
+                // Initialiser les positions
+                this.updateCardPositions();
+            }
+
+            createStackCard(article, index) {
+                const card = document.createElement('div');
+                card.className = 'politique-stack-card';
+                card.setAttribute('data-index', index);
+                card.setAttribute('data-original-index', index);
+
+                const img = article.querySelector('.article-image');
+                const badge = article.querySelector('.category-badge');
+                const title = article.querySelector('.article-title');
+                const excerpt = article.querySelector('.article-excerpt');
+                const author = article.querySelector('.article-author');
+                const stats = article.querySelector('.article-stats');
+
+                const imgSrc = img ? img.src : '';
+                const badgeText = badge ? badge.textContent : 'Politique';
+                const titleText = title ? title.textContent : '';
+                const excerptText = excerpt ? excerpt.textContent : '';
+                const authorHTML = author ? author.innerHTML : '';
+                const statsHTML = stats ? stats.innerHTML : '';
+
+                card.innerHTML = `
+                    <img src="${imgSrc}" alt="${titleText}" class="politique-card-image">
+                    <div class="politique-card-content">
                         <div>
-                            <div style="font-weight: 600; color: #1f2937;">${article.auteur}</div>
-                            <div style="font-size: 0.85rem; color: #6b7280;">${formatDate(article.date)}</div>
+                            <span class="politique-card-badge">${badgeText}</span>
+                            <h3 class="politique-card-title">${titleText}</h3>
+                            <p class="politique-card-excerpt">${excerptText}</p>
+                        </div>
+                        <div class="politique-card-meta">
+                            <div class="politique-card-author">
+                                ${authorHTML}
+                            </div>
+                            <div class="politique-card-stats">
+                                ${statsHTML}
+                            </div>
                         </div>
                     </div>
-                    <div class="politics-card-stats">
-                        <span class="politics-stat"><i class="fas fa-eye"></i> ${article.vues || 0}</span>
-                        <span class="politics-stat"><i class="fas fa-heart"></i> ${article.likes || 0}</span>
-                    </div>
-                </div>
-            </div>
-        </article>
-    `).join('');
-    
-    // Initialiser l'animation après rendu
-    setTimeout(() => {
-        politicsCards = document.querySelectorAll('.politics-card');
-        initStackingAnimation();
-    }, 100);
-}
+                `;
 
-// ========================================
-// ANIMATION EMPILEMENT AU SCROLL
-// ========================================
-function initStackingAnimation() {
-    if (politicsCards.length === 0) return;
-    
-    // Observer pour détecter le scroll
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            const card = entry.target;
-            const index = parseInt(card.dataset.cardIndex);
-            
-            if (entry.isIntersecting) {
-                updateCardState(card, index);
+                // Ajouter le clic
+                const articleId = article.getAttribute('onclick');
+                if (articleId) {
+                    card.setAttribute('onclick', articleId);
+                }
+
+                return card;
             }
-        });
-    }, {
-        threshold: [0, 0.25, 0.5, 0.75, 1],
-        rootMargin: '-80px 0px -80px 0px'
-    });
-    
-    politicsCards.forEach(card => observer.observe(card));
-    
-    // Mise à jour au scroll
-    window.addEventListener('scroll', () => {
-        politicsCards.forEach((card, index) => {
-            updateCardState(card, index);
-        });
-    });
-    
-    // État initial
-    politicsCards.forEach((card, index) => {
-        updateCardState(card, index);
-    });
-}
 
-function updateCardState(card, index) {
-    const rect = card.getBoundingClientRect();
-    const windowHeight = window.innerHeight;
-    const scrollProgress = 1 - (rect.top / windowHeight);
-    
-    // Supprimer toutes les classes
-    card.classList.remove('card-active', 'card-stacking', 'card-passed');
-    
-    if (rect.top < 150 && rect.bottom > 150) {
-        // Carte active (visible et centrée)
-        card.classList.add('card-active');
-    } else if (rect.top < 150) {
-        // Carte passée (empilée au-dessus)
-        card.classList.add('card-passed');
-    } else {
-        // Carte en approche (empilée en-dessous)
-        card.classList.add('card-stacking');
-    }
-    
-    // Effet d'opacité progressif
-    const opacity = Math.max(0.3, Math.min(1, 1.5 - scrollProgress * 2));
-    card.style.opacity = opacity;
-}
-    
+            createProgressIndicator() {
+                const progress = document.createElement('div');
+                progress.className = 'stack-progress';
 
-// Modifier la section vidéos pour ajouter les contrôles
-function enhanceVideosSection() {
-    const sectionTitle = document.querySelector('#videosScrollContainer').previousElementSibling;
-    
-    if (sectionTitle && !document.querySelector('.auto-scroll-controls')) {
-        const titleContainer = sectionTitle.parentElement;
-        titleContainer.style.display = 'flex';
-        titleContainer.style.flexWrap = 'wrap';
-        titleContainer.style.alignItems = 'center';
-        titleContainer.style.gap = '20px';
-        
-        const controls = document.createElement('div');
-        controls.className = 'auto-scroll-controls';
-        controls.innerHTML = `
-            <button class="auto-scroll-toggle" id="autoScrollBtn" onclick="toggleAutoScroll()">
-                <i class="fas fa-play"></i>
-                <span>Défilement auto</span>
-            </button>
-            <div class="scroll-indicator" id="scrollIndicator" style="display: none;">
-                <div class="scroll-indicator-dot"></div>
-                <span>En lecture...</span>
-            </div>
-        `;
-        
-        titleContainer.appendChild(controls);
-    }
-}
+                this.cards.forEach((_, index) => {
+                    const dot = document.createElement('div');
+                    dot.className = 'stack-progress-dot';
+                    if (index === 0) dot.classList.add('active');
+                    progress.appendChild(dot);
+                });
 
-function toggleAutoScroll() {
-    isAutoScrolling = !isAutoScrolling;
-    const btn = document.getElementById('autoScrollBtn');
-    const indicator = document.getElementById('scrollIndicator');
-    
-    if (isAutoScrolling) {
-        btn.classList.add('active');
-        btn.innerHTML = '<i class="fas fa-pause"></i><span>Pause</span>';
-        indicator.style.display = 'flex';
-        startAutoScroll();
-    } else {
-        btn.classList.remove('active');
-        btn.innerHTML = '<i class="fas fa-play"></i><span>Défilement auto</span>';
-        indicator.style.display = 'none';
-        stopAutoScroll();
-    }
-}
+                document.body.appendChild(progress);
+                this.progressIndicator = progress;
+            }
 
-function startAutoScroll() {
-    if (autoScrollInterval) return;
-    
-    autoScrollInterval = setInterval(() => {
-        const wrapper = document.getElementById('videosGrid');
-        if (!wrapper) return;
-        
-        const scrollAmount = 400;
-        const maxScroll = wrapper.scrollWidth - wrapper.clientWidth;
-        
-        if (wrapper.scrollLeft >= maxScroll - 10) {
-            // Retour au début
-            wrapper.scrollTo({ left: 0, behavior: 'smooth' });
-        } else {
-            // Scroll vers la droite
-            wrapper.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+            handleScroll() {
+                if (!this.section) return;
+
+                const rect = this.section.getBoundingClientRect();
+                const windowHeight = window.innerHeight;
+                const sectionHeight = this.section.offsetHeight;
+
+                // Calculer la progression dans la section
+                const scrollProgress = Math.max(0, Math.min(1, 
+                    (windowHeight - rect.top) / (sectionHeight - windowHeight)
+                ));
+
+                // Déterminer l'index de la carte active
+                const totalCards = this.cards.length;
+                const newIndex = Math.floor(scrollProgress * totalCards);
+                const clampedIndex = Math.max(0, Math.min(totalCards - 1, newIndex));
+
+                if (clampedIndex !== this.currentIndex) {
+                    this.currentIndex = clampedIndex;
+                    this.updateCardPositions();
+                    this.updateProgressIndicator();
+                }
+
+                // Gestion du scroll continu
+                clearTimeout(this.scrollTimeout);
+                this.isScrolling = true;
+                this.scrollTimeout = setTimeout(() => {
+                    this.isScrolling = false;
+                }, 150);
+            }
+
+            updateCardPositions() {
+                this.cards.forEach((card, index) => {
+                    const originalIndex = parseInt(card.getAttribute('data-original-index'));
+                    const relativePosition = originalIndex - this.currentIndex;
+
+                    if (relativePosition < 0) {
+                        // Carte déjà passée
+                        card.classList.add('exited');
+                        card.setAttribute('data-index', '-1');
+                    } else {
+                        // Carte dans la pile ou à venir
+                        card.classList.remove('exited');
+                        const displayIndex = Math.min(relativePosition, 5);
+                        card.setAttribute('data-index', displayIndex);
+                    }
+                });
+            }
+
+            updateProgressIndicator() {
+                if (!this.progressIndicator) return;
+
+                const dots = this.progressIndicator.querySelectorAll('.stack-progress-dot');
+                dots.forEach((dot, index) => {
+                    dot.classList.toggle('active', index === this.currentIndex);
+                });
+            }
+
+            updateLayout() {
+                // Recalculer les positions en cas de resize
+                this.updateCardPositions();
+            }
         }
-    }, AUTO_SCROLL_SPEED);
-}
 
-function stopAutoScroll() {
-    if (autoScrollInterval) {
-        clearInterval(autoScrollInterval);
-        autoScrollInterval = null;
-    }
-}
+        // Initialiser le système d'empilement
+        const politiqueStack = new PolitiqueStackCards();
+        politiqueStack.init();
 
-// Arrêter l'auto-scroll quand l'utilisateur scroll manuellement
-document.getElementById('videosGrid')?.addEventListener('wheel', () => {
-    if (isAutoScrolling) {
-        toggleAutoScroll();
-    }
-}, { passive: true });
-
-document.getElementById('videosGrid')?.addEventListener('touchstart', () => {
-    if (isAutoScrolling) {
-        toggleAutoScroll();
-    }
-}, { passive: true });
-
-// ========================================
-// HELPER - Formater date
-// ========================================
-function formatDate(dateString) {
-    if (!dateString) return 'Date inconnue';
-    try {
-        const date = new Date(dateString);
-        return date.toLocaleDateString('fr-FR', {
-            day: 'numeric',
-            month: 'short',
-            year: 'numeric'
-        });
-    } catch (error) {
-        return dateString;
-    }
-}
-
-// ========================================
-// INITIALISATION
-// ========================================
-document.addEventListener('DOMContentLoaded', function() {
-    // Charger les articles au démarrage
-    setTimeout(() => {
-        displayPoliticsCards();
-        enhanceVideosSection();
-    }, 1000);
-});
-
-    </script>
+        console.log('🎴 Système d\'empilement de cartes Politique chargé');
+  </script>
 </body>
 </html>
