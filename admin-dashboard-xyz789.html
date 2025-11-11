@@ -3342,7 +3342,79 @@ function editArticle(id) {
             }
         }
     }
+/**
+ * Gérer l'upload automatique de miniature quand on colle une URL YouTube
+ */
+async function handleVideoUrlInput() {
+    const videoUrlInput = document.getElementById('videoUrl');
+    const imageUrlInput = document.getElementById('imageUrl');
+    const imagePreview = document.getElementById('imagePreview');
+    const previewImg = document.getElementById('previewImg');
+    const uploadArea = document.getElementById('uploadArea');
+    
+    videoUrlInput.addEventListener('blur', async function() {
+        const videoUrl = this.value.trim();
+        
+        if (!videoUrl) return;
+        
+        // Détecter si c'est YouTube
+        const platform = detectVideoPlatform(videoUrl);
+        
+        if (platform === 'youtube') {
+            // Afficher un message de chargement
+            uploadArea.innerHTML = `
+                <i class="fas fa-spinner fa-spin" style="font-size: 2.5rem; color: #667eea;"></i>
+                <h4 style="margin:12px 0 8px;color:#fff">Récupération miniature YouTube...</h4>
+                <p style="color:#64748b; font-size: 0.9rem;">Patientez un instant</p>
+            `;
+            
+            try {
+                // Récupérer la miniature YouTube
+                const thumbnail = await getYouTubeThumbnail(videoUrl);
+                
+                if (thumbnail && thumbnail.url) {
+                    // Remplir automatiquement l'image
+                    imageUrlInput.value = thumbnail.url;
+                    previewImg.src = thumbnail.url;
+                    imagePreview.classList.add('show');
+                    uploadArea.style.display = 'none';
+                    
+                    // Message de succès
+                    showAlert('success', 
+                        '🎬 Miniature récupérée!', 
+                        `Qualité: ${thumbnail.quality} (${thumbnail.width}x${thumbnail.height})`
+                    );
+                    
+                    console.log('✅ Miniature YouTube appliquée:', thumbnail);
+                } else {
+                    throw new Error('Miniature non disponible');
+                }
+                
+            } catch (error) {
+                console.error('❌ Erreur récupération miniature:', error);
+                
+                // Restaurer l'interface d'upload
+                uploadArea.innerHTML = `
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <h4 style="margin:0 0 8px;color:#fff">Glissez une image ou cliquez pour sélectionner</h4>
+                    <p style="color:#64748b">JPG, PNG, WEBP (Max 10MB)</p>
+                `;
+                uploadArea.style.display = 'block';
+                
+                showAlert('error', 
+                    '⚠️ Impossible de récupérer la miniature', 
+                    'Veuillez uploader une image manuellement'
+                );
+            }
+        }
+    });
+}
 
+// Initialiser au chargement de la page
+document.addEventListener('DOMContentLoaded', function() {
+    handleVideoUrlInput();
+    console.log('✅ Système de miniatures YouTube initialisé');
+});
     // Alert Function
     function showAlert(type, title = '', message = '') {
         document.querySelectorAll('.alert').forEach(a => a.classList.remove('show'));
@@ -3669,32 +3741,33 @@ async function getVideoThumbnail(videoUrl) {
 
 // Extraire l'ID YouTube de manière fiable
 function extractYouTubeId(url) {
+    if (!url) return null;
+    
     const patterns = [
         /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/,
         /youtube\.com\/watch\?v=([^"&?\/\s]{11})/,
         /youtube\.com\/embed\/([^"&?\/\s]{11})/,
-        /youtu\.be\/([^"&?\/\s]{11})/
+        /youtu\.be\/([^"&?\/\s]{11})/,
+        /youtube\.com\/shorts\/([^"&?\/\s]{11})/
     ];
     
     for (let pattern of patterns) {
         const match = url.match(pattern);
-        if (match && match[1]) {
-            return match[1];
-        }
+        if (match && match[1]) return match[1];
     }
     return null;
 }
 
-// Vérifier si une image existe
+/**
+ * Vérifier existence image
+ */
 function checkImageExists(url) {
     return new Promise((resolve) => {
         const img = new Image();
         img.onload = () => resolve(true);
         img.onerror = () => resolve(false);
         img.src = url;
-        
-        // Timeout après 2 secondes
-        setTimeout(() => resolve(false), 2000);
+        setTimeout(() => resolve(false), 3000);
     });
 }
 
@@ -3787,6 +3860,165 @@ async function sendNotificationForArticle(articleData) {
     return false;
   }
 }
+
+
+function enhanceVideoInterface() {
+    const videoUrlField = document.getElementById('videoUrlField');
+    
+    if (videoUrlField) {
+        // Ajouter des exemples d'URLs
+        const helpText = videoUrlField.querySelector('.helper-text');
+        if (helpText) {
+            helpText.innerHTML = `
+                <i class="fas fa-info-circle"></i>
+                <strong>URLs supportées :</strong><br>
+                • https://www.youtube.com/watch?v=...<br>
+                • https://youtu.be/...<br>
+                • https://www.youtube.com/shorts/...<br>
+                <span style="color: #22c55e; margin-top: 4px; display: block;">
+                    ✨ La miniature HD sera récupérée automatiquement !
+                </span>
+            `;
+        }
+    }
+}
+
+// ========================================
+// 3️⃣ PRÉVISUALISATION VIDÉO DANS LE DASHBOARD
+// ========================================
+
+function addVideoPreview() {
+    const videoUrlInput = document.getElementById('videoUrl');
+    
+    if (!videoUrlInput) return;
+    
+    // Créer zone de prévisualisation
+    const previewDiv = document.createElement('div');
+    previewDiv.id = 'videoPreviewDashboard';
+    previewDiv.style.cssText = `
+        display: none;
+        margin-top: 20px;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    `;
+    
+    videoUrlInput.parentElement.appendChild(previewDiv);
+    
+    // Écouter changement URL
+    videoUrlInput.addEventListener('input', debounce(async function() {
+        const url = this.value.trim();
+        
+        if (!url) {
+            previewDiv.style.display = 'none';
+            return;
+        }
+        
+        const videoId = extractYouTubeId(url);
+        if (!videoId) {
+            previewDiv.style.display = 'none';
+            return;
+        }
+        
+        // Afficher embed YouTube
+        previewDiv.innerHTML = `
+            <div style="position: relative; padding-bottom: 56.25%; height: 0;">
+                <iframe 
+                    src="https://www.youtube.com/embed/${videoId}" 
+                    frameborder="0" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                    allowfullscreen
+                    style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;">
+                </iframe>
+            </div>
+            <div style="background: rgba(102, 126, 234, 0.1); padding: 12px; text-align: center; color: #667eea; font-weight: 600;">
+                ✅ Aperçu de la vidéo YouTube
+            </div>
+        `;
+        previewDiv.style.display = 'block';
+        
+    }, 500));
+}
+
+/**
+ * Debounce helper
+ */
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func.apply(this, args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+
+// ========================================
+// 4️⃣ INITIALISATION AU CHARGEMENT
+// ========================================
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Attendre que tout soit chargé
+    setTimeout(() => {
+        initYouTubeThumbnailSystem();
+        enhanceVideoInterface();
+        addVideoPreview();
+        console.log('✅ Système miniatures YouTube HD initialisé');
+    }, 1000);
+});
+
+// ========================================
+// 5️⃣ CSS POUR AMÉLIORER L'INTERFACE VIDÉO
+// ========================================
+
+const videoInterfaceStyles = `
+/* Animation pour le champ URL vidéo */
+#videoUrl {
+    transition: all 0.3s ease;
+}
+
+#videoUrl:focus {
+    border-color: #ef4444 !important;
+    box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.1) !important;
+}
+
+/* Badge "Vidéo" dans la liste articles */
+.article-item .badge-video {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: white;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Amélioration du champ video URL */
+#videoUrlField {
+    background: rgba(239, 68, 68, 0.05);
+    padding: 20px;
+    border-radius: 12px;
+    border: 2px solid rgba(239, 68, 68, 0.2);
+}
+
+#videoUrlField .helper-text {
+    background: white;
+    padding: 12px;
+    border-radius: 8px;
+    margin-top: 12px;
+    line-height: 1.6;
+}
+`;
+
+const videoStyleSheet = document.createElement('style');
+videoStyleSheet.textContent = videoInterfaceStyles;
+document.head.appendChild(videoStyleSheet);
+
+console.log('🎬 Module miniatures YouTube chargé');
 
 </script>
 </body>
