@@ -2148,67 +2148,176 @@ function displayVideos() {
             }
             return null;
         }
-
-        /**
-         * Obtenir la miniature YouTube en haute qualité
-         * Retourne automatiquement la meilleure qualité disponible
-         */
-        async function getYouTubeThumbnail(videoUrl) {
-            const videoId = extractYouTubeId(videoUrl);
-            if (!videoId) return null;
+/**
+ * Afficher les vidéos avec miniatures YouTube HD
+ */
+async function displayVideos() {
+    const videos = allArticles
+        .filter(a => a.contentType === 'video' || (a.sections && a.sections.includes('videos')))
+        .slice(0, 6);
+    
+    const grid = document.getElementById('videosGrid');
+    
+    if (videos.length === 0) {
+        grid.innerHTML = `
+            <div class="empty-state">
+                <i class="fas fa-video"></i>
+                <p>Aucune vidéo disponible pour le moment</p>
+            </div>
+        `;
+        return;
+    }
+    
+    // Afficher d'abord un loading
+    grid.innerHTML = `
+        <div class="loading">
+            <i class="fas fa-spinner"></i>
+            <p style="margin-top: 1rem;">Chargement des vidéos HD...</p>
+        </div>
+    `;
+    
+    // Récupérer les miniatures HD pour chaque vidéo
+    const videosWithThumbnails = await Promise.all(
+        videos.map(async (article) => {
+            let thumbnailData = {
+                url: article.image,
+                quality: 'standard',
+                isYouTube: false
+            };
             
-            // Qualités par ordre de préférence (meilleure → moins bonne)
-            const qualities = [
-                { name: 'maxresdefault', width: 1280, height: 720 },    // HD
-                { name: 'sddefault', width: 640, height: 480 },         // SD
-                { name: 'hqdefault', width: 480, height: 360 },         // HQ
-                { name: 'mqdefault', width: 320, height: 180 },         // MQ
-                { name: 'default', width: 120, height: 90 }             // Default
-            ];
-            
-            // Essayer chaque qualité jusqu'à en trouver une disponible
-            for (let quality of qualities) {
-                const thumbnailUrl = `https://img.youtube.com/vi/${videoId}/${quality.name}.jpg`;
+            // Si c'est une vidéo YouTube, récupérer la vraie miniature
+            if (article.video_url) {
+                const platform = detectVideoPlatform(article.video_url);
                 
-                // Vérifier si l'image existe
-                const exists = await checkImageExists(thumbnailUrl);
-                if (exists) {
-                    console.log(`✅ Miniature YouTube trouvée: ${quality.name} (${quality.width}x${quality.height})`);
-                    return {
-                        url: thumbnailUrl,
-                        quality: quality.name,
-                        width: quality.width,
-                        height: quality.height,
-                        videoId: videoId
-                    };
+                if (platform === 'youtube') {
+                    const thumbnail = await getYouTubeThumbnail(article.video_url);
+                    if (thumbnail) {
+                        thumbnailData = {
+                            url: thumbnail.url,
+                            quality: thumbnail.quality,
+                            width: thumbnail.width,
+                            height: thumbnail.height,
+                            isYouTube: true
+                        };
+                    }
                 }
             }
             
-            // Fallback: retourner la qualité par défaut
-            console.warn('⚠️ Aucune miniature HD trouvée, utilisation du fallback');
+            return { ...article, thumbnailData };
+        })
+    );
+    
+    // Générer le HTML avec les miniatures HD
+    grid.innerHTML = videosWithThumbnails.map(article => {
+        const thumb = article.thumbnailData;
+        const qualityBadge = thumb.isYouTube ? 
+            `<div class="quality-badge">${thumb.quality === 'maxresdefault' ? 'HD' : 'SD'}</div>` : '';
+        
+        return `
+            <article class="article-card video-card" onclick="openArticle('${article.id}')">
+                <div class="video-thumbnail">
+                    <img src="${thumb.url}" 
+                         alt="${article.titre}" 
+                         class="article-image" 
+                         loading="lazy">
+                    
+                    <!-- Overlay avec gradient -->
+                    <div class="video-overlay">
+                        <!-- Bouton play animé -->
+                        <div class="play-button">
+                            <i class="fas fa-play"></i>
+                        </div>
+                    </div>
+                    
+                    ${qualityBadge}
+                    
+                    <!-- Badge YouTube -->
+                    ${thumb.isYouTube ? `
+                        <div class="platform-badge youtube">
+                            <i class="fab fa-youtube"></i> YouTube
+                        </div>
+                    ` : ''}
+                    
+                    <!-- Badge durée (optionnel) -->
+                    <div class="duration-badge">
+                        <i class="fas fa-play-circle"></i> VIDÉO
+                    </div>
+                </div>
+                
+                <div class="article-content">
+                    <span class="category-badge video-badge">
+                        🎥 ${article.categorie}
+                    </span>
+                    <h3 class="article-title">${article.titre}</h3>
+                    <p class="article-excerpt">${article.extrait}</p>
+                    <div class="article-meta">
+                        <div class="article-author">
+                            <div class="author-avatar">${getInitial(article.auteur)}</div>
+                            <span>${article.auteur}</span>
+                        </div>
+                        <div class="article-stats">
+                            <span class="stat"><i class="fas fa-eye"></i> ${article.vues || 0}</span>
+                            <span class="stat"><i class="fas fa-heart"></i> ${article.likes || 0}</span>
+                        </div>
+                    </div>
+                </div>
+            </article>
+        `;
+    }).join('');
+    
+    console.log(`✅ ${videosWithThumbnails.length} vidéos affichées avec miniatures HD`);
+}
+      
+/**
+ * Obtenir miniature YouTube HD
+ */
+async function getYouTubeThumbnail(videoUrl) {
+    const videoId = extractYouTubeId(videoUrl);
+    if (!videoId) return null;
+    
+    const qualities = [
+        { name: 'maxresdefault', width: 1280, height: 720 },
+        { name: 'sddefault', width: 640, height: 480 },
+        { name: 'hqdefault', width: 480, height: 360 }
+    ];
+    
+    for (let quality of qualities) {
+        const thumbnailUrl = `https://img.youtube.com/vi/${videoId}/${quality.name}.jpg`;
+        const exists = await checkImageExists(thumbnailUrl);
+        
+        if (exists) {
             return {
-                url: `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`,
-                quality: 'hqdefault',
-                width: 480,
-                height: 360,
+                url: thumbnailUrl,
+                quality: quality.name,
+                width: quality.width,
+                height: quality.height,
                 videoId: videoId
             };
         }
+    }
+    
+    // Fallback
+    return {
+        url: `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`,
+        quality: 'hqdefault',
+        width: 480,
+        height: 360,
+        videoId: videoId
+    };
+}
 
-        /**
-         * Vérifier si une image existe (sans CORS)
-         */
-        function checkImageExists(url) {
-            return new Promise((resolve) => {
-                const img = new Image();
-                img.onload = () => resolve(true);
-                img.onerror = () => resolve(false);
-                img.src = url;
-                
-                // Timeout après 2 secondes
-                setTimeout(() => resolve(false), 2000);
-            });
-        }
+     /**
+ * Vérifier si une image existe
+ */
+function checkImageExists(url) {
+    return new Promise((resolve) => {
+        const img = new Image();
+        img.onload = () => resolve(true);
+        img.onerror = () => resolve(false);
+        img.src = url;
+        setTimeout(() => resolve(false), 2000);
+    });
+}
 
         /**
          * Détecter la plateforme vidéo
