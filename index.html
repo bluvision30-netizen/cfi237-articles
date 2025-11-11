@@ -1139,6 +1139,134 @@ function getVideoUrl(article) {
                 imageObserver.observe(img);
             });
         }
+
+
+// ========================================
+// 1️⃣ FONCTIONS UTILITAIRES VIDÉO
+// ========================================
+
+/**
+ * Extraire l'ID YouTube depuis n'importe quelle URL
+ */
+function extractYouTubeId(url) {
+    if (!url) return null;
+    
+    const patterns = [
+        /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/,
+        /youtube\.com\/watch\?v=([^"&?\/\s]{11})/,
+        /youtube\.com\/embed\/([^"&?\/\s]{11})/,
+        /youtu\.be\/([^"&?\/\s]{11})/,
+        /youtube\.com\/shorts\/([^"&?\/\s]{11})/
+    ];
+    
+    for (let pattern of patterns) {
+        const match = url.match(pattern);
+        if (match && match[1]) {
+            return match[1];
+        }
+    }
+    return null;
+}
+
+/**
+ * Obtenir la miniature YouTube en haute qualité
+ * Retourne automatiquement la meilleure qualité disponible
+ */
+async function getYouTubeThumbnail(videoUrl) {
+    const videoId = extractYouTubeId(videoUrl);
+    if (!videoId) return null;
+    
+    // Qualités par ordre de préférence (meilleure → moins bonne)
+    const qualities = [
+        { name: 'maxresdefault', width: 1280, height: 720 },    // HD
+        { name: 'sddefault', width: 640, height: 480 },         // SD
+        { name: 'hqdefault', width: 480, height: 360 },         // HQ
+        { name: 'mqdefault', width: 320, height: 180 },         // MQ
+        { name: 'default', width: 120, height: 90 }             // Default
+    ];
+    
+    // Essayer chaque qualité jusqu'à en trouver une disponible
+    for (let quality of qualities) {
+        const thumbnailUrl = `https://img.youtube.com/vi/${videoId}/${quality.name}.jpg`;
+        
+        // Vérifier si l'image existe
+        const exists = await checkImageExists(thumbnailUrl);
+        if (exists) {
+            console.log(`✅ Miniature YouTube trouvée: ${quality.name} (${quality.width}x${quality.height})`);
+            return {
+                url: thumbnailUrl,
+                quality: quality.name,
+                width: quality.width,
+                height: quality.height,
+                videoId: videoId
+            };
+        }
+    }
+    
+    // Fallback: retourner la qualité par défaut
+    console.warn('⚠️ Aucune miniature HD trouvée, utilisation du fallback');
+    return {
+        url: `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`,
+        quality: 'hqdefault',
+        width: 480,
+        height: 360,
+        videoId: videoId
+    };
+}
+
+/**
+ * Vérifier si une image existe (sans CORS)
+ */
+function checkImageExists(url) {
+    return new Promise((resolve) => {
+        const img = new Image();
+        img.onload = () => resolve(true);
+        img.onerror = () => resolve(false);
+        img.src = url;
+        
+        // Timeout après 2 secondes
+        setTimeout(() => resolve(false), 2000);
+    });
+}
+
+/**
+ * Détecter la plateforme vidéo
+ */
+function detectVideoPlatform(url) {
+    if (!url) return null;
+    
+    if (url.includes('youtube.com') || url.includes('youtu.be')) {
+        return 'youtube';
+    }
+    if (url.includes('facebook.com') || url.includes('fb.watch')) {
+        return 'facebook';
+    }
+    if (url.includes('vimeo.com')) {
+        return 'vimeo';
+    }
+    if (url.includes('dailymotion.com')) {
+        return 'dailymotion';
+    }
+    return 'unknown';
+}
+
+/**
+ * Obtenir l'URL d'embed YouTube
+ */
+function getYouTubeEmbedUrl(videoUrl) {
+    const videoId = extractYouTubeId(videoUrl);
+    if (!videoId) return null;
+    
+    return `https://www.youtube.com/embed/${videoId}?autoplay=0&rel=0&modestbranding=1`;
+}
+
+/**
+ * Obtenir l'URL d'embed Facebook
+ */
+function getFacebookEmbedUrl(videoUrl) {
+    return `https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(videoUrl)}&show_text=false&width=734`;
+}
+
     </script>
 </body>
 </html>
