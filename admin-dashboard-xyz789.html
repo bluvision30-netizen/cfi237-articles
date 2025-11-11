@@ -2060,9 +2060,8 @@ let totalUploads = 0;
         document.getElementById('searchInput').addEventListener('input', filterArticles);
         document.getElementById('filterCategory').addEventListener('change', filterArticles);
 
-        // Initialiser les formulaires
-        document.getElementById('articleForm').addEventListener('submit', handleArticleSubmit);
-        document.getElementById('editForm').addEventListener('submit', handleEditSubmit);
+       // REMPLACER l'écouteur d'événement existant
+document.getElementById('articleForm').addEventListener('submit', handleArticleSubmitUltimate);
 
         // Initialiser l'upload d'image pour l'édition
         document.getElementById('editImageInput').addEventListener('change', handleEditImageChange);
@@ -3777,6 +3776,7 @@ async function sendNotificationForArticle(articleData) {
 </body>
 
 </html>
+
 
 
 
