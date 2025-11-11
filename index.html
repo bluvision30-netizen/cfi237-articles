@@ -817,7 +817,24 @@
                 showError();
             }
         }
+// FONCTION DE DÉTECTION VIDÉO AMÉLIORÉE
+function isVideoArticle(article) {
+    // Méthode 1: Vérifier contentType
+    if (article.contentType === 'video') return true;
+    
+    // Méthode 2: Vérifier video_url
+    if (article.video_url) return true;
+    
+    // Méthode 3: Vérifier sections
+    if (article.sections && article.sections.includes('videos')) return true;
+    
+    return false;
+}
 
+function getVideoUrl(article) {
+    // Retourne l'URL vidéo si elle existe
+    return article.video_url || null;
+}
         // Hero Slider
         function displayHeroSlider() {
             heroArticles = allArticles
