@@ -2575,15 +2575,13 @@ async function handleArticleSubmitUltimate(e) {
         image_format: 'jpg' // Force JPG pour WhatsApp
     };
 
-    if (contentType === 'video') {
-        const videoUrl = document.getElementById('videoUrl').value.trim();
-        if (!videoUrl) {
-            showAlert('error', 'Veuillez fournir une URL vidéo');
-            return;
-        }
-        articleData.video_url = videoUrl;
+  // AJOUTER CE BLOC
+if (contentType === 'video') {
+    const videoUrl = document.getElementById('videoUrl').value.trim();
+    if (videoUrl) {
+        articleData.video_url = videoUrl;  // ← DOIT ÊTRE INCLU
     }
-
+}
     const submitBtn = document.getElementById('submitBtn');
     const originalBtnHTML = submitBtn.innerHTML;
     submitBtn.disabled = true;
@@ -3776,7 +3774,6 @@ async function sendNotificationForArticle(articleData) {
 </body>
 
 </html>
-
 
 
 
