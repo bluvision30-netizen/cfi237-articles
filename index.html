@@ -22,6 +22,8 @@
             --light-gray: #f1f5f9;
             --success: #22c55e;
             --danger: #ef4444;
+            --warning: #f59e0b;
+            --purple: #8b5cf6;
         }
         
         body {
@@ -255,7 +257,7 @@
         /* Grid Layout */
         .content-grid {
             display: grid;
-            grid-template-columns: 1fr 350px;
+            grid-template-columns: 1fr 380px;
             gap: 2rem;
             margin: 2rem 0;
         }
@@ -274,6 +276,18 @@
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             transition: all 0.3s;
             cursor: pointer;
+            animation: fadeInUp 0.5s ease-out;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
         
         .article-card:hover {
@@ -367,6 +381,23 @@
             position: sticky;
             top: 100px;
             height: fit-content;
+            max-height: calc(100vh - 120px);
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary) var(--light-gray);
+        }
+        
+        .sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .sidebar::-webkit-scrollbar-track {
+            background: var(--light-gray);
+        }
+        
+        .sidebar::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 3px;
         }
         
         .sidebar-card {
@@ -375,6 +406,18 @@
             padding: 1.5rem;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             margin-bottom: 2rem;
+            animation: slideInRight 0.5s ease-out;
+        }
+        
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
         }
         
         .sidebar-title {
@@ -382,6 +425,9 @@
             font-weight: 700;
             margin-bottom: 1.25rem;
             color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
         
         .trending-item {
@@ -390,7 +436,7 @@
             padding: 1rem 0;
             border-bottom: 1px solid var(--light-gray);
             cursor: pointer;
-            transition: background 0.3s;
+            transition: all 0.3s;
         }
         
         .trending-item:last-child {
@@ -401,6 +447,7 @@
             background: var(--light-gray);
             padding: 1rem;
             margin: 0 -1rem;
+            border-radius: 8px;
         }
         
         .trending-number {
@@ -423,7 +470,226 @@
             font-size: 0.75rem;
             color: var(--gray);
         }
-        
+
+        /* Featured Section */
+        .featured-item {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            background: var(--light-gray);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .featured-item:hover {
+            background: #e2e8f0;
+            transform: translateX(5px);
+        }
+
+        .featured-item img {
+            width: 80px;
+            height: 80px;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+
+        .featured-content {
+            flex: 1;
+        }
+
+        .featured-content h4 {
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            line-height: 1.3;
+        }
+
+        .featured-meta {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.75rem;
+            color: var(--gray);
+        }
+
+        /* Events Section */
+        .event-item {
+            padding: 1rem;
+            border-left: 4px solid var(--warning);
+            background: #fef3c7;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .event-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 2px 10px rgba(245, 158, 11, 0.2);
+        }
+
+        .event-date {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--warning);
+            font-weight: 600;
+            font-size: 0.85rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .event-title {
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-bottom: 0.25rem;
+            color: var(--dark);
+        }
+
+        .event-location {
+            font-size: 0.8rem;
+            color: var(--gray);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Categories Grid */
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.75rem;
+        }
+
+        .category-item {
+            padding: 0.75rem;
+            border-radius: 8px;
+            background: var(--light-gray);
+            text-align: center;
+            transition: all 0.3s;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .category-item:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        }
+
+        .category-item i {
+            display: block;
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* About Section */
+        .about-card {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            text-align: center;
+            padding: 2rem 1.5rem;
+        }
+
+        .about-card .logo {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            justify-content: center;
+        }
+
+        .about-card p {
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+            opacity: 0.95;
+        }
+
+        .about-card .social-links {
+            display: flex;
+            gap: 0.75rem;
+            justify-content: center;
+        }
+
+        .about-card .social-links a {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .about-card .social-links a:hover {
+            background: white;
+            color: var(--primary);
+            transform: translateY(-3px);
+        }
+
+        /* Section-specific Styles */
+        .politique-section .article-card {
+            border-top: 3px solid #dc2626;
+        }
+
+        .sports-section .article-card {
+            border-top: 3px solid #16a34a;
+        }
+
+        .international-section .article-card {
+            border-top: 3px solid var(--purple);
+        }
+
+        /* Video styles */
+        .video-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .article-card:hover .video-overlay {
+            opacity: 1;
+        }
+
+        .play-button {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: rgba(255,0,0,0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 20px rgba(255,0,0,0.4);
+            animation: pulse-play 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse-play {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        .play-button i {
+            color: white;
+            font-size: 1.8rem;
+            margin-left: 5px;
+        }
+
         /* Footer */
         .footer {
             background: var(--dark);
@@ -529,6 +795,10 @@
             
             .sidebar {
                 position: static;
+                max-height: none;
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: 1.5rem;
             }
         }
         
@@ -564,6 +834,20 @@
             .section-title {
                 font-size: 1.5rem;
             }
+
+            .sidebar {
+                overflow-x: auto;
+                display: flex;
+                gap: 1rem;
+            }
+
+            .sidebar-card {
+                min-width: 300px;
+            }
+
+            .categories-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
         
         @media (max-width: 480px) {
@@ -591,380 +875,11 @@
             .carousel-card {
                 flex: 0 0 250px;
             }
+
+            .categories-grid {
+                grid-template-columns: 1fr;
+            }
         }
-
-/* AJOUTER CES STYLES DANS LES FICHIERS EXISTANTS */
-
-/* Améliorations pour les vidéos */
-.video-container {
-    position: relative;
-    width: 100%;
-    height: 0;
-    padding-bottom: 56.25%; /* 16:9 aspect ratio */
-    margin: 2rem 0;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-}
-
-.video-container iframe {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    border: none;
-}
-
-/* Badge vidéo amélioré */
-.category-badge.video {
-    background: linear-gradient(135deg, #ff0000, #cc0000) !important;
-}
-
-/* Animation pour le bouton play */
-.article-card:hover .fa-play {
-    transform: scale(1.1);
-    transition: transform 0.3s ease;
-}
-
-/* Responsive pour mobile */
-@media (max-width: 768px) {
-    .video-container {
-        margin: 1rem 0;
-        border-radius: 8px;
-    }
-}
-/* ========================================
-   🎬 STYLES POUR VIDÉOS HD
-   ======================================== */
-
-/* Carte vidéo */
-.video-card {
-    transition: all 0.3s ease;
-    cursor: pointer;
-}
-
-.video-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 8px 30px rgba(0,0,0,0.2);
-}
-
-/* Container miniature */
-.video-thumbnail {
-    position: relative;
-    overflow: hidden;
-    background: #000;
-}
-
-.video-thumbnail img {
-    transition: transform 0.3s ease, filter 0.3s ease;
-}
-
-.video-card:hover .video-thumbnail img {
-    transform: scale(1.1);
-    filter: brightness(0.7);
-}
-
-/* Overlay vidéo */
-.video-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-.video-card:hover .video-overlay {
-    opacity: 1;
-}
-
-/* Bouton play animé */
-.play-button {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    background: rgba(255, 0, 0, 0.9);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 4px 20px rgba(255, 0, 0, 0.4);
-    transition: all 0.3s ease;
-    animation: pulse-play 2s ease-in-out infinite;
-}
-
-.video-card:hover .play-button {
-    background: rgba(255, 0, 0, 1);
-    transform: scale(1.15);
-    animation: none;
-}
-
-.play-button i {
-    color: white;
-    font-size: 2rem;
-    margin-left: 6px;
-}
-
-@keyframes pulse-play {
-    0%, 100% { 
-        box-shadow: 0 4px 20px rgba(255, 0, 0, 0.4);
-        transform: scale(1);
-    }
-    50% { 
-        box-shadow: 0 4px 30px rgba(255, 0, 0, 0.6);
-        transform: scale(1.05);
-    }
-}
-
-/* Badge qualité (HD/SD) */
-.quality-badge {
-    position: absolute;
-    top: 12px;
-    right: 12px;
-    background: linear-gradient(135deg, #22c55e, #16a34a);
-    color: white;
-    padding: 6px 12px;
-    border-radius: 6px;
-    font-size: 0.75rem;
-    font-weight: bold;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-    z-index: 10;
-}
-
-/* Badge plateforme (YouTube) */
-.platform-badge {
-    position: absolute;
-    top: 12px;
-    left: 12px;
-    padding: 6px 12px;
-    border-radius: 6px;
-    font-size: 0.7rem;
-    font-weight: bold;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-    z-index: 10;
-}
-
-.platform-badge.youtube {
-    background: rgba(255, 0, 0, 0.95);
-    color: white;
-}
-
-.platform-badge i {
-    font-size: 0.9rem;
-}
-
-/* Badge durée */
-.duration-badge {
-    position: absolute;
-    bottom: 12px;
-    right: 12px;
-    background: rgba(0, 0, 0, 0.85);
-    color: white;
-    padding: 6px 10px;
-    border-radius: 6px;
-    font-size: 0.7rem;
-    font-weight: bold;
-    backdrop-filter: blur(4px);
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-
-/* Badge catégorie vidéo */
-.category-badge.video-badge {
-    background: linear-gradient(135deg, #ef4444, #dc2626);
-    color: white;
-}
-
-/* Animation au chargement */
-@keyframes fadeInVideo {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.video-card {
-    animation: fadeInVideo 0.5s ease-out;
-}
-
-.video-card:nth-child(1) { animation-delay: 0.1s; }
-.video-card:nth-child(2) { animation-delay: 0.2s; }
-.video-card:nth-child(3) { animation-delay: 0.3s; }
-.video-card:nth-child(4) { animation-delay: 0.4s; }
-.video-card:nth-child(5) { animation-delay: 0.5s; }
-.video-card:nth-child(6) { animation-delay: 0.6s; }
-
-/* Effet shine sur hover */
-.video-thumbnail::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(
-        90deg,
-        transparent,
-        rgba(255, 255, 255, 0.2),
-        transparent
-    );
-    transition: left 0.5s ease;
-}
-
-.video-card:hover .video-thumbnail::before {
-    left: 100%;
-}
-
-/* Badge "NOUVEAU" pour vidéos récentes */
-.new-badge {
-    position: absolute;
-    top: 12px;
-    left: 12px;
-    background: linear-gradient(135deg, #f59e0b, #d97706);
-    color: white;
-    padding: 4px 10px;
-    border-radius: 6px;
-    font-size: 0.65rem;
-    font-weight: bold;
-    text-transform: uppercase;
-    box-shadow: 0 2px 8px rgba(245, 158, 11, 0.4);
-    animation: blink-new 2s ease-in-out infinite;
-}
-
-@keyframes blink-new {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.7; }
-}
-
-/* Responsive pour mobile */
-@media (max-width: 768px) {
-    .play-button {
-        width: 60px;
-        height: 60px;
-    }
-    
-    .play-button i {
-        font-size: 1.5rem;
-    }
-    
-    .quality-badge,
-    .platform-badge,
-    .duration-badge {
-        font-size: 0.65rem;
-        padding: 4px 8px;
-    }
-}
-
-/* Effet de sélection */
-.video-card:active {
-    transform: translateY(-4px) scale(0.98);
-}
-
-/* Loading skeleton pour vidéos */
-.video-skeleton {
-    background: linear-gradient(
-        90deg,
-        #f0f0f0 0%,
-        #e0e0e0 50%,
-        #f0f0f0 100%
-    );
-    background-size: 200% 100%;
-    animation: loading-skeleton 1.5s ease-in-out infinite;
-}
-
-@keyframes loading-skeleton {
-    0% { background-position: 200% 0; }
-    100% { background-position: -200% 0; }
-}
-
-/* Compteur de vues animé */
-.video-card:hover .stat {
-    transform: translateY(-2px);
-    transition: transform 0.2s ease;
-}
-
-/* Badge "LIVE" pour vidéos en direct (optionnel) */
-.live-badge {
-    position: absolute;
-    top: 12px;
-    left: 12px;
-    background: #ef4444;
-    color: white;
-    padding: 6px 12px;
-    border-radius: 6px;
-    font-size: 0.7rem;
-    font-weight: bold;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    box-shadow: 0 2px 10px rgba(239, 68, 68, 0.4);
-    animation: pulse-live 1.5s ease-in-out infinite;
-}
-
-.live-badge::before {
-    content: '';
-    width: 8px;
-    height: 8px;
-    background: white;
-    border-radius: 50%;
-    animation: blink-live 1s ease-in-out infinite;
-}
-
-@keyframes pulse-live {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.05); }
-}
-
-@keyframes blink-live {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.3; }
-}
-
-/* Tooltip pour infos vidéo */
-.video-info-tooltip {
-    position: absolute;
-    bottom: 100%;
-    left: 50%;
-    transform: translateX(-50%) translateY(-10px);
-    background: rgba(0, 0, 0, 0.95);
-    color: white;
-    padding: 10px 15px;
-    border-radius: 8px;
-    font-size: 0.75rem;
-    white-space: nowrap;
-    opacity: 0;
-    pointer-events: none;
-    transition: all 0.3s ease;
-    z-index: 1000;
-}
-
-.video-card:hover .video-info-tooltip {
-    opacity: 1;
-    transform: translateX(-50%) translateY(-15px);
-}
-
-.video-info-tooltip::after {
-    content: '';
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    border: 6px solid transparent;
-    border-top-color: rgba(0, 0, 0, 0.95);
-}
     </style>
 </head>
 <body>
@@ -980,8 +895,9 @@
                     <li><a href="#accueil">Accueil</a></li>
                     <li><a href="#actualites">Actualités</a></li>
                     <li><a href="#videos">Vidéos</a></li>
-                    <li><a href="#societe">Société</a></li>
-                    <li><a href="#contact">Contact</a></li>
+                    <li><a href="#politique">Politique</a></li>
+                    <li><a href="#sports">Sports</a></li>
+                    <li><a href="#international">International</a></li>
                 </ul>
             </nav>
             <button class="mobile-menu-btn">
@@ -1019,10 +935,11 @@
             </div>
         </section>
 
-        <!-- Main Content -->
+        <!-- Main Content Grid -->
         <div class="content-grid">
-            <!-- Articles Grid -->
+            <!-- Main Column -->
             <div>
+                <!-- Articles Récents -->
                 <h2 class="section-title">📰 Articles Récents</h2>
                 <div class="articles-grid" id="articlesGrid">
                     <div class="loading">
@@ -1030,42 +947,168 @@
                         <p style="margin-top: 1rem;">Chargement des articles...</p>
                     </div>
                 </div>
+
+                <!-- Politique Section -->
+                <section id="politique" class="politique-section">
+                    <h2 class="section-title" style="border-color: #dc2626;">🏛️ Politique</h2>
+                    <div class="articles-grid" id="politiqueGrid">
+                        <div class="empty-state">
+                            <i class="fas fa-landmark"></i>
+                            <p>Aucun article politique disponible</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Sports Section -->
+                <section id="sports" class="sports-section">
+                    <h2 class="section-title" style="border-color: #16a34a;">⚽ Sports</h2>
+                    <div class="articles-grid" id="sportsGrid">
+                        <div class="empty-state">
+                            <i class="fas fa-futbol"></i>
+                            <p>Aucun article sportif disponible</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Vidéos Section -->
+                <section id="videos">
+                    <h2 class="section-title">🎥 Vidéos</h2>
+                    <div class="articles-grid" id="videosGrid">
+                        <div class="empty-state">
+                            <i class="fas fa-video"></i>
+                            <p>Aucune vidéo disponible pour le moment</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Société Section -->
+                <section id="societe">
+                    <h2 class="section-title">👥 Société</h2>
+                    <div class="articles-grid" id="societeGrid">
+                        <div class="empty-state">
+                            <i class="fas fa-users"></i>
+                            <p>Aucun article de société disponible</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- International Section -->
+                <section id="international" class="international-section">
+                    <h2 class="section-title" style="border-color: var(--purple);">🌍 International</h2>
+                    <div class="articles-grid" id="internationalGrid">
+                        <div class="empty-state">
+                            <i class="fas fa-globe"></i>
+                            <p>Aucun article international disponible</p>
+                        </div>
+                    </div>
+                </section>
             </div>
 
             <!-- Sidebar -->
             <aside class="sidebar">
+                <!-- Trending -->
                 <div class="sidebar-card">
-                    <h3 class="sidebar-title">📈 Trending</h3>
+                    <h3 class="sidebar-title">
+                        <i class="fas fa-fire"></i>
+                        Trending
+                    </h3>
                     <div id="trendingList">
                         <div class="loading">
                             <i class="fas fa-spinner"></i>
                         </div>
                     </div>
                 </div>
+
+                <!-- À ne pas manquer -->
+                <div class="sidebar-card">
+                    <h3 class="sidebar-title">
+                        <i class="fas fa-star"></i>
+                        À ne pas manquer
+                    </h3>
+                    <div id="featuredList">
+                        <div class="loading">
+                            <i class="fas fa-spinner"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Événements -->
+                <div class="sidebar-card">
+                    <h3 class="sidebar-title">
+                        <i class="fas fa-calendar-alt"></i>
+                        Événements à venir
+                    </h3>
+                    <div id="eventsList">
+                        <div class="empty-state" style="padding: 2rem 1rem;">
+                            <i class="fas fa-calendar-check"></i>
+                            <p style="font-size: 0.85rem;">Aucun événement prévu</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Catégories -->
+                <div class="sidebar-card">
+                    <h3 class="sidebar-title">
+                        <i class="fas fa-th-large"></i>
+                        Catégories
+                    </h3>
+                    <div class="categories-grid">
+                        <div class="category-item" onclick="filterByCategory('Politique')">
+                            <i class="fas fa-landmark"></i>
+                            <span>Politique</span>
+                        </div>
+                        <div class="category-item" onclick="filterByCategory('Économie')">
+                            <i class="fas fa-chart-line"></i>
+                            <span>Économie</span>
+                        </div>
+                        <div class="category-item" onclick="filterByCategory('Sports')">
+                            <i class="fas fa-futbol"></i>
+                            <span>Sports</span>
+                        </div>
+                        <div class="category-item" onclick="filterByCategory('Société')">
+                            <i class="fas fa-users"></i>
+                            <span>Société</span>
+                        </div>
+                        <div class="category-item" onclick="filterByCategory('Culture')">
+                            <i class="fas fa-palette"></i>
+                            <span>Culture</span>
+                        </div>
+                        <div class="category-item" onclick="filterByCategory('Santé')">
+                            <i class="fas fa-heartbeat"></i>
+                            <span>Santé</span>
+                        </div>
+                        <div class="category-item" onclick="filterByCategory('Technologie')">
+                            <i class="fas fa-laptop-code"></i>
+                            <span>Tech</span>
+                        </div>
+                        <div class="category-item" onclick="filterByCategory('International')">
+                            <i class="fas fa-globe"></i>
+                            <span>International</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- À propos -->
+                <div class="sidebar-card about-card">
+                    <div class="logo">
+                        <i class="fas fa-newspaper"></i>
+                        <span>Abu Media Group</span>
+                    </div>
+                    <p>
+                        Votre source d'information fiable au Cameroun. 
+                        Suivez l'actualité en temps réel avec des analyses approfondies 
+                        et des reportages exclusifs.
+                    </p>
+                    <div class="social-links">
+                        <a href="#" title="Facebook"><i class="fab fa-facebook"></i></a>
+                        <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                        <a href="#" title="YouTube"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
             </aside>
         </div>
-
-        <!-- Vidéos Section -->
-        <section>
-            <h2 class="section-title">🎥 Vidéos</h2>
-            <div class="articles-grid" id="videosGrid">
-                <div class="empty-state">
-                    <i class="fas fa-video"></i>
-                    <p>Aucune vidéo disponible pour le moment</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- Société Section -->
-        <section>
-            <h2 class="section-title">👥 Société</h2>
-            <div class="articles-grid" id="societeGrid">
-                <div class="empty-state">
-                    <i class="fas fa-users"></i>
-                    <p>Aucun article de société disponible</p>
-                </div>
-            </div>
-        </section>
     </div>
 
     <!-- Footer -->
@@ -1088,8 +1131,9 @@
                         <li><a href="#accueil">Accueil</a></li>
                         <li><a href="#actualites">Actualités</a></li>
                         <li><a href="#videos">Vidéos</a></li>
-                        <li><a href="#societe">Société</a></li>
-                        <li><a href="#contact">Contact</a></li>
+                        <li><a href="#politique">Politique</a></li>
+                        <li><a href="#sports">Sports</a></li>
+                        <li><a href="#international">International</a></li>
                     </ul>
                 </div>
                 <div class="footer-section">
@@ -1139,32 +1183,20 @@
                 displayCarousel();
                 displayArticles();
                 displayTrending();
+                displayFeatured();
+                displayEvents();
                 displayVideos();
+                displayPolitique();
+                displaySports();
                 displaySociete();
+                displayInternational();
                 
             } catch (error) {
                 console.error('❌ Erreur:', error);
                 showError();
             }
         }
-// FONCTION DE DÉTECTION VIDÉO AMÉLIORÉE
-function isVideoArticle(article) {
-    // Méthode 1: Vérifier contentType
-    if (article.contentType === 'video') return true;
-    
-    // Méthode 2: Vérifier video_url
-    if (article.video_url) return true;
-    
-    // Méthode 3: Vérifier sections
-    if (article.sections && article.sections.includes('videos')) return true;
-    
-    return false;
-}
 
-function getVideoUrl(article) {
-    // Retourne l'URL vidéo si elle existe
-    return article.video_url || null;
-}
         // Hero Slider
         function displayHeroSlider() {
             heroArticles = allArticles
@@ -1177,7 +1209,7 @@ function getVideoUrl(article) {
             
             const slider = document.getElementById('heroSlider');
             slider.innerHTML = heroArticles.map((article, index) => `
-                <div class="hero-slide ${index === 0 ? 'active' : ''}">
+                <div class="hero-slide ${index === 0 ? 'active' : ''}" onclick="openArticle('${article.id}')">
                     <img src="${article.image}" alt="${article.titre}" loading="${index === 0 ? 'eager' : 'lazy'}">
                     <div class="hero-content">
                         <span class="hero-category">${article.categorie}</span>
@@ -1225,11 +1257,15 @@ function getVideoUrl(article) {
             const container = document.getElementById('carouselALaUne');
             
             if (carousel.length === 0) {
-                container.innerHTML = '<p style="color: var(--gray);">Aucun article en carousel</p>';
+                container.innerHTML = '<p style="color: var(--gray); padding: 2rem;">Aucun article en carousel</p>';
                 return;
             }
             
-            container.innerHTML = carousel.map(article => `
+            container.innerHTML = carousel.map(article => createCarouselCard(article)).join('');
+        }
+
+        function createCarouselCard(article) {
+            return `
                 <div class="carousel-card" onclick="openArticle('${article.id}')">
                     <img src="${article.image}" alt="${article.titre}" loading="lazy">
                     <div class="carousel-card-content">
@@ -1247,49 +1283,62 @@ function getVideoUrl(article) {
                         </div>
                     </div>
                 </div>
-            `).join('');
+            `;
         }
 
-     function displayArticles() {
-    const mainArticles = allArticles
-        .filter(a => !a.sections || a.sections.includes('main'))
-        .slice(0, 12);
-    
-    const grid = document.getElementById('articlesGrid');
-    
-    if (mainArticles.length === 0) {
-        grid.innerHTML = '<div class="empty-state"><i class="fas fa-inbox"></i><p>Aucun article disponible</p></div>';
-        return;
-    }
-    
-    grid.innerHTML = mainArticles.map(article => {
-        // Badge vidéo si c'est une vidéo
-        const videoBadge = article.contentType === 'video' ? 
-            '<span class="category-badge" style="background: #ef4444;">🎥 Vidéo</span>' : 
-            `<span class="category-badge">${article.categorie}</span>`;
-        
-        return `
-            <article class="article-card" onclick="openArticle('${article.id}')">
-                <img src="${article.image}" alt="${article.titre}" class="article-image" loading="lazy">
-                <div class="article-content">
-                    ${videoBadge}
-                    <h3 class="article-title">${article.titre}</h3>
-                    <p class="article-excerpt">${article.extrait}</p>
-                    <div class="article-meta">
-                        <div class="article-author">
-                            <div class="author-avatar">${getInitial(article.auteur)}</div>
-                            <span>${article.auteur}</span>
-                        </div>
-                        <div class="article-stats">
-                            <span class="stat"><i class="fas fa-eye"></i> ${article.vues || 0}</span>
-                            <span class="stat"><i class="fas fa-heart"></i> ${article.likes || 0}</span>
-                        </div>
+        // Articles principaux
+        function displayArticles() {
+            const mainArticles = allArticles
+                .filter(a => !a.sections || a.sections.includes('main'))
+                .slice(0, 12);
+            
+            const grid = document.getElementById('articlesGrid');
+            
+            if (mainArticles.length === 0) {
+                grid.innerHTML = '<div class="empty-state"><i class="fas fa-inbox"></i><p>Aucun article disponible</p></div>';
+                return;
+            }
+            
+            grid.innerHTML = mainArticles.map(article => createArticleCard(article)).join('');
+        }
+
+        function createArticleCard(article, sectionClass = '') {
+            const isVideo = article.contentType === 'video' || (article.sections && article.sections.includes('videos'));
+            const videoBadge = isVideo ? 'style="background: #ef4444;"' : '';
+            const videoOverlay = isVideo ? `
+                <div class="video-overlay">
+                    <div class="play-button">
+                        <i class="fas fa-play"></i>
                     </div>
                 </div>
-            </article>
-        `;
-    }).join('');
-}
+            ` : '';
+            
+            return `
+                <article class="article-card ${sectionClass}" onclick="openArticle('${article.id}')">
+                    <div style="position: relative;">
+                        <img src="${article.image}" alt="${article.titre}" class="article-image" loading="lazy">
+                        ${videoOverlay}
+                    </div>
+                    <div class="article-content">
+                        <span class="category-badge" ${videoBadge}>
+                            ${isVideo ? '🎥 ' : ''}${article.categorie}
+                        </span>
+                        <h3 class="article-title">${article.titre}</h3>
+                        <p class="article-excerpt">${article.extrait}</p>
+                        <div class="article-meta">
+                            <div class="article-author">
+                                <div class="author-avatar">${getInitial(article.auteur)}</div>
+                                <span>${article.auteur}</span>
+                            </div>
+                            <div class="article-stats">
+                                <span class="stat"><i class="fas fa-eye"></i> ${article.vues || 0}</span>
+                                <span class="stat"><i class="fas fa-heart"></i> ${article.likes || 0}</span>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            `;
+        }
 
         // Trending
         function displayTrending() {
@@ -1322,51 +1371,113 @@ function getVideoUrl(article) {
             `).join('');
         }
 
-      function displayVideos() {
-    const videos = allArticles
-        .filter(a => a.contentType === 'video' || (a.sections && a.sections.includes('videos')))
-        .slice(0, 6);
-    
-    const grid = document.getElementById('videosGrid');
-    
-    if (videos.length === 0) {
-        grid.innerHTML = '<div class="empty-state"><i class="fas fa-video"></i><p>Aucune vidéo disponible pour le moment</p></div>';
-        return;
-    }
-    
-    grid.innerHTML = videos.map(article => `
-        <article class="article-card" onclick="openArticle('${article.id}')">
-            <div style="position: relative;">
-                <img src="${article.image}" alt="${article.titre}" class="article-image" loading="lazy">
-                <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); 
-                            background: rgba(0,0,0,0.7); border-radius: 50%; width: 60px; height: 60px; 
-                            display: flex; align-items: center; justify-content: center;">
-                    <i class="fas fa-play" style="color: white; font-size: 1.5rem; margin-left: 4px;"></i>
-                </div>
-            </div>
-            <div class="article-content">
-                <span class="category-badge" style="background: #ef4444;">🎥 Vidéo</span>
-                <h3 class="article-title">${article.titre}</h3>
-                <p class="article-excerpt">${article.extrait}</p>
-                <div class="article-meta">
-                    <div class="article-author">
-                        <div class="author-avatar">${getInitial(article.auteur)}</div>
-                        <span>${article.auteur}</span>
-                    </div>
-                    <div class="article-stats">
-                        <span class="stat"><i class="fas fa-eye"></i> ${article.vues || 0}</span>
-                        <span class="stat"><i class="fas fa-heart"></i> ${article.likes || 0}</span>
+        // À ne pas manquer (Featured)
+        function displayFeatured() {
+            const featured = allArticles
+                .filter(a => a.sections && a.sections.includes('featured'))
+                .slice(0, 5);
+            
+            const container = document.getElementById('featuredList');
+            
+            if (featured.length === 0) {
+                container.innerHTML = '<p style="color: var(--gray); font-size: 0.9rem;">Aucun article à la une</p>';
+                return;
+            }
+            
+            container.innerHTML = featured.map(article => `
+                <div class="featured-item" onclick="openArticle('${article.id}')">
+                    <img src="${article.image}" alt="${article.titre}">
+                    <div class="featured-content">
+                        <h4>${article.titre}</h4>
+                        <div class="featured-meta">
+                            <span><i class="fas fa-user"></i> ${article.auteur}</span>
+                            <span><i class="fas fa-eye"></i> ${article.vues || 0}</span>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </article>
-    `).join('');
-}
+            `).join('');
+        }
+
+        // Événements
+        function displayEvents() {
+            const events = allArticles
+                .filter(a => a.sections && a.sections.includes('events'))
+                .slice(0, 5);
+            
+            const container = document.getElementById('eventsList');
+            
+            if (events.length === 0) {
+                container.innerHTML = '<div class="empty-state" style="padding: 2rem 1rem;"><i class="fas fa-calendar-check"></i><p style="font-size: 0.85rem;">Aucun événement prévu</p></div>';
+                return;
+            }
+            
+            container.innerHTML = events.map(article => `
+                <div class="event-item" onclick="openArticle('${article.id}')">
+                    <div class="event-date">
+                        <i class="fas fa-calendar-day"></i>
+                        <span>${formatDate(article.date)}</span>
+                    </div>
+                    <div class="event-title">${article.titre}</div>
+                    <div class="event-location">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>${article.categorie}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Vidéos
+        function displayVideos() {
+            const videos = allArticles
+                .filter(a => a.contentType === 'video' || (a.sections && a.sections.includes('videos')))
+                .slice(0, 6);
+            
+            const grid = document.getElementById('videosGrid');
+            
+            if (videos.length === 0) {
+                grid.innerHTML = '<div class="empty-state"><i class="fas fa-video"></i><p>Aucune vidéo disponible pour le moment</p></div>';
+                return;
+            }
+            
+            grid.innerHTML = videos.map(article => createArticleCard(article)).join('');
+        }
+
+        // Politique
+        function displayPolitique() {
+            const politique = allArticles
+                .filter(a => a.categorie === 'Politique')
+                .slice(0, 6);
+            
+            const grid = document.getElementById('politiqueGrid');
+            
+            if (politique.length === 0) {
+                grid.innerHTML = '<div class="empty-state"><i class="fas fa-landmark"></i><p>Aucun article politique disponible</p></div>';
+                return;
+            }
+            
+            grid.innerHTML = politique.map(article => createArticleCard(article)).join('');
+        }
+
+        // Sports
+        function displaySports() {
+            const sports = allArticles
+                .filter(a => a.categorie === 'Sports')
+                .slice(0, 6);
+            
+            const grid = document.getElementById('sportsGrid');
+            
+            if (sports.length === 0) {
+                grid.innerHTML = '<div class="empty-state"><i class="fas fa-futbol"></i><p>Aucun article sportif disponible</p></div>';
+                return;
+            }
+            
+            grid.innerHTML = sports.map(article => createArticleCard(article)).join('');
+        }
 
         // Société
         function displaySociete() {
             const societe = allArticles
-                .filter(a => a.sections && a.sections.includes('societe'))
+                .filter(a => a.categorie === 'Société' || (a.sections && a.sections.includes('societe')))
                 .slice(0, 6);
             
             const grid = document.getElementById('societeGrid');
@@ -1376,31 +1487,60 @@ function getVideoUrl(article) {
                 return;
             }
             
-            grid.innerHTML = societe.map(article => `
-                <article class="article-card" onclick="openArticle('${article.id}')">
-                    <img src="${article.image}" alt="${article.titre}" class="article-image" loading="lazy">
-                    <div class="article-content">
-                        <span class="category-badge" style="background: #8b5cf6;">${article.categorie}</span>
-                        <h3 class="article-title">${article.titre}</h3>
-                        <p class="article-excerpt">${article.extrait}</p>
-                        <div class="article-meta">
-                            <div class="article-author">
-                                <div class="author-avatar">${getInitial(article.auteur)}</div>
-                                <span>${article.auteur}</span>
-                            </div>
-                            <div class="article-stats">
-                                <span class="stat"><i class="fas fa-eye"></i> ${article.vues || 0}</span>
-                                <span class="stat"><i class="fas fa-heart"></i> ${article.likes || 0}</span>
-                            </div>
-                        </div>
-                    </div>
-                </article>
-            `).join('');
+            grid.innerHTML = societe.map(article => createArticleCard(article)).join('');
+        }
+
+        // International
+        function displayInternational() {
+            const international = allArticles
+                .filter(a => a.categorie === 'International')
+                .slice(0, 6);
+            
+            const grid = document.getElementById('internationalGrid');
+            
+            if (international.length === 0) {
+                grid.innerHTML = '<div class="empty-state"><i class="fas fa-globe"></i><p>Aucun article international disponible</p></div>';
+                return;
+            }
+            
+            grid.innerHTML = international.map(article => createArticleCard(article)).join('');
+        }
+
+        // Filtrer par catégorie
+        function filterByCategory(category) {
+            const filtered = allArticles.filter(a => a.categorie === category);
+            
+            if (filtered.length === 0) {
+                alert(`Aucun article dans la catégorie "${category}"`);
+                return;
+            }
+            
+            // Scroll vers les articles et les afficher
+            document.getElementById('articlesGrid').scrollIntoView({ behavior: 'smooth' });
+            
+            setTimeout(() => {
+                document.getElementById('articlesGrid').innerHTML = 
+                    filtered.slice(0, 12).map(article => createArticleCard(article)).join('');
+            }, 500);
         }
 
         // Utilitaires
         function getInitial(name) {
             return name ? name.charAt(0).toUpperCase() : 'A';
+        }
+
+        function formatDate(dateString) {
+            if (!dateString) return 'Date inconnue';
+            try {
+                const date = new Date(dateString);
+                return date.toLocaleDateString('fr-FR', {
+                    day: 'numeric',
+                    month: 'short',
+                    year: 'numeric'
+                });
+            } catch (error) {
+                return dateString;
+            }
         }
 
         function openArticle(id) {
@@ -1449,387 +1589,6 @@ function getVideoUrl(article) {
                 }
             });
         });
-
-        // Lazy loading images
-        if ('IntersectionObserver' in window) {
-            const imageObserver = new IntersectionObserver((entries, observer) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        const img = entry.target;
-                        if (img.dataset.src) {
-                            img.src = img.dataset.src;
-                            img.removeAttribute('data-src');
-                        }
-                        observer.unobserve(img);
-                    }
-                });
-            });
-
-            document.querySelectorAll('img[data-src]').forEach(img => {
-                imageObserver.observe(img);
-            });
-        }
-
-
-// ========================================
-// 1️⃣ FONCTIONS UTILITAIRES VIDÉO
-// ========================================
-
-/**
- * Extraire l'ID YouTube depuis n'importe quelle URL
- */
-function extractYouTubeId(url) {
-    if (!url) return null;
-    
-    const patterns = [
-        /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/,
-        /youtube\.com\/watch\?v=([^"&?\/\s]{11})/,
-        /youtube\.com\/embed\/([^"&?\/\s]{11})/,
-        /youtu\.be\/([^"&?\/\s]{11})/,
-        /youtube\.com\/shorts\/([^"&?\/\s]{11})/
-    ];
-    
-    for (let pattern of patterns) {
-        const match = url.match(pattern);
-        if (match && match[1]) {
-            return match[1];
-        }
-    }
-    return null;
-}
-
-/**
- * Obtenir la miniature YouTube en haute qualité
- * Retourne automatiquement la meilleure qualité disponible
- */
-async function getYouTubeThumbnail(videoUrl) {
-    const videoId = extractYouTubeId(videoUrl);
-    if (!videoId) return null;
-    
-    // Qualités par ordre de préférence (meilleure → moins bonne)
-    const qualities = [
-        { name: 'maxresdefault', width: 1280, height: 720 },    // HD
-        { name: 'sddefault', width: 640, height: 480 },         // SD
-        { name: 'hqdefault', width: 480, height: 360 },         // HQ
-        { name: 'mqdefault', width: 320, height: 180 },         // MQ
-        { name: 'default', width: 120, height: 90 }             // Default
-    ];
-    
-    // Essayer chaque qualité jusqu'à en trouver une disponible
-    for (let quality of qualities) {
-        const thumbnailUrl = `https://img.youtube.com/vi/${videoId}/${quality.name}.jpg`;
-        
-        // Vérifier si l'image existe
-        const exists = await checkImageExists(thumbnailUrl);
-        if (exists) {
-            console.log(`✅ Miniature YouTube trouvée: ${quality.name} (${quality.width}x${quality.height})`);
-            return {
-                url: thumbnailUrl,
-                quality: quality.name,
-                width: quality.width,
-                height: quality.height,
-                videoId: videoId
-            };
-        }
-    }
-    
-    // Fallback: retourner la qualité par défaut
-    console.warn('⚠️ Aucune miniature HD trouvée, utilisation du fallback');
-    return {
-        url: `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`,
-        quality: 'hqdefault',
-        width: 480,
-        height: 360,
-        videoId: videoId
-    };
-}
-
-/**
- * Vérifier si une image existe (sans CORS)
- */
-function checkImageExists(url) {
-    return new Promise((resolve) => {
-        const img = new Image();
-        img.onload = () => resolve(true);
-        img.onerror = () => resolve(false);
-        img.src = url;
-        
-        // Timeout après 2 secondes
-        setTimeout(() => resolve(false), 2000);
-    });
-}
-
-/**
- * Détecter la plateforme vidéo
- */
-function detectVideoPlatform(url) {
-    if (!url) return null;
-    
-    if (url.includes('youtube.com') || url.includes('youtu.be')) {
-        return 'youtube';
-    }
-    if (url.includes('facebook.com') || url.includes('fb.watch')) {
-        return 'facebook';
-    }
-    if (url.includes('vimeo.com')) {
-        return 'vimeo';
-    }
-    if (url.includes('dailymotion.com')) {
-        return 'dailymotion';
-    }
-    return 'unknown';
-}
-
-/**
- * Obtenir l'URL d'embed YouTube
- */
-function getYouTubeEmbedUrl(videoUrl) {
-    const videoId = extractYouTubeId(videoUrl);
-    if (!videoId) return null;
-    
-    return `https://www.youtube.com/embed/${videoId}?autoplay=0&rel=0&modestbranding=1`;
-}
-
-/**
- * Obtenir l'URL d'embed Facebook
- */
-function getFacebookEmbedUrl(videoUrl) {
-    return `https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(videoUrl)}&show_text=false&width=734`;
-}
-async function displayVideos() {
-    const videos = allArticles
-        .filter(a => a.contentType === 'video' || (a.sections && a.sections.includes('videos')))
-        .slice(0, 6);
-    
-    const grid = document.getElementById('videosGrid');
-    
-    if (videos.length === 0) {
-        grid.innerHTML = '<div class="empty-state"><i class="fas fa-video"></i><p>Aucune vidéo disponible pour le moment</p></div>';
-        return;
-    }
-    
-    // Générer HTML avec miniatures améliorées
-    const videosHTML = await Promise.all(videos.map(async (article) => {
-        let thumbnailUrl = article.image;
-        let thumbnailInfo = '';
-        
-        // Si c'est une vidéo YouTube, récupérer la vraie miniature
-        if (article.video_url) {
-            const platform = detectVideoPlatform(article.video_url);
-            
-            if (platform === 'youtube') {
-                const thumbnail = await getYouTubeThumbnail(article.video_url);
-                if (thumbnail) {
-                    thumbnailUrl = thumbnail.url;
-                    thumbnailInfo = `HD ${thumbnail.width}x${thumbnail.height}`;
-                }
-            }
-        }
-        
-        return `
-            <article class="article-card" onclick="openArticle('${article.id}')">
-                <div style="position: relative;">
-                    <img src="${thumbnailUrl}" 
-                         alt="${article.titre}" 
-                         class="article-image" 
-                         loading="lazy"
-                         style="object-fit: cover;">
-                    
-                    <!-- Overlay play button -->
-                    <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; 
-                                background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
-                                display: flex; align-items: center; justify-content: center;">
-                        <div style="background: rgba(255,0,0,0.9); 
-                                    border-radius: 50%; 
-                                    width: 70px; height: 70px; 
-                                    display: flex; align-items: center; justify-content: center;
-                                    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
-                                    transition: all 0.3s ease;">
-                            <i class="fas fa-play" style="color: white; font-size: 1.8rem; margin-left: 5px;"></i>
-                        </div>
-                    </div>
-                    
-                    <!-- Badge durée vidéo (optionnel) -->
-                    <div style="position: absolute; bottom: 10px; right: 10px; 
-                                background: rgba(0,0,0,0.8); 
-                                color: white; 
-                                padding: 4px 8px; 
-                                border-radius: 4px; 
-                                font-size: 0.75rem; 
-                                font-weight: bold;">
-                        <i class="fas fa-play-circle"></i> VIDÉO
-                    </div>
-                    
-                    ${thumbnailInfo ? `
-                    <div style="position: absolute; top: 10px; right: 10px; 
-                                background: rgba(34, 197, 94, 0.9); 
-                                color: white; 
-                                padding: 3px 8px; 
-                                border-radius: 4px; 
-                                font-size: 0.7rem; 
-                                font-weight: bold;">
-                        ${thumbnailInfo}
-                    </div>` : ''}
-                </div>
-                
-                <div class="article-content">
-                    <span class="category-badge" style="background: linear-gradient(135deg, #ef4444, #dc2626);">
-                        🎥 ${article.categorie}
-                    </span>
-                    <h3 class="article-title">${article.titre}</h3>
-                    <p class="article-excerpt">${article.extrait}</p>
-                    <div class="article-meta">
-                        <div class="article-author">
-                            <div class="author-avatar">${getInitial(article.auteur)}</div>
-                            <span>${article.auteur}</span>
-                        </div>
-                        <div class="article-stats">
-                            <span class="stat"><i class="fas fa-eye"></i> ${article.vues || 0}</span>
-                            <span class="stat"><i class="fas fa-heart"></i> ${article.likes || 0}</span>
-                        </div>
-                    </div>
-                </div>
-            </article>
-        `;
-    }));
-    
-    grid.innerHTML = videosHTML.join('');
-}
-
-const videoStyles = `
-/* Hover effect sur le bouton play */
-.article-card:hover .fa-play {
-    transform: scale(1.2);
-    transition: transform 0.3s ease;
-}
-
-/* Animation du bouton play */
-@keyframes pulse-play {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.1); }
-}
-
-.article-card:hover [style*="border-radius: 50%"] {
-    animation: pulse-play 2s ease-in-out infinite;
-    background: rgba(255,0,0,1) !important;
-}
-
-/* Effet de hover sur la carte vidéo */
-.article-card:hover img {
-    transform: scale(1.05);
-    transition: transform 0.3s ease;
-}
-
-/* Badge HD */
-.hd-badge {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: linear-gradient(135deg, #22c55e, #16a34a);
-    color: white;
-    padding: 4px 10px;
-    border-radius: 6px;
-    font-size: 0.7rem;
-    font-weight: bold;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-}
-
-/* Badge durée */
-.duration-badge {
-    position: absolute;
-    bottom: 10px;
-    right: 10px;
-    background: rgba(0,0,0,0.85);
-    color: white;
-    padding: 5px 10px;
-    border-radius: 4px;
-    font-size: 0.75rem;
-    font-weight: bold;
-    backdrop-filter: blur(4px);
-}
-
-/* Amélioration de la miniature */
-.video-thumbnail {
-    position: relative;
-    overflow: hidden;
-    border-radius: 12px 12px 0 0;
-}
-
-.video-thumbnail::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(to top, rgba(0,0,0,0.6), transparent);
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-.article-card:hover .video-thumbnail::after {
-    opacity: 1;
-}
-`;
-
-// Injecter les styles
-const styleSheet = document.createElement('style');
-styleSheet.textContent = videoStyles;
-document.head.appendChild(styleSheet);
-
-// ========================================
-// 5️⃣ BONUS - Récupérer la durée vidéo YouTube
-// ========================================
-
-/**
- * Obtenir les infos vidéo YouTube via l'API oEmbed (gratuite, sans clé)
- */
-async function getYouTubeVideoInfo(videoUrl) {
-    const videoId = extractYouTubeId(videoUrl);
-    if (!videoId) return null;
-    
-    try {
-        // API oEmbed de YouTube (gratuite, sans authentification)
-        const response = await fetch(
-            `https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${videoId}&format=json`
-        );
-        
-        if (!response.ok) throw new Error('Erreur API YouTube');
-        
-        const data = await response.json();
-        
-        return {
-            title: data.title,
-            author: data.author_name,
-            thumbnail: data.thumbnail_url,
-            width: data.width,
-            height: data.height,
-            html: data.html
-        };
-        
-    } catch (error) {
-        console.warn('⚠️ Impossible de récupérer les infos vidéo:', error);
-        return null;
-    }
-}
-
-// Exemple d'utilisation
-async function enrichVideoData(article) {
-    if (article.contentType === 'video' && article.video_url) {
-        const videoInfo = await getYouTubeVideoInfo(article.video_url);
-        
-        if (videoInfo) {
-            console.log('📹 Infos vidéo récupérées:', videoInfo);
-            // Vous pouvez enrichir l'article avec ces données
-            article.video_title = videoInfo.title;
-            article.video_author = videoInfo.author;
-        }
-    }
-    return article;
-}
-
-console.log('✅ Système de miniatures vidéo HD chargé');
-
     </script>
 </body>
 </html>
