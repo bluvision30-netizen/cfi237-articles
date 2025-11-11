@@ -97,8 +97,26 @@
       "date": "2025-11-11T03:04:05.523Z",
       "vues": 0,
       "likes": 0
+    },
+    "art_1762830512535_uozpcil0e": {
+      "id": "art_1762830512535_uozpcil0e",
+      "titre": "fondation afrikenne bafoussam",
+      "categorie": "Société",
+      "sections": [
+        "main",
+        "trending",
+        "events"
+      ],
+      "image": "https://res.cloudinary.com/dkuciagop/image/upload/v1762830474/kqjzbvgff4x9h174iybz.jpg",
+      "images": "[\"https://res.cloudinary.com/dkuciagop/image/upload/v1762830474/kqjzbvgff4x9h174iybz.jpg\",\"https://res.cloudinary.com/dkuciagop/image/upload/v1762830475/vtcc7nmswy3lxqjkqwtd.jpg\"]",
+      "extrait": "fondation afrikenne bafoussam",
+      "contenu": "fondation afrikenne bafoussam",
+      "auteur": "franky fosso",
+      "date": "2025-11-11T03:08:32.785Z",
+      "vues": 0,
+      "likes": 0
     }
   },
-  "lastUpdate": "2025-11-11T03:04:05.523Z",
-  "totalArticles": 5
+  "lastUpdate": "2025-11-11T03:08:32.785Z",
+  "totalArticles": 6
 }
