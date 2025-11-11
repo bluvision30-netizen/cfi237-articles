@@ -665,6 +665,49 @@
                 grid-template-columns: 1fr;
             }
         }
+
+/* AJOUTER CES STYLES DANS LES FICHIERS EXISTANTS */
+
+/* Améliorations pour les vidéos */
+.video-container {
+    position: relative;
+    width: 100%;
+    height: 0;
+    padding-bottom: 56.25%; /* 16:9 aspect ratio */
+    margin: 2rem 0;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+.video-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+/* Badge vidéo amélioré */
+.category-badge.video {
+    background: linear-gradient(135deg, #ff0000, #cc0000) !important;
+}
+
+/* Animation pour le bouton play */
+.article-card:hover .fa-play {
+    transform: scale(1.1);
+    transition: transform 0.3s ease;
+}
+
+/* Responsive pour mobile */
+@media (max-width: 768px) {
+    .video-container {
+        margin: 1rem 0;
+        border-radius: 8px;
+    }
+}
+
     </style>
 </head>
 <body>
@@ -893,11 +936,10 @@
                 </div>
             `;
             
-            // Image de couverture
-            if (currentArticle.image) {
-                contentHTML += `<img src="${currentArticle.image}" alt="${currentArticle.titre}" class="featured-image">`;
-            }
-            
+             // Image de couverture
+    if (currentArticle.image) {
+        container.innerHTML += `<img src="${currentArticle.image}" alt="${currentArticle.titre}" class="featured-image">`;
+    }
             // Contenu de l'article
             contentHTML += `<div class="article-body">`;
             
@@ -934,20 +976,61 @@
             
             // Vidéo (si c'est un contenu vidéo)
             if (currentArticle.contentType === 'video' && currentArticle.video_url) {
-                const videoId = extractYouTubeId(currentArticle.video_url);
-                if (videoId) {
-                    contentHTML += `
-                        <div class="video-container">
-                            <iframe 
-                                src="https://www.youtube.com/embed/${videoId}" 
-                                frameborder="0" 
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                                allowfullscreen>
-                            </iframe>
-                        </div>
-                    `;
-                }
+        const platform = detectVideoPlatform(currentArticle.video_url);
+        let videoEmbed = '';
+        
+        if (platform === 'youtube') {
+            const embedUrl = getYouTubeEmbedUrl(currentArticle.video_url);
+            if (embedUrl) {
+                videoEmbed = `
+                    <div class="video-container">
+                        <iframe 
+                            src="${embedUrl}" 
+                            frameborder="0" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                            allowfullscreen>
+                        </iframe>
+                    </div>
+                    <div style="text-align: center; margin: 1rem 0;">
+                        <a href="${currentArticle.video_url}" target="_blank" 
+                           style="display: inline-flex; align-items: center; gap: 0.5rem; 
+                                  color: var(--gray); text-decoration: none; font-size: 0.9rem;
+                                  padding: 0.5rem 1rem; border: 1px solid var(--light-gray); 
+                                  border-radius: 20px; transition: all 0.3s;">
+                            <i class="fab fa-youtube" style="color: #ff0000;"></i>
+                            Regarder sur YouTube
+                        </a>
+                    </div>
+                `;
             }
+        } else if (platform === 'facebook') {
+            const embedUrl = getFacebookEmbedUrl(currentArticle.video_url);
+            if (embedUrl) {
+                videoEmbed = `
+                    <div class="video-container">
+                        <iframe 
+                            src="${embedUrl}" 
+                            frameborder="0" 
+                            allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share" 
+                            allowfullscreen>
+                        </iframe>
+                    </div>
+                    <div style="text-align: center; margin: 1rem 0;">
+                        <a href="${currentArticle.video_url}" target="_blank" 
+                           style="display: inline-flex; align-items: center; gap: 0.5rem; 
+                                  color: var(--gray); text-decoration: none; font-size: 0.9rem;
+                                  padding: 0.5rem 1rem; border: 1px solid var(--light-gray); 
+                                  border-radius: 20px; transition: all 0.3s;">
+                            <i class="fab fa-facebook" style="color: #1877f2;"></i>
+                            Regarder sur Facebook
+                        </a>
+                    </div>
+                `;
+            }
+        }
+        
+        container.innerHTML += videoEmbed;
+    }
             
             container.innerHTML = contentHTML;
             
@@ -977,24 +1060,43 @@
             }
         }
 
-        // Extraire l'ID YouTube
-        function extractYouTubeId(url) {
-            if (!url) return null;
-            const patterns = [
-                /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/,
-                /youtube\.com\/watch\?v=([^"&?\/\s]{11})/,
-                /youtube\.com\/embed\/([^"&?\/\s]{11})/,
-                /youtu\.be\/([^"&?\/\s]{11})/
-            ];
-            
-            for (let pattern of patterns) {
-                const match = url.match(pattern);
-                if (match && match[1]) {
-                    return match[1];
-                }
-            }
-            return null;
+       // AJOUTER CES FONCTIONS UTILITAIRES
+
+// Fonction pour extraire l'ID YouTube (améliorée)
+function extractYouTubeId(url) {
+    if (!url) return null;
+    
+    const patterns = [
+        /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/,
+        /youtube\.com\/watch\?v=([^"&?\/\s]{11})/,
+        /youtube\.com\/embed\/([^"&?\/\s]{11})/,
+        /youtu\.be\/([^"&?\/\s]{11})/
+    ];
+    
+    for (let pattern of patterns) {
+        const match = url.match(pattern);
+        if (match && match[1]) {
+            return match[1];
         }
+    }
+    return null;
+}
+
+// Fonction pour obtenir la miniature vidéo optimisée
+function getOptimizedVideoThumbnail(article) {
+    if (article.contentType === 'video' && article.video_url) {
+        const platform = detectVideoPlatform(article.video_url);
+        if (platform === 'youtube') {
+            const videoId = extractYouTubeId(article.video_url);
+            if (videoId) {
+                // Retourner la miniature YouTube HD
+                return `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
+            }
+        }
+    }
+    // Fallback vers l'image de couverture normale
+    return article.image;
+}
 
         // Incrémenter le compteur de vues
         function incrementViewCount() {
