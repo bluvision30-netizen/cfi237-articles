@@ -286,41 +286,84 @@
             color: var(--danger);
         }
         
-        .share-buttons {
+        /* BOUTONS PARTAGE - MÊME STYLE QUE DASHBOARD */
+        .share-section {
+            background: rgba(102, 126, 234, 0.05);
+            border-radius: 16px;
+            padding: 2rem;
+            margin: 2rem 0;
+            border: 2px solid rgba(102, 126, 234, 0.1);
+        }
+        
+        .share-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--dark);
             display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .share-title i {
+            color: var(--primary);
+        }
+        
+        .share-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 1rem;
         }
         
         .share-btn {
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
             display: flex;
             align-items: center;
-            justify-content: center;
-            background: var(--light-gray);
-            color: var(--dark);
+            gap: 0.75rem;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
             text-decoration: none;
-            transition: all 0.3s;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
         }
         
         .share-btn:hover {
-            transform: translateY(-3px);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
         }
         
-        .share-whatsapp:hover {
-            background: #25D366;
-            color: white;
+        .share-btn.whatsapp {
+            background: rgba(37, 211, 102, 0.1);
+            color: #25D366;
+            border-color: rgba(37, 211, 102, 0.2);
         }
         
-        .share-facebook:hover {
-            background: #1877F2;
-            color: white;
+        .share-btn.whatsapp:hover {
+            background: rgba(37, 211, 102, 0.2);
         }
         
-        .share-twitter:hover {
-            background: #1DA1F2;
-            color: white;
+        .share-btn.facebook {
+            background: rgba(59, 89, 152, 0.1);
+            color: #3b5998;
+            border-color: rgba(59, 89, 152, 0.2);
+        }
+        
+        .share-btn.facebook:hover {
+            background: rgba(59, 89, 152, 0.2);
+        }
+        
+        .share-btn.twitter {
+            background: rgba(29, 161, 242, 0.1);
+            color: #1DA1F2;
+            border-color: rgba(29, 161, 242, 0.2);
+        }
+        
+        .share-btn.twitter:hover {
+            background: rgba(29, 161, 242, 0.2);
+        }
+        
+        .share-btn i {
+            font-size: 1.25rem;
         }
         
         /* Comments Section */
@@ -596,7 +639,7 @@
             }
             
             .share-buttons {
-                align-self: flex-end;
+                grid-template-columns: 1fr;
             }
         }
         
@@ -672,15 +715,26 @@
                         <i class="far fa-heart"></i>
                         <span id="likeCount">0</span> J'aime
                     </button>
-                    <div class="share-buttons">
-                        <a href="#" class="share-btn share-whatsapp" id="shareWhatsapp">
+                </div>
+
+                <!-- Section Partage - MÊME SYSTÈME QUE DASHBOARD -->
+                <div class="share-section">
+                    <h3 class="share-title">
+                        <i class="fas fa-share-alt"></i>
+                        Partager cet article
+                    </h3>
+                    <div class="share-buttons" id="shareButtons">
+                        <a href="#" class="share-btn whatsapp" id="shareWhatsapp">
                             <i class="fab fa-whatsapp"></i>
+                            <span>WhatsApp</span>
                         </a>
-                        <a href="#" class="share-btn share-facebook" id="shareFacebook">
+                        <a href="#" class="share-btn facebook" id="shareFacebook">
                             <i class="fab fa-facebook-f"></i>
+                            <span>Facebook</span>
                         </a>
-                        <a href="#" class="share-btn share-twitter" id="shareTwitter">
+                        <a href="#" class="share-btn twitter" id="shareTwitter">
                             <i class="fab fa-twitter"></i>
+                            <span>Twitter</span>
                         </a>
                     </div>
                 </div>
@@ -953,19 +1007,20 @@
             }
         }
 
-        // Mettre à jour les liens de partage
+        // Mettre à jour les liens de partage - MÊME SYSTÈME QUE DASHBOARD
         function updateShareLinks() {
-            const pageUrl = encodeURIComponent(window.location.href);
-            const title = encodeURIComponent(currentArticle.titre);
+            // URL de la page share (format identique au dashboard)
+            const shareUrl = `https://cfiupload.netlify.app/share/${articleId}.html`;
             
+            // Mettre à jour les boutons de partage
             document.getElementById('shareWhatsapp').href = 
-                `https://wa.me/?text=${title}%20${pageUrl}`;
+                `https://wa.me/?text=${encodeURIComponent(currentArticle.titre + ' - ' + shareUrl)}`;
             
             document.getElementById('shareFacebook').href = 
-                `https://www.facebook.com/sharer/sharer.php?u=${pageUrl}`;
+                `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`;
             
             document.getElementById('shareTwitter').href = 
-                `https://twitter.com/intent/tweet?text=${title}&url=${pageUrl}`;
+                `https://twitter.com/intent/tweet?text=${encodeURIComponent(currentArticle.titre)}&url=${encodeURIComponent(shareUrl)}`;
         }
 
         // Mettre à jour le fil d'Ariane
