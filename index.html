@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html><!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
@@ -623,46 +623,83 @@
             color: var(--gray);
         }
         
- .articles-grid {
+/* Politique : conteneur et positionnement propre pour empilement (desktop) */
+.section-politique .articles-grid {
   position: relative;
-  perspective: 1000px;
+  width: 100%;
+  max-width: 900px; /* taille max de la pile */
+  margin: 0 auto;
+  height: 520px;    /* hauteur fixe de la pile desktop — ajustable si tu veux */
+  display: block;
+  overflow: visible;
 }
 
+/* Chaque carte devient une "pile" centrée */
 .section-politique .article-card {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  opacity: 0;
-  transform: translateY(50px) scale(0.95);
-  transition: all 0.8s ease;
+  left: 50%;
+  transform: translateX(-50%) translateY(0) scale(1);
+  width: 88%;                 /* largeur relative à la pile */
+  max-width: 820px;
+  transition: transform 0.45s cubic-bezier(.2,.9,.2,1), opacity 0.45s ease, box-shadow 0.35s ease;
+  box-shadow: 0 6px 25px rgba(2,6,23,0.12);
+  border-radius: 12px;
+  will-change: transform, opacity;
+  opacity: 0.45;              /* base faible pour cartes "sous" */
+  pointer-events: auto;
 }
 
-.section-politique .article-card.visible {
+/* Décalage vertical fixe entre cartes pour l'empilement (desktop) */
+.section-politique .article-card[data-stack-index]{
+  top: calc( (var(--stack-index, 0) * 18px) );
+}
+
+/* Quand une carte est "active" (au centre / visible), elle monte et devient nette */
+.section-politique .article-card.active {
+  transform: translateX(-50%) translateY(-6px) scale(1.02);
   opacity: 1;
-  transform: translateY(0) scale(1);
-  z-index: 1;
+  box-shadow: 0 20px 45px rgba(2,6,23,0.18);
 }
 
-.section-politique .article-card:nth-child(1) { z-index: 1; }
-.section-politique .article-card:nth-child(2) { z-index: 2; }
-.section-politique .article-card:nth-child(3) { z-index: 3; }
-.section-politique .article-card:nth-child(4) { z-index: 4; }
-.section-politique .article-card:nth-child(5) { z-index: 5; }
-.section-politique .article-card:nth-child(6) { z-index: 6; }
+/* Cartes juste derrière l'active : un léger relief */
+.section-politique .article-card.behind {
+  transform: translateX(-50%) translateY(8px) scale(0.995);
+  opacity: 0.75;
+}
 
+/* Empêcher mélange d'ordre : z-index géré via JS */
+.section-politique .article-card { z-index: 1; }
+
+/* Mobile : désactiver l'empilement (retour au flux normal) */
 @media (max-width: 768px) {
   .section-politique .articles-grid {
-    position: relative;
+    height: auto;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    max-width: 100%;
+    padding: 0 12px;
   }
+
   .section-politique .article-card {
     position: relative;
-    opacity: 1;
+    left: 0;
     transform: none;
+    width: 100%;
+    max-width: 100%;
+    opacity: 1 !important;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+    top: auto !important;
   }
 }
-
-      
+        
+        /* Sections spécifiques */
+        .section-politique {
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            padding: 3rem 0;
+            margin: 3rem 0;
+            color: white;
+        }
         
         .section-sports {
             background: linear-gradient(135deg, #15803d, #22c55e);
@@ -2733,50 +2770,172 @@ function checkImageExists(url) {
             return article.video_url || null;
         }
 
-
-// === Empilement des cartes au scroll (section Politique) ===
-function animatePolitiqueCards() {
-  const cards = document.querySelectorAll('.section-politique .article-card');
-  const trigger = window.innerHeight * 0.85;
-  cards.forEach((card, index) => {
-    const rect = card.getBoundingClientRect();
-    if (rect.top < trigger) {
-      setTimeout(() => {
-        card.classList.add('visible');
-      }, index * 150);
-    }
-  });
-}
-window.addEventListener('scroll', animatePolitiqueCards);
-window.addEventListener('load', animatePolitiqueCards);
-
-// === Scroll automatique pour les sections Vidéos et À la Une ===
-function startAutoScroll() {
-  const videoWrapper = document.querySelector('#videosGrid');
-  const aLaUneWrapper = document.querySelector('#carouselALaUne');
-
-  if (videoWrapper) {
-    setInterval(() => {
-      videoWrapper.scrollBy({ left: 400, behavior: 'smooth' });
-      if (videoWrapper.scrollLeft + videoWrapper.clientWidth >= videoWrapper.scrollWidth - 10) {
-        videoWrapper.scrollTo({ left: 0, behavior: 'smooth' });
-      }
-    }, 3000);
-  }
-
-  if (aLaUneWrapper) {
-    setInterval(() => {
-      aLaUneWrapper.scrollBy({ left: 400, behavior: 'smooth' });
-      if (aLaUneWrapper.scrollLeft + aLaUneWrapper.clientWidth >= aLaUneWrapper.scrollWidth - 10) {
-        aLaUneWrapper.scrollTo({ left: 0, behavior: 'smooth' });
-      }
-    }, 3000);
-  }
-}
-document.addEventListener('DOMContentLoaded', startAutoScroll);
-
-
         console.log('✅ Système de miniatures vidéo HD chargé');
+
+/* ---------- Politique : setup d'empilement propre ---------- */
+(function(){
+  const grid = document.getElementById('politiqueGrid');
+  if (!grid) return;
+
+  // Appliquer classes + attributs d'index et positions initiales
+  function initPolitiqueStack() {
+    const cards = Array.from(grid.querySelectorAll('.article-card'));
+    if (!cards.length) return;
+
+    // Calculer hauteur dynamique en prenant la première carte (si possible)
+    const first = cards[0];
+    const computedWidth = Math.min(820, grid.clientWidth * 0.88);
+    // On force hauteur container si nécessaire (déjà en CSS), mais ajuste si la carte est plus grande
+    // appliquer --stack-index via style pour éviter recalcCSS fragile
+    cards.forEach((card, i) => {
+      card.dataset.stackIndex = i;            // utilisé pour debug / éventuel styling
+      card.style.setProperty('--stack-index', i);
+      card.style.top = `${i * 18}px`;        // décalage vertical entre cartes
+      card.style.zIndex = String(cards.length - i); // carte 0 au fond, carte N au dessus
+      card.classList.remove('active','behind','visible');
+    });
+    // rendre la première carte active par défaut (au top de la pile visuellement)
+    activateCard(cards, 0);
+  }
+
+  // Activation d'une carte index donnée : applique classes active/behind et remet z-index correct
+  function activateCard(cards, activeIndex) {
+    cards.forEach((card, i) => {
+      card.classList.remove('active','behind');
+      if (i === activeIndex) {
+        card.classList.add('active');
+        card.style.zIndex = cards.length + 50; // pousser la carte active au-dessus
+      } else if (i === activeIndex + 1) {
+        card.classList.add('behind');
+        card.style.zIndex = cards.length - i;
+      } else {
+        card.style.zIndex = cards.length - i;
+      }
+    });
+  }
+
+  // Observer pour détecter l'apparition au scroll (intersection ratio)
+  const observer = new IntersectionObserver((entries) => {
+    // On active la carte la plus visible (plus grand intersectionRatio)
+    const visible = entries
+      .filter(e => e.isIntersecting)
+      .sort((a,b) => b.intersectionRatio - a.intersectionRatio);
+
+    if (visible.length) {
+      const topEntry = visible[0];
+      const allCards = Array.from(grid.querySelectorAll('.article-card'));
+      const activeIndex = allCards.indexOf(topEntry.target);
+      if (activeIndex >= 0) activateCard(allCards, activeIndex);
+    }
+  }, {
+    root: null,
+    rootMargin: '0px',
+    threshold: buildThresholdList()
+  });
+
+  function buildThresholdList() {
+    // liste de thresholds pour meilleur suivi progressif
+    const thresholds = [];
+    for (let i=0; i<=1.0; i+=0.05) thresholds.push(i);
+    return thresholds;
+  }
+
+  function observePolitiqueCards() {
+    const cards = grid.querySelectorAll('.article-card');
+    cards.forEach(c => observer.observe(c));
+  }
+
+  // Sur resize on réinitialise pour mobile/desktop
+  function handleResize() {
+    const isMobile = window.matchMedia('(max-width: 768px)').matches;
+    const cards = Array.from(grid.querySelectorAll('.article-card'));
+    if (isMobile) {
+      // remove inline top to let grid flow normally
+      cards.forEach(c => {
+        c.style.top = null;
+        c.style.zIndex = null;
+        c.classList.remove('active','behind');
+      });
+    } else {
+      initPolitiqueStack();
+      observePolitiqueCards();
+    }
+  }
+
+  // Lancer après que le DOM et contenu soient prêts (images chargées OK)
+  window.addEventListener('load', () => {
+    // Petit délai pour s'assurer des tailles d'images
+    setTimeout(() => {
+      handleResize();
+    }, 80);
+  });
+  window.addEventListener('resize', () => {
+    // debounce simple
+    clearTimeout(window._politiqueResizeTimer);
+    window._politiqueResizeTimer = setTimeout(handleResize, 120);
+  });
+
+  // Si des cartes sont ajoutées dynamiquement après fetch, exposer une fonction globale pour ré-initialiser
+  window.reinitPolitiqueStack = function(){
+    handleResize();
+  };
+})();
+
+/* ---------- Auto-scroll centré (À la Une + Vidéos) ----------
+   - Centrage calculé par carte (toujours centrer la carte active).
+   - Utilise un index qui avance ; remet à 0 quand arrive à la fin.
+   - Empêche multi-intervals en stockant un id sur l'élément.
+----------------------------------------------------------------*/
+(function(){
+  function centerCardInWrapper(wrapper, card) {
+    if (!wrapper || !card) return;
+    const wrapperRect = wrapper.getBoundingClientRect();
+    const cardRect = card.getBoundingClientRect();
+    // distance relative du début du wrapper
+    const left = card.offsetLeft - (wrapper.clientWidth - card.clientWidth) / 2;
+    wrapper.scrollTo({ left: Math.max(0, Math.round(left)), behavior: 'smooth' });
+  }
+
+  function startAutoCentering(wrapperSelector, itemSelector, delay = 3000) {
+    const wrapper = document.querySelector(wrapperSelector);
+    if (!wrapper) return;
+
+    // évite double setInterval
+    if (wrapper._autoCenterId) return;
+
+    const items = () => wrapper.querySelectorAll(itemSelector);
+    let index = 0;
+
+    // initial centering sur le 1er élément au load
+    setTimeout(() => {
+      const list = items();
+      if (list.length) centerCardInWrapper(wrapper, list[0]);
+    }, 200);
+
+    wrapper._autoCenterId = setInterval(() => {
+      const list = items();
+      if (!list.length) return;
+      index = (index + 1) % list.length;
+      const card = list[index];
+      centerCardInWrapper(wrapper, card);
+
+      // si à la fin, on remet index à 0 au prochain tick automatiquement (boucle naturelle)
+    }, delay);
+  }
+
+  // démarre quand DOM prêt
+  document.addEventListener('DOMContentLoaded', () => {
+    // À la Une : cartes = .carousel-card dans #carouselALaUne
+    startAutoCentering('#carouselALaUne', '.carousel-card', 3000);
+
+    // Vidéos : cartes = .video-card ou .article-card dans #videosGrid
+    startAutoCentering('#videosGrid', '.video-card, .article-card', 3000);
+  });
+
+  // Expose fonction pour redémarrer si contenu chargé dynamiquement
+  window.startAutoCentering = startAutoCentering;
+})();
+
     </script>
 </body>
-</html>
+    </html>
