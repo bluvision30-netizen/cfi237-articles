@@ -209,6 +209,7 @@
             scroll-snap-type: x mandatory;
             scrollbar-width: none;
             padding-bottom: 1rem;
+            scroll-behavior: smooth;
         }
         
         .carousel::-webkit-scrollbar {
@@ -622,306 +623,15 @@
             font-size: 0.75rem;
             color: var(--gray);
         }
-         .section-politique {
-            position: relative;
-            min-height: 200vh; /* Pour permettre le scroll */
-            padding: 3rem 0;
-        }
-
-        /* Wrapper sticky pour les cartes */
-        .politique-stack-wrapper {
-            position: sticky;
-            top: 100px;
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 2rem;
-        }
-
-        /* Container des cartes empilées */
-        .politique-cards-stack {
-            position: relative;
-            width: 100%;
-            max-width: 500px;
-            height: 600px;
-            perspective: 1000px;
-        }
-
-        /* Chaque carte dans la pile */
-        .politique-stack-card {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 20px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-            overflow: hidden;
-            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-            transform-origin: center bottom;
-            cursor: pointer;
-            backdrop-filter: blur(10px);
-        }
-
-        /* États de progression des cartes */
-        .politique-stack-card[data-index="0"] {
-            transform: translateY(0) scale(1) rotateX(0deg);
-            opacity: 1;
-            z-index: 6;
-        }
-
-        .politique-stack-card[data-index="1"] {
-            transform: translateY(-20px) scale(0.95) rotateX(2deg);
-            opacity: 0.9;
-            z-index: 5;
-        }
-
-        .politique-stack-card[data-index="2"] {
-            transform: translateY(-40px) scale(0.9) rotateX(4deg);
-            opacity: 0.7;
-            z-index: 4;
-        }
-
-        .politique-stack-card[data-index="3"] {
-            transform: translateY(-60px) scale(0.85) rotateX(6deg);
-            opacity: 0.5;
-            z-index: 3;
-        }
-
-        .politique-stack-card[data-index="4"] {
-            transform: translateY(-80px) scale(0.8) rotateX(8deg);
-            opacity: 0.3;
-            z-index: 2;
-        }
-
-        .politique-stack-card[data-index="5"] {
-            transform: translateY(-100px) scale(0.75) rotateX(10deg);
-            opacity: 0.15;
-            z-index: 1;
-        }
-
-        /* Carte qui sort (scrollée) */
-        .politique-stack-card.exited {
-            transform: translateY(-150px) scale(0.7) rotateX(15deg);
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        /* Image de la carte */
-        .politique-card-image {
-            width: 100%;
-            height: 50%;
-            object-fit: cover;
-            position: relative;
-        }
-
-        .politique-card-image::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 100px;
-            background: linear-gradient(to top, rgba(30, 58, 138, 0.9), transparent);
-        }
-
-        /* Contenu de la carte */
-        .politique-card-content {
-            padding: 2rem;
-            height: 50%;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
-            color: white;
-        }
-
-        .politique-card-badge {
-            display: inline-block;
-            background: rgba(255, 255, 255, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            margin-bottom: 1rem;
-            width: fit-content;
-        }
-
-        .politique-card-title {
-            font-size: 1.4rem;
-            font-weight: 700;
-            line-height: 1.3;
-            margin-bottom: 1rem;
-        }
-
-        .politique-card-excerpt {
-            font-size: 0.95rem;
-            opacity: 0.9;
-            line-height: 1.5;
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-
-        .politique-card-meta {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding-top: 1rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.2);
-            font-size: 0.85rem;
-        }
-
-        .politique-card-author {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .politique-author-avatar {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.3);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-        }
-
-        .politique-card-stats {
-            display: flex;
-            gap: 1rem;
-            opacity: 0.9;
-        }
-
-        /* Indicateur de progression */
-        .stack-progress {
-            position: fixed;
-            bottom: 40px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            gap: 8px;
-            z-index: 100;
-            background: rgba(30, 58, 138, 0.9);
-            padding: 12px 20px;
-            border-radius: 30px;
-            backdrop-filter: blur(10px);
-        }
-
-        .stack-progress-dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.3);
-            transition: all 0.3s ease;
-        }
-
-        .stack-progress-dot.active {
-            background: white;
-            width: 30px;
-            border-radius: 5px;
-        }
-
-        /* Effet hover sur carte active */
-        .politique-stack-card[data-index="0"]:hover {
-            transform: translateY(-10px) scale(1.02);
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-        }
-
-        /* Responsive Mobile */
-        @media (max-width: 768px) {
-            .section-politique {
-                min-height: 150vh;
-            }
-
-            .politique-stack-wrapper {
-                top: 80px;
-                padding: 1rem;
-            }
-
-            .politique-cards-stack {
-                max-width: 100%;
-                height: 500px;
-            }
-
-            .politique-card-content {
-                padding: 1.5rem;
-            }
-
-            .politique-card-title {
-                font-size: 1.2rem;
-            }
-
-            .politique-card-excerpt {
-                font-size: 0.9rem;
-                -webkit-line-clamp: 2;
-            }
-
-            /* Ajustement des états pour mobile */
-            .politique-stack-card[data-index="1"] {
-                transform: translateY(-15px) scale(0.96);
-            }
-
-            .politique-stack-card[data-index="2"] {
-                transform: translateY(-30px) scale(0.92);
-            }
-
-            .politique-stack-card[data-index="3"] {
-                transform: translateY(-45px) scale(0.88);
-            }
-
-            .politique-stack-card[data-index="4"],
-            .politique-stack-card[data-index="5"] {
-                opacity: 0;
-            }
-
-            .stack-progress {
-                bottom: 20px;
-                padding: 8px 16px;
-            }
-
-            .stack-progress-dot {
-                width: 8px;
-                height: 8px;
-            }
-
-            .stack-progress-dot.active {
-                width: 24px;
-            }
-        }
-
-        /* Animation au chargement */
-        @keyframes cardSlideIn {
-            from {
-                opacity: 0;
-                transform: translateY(100px) scale(0.8);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
-        }
-
-        .politique-stack-card {
-            animation: cardSlideIn 0.6s ease-out backwards;
-        }
-
-        .politique-stack-card:nth-child(1) { animation-delay: 0.1s; }
-        .politique-stack-card:nth-child(2) { animation-delay: 0.2s; }
-        .politique-stack-card:nth-child(3) { animation-delay: 0.3s; }
-        .politique-stack-card:nth-child(4) { animation-delay: 0.4s; }
-        .politique-stack-card:nth-child(5) { animation-delay: 0.5s; }
-        .politique-stack-card:nth-child(6) { animation-delay: 0.6s; }
+        
         /* Sections spécifiques */
         .section-politique {
             background: linear-gradient(135deg, #1e3a8a, #3b82f6);
             padding: 3rem 0;
             margin: 3rem 0;
             color: white;
+            position: relative;
+            min-height: 200vh;
         }
         
         .section-sports {
@@ -1134,6 +844,477 @@
             margin-bottom: 1rem;
             opacity: 0.5;
         }
+
+        /* Video Styles */
+        .video-container {
+            position: relative;
+            width: 100%;
+            height: 0;
+            padding-bottom: 56.25%;
+            margin: 2rem 0;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .category-badge.video {
+            background: linear-gradient(135deg, #ff0000, #cc0000) !important;
+        }
+
+        .article-card:hover .fa-play {
+            transform: scale(1.1);
+            transition: transform 0.3s ease;
+        }
+
+        /* Video Card Styles */
+        .video-card {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .video-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+        }
+
+        .video-thumbnail {
+            position: relative;
+            overflow: hidden;
+            background: #000;
+        }
+
+        .video-thumbnail img {
+            transition: transform 0.3s ease, filter 0.3s ease;
+        }
+
+        .video-card:hover .video-thumbnail img {
+            transform: scale(1.1);
+            filter: brightness(0.7);
+        }
+
+        .video-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .video-card:hover .video-overlay {
+            opacity: 1;
+        }
+
+        .play-button {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: rgba(255, 0, 0, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 20px rgba(255, 0, 0, 0.4);
+            transition: all 0.3s ease;
+            animation: pulse-play 2s ease-in-out infinite;
+        }
+
+        .video-card:hover .play-button {
+            background: rgba(255, 0, 0, 1);
+            transform: scale(1.15);
+            animation: none;
+        }
+
+        .play-button i {
+            color: white;
+            font-size: 2rem;
+            margin-left: 6px;
+        }
+
+        @keyframes pulse-play {
+            0%, 100% { 
+                box-shadow: 0 4px 20px rgba(255, 0, 0, 0.4);
+                transform: scale(1);
+            }
+            50% { 
+                box-shadow: 0 4px 30px rgba(255, 0, 0, 0.6);
+                transform: scale(1.05);
+            }
+        }
+
+        .quality-badge {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            z-index: 10;
+        }
+
+        .platform-badge {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            z-index: 10;
+        }
+
+        .platform-badge.youtube {
+            background: rgba(255, 0, 0, 0.95);
+            color: white;
+        }
+
+        .platform-badge i {
+            font-size: 0.9rem;
+        }
+
+        .duration-badge {
+            position: absolute;
+            bottom: 12px;
+            right: 12px;
+            background: rgba(0, 0, 0, 0.85);
+            color: white;
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .category-badge.video-badge {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+        }
+
+        @keyframes fadeInVideo {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .video-card {
+            animation: fadeInVideo 0.5s ease-out;
+        }
+
+        .video-thumbnail::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(255, 255, 255, 0.2),
+                transparent
+            );
+            transition: left 0.5s ease;
+        }
+
+        .video-card:hover .video-thumbnail::before {
+            left: 100%;
+        }
+
+        .videos-scroll-container {
+            position: relative;
+            width: 100%;
+            overflow: hidden;
+            padding: 10px 0;
+        }
+
+        .videos-scroll-wrapper {
+            display: flex;
+            gap: 24px;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            padding: 0 5px 20px 5px;
+        }
+
+        .videos-scroll-wrapper::-webkit-scrollbar {
+            display: none;
+        }
+
+        .videos-scroll-wrapper .video-card,
+        .videos-scroll-wrapper .article-card {
+            flex: 0 0 380px;
+            min-width: 380px;
+            max-width: 380px;
+            scroll-snap-align: start;
+        }
+
+        .scroll-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .scroll-btn {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            border: 2px solid var(--primary);
+            background: white;
+            color: var(--primary);
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .scroll-btn:hover {
+            background: var(--primary);
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .scroll-btn:active {
+            transform: scale(0.95);
+        }
+
+        .scroll-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            transform: scale(1);
+        }
+
+        /* Politique Stack Animation */
+        .politique-stack-wrapper {
+            position: sticky;
+            top: 100px;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .politique-cards-stack {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            height: 600px;
+            perspective: 1000px;
+        }
+
+        .politique-stack-card {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-origin: center bottom;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+        }
+
+        .politique-stack-card[data-index="0"] {
+            transform: translateY(0) scale(1) rotateX(0deg);
+            opacity: 1;
+            z-index: 6;
+        }
+
+        .politique-stack-card[data-index="1"] {
+            transform: translateY(-20px) scale(0.95) rotateX(2deg);
+            opacity: 0.9;
+            z-index: 5;
+        }
+
+        .politique-stack-card[data-index="2"] {
+            transform: translateY(-40px) scale(0.9) rotateX(4deg);
+            opacity: 0.7;
+            z-index: 4;
+        }
+
+        .politique-stack-card[data-index="3"] {
+            transform: translateY(-60px) scale(0.85) rotateX(6deg);
+            opacity: 0.5;
+            z-index: 3;
+        }
+
+        .politique-stack-card[data-index="4"] {
+            transform: translateY(-80px) scale(0.8) rotateX(8deg);
+            opacity: 0.3;
+            z-index: 2;
+        }
+
+        .politique-stack-card[data-index="5"] {
+            transform: translateY(-100px) scale(0.75) rotateX(10deg);
+            opacity: 0.15;
+            z-index: 1;
+        }
+
+        .politique-stack-card.exited {
+            transform: translateY(-150px) scale(0.7) rotateX(15deg);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .politique-card-image {
+            width: 100%;
+            height: 50%;
+            object-fit: cover;
+            position: relative;
+        }
+
+        .politique-card-content {
+            padding: 2rem;
+            height: 50%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            color: white;
+        }
+
+        .politique-card-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            width: fit-content;
+        }
+
+        .politique-card-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            line-height: 1.3;
+            margin-bottom: 1rem;
+        }
+
+        .politique-card-excerpt {
+            font-size: 0.95rem;
+            opacity: 0.9;
+            line-height: 1.5;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .politique-card-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            font-size: 0.85rem;
+        }
+
+        .politique-card-author {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .politique-author-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+        }
+
+        .politique-card-stats {
+            display: flex;
+            gap: 1rem;
+            opacity: 0.9;
+        }
+
+        .stack-progress {
+            position: fixed;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 8px;
+            z-index: 100;
+            background: rgba(30, 58, 138, 0.9);
+            padding: 12px 20px;
+            border-radius: 30px;
+            backdrop-filter: blur(10px);
+        }
+
+        .stack-progress-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .stack-progress-dot.active {
+            background: white;
+            width: 30px;
+            border-radius: 5px;
+        }
+
+        .politique-stack-card[data-index="0"]:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        @keyframes cardSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(100px) scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .politique-stack-card {
+            animation: cardSlideIn 0.6s ease-out backwards;
+        }
         
         /* Responsive */
         @media (max-width: 1024px) {
@@ -1210,6 +1391,75 @@
             .societe-grid {
                 gap: 1rem;
             }
+
+            .videos-scroll-wrapper .video-card,
+            .videos-scroll-wrapper .article-card {
+                flex: 0 0 320px;
+                min-width: 320px;
+                max-width: 320px;
+            }
+            
+            .scroll-buttons {
+                display: none;
+            }
+
+            .section-politique {
+                min-height: 150vh;
+            }
+
+            .politique-stack-wrapper {
+                top: 80px;
+                padding: 1rem;
+            }
+
+            .politique-cards-stack {
+                max-width: 100%;
+                height: 500px;
+            }
+
+            .politique-card-content {
+                padding: 1.5rem;
+            }
+
+            .politique-card-title {
+                font-size: 1.2rem;
+            }
+
+            .politique-card-excerpt {
+                font-size: 0.9rem;
+                -webkit-line-clamp: 2;
+            }
+
+            .politique-stack-card[data-index="1"] {
+                transform: translateY(-15px) scale(0.96);
+            }
+
+            .politique-stack-card[data-index="2"] {
+                transform: translateY(-30px) scale(0.92);
+            }
+
+            .politique-stack-card[data-index="3"] {
+                transform: translateY(-45px) scale(0.88);
+            }
+
+            .politique-stack-card[data-index="4"],
+            .politique-stack-card[data-index="5"] {
+                opacity: 0;
+            }
+
+            .stack-progress {
+                bottom: 20px;
+                padding: 8px 16px;
+            }
+
+            .stack-progress-dot {
+                width: 8px;
+                height: 8px;
+            }
+
+            .stack-progress-dot.active {
+                width: 24px;
+            }
         }
         
         @media (max-width: 480px) {
@@ -1237,504 +1487,30 @@
             .carousel-card {
                 flex: 0 0 250px;
             }
+
+            .videos-scroll-wrapper .video-card,
+            .videos-scroll-wrapper .article-card {
+                flex: 0 0 280px;
+                min-width: 280px;
+                max-width: 280px;
+            }
+
+            .play-button {
+                width: 60px;
+                height: 60px;
+            }
+            
+            .play-button i {
+                font-size: 1.5rem;
+            }
+            
+            .quality-badge,
+            .platform-badge,
+            .duration-badge {
+                font-size: 0.65rem;
+                padding: 4px 8px;
+            }
         }
-
-/* AJOUTER CES STYLES DANS LES FICHIERS EXISTANTS */
-
-/* Améliorations pour les vidéos */
-.video-container {
-    position: relative;
-    width: 100%;
-    height: 0;
-    padding-bottom: 56.25%; /* 16:9 aspect ratio */
-    margin: 2rem 0;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-}
-
-.video-container iframe {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    border: none;
-}
-
-/* Badge vidéo amélioré */
-.category-badge.video {
-    background: linear-gradient(135deg, #ff0000, #cc0000) !important;
-}
-
-/* Animation pour le bouton play */
-.article-card:hover .fa-play {
-    transform: scale(1.1);
-    transition: transform 0.3s ease;
-}
-
-/* Responsive pour mobile */
-@media (max-width: 768px) {
-    .video-container {
-        margin: 1rem 0;
-        border-radius: 8px;
-    }
-}
-/* ========================================
-   🎬 STYLES POUR VIDÉOS HD
-   ======================================== */
-
-/* Carte vidéo */
-.video-card {
-    transition: all 0.3s ease;
-    cursor: pointer;
-}
-
-.video-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 8px 30px rgba(0,0,0,0.2);
-}
-
-/* Container miniature */
-.video-thumbnail {
-    position: relative;
-    overflow: hidden;
-    background: #000;
-}
-
-.video-thumbnail img {
-    transition: transform 0.3s ease, filter 0.3s ease;
-}
-
-.video-card:hover .video-thumbnail img {
-    transform: scale(1.1);
-    filter: brightness(0.7);
-}
-
-/* Overlay vidéo */
-.video-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-.video-card:hover .video-overlay {
-    opacity: 1;
-}
-
-/* Bouton play animé */
-.play-button {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    background: rgba(255, 0, 0, 0.9);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 4px 20px rgba(255, 0, 0, 0.4);
-    transition: all 0.3s ease;
-    animation: pulse-play 2s ease-in-out infinite;
-}
-
-.video-card:hover .play-button {
-    background: rgba(255, 0, 0, 1);
-    transform: scale(1.15);
-    animation: none;
-}
-
-.play-button i {
-    color: white;
-    font-size: 2rem;
-    margin-left: 6px;
-}
-
-@keyframes pulse-play {
-    0%, 100% { 
-        box-shadow: 0 4px 20px rgba(255, 0, 0, 0.4);
-        transform: scale(1);
-    }
-    50% { 
-        box-shadow: 0 4px 30px rgba(255, 0, 0, 0.6);
-        transform: scale(1.05);
-    }
-}
-
-/* Badge qualité (HD/SD) */
-.quality-badge {
-    position: absolute;
-    top: 12px;
-    right: 12px;
-    background: linear-gradient(135deg, #22c55e, #16a34a);
-    color: white;
-    padding: 6px 12px;
-    border-radius: 6px;
-    font-size: 0.75rem;
-    font-weight: bold;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-    z-index: 10;
-}
-
-/* Badge plateforme (YouTube) */
-.platform-badge {
-    position: absolute;
-    top: 12px;
-    left: 12px;
-    padding: 6px 12px;
-    border-radius: 6px;
-    font-size: 0.7rem;
-    font-weight: bold;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-    z-index: 10;
-}
-
-.platform-badge.youtube {
-    background: rgba(255, 0, 0, 0.95);
-    color: white;
-}
-
-.platform-badge i {
-    font-size: 0.9rem;
-}
-
-/* Badge durée */
-.duration-badge {
-    position: absolute;
-    bottom: 12px;
-    right: 12px;
-    background: rgba(0, 0, 0, 0.85);
-    color: white;
-    padding: 6px 10px;
-    border-radius: 6px;
-    font-size: 0.7rem;
-    font-weight: bold;
-    backdrop-filter: blur(4px);
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-
-/* Badge catégorie vidéo */
-.category-badge.video-badge {
-    background: linear-gradient(135deg, #ef4444, #dc2626);
-    color: white;
-}
-
-/* Animation au chargement */
-@keyframes fadeInVideo {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.video-card {
-    animation: fadeInVideo 0.5s ease-out;
-}
-
-.video-card:nth-child(1) { animation-delay: 0.1s; }
-.video-card:nth-child(2) { animation-delay: 0.2s; }
-.video-card:nth-child(3) { animation-delay: 0.3s; }
-.video-card:nth-child(4) { animation-delay: 0.4s; }
-.video-card:nth-child(5) { animation-delay: 0.5s; }
-.video-card:nth-child(6) { animation-delay: 0.6s; }
-
-/* Effet shine sur hover */
-.video-thumbnail::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(
-        90deg,
-        transparent,
-        rgba(255, 255, 255, 0.2),
-        transparent
-    );
-    transition: left 0.5s ease;
-}
-
-.video-card:hover .video-thumbnail::before {
-    left: 100%;
-}
-
-/* Badge "NOUVEAU" pour vidéos récentes */
-.new-badge {
-    position: absolute;
-    top: 12px;
-    left: 12px;
-    background: linear-gradient(135deg, #f59e0b, #d97706);
-    color: white;
-    padding: 4px 10px;
-    border-radius: 6px;
-    font-size: 0.65rem;
-    font-weight: bold;
-    text-transform: uppercase;
-    box-shadow: 0 2px 8px rgba(245, 158, 11, 0.4);
-    animation: blink-new 2s ease-in-out infinite;
-}
-
-@keyframes blink-new {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.7; }
-}
-
-/* Responsive pour mobile */
-@media (max-width: 768px) {
-    .play-button {
-        width: 60px;
-        height: 60px;
-    }
-    
-    .play-button i {
-        font-size: 1.5rem;
-    }
-    
-    .quality-badge,
-    .platform-badge,
-    .duration-badge {
-        font-size: 0.65rem;
-        padding: 4px 8px;
-    }
-}
-
-/* Effet de sélection */
-.video-card:active {
-    transform: translateY(-4px) scale(0.98);
-}
-
-/* Loading skeleton pour vidéos */
-.video-skeleton {
-    background: linear-gradient(
-        90deg,
-        #f0f0f0 0%,
-        #e0e0e0 50%,
-        #f0f0f0 100%
-    );
-    background-size: 200% 100%;
-    animation: loading-skeleton 1.5s ease-in-out infinite;
-}
-
-@keyframes loading-skeleton {
-    0% { background-position: 200% 0; }
-    100% { background-position: -200% 0; }
-}
-
-/* Compteur de vues animé */
-.video-card:hover .stat {
-    transform: translateY(-2px);
-    transition: transform 0.2s ease;
-}
-
-/* Badge "LIVE" pour vidéos en direct (optionnel) */
-.live-badge {
-    position: absolute;
-    top: 12px;
-    left: 12px;
-    background: #ef4444;
-    color: white;
-    padding: 6px 12px;
-    border-radius: 6px;
-    font-size: 0.7rem;
-    font-weight: bold;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    box-shadow: 0 2px 10px rgba(239, 68, 68, 0.4);
-    animation: pulse-live 1.5s ease-in-out infinite;
-}
-
-.live-badge::before {
-    content: '';
-    width: 8px;
-    height: 8px;
-    background: white;
-    border-radius: 50%;
-    animation: blink-live 1s ease-in-out infinite;
-}
-
-@keyframes pulse-live {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.05); }
-}
-
-@keyframes blink-live {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.3; }
-}
-
-/* Tooltip pour infos vidéo */
-.video-info-tooltip {
-    position: absolute;
-    bottom: 100%;
-    left: 50%;
-    transform: translateX(-50%) translateY(-10px);
-    background: rgba(0, 0, 0, 0.95);
-    color: white;
-    padding: 10px 15px;
-    border-radius: 8px;
-    font-size: 0.75rem;
-    white-space: nowrap;
-    opacity: 0;
-    pointer-events: none;
-    transition: all 0.3s ease;
-    z-index: 1000;
-}
-
-.video-card:hover .video-info-tooltip {
-    opacity: 1;
-    transform: translateX(-50%) translateY(-15px);
-}
-
-.video-info-tooltip::after {
-    content: '';
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    border: 6px solid transparent;
-    border-top-color: rgba(0, 0, 0, 0.95);
-}
-
-/* Container avec scroll horizontal */
-.videos-scroll-container {
-    position: relative;
-    width: 100%;
-    overflow: hidden;
-    padding: 10px 0;
-}
-
-.videos-scroll-wrapper {
-    display: flex;
-    gap: 24px;
-    overflow-x: auto;
-    scroll-behavior: smooth;
-    scrollbar-width: none; /* Firefox */
-    -ms-overflow-style: none; /* IE/Edge */
-    padding: 0 5px 20px 5px;
-}
-
-.videos-scroll-wrapper::-webkit-scrollbar {
-    display: none; /* Chrome/Safari */
-}
-
-/* Chaque carte vidéo */
-.videos-scroll-wrapper .video-card,
-.videos-scroll-wrapper .article-card {
-    flex: 0 0 380px; /* Largeur fixe */
-    min-width: 380px;
-    max-width: 380px;
-    scroll-snap-align: start;
-}
-
-/* Boutons de scroll */
-.scroll-buttons {
-    display: flex;
-    gap: 10px;
-}
-
-.scroll-btn {
-    width: 45px;
-    height: 45px;
-    border-radius: 50%;
-    border: 2px solid var(--primary);
-    background: white;
-    color: var(--primary);
-    font-size: 1.1rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-}
-
-.scroll-btn:hover {
-    background: var(--primary);
-    color: white;
-    transform: scale(1.1);
-}
-
-.scroll-btn:active {
-    transform: scale(0.95);
-}
-
-.scroll-btn:disabled {
-    opacity: 0.3;
-    cursor: not-allowed;
-    transform: scale(1);
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-    .videos-scroll-wrapper .video-card,
-    .videos-scroll-wrapper .article-card {
-        flex: 0 0 320px;
-        min-width: 320px;
-        max-width: 320px;
-    }
-    
-    .scroll-buttons {
-        display: none; /* Masquer sur mobile, scroll tactile */
-    }
-}
-
-@media (max-width: 480px) {
-    .videos-scroll-wrapper .video-card,
-    .videos-scroll-wrapper .article-card {
-        flex: 0 0 280px;
-        min-width: 280px;
-        max-width: 280px;
-    }
-}
-
-/* Indicateur de scroll */
-.videos-scroll-container::before,
-.videos-scroll-container::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    bottom: 20px;
-    width: 60px;
-    pointer-events: none;
-    z-index: 10;
-    transition: opacity 0.3s ease;
-}
-
-.videos-scroll-container::before {
-    left: 0;
-    background: linear-gradient(to right, rgba(255,255,255,1), rgba(255,255,255,0));
-    opacity: 0;
-}
-
-.videos-scroll-container::after {
-    right: 0;
-    background: linear-gradient(to left, rgba(255,255,255,1), rgba(255,255,255,0));
-}
-
-.videos-scroll-container.can-scroll-left::before {
-    opacity: 1;
-}
-
-.videos-scroll-container.can-scroll-right::after {
-    opacity: 1;
-}
     </style>
 </head>
 <body>
@@ -1886,29 +1662,30 @@
             </aside>
         </div>
 
-      <!-- VidÃ©os Section -->
-<section style="margin: 3rem 0;">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-        <h2 class="section-title">🎥 Vidéos</h2>
-        <div class="scroll-buttons">
-            <button class="scroll-btn scroll-left" onclick="scrollVideosLeft()">
-                <i class="fas fa-chevron-left"></i>
-            </button>
-            <button class="scroll-btn scroll-right" onclick="scrollVideosRight()">
-                <i class="fas fa-chevron-right"></i>
-            </button>
-        </div>
-    </div>
-    
-    <div class="videos-scroll-container" id="videosScrollContainer">
-        <div class="videos-scroll-wrapper" id="videosGrid">
-            <div class="empty-state">
-                <i class="fas fa-video"></i>
-                <p>Aucune vidéo disponible pour le moment</p>
+        <!-- Vidéos Section -->
+        <section style="margin: 3rem 0;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <h2 class="section-title">🎥 Vidéos</h2>
+                <div class="scroll-buttons">
+                    <button class="scroll-btn scroll-left" onclick="scrollVideosLeft()">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <button class="scroll-btn scroll-right" onclick="scrollVideosRight()">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
             </div>
-        </div>
-    </div>
-</section>
+            
+            <div class="videos-scroll-container" id="videosScrollContainer">
+                <div class="videos-scroll-wrapper" id="videosGrid">
+                    <div class="empty-state">
+                        <i class="fas fa-video"></i>
+                        <p>Aucune vidéo disponible pour le moment</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <!-- Politique Section -->
         <section class="section-politique section-colored">
             <div class="container">
@@ -2025,52 +1802,135 @@
         let allArticles = [];
         let currentSlide = 0;
         let heroArticles = [];
-let videosContainer;
-let videosWrapper;// Initialiser après chargement
-document.addEventListener('DOMContentLoaded', function() {
-    videosContainer = document.getElementById('videosScrollContainer');
-    videosWrapper = document.getElementById('videosGrid');
-    
-    // Écouter le scroll pour mettre à jour les indicateurs
-    if (videosWrapper) {
-        videosWrapper.addEventListener('scroll', updateScrollIndicators);
-        updateScrollIndicators();
-    }
-});
+        let videosContainer;
+        let videosWrapper;
+        let carouselALaUne;
+        let autoScrollVideosInterval;
+        let autoScrollCarouselInterval;
+
+        // Initialiser après chargement
+        document.addEventListener('DOMContentLoaded', function() {
+            videosContainer = document.getElementById('videosScrollContainer');
+            videosWrapper = document.getElementById('videosGrid');
+            carouselALaUne = document.getElementById('carouselALaUne');
+            
+            if (videosWrapper) {
+                videosWrapper.addEventListener('scroll', updateScrollIndicators);
+                updateScrollIndicators();
+            }
+        });
+
+        // ========================================
+        // AUTO-SCROLL VIDÉOS (toutes les 3 sec)
+        // ========================================
+        function startAutoScrollVideos() {
+            stopAutoScrollVideos(); // Arrêter l'ancien si existe
+            
+            autoScrollVideosInterval = setInterval(() => {
+                if (!videosWrapper) return;
+                
+                const scrollAmount = 400; // Distance par scroll
+                const maxScroll = videosWrapper.scrollWidth - videosWrapper.clientWidth;
+                const currentScroll = videosWrapper.scrollLeft;
+                
+                // Si on est à la fin, retour au début
+                if (currentScroll >= maxScroll - 10) {
+                    videosWrapper.scrollTo({ left: 0, behavior: 'smooth' });
+                } else {
+                    videosWrapper.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+                }
+            }, 3000); // 3 secondes
+        }
+
+        function stopAutoScrollVideos() {
+            if (autoScrollVideosInterval) {
+                clearInterval(autoScrollVideosInterval);
+                autoScrollVideosInterval = null;
+            }
+        }
+
+        // Pause auto-scroll quand l'utilisateur interagit
+        if (videosWrapper) {
+            videosWrapper.addEventListener('mouseenter', stopAutoScrollVideos);
+            videosWrapper.addEventListener('mouseleave', startAutoScrollVideos);
+            videosWrapper.addEventListener('touchstart', stopAutoScrollVideos);
+        }
+
+        // ========================================
+        // AUTO-SCROLL CAROUSEL À LA UNE (toutes les 3 sec)
+        // ========================================
+        function startAutoScrollCarousel() {
+            stopAutoScrollCarousel(); // Arrêter l'ancien si existe
+            
+            autoScrollCarouselInterval = setInterval(() => {
+                if (!carouselALaUne) return;
+                
+                const scrollAmount = 370; // Largeur card + gap
+                const maxScroll = carouselALaUne.scrollWidth - carouselALaUne.clientWidth;
+                const currentScroll = carouselALaUne.scrollLeft;
+                
+                // Si on est à la fin, retour au début
+                if (currentScroll >= maxScroll - 10) {
+                    carouselALaUne.scrollTo({ left: 0, behavior: 'smooth' });
+                } else {
+                    carouselALaUne.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+                }
+            }, 3000); // 3 secondes
+        }
+
+        function stopAutoScrollCarousel() {
+            if (autoScrollCarouselInterval) {
+                clearInterval(autoScrollCarouselInterval);
+                autoScrollCarouselInterval = null;
+            }
+        }
+
+        // Pause auto-scroll quand l'utilisateur interagit
+        if (carouselALaUne) {
+            carouselALaUne.addEventListener('mouseenter', stopAutoScrollCarousel);
+            carouselALaUne.addEventListener('mouseleave', startAutoScrollCarousel);
+            carouselALaUne.addEventListener('touchstart', stopAutoScrollCarousel);
+        }
 
         // Charger les articles depuis GitHub
-        // Charger les articles depuis GitHub
-async function loadArticles() {
-    try {
-        const response = await fetch('/articles.json?t=' + Date.now());
-        if (!response.ok) throw new Error('Erreur chargement');
-        
-        const data = await response.json();
-        allArticles = Object.values(data.articles || {})
-            .filter(article => article && article.id)
-            .sort((a, b) => new Date(b.date) - new Date(a.date));
-        
-        console.log('📰 Articles chargés:', allArticles.length);
-        
-        displayHeroSlider();
-        displayCarousel();
-        displayArticles();
-        displayTrending();
-        displayVideos(); // ← Cette fonction est maintenant corrigée
-        displaySociete();
-        displayFeatured();
-        displayEvents();
-        displayCategories();
-        displayPolitique();
-        displaySports();
-        displayInternational();
-        updateAboutStats();
-        
-    } catch (error) {
-        console.error('❌ Erreur:', error);
-        showError();
-    }
-}
+        async function loadArticles() {
+            try {
+                const response = await fetch('/articles.json?t=' + Date.now());
+                if (!response.ok) throw new Error('Erreur chargement');
+                
+                const data = await response.json();
+                allArticles = Object.values(data.articles || {})
+                    .filter(article => article && article.id)
+                    .sort((a, b) => new Date(b.date) - new Date(a.date));
+                
+                console.log('📰 Articles chargés:', allArticles.length);
+                
+                displayHeroSlider();
+                displayCarousel();
+                displayArticles();
+                displayTrending();
+                displayVideos();
+                displaySociete();
+                displayFeatured();
+                displayEvents();
+                displayCategories();
+                displayPolitique();
+                displaySports();
+                displayInternational();
+                updateAboutStats();
+                
+                // Démarrer les auto-scrolls après chargement
+                setTimeout(() => {
+                    startAutoScrollVideos();
+                    startAutoScrollCarousel();
+                }, 1000);
+                
+            } catch (error) {
+                console.error('❌ Erreur:', error);
+                showError();
+            }
+        }
+
         // Hero Slider
         function displayHeroSlider() {
             heroArticles = allArticles
@@ -2222,232 +2082,175 @@ async function loadArticles() {
             `).join('');
         }
 
- async function displayVideos() {
-    const videos = allArticles
-        .filter(a => a.contentType === 'video' || (a.sections && a.sections.includes('videos')))
-        .slice(0, 12); // Augmenter à 12 pour le scroll
-    
-    const grid = document.getElementById('videosGrid');
-    
-    if (videos.length === 0) {
-        grid.innerHTML = `
-            <div class="empty-state" style="flex: 1; text-align: center; padding: 60px 20px;">
-                <i class="fas fa-video"></i>
-                <p>Aucune vidéo disponible pour le moment</p>
-            </div>
-        `;
-        return;
-    }
-    
-    // Afficher loading
-    grid.innerHTML = `
-        <div class="loading" style="flex: 1; text-align: center; padding: 40px;">
-            <i class="fas fa-spinner"></i>
-            <p style="margin-top: 1rem;">Chargement des vidéos HD...</p>
-        </div>
-    `;
-    
-    // Récupérer miniatures HD
-    const videosWithThumbnails = await Promise.all(
-        videos.map(async (article) => {
-            let thumbnailData = {
-                url: article.image,
-                quality: 'standard',
-                isYouTube: false
-            };
+        async function displayVideos() {
+            const videos = allArticles
+                .filter(a => a.contentType === 'video' || (a.sections && a.sections.includes('videos')))
+                .slice(0, 12);
             
-            if (article.video_url) {
-                const platform = detectVideoPlatform(article.video_url);
-                
-                if (platform === 'youtube') {
-                    const thumbnail = await getYouTubeThumbnail(article.video_url);
-                    if (thumbnail) {
-                        thumbnailData = {
-                            url: thumbnail.url,
-                            quality: thumbnail.quality,
-                            width: thumbnail.width,
-                            height: thumbnail.height,
-                            isYouTube: true
-                        };
-                    }
-                }
+            const grid = document.getElementById('videosGrid');
+            
+            if (videos.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty-state" style="flex: 1; text-align: center; padding: 60px 20px;">
+                        <i class="fas fa-video"></i>
+                        <p>Aucune vidéo disponible pour le moment</p>
+                    </div>
+                `;
+                return;
             }
             
-            return { ...article, thumbnailData };
-        })
-    );
-    
-    // Générer HTML
-    grid.innerHTML = videosWithThumbnails.map(article => {
-        const thumb = article.thumbnailData;
-        const qualityBadge = thumb.isYouTube ? 
-            `<div class="quality-badge">${thumb.quality === 'maxresdefault' ? 'HD' : 'SD'}</div>` : '';
-        
-        return `
-            <article class="article-card video-card" onclick="openArticle('${article.id}')">
-                <div class="video-thumbnail">
-                    <img src="${thumb.url}" 
-                         alt="${article.titre}" 
-                         class="article-image" 
-                         loading="lazy">
-                    
-                    <div class="video-overlay">
-                        <div class="play-button">
-                            <i class="fas fa-play"></i>
-                        </div>
-                    </div>
-                    
-                    ${qualityBadge}
-                    
-                    ${thumb.isYouTube ? `
-                        <div class="platform-badge youtube">
-                            <i class="fab fa-youtube"></i> YouTube
-                        </div>
-                    ` : ''}
-                    
-                    <div class="duration-badge">
-                        <i class="fas fa-play-circle"></i> VIDÉO
-                    </div>
+            grid.innerHTML = `
+                <div class="loading" style="flex: 1; text-align: center; padding: 40px;">
+                    <i class="fas fa-spinner"></i>
+                    <p style="margin-top: 1rem;">Chargement des vidéos HD...</p>
                 </div>
+            `;
+            
+            const videosWithThumbnails = await Promise.all(
+                videos.map(async (article) => {
+                    let thumbnailData = {
+                        url: article.image,
+                        quality: 'standard',
+                        isYouTube: false
+                    };
+                    
+                    if (article.video_url) {
+                        const platform = detectVideoPlatform(article.video_url);
+                        
+                        if (platform === 'youtube') {
+                            const thumbnail = await getYouTubeThumbnail(article.video_url);
+                            if (thumbnail) {
+                                thumbnailData = {
+                                    url: thumbnail.url,
+                                    quality: thumbnail.quality,
+                                    width: thumbnail.width,
+                                    height: thumbnail.height,
+                                    isYouTube: true
+                                };
+                            }
+                        }
+                    }
+                    
+                    return { ...article, thumbnailData };
+                })
+            );
+            
+            grid.innerHTML = videosWithThumbnails.map(article => {
+                const thumb = article.thumbnailData;
+                const qualityBadge = thumb.isYouTube ? 
+                    `<div class="quality-badge">${thumb.quality === 'maxresdefault' ? 'HD' : 'SD'}</div>` : '';
                 
-                <div class="article-content">
-                    <span class="category-badge video-badge">
-                        🎥 ${article.categorie}
-                    </span>
-                    <h3 class="article-title">${article.titre}</h3>
-                    <p class="article-excerpt">${article.extrait}</p>
-                    <div class="article-meta">
-                        <div class="article-author">
-                            <div class="author-avatar">${getInitial(article.auteur)}</div>
-                            <span>${article.auteur}</span>
+                return `
+                    <article class="article-card video-card" onclick="openArticle('${article.id}')">
+                        <div class="video-thumbnail">
+                            <img src="${thumb.url}" 
+                                 alt="${article.titre}" 
+                                 class="article-image" 
+                                 loading="lazy">
+                            
+                            <div class="video-overlay">
+                                <div class="play-button">
+                                    <i class="fas fa-play"></i>
+                                </div>
+                            </div>
+                            
+                            ${qualityBadge}
+                            
+                            ${thumb.isYouTube ? `
+                                <div class="platform-badge youtube">
+                                    <i class="fab fa-youtube"></i> YouTube
+                                </div>
+                            ` : ''}
+                            
+                            <div class="duration-badge">
+                                <i class="fas fa-play-circle"></i> VIDÉO
+                            </div>
                         </div>
-                        <div class="article-stats">
-                            <span class="stat"><i class="fas fa-eye"></i> ${article.vues || 0}</span>
-                            <span class="stat"><i class="fas fa-heart"></i> ${article.likes || 0}</span>
+                        
+                        <div class="article-content">
+                            <span class="category-badge video-badge">
+                                🎥 ${article.categorie}
+                            </span>
+                            <h3 class="article-title">${article.titre}</h3>
+                            <p class="article-excerpt">${article.extrait}</p>
+                            <div class="article-meta">
+                                <div class="article-author">
+                                    <div class="author-avatar">${getInitial(article.auteur)}</div>
+                                    <span>${article.auteur}</span>
+                                </div>
+                                <div class="article-stats">
+                                    <span class="stat"><i class="fas fa-eye"></i> ${article.vues || 0}</span>
+                                    <span class="stat"><i class="fas fa-heart"></i> ${article.likes || 0}</span>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
-            </article>
-        `;
-    }).join('');
-    
-    // Mettre à jour après rendu
-    setTimeout(() => {
-        updateScrollIndicators();
-    }, 100);
-    
-    console.log(`✅ ${videosWithThumbnails.length} vidéos affichées en scroll horizontal`);
-}
+                    </article>
+                `;
+            }).join('');
+            
+            setTimeout(() => {
+                updateScrollIndicators();
+            }, 100);
+            
+            console.log(`✅ ${videosWithThumbnails.length} vidéos affichées en scroll horizontal`);
+        }
 
-// Support scroll au clavier
-document.addEventListener('keydown', function(e) {
-    if (!videosWrapper) return;
-    
-    if (e.key === 'ArrowLeft') {
-        scrollVideosLeft();
-    } else if (e.key === 'ArrowRight') {
-        scrollVideosRight();
-    }
-});
+        function scrollVideosLeft() {
+            if (!videosWrapper) return;
+            
+            const scrollAmount = 400;
+            videosWrapper.scrollBy({
+                left: -scrollAmount,
+                behavior: 'smooth'
+            });
+        }
 
-// Support scroll tactile avec détection de direction
-let touchStartX = 0;
-let touchEndX = 0;
+        function scrollVideosRight() {
+            if (!videosWrapper) return;
+            
+            const scrollAmount = 400;
+            videosWrapper.scrollBy({
+                left: scrollAmount,
+                behavior: 'smooth'
+            });
+        }
 
-if (videosWrapper) {
-    videosWrapper.addEventListener('touchstart', function(e) {
-        touchStartX = e.changedTouches[0].screenX;
-    }, { passive: true });
-    
-    videosWrapper.addEventListener('touchend', function(e) {
-        touchEndX = e.changedTouches[0].screenX;
-        handleSwipe();
-    }, { passive: true });
-}
+        function updateScrollIndicators() {
+            if (!videosWrapper || !videosContainer) return;
+            
+            const scrollLeft = videosWrapper.scrollLeft;
+            const scrollWidth = videosWrapper.scrollWidth;
+            const clientWidth = videosWrapper.clientWidth;
+            
+            if (scrollLeft > 10) {
+                videosContainer.classList.add('can-scroll-left');
+            } else {
+                videosContainer.classList.remove('can-scroll-left');
+            }
+            
+            if (scrollLeft < scrollWidth - clientWidth - 10) {
+                videosContainer.classList.add('can-scroll-right');
+            } else {
+                videosContainer.classList.remove('can-scroll-right');
+            }
+            
+            updateScrollButtons();
+        }
 
-function handleSwipe() {
-    if (touchEndX < touchStartX - 50) {
-        // Swipe gauche
-        updateScrollIndicators();
-    }
-    if (touchEndX > touchStartX + 50) {
-        // Swipe droite
-        updateScrollIndicators();
-    }
-}
-/**
- * Scroll vers la gauche
- */
-function scrollVideosLeft() {
-    if (!videosWrapper) return;
-    
-    const scrollAmount = 400; // Distance de scroll
-    videosWrapper.scrollBy({
-        left: -scrollAmount,
-        behavior: 'smooth'
-    });
-}
+        function updateScrollButtons() {
+            const leftBtn = document.querySelector('.scroll-left');
+            const rightBtn = document.querySelector('.scroll-right');
+            
+            if (!videosWrapper || !leftBtn || !rightBtn) return;
+            
+            const scrollLeft = videosWrapper.scrollLeft;
+            const scrollWidth = videosWrapper.scrollWidth;
+            const clientWidth = videosWrapper.clientWidth;
+            
+            leftBtn.disabled = scrollLeft <= 10;
+            rightBtn.disabled = scrollLeft >= scrollWidth - clientWidth - 10;
+        }
 
-/**
- * Scroll vers la droite
- */
-function scrollVideosRight() {
-    if (!videosWrapper) return;
-    
-    const scrollAmount = 400;
-    videosWrapper.scrollBy({
-        left: scrollAmount,
-        behavior: 'smooth'
-    });
-}
-
-/**
- * Mettre à jour les indicateurs de scroll
- */
-function updateScrollIndicators() {
-    if (!videosWrapper || !videosContainer) return;
-    
-    const scrollLeft = videosWrapper.scrollLeft;
-    const scrollWidth = videosWrapper.scrollWidth;
-    const clientWidth = videosWrapper.clientWidth;
-    
-    // Peut scroller à gauche ?
-    if (scrollLeft > 10) {
-        videosContainer.classList.add('can-scroll-left');
-    } else {
-        videosContainer.classList.remove('can-scroll-left');
-    }
-    
-    // Peut scroller à droite ?
-    if (scrollLeft < scrollWidth - clientWidth - 10) {
-        videosContainer.classList.add('can-scroll-right');
-    } else {
-        videosContainer.classList.remove('can-scroll-right');
-    }
-    
-    // Mettre à jour les boutons
-    updateScrollButtons();
-}
-
-/**
- * Mettre à jour l'état des boutons
- */
-function updateScrollButtons() {
-    const leftBtn = document.querySelector('.scroll-left');
-    const rightBtn = document.querySelector('.scroll-right');
-    
-    if (!videosWrapper || !leftBtn || !rightBtn) return;
-    
-    const scrollLeft = videosWrapper.scrollLeft;
-    const scrollWidth = videosWrapper.scrollWidth;
-    const clientWidth = videosWrapper.clientWidth;
-    
-    // Désactiver bouton gauche si au début
-    leftBtn.disabled = scrollLeft <= 10;
-    
-    // Désactiver bouton droite si à la fin
-    rightBtn.disabled = scrollLeft >= scrollWidth - clientWidth - 10;
-}
         // Société redesigned
         function displaySociete() {
             const societe = allArticles
@@ -2583,6 +2386,11 @@ function updateScrollButtons() {
             }
             
             grid.innerHTML = politique.map(article => createColoredCard(article)).join('');
+            
+            // Initialiser l'animation d'empilement après le rendu
+            setTimeout(() => {
+                initPolitiqueStack();
+            }, 500);
         }
 
         // Sports
@@ -2687,65 +2495,7 @@ function updateScrollButtons() {
             document.getElementById('articlesGrid').innerHTML = document.getElementById('heroSlider').innerHTML;
         }
 
-        // Charger au démarrage
-        document.addEventListener('DOMContentLoaded', loadArticles);
-
-        // Menu mobile
-        document.querySelector('.mobile-menu-btn').addEventListener('click', function() {
-            const nav = document.querySelector('.nav-menu');
-            if (nav.style.display === 'flex') {
-                nav.style.display = 'none';
-            } else {
-                nav.style.display = 'flex';
-                nav.style.flexDirection = 'column';
-                nav.style.position = 'absolute';
-                nav.style.top = '100%';
-                nav.style.left = '0';
-                nav.style.right = '0';
-                nav.style.background = 'var(--dark)';
-                nav.style.padding = '1rem';
-                nav.style.boxShadow = '0 4px 10px rgba(0,0,0,0.2)';
-            }
-        });
-
-        // Smooth scroll
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function(e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
-            });
-        });
-
-        // Lazy loading images
-        if ('IntersectionObserver' in window) {
-            const imageObserver = new IntersectionObserver((entries, observer) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        const img = entry.target;
-                        if (img.dataset.src) {
-                            img.src = img.dataset.src;
-                            img.removeAttribute('data-src');
-                        }
-                        observer.unobserve(img);
-                    }
-                });
-            });
-
-            document.querySelectorAll('img[data-src]').forEach(img => {
-                imageObserver.observe(img);
-            });
-        }
-
-        // ========================================
-        // 1️⃣ FONCTIONS UTILITAIRES VIDÉO
-        // ========================================
-
-        /**
-         * Extraire l'ID YouTube depuis n'importe quelle URL
-         */
+        // Fonctions vidéo
         function extractYouTubeId(url) {
             if (!url) return null;
             
@@ -2765,180 +2515,51 @@ function updateScrollButtons() {
             }
             return null;
         }
-/**
- * Afficher les vidéos avec miniatures YouTube HD
- */
-async function displayVideos() {
-    const videos = allArticles
-        .filter(a => a.contentType === 'video' || (a.sections && a.sections.includes('videos')))
-        .slice(0, 6);
-    
-    const grid = document.getElementById('videosGrid');
-    
-    if (videos.length === 0) {
-        grid.innerHTML = `
-            <div class="empty-state">
-                <i class="fas fa-video"></i>
-                <p>Aucune vidéo disponible pour le moment</p>
-            </div>
-        `;
-        return;
-    }
-    
-    // Afficher d'abord un loading
-    grid.innerHTML = `
-        <div class="loading">
-            <i class="fas fa-spinner"></i>
-            <p style="margin-top: 1rem;">Chargement des vidéos HD...</p>
-        </div>
-    `;
-    
-    // Récupérer les miniatures HD pour chaque vidéo
-    const videosWithThumbnails = await Promise.all(
-        videos.map(async (article) => {
-            let thumbnailData = {
-                url: article.image,
-                quality: 'standard',
-                isYouTube: false
-            };
+
+        async function getYouTubeThumbnail(videoUrl) {
+            const videoId = extractYouTubeId(videoUrl);
+            if (!videoId) return null;
             
-            // Si c'est une vidéo YouTube, récupérer la vraie miniature
-            if (article.video_url) {
-                const platform = detectVideoPlatform(article.video_url);
+            const qualities = [
+                { name: 'maxresdefault', width: 1280, height: 720 },
+                { name: 'sddefault', width: 640, height: 480 },
+                { name: 'hqdefault', width: 480, height: 360 }
+            ];
+            
+            for (let quality of qualities) {
+                const thumbnailUrl = `https://img.youtube.com/vi/${videoId}/${quality.name}.jpg`;
+                const exists = await checkImageExists(thumbnailUrl);
                 
-                if (platform === 'youtube') {
-                    const thumbnail = await getYouTubeThumbnail(article.video_url);
-                    if (thumbnail) {
-                        thumbnailData = {
-                            url: thumbnail.url,
-                            quality: thumbnail.quality,
-                            width: thumbnail.width,
-                            height: thumbnail.height,
-                            isYouTube: true
-                        };
-                    }
+                if (exists) {
+                    return {
+                        url: thumbnailUrl,
+                        quality: quality.name,
+                        width: quality.width,
+                        height: quality.height,
+                        videoId: videoId
+                    };
                 }
             }
             
-            return { ...article, thumbnailData };
-        })
-    );
-    
-    // Générer le HTML avec les miniatures HD
-    grid.innerHTML = videosWithThumbnails.map(article => {
-        const thumb = article.thumbnailData;
-        const qualityBadge = thumb.isYouTube ? 
-            `<div class="quality-badge">${thumb.quality === 'maxresdefault' ? 'HD' : 'SD'}</div>` : '';
-        
-        return `
-            <article class="article-card video-card" onclick="openArticle('${article.id}')">
-                <div class="video-thumbnail">
-                    <img src="${thumb.url}" 
-                         alt="${article.titre}" 
-                         class="article-image" 
-                         loading="lazy">
-                    
-                    <!-- Overlay avec gradient -->
-                    <div class="video-overlay">
-                        <!-- Bouton play animé -->
-                        <div class="play-button">
-                            <i class="fas fa-play"></i>
-                        </div>
-                    </div>
-                    
-                    ${qualityBadge}
-                    
-                    <!-- Badge YouTube -->
-                    ${thumb.isYouTube ? `
-                        <div class="platform-badge youtube">
-                            <i class="fab fa-youtube"></i> YouTube
-                        </div>
-                    ` : ''}
-                    
-                    <!-- Badge durée (optionnel) -->
-                    <div class="duration-badge">
-                        <i class="fas fa-play-circle"></i> VIDÉO
-                    </div>
-                </div>
-                
-                <div class="article-content">
-                    <span class="category-badge video-badge">
-                        🎥 ${article.categorie}
-                    </span>
-                    <h3 class="article-title">${article.titre}</h3>
-                    <p class="article-excerpt">${article.extrait}</p>
-                    <div class="article-meta">
-                        <div class="article-author">
-                            <div class="author-avatar">${getInitial(article.auteur)}</div>
-                            <span>${article.auteur}</span>
-                        </div>
-                        <div class="article-stats">
-                            <span class="stat"><i class="fas fa-eye"></i> ${article.vues || 0}</span>
-                            <span class="stat"><i class="fas fa-heart"></i> ${article.likes || 0}</span>
-                        </div>
-                    </div>
-                </div>
-            </article>
-        `;
-    }).join('');
-    
-    console.log(`✅ ${videosWithThumbnails.length} vidéos affichées avec miniatures HD`);
-}
-      
-/**
- * Obtenir miniature YouTube HD
- */
-async function getYouTubeThumbnail(videoUrl) {
-    const videoId = extractYouTubeId(videoUrl);
-    if (!videoId) return null;
-    
-    const qualities = [
-        { name: 'maxresdefault', width: 1280, height: 720 },
-        { name: 'sddefault', width: 640, height: 480 },
-        { name: 'hqdefault', width: 480, height: 360 }
-    ];
-    
-    for (let quality of qualities) {
-        const thumbnailUrl = `https://img.youtube.com/vi/${videoId}/${quality.name}.jpg`;
-        const exists = await checkImageExists(thumbnailUrl);
-        
-        if (exists) {
             return {
-                url: thumbnailUrl,
-                quality: quality.name,
-                width: quality.width,
-                height: quality.height,
+                url: `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`,
+                quality: 'hqdefault',
+                width: 480,
+                height: 360,
                 videoId: videoId
             };
         }
-    }
-    
-    // Fallback
-    return {
-        url: `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`,
-        quality: 'hqdefault',
-        width: 480,
-        height: 360,
-        videoId: videoId
-    };
-}
 
-     /**
- * Vérifier si une image existe
- */
-function checkImageExists(url) {
-    return new Promise((resolve) => {
-        const img = new Image();
-        img.onload = () => resolve(true);
-        img.onerror = () => resolve(false);
-        img.src = url;
-        setTimeout(() => resolve(false), 2000);
-    });
-}
+        function checkImageExists(url) {
+            return new Promise((resolve) => {
+                const img = new Image();
+                img.onload = () => resolve(true);
+                img.onerror = () => resolve(false);
+                img.src = url;
+                setTimeout(() => resolve(false), 2000);
+            });
+        }
 
-        /**
-         * Détecter la plateforme vidéo
-         */
         function detectVideoPlatform(url) {
             if (!url) return null;
             
@@ -2957,45 +2578,10 @@ function checkImageExists(url) {
             return 'unknown';
         }
 
-        /**
-         * Obtenir l'URL d'embed YouTube
-         */
-        function getYouTubeEmbedUrl(videoUrl) {
-            const videoId = extractYouTubeId(videoUrl);
-            if (!videoId) return null;
-            
-            return `https://www.youtube.com/embed/${videoId}?autoplay=0&rel=0&modestbranding=1`;
-        }
-
-        /**
-         * Obtenir l'URL d'embed Facebook
-         */
-        function getFacebookEmbedUrl(videoUrl) {
-            return `https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(videoUrl)}&show_text=false&width=734`;
-        }
-
-        // FONCTION DE DÉTECTION VIDÉO AMÉLIORÉE
-        function isVideoArticle(article) {
-            // Méthode 1: Vérifier contentType
-            if (article.contentType === 'video') return true;
-            
-            // Méthode 2: Vérifier video_url
-            if (article.video_url) return true;
-            
-            // Méthode 3: Vérifier sections
-            if (article.sections && article.sections.includes('videos')) return true;
-            
-            return false;
-        }
-
-        function getVideoUrl(article) {
-            // Retourne l'URL vidéo si elle existe
-            return article.video_url || null;
-        }
-
-        console.log('✅ Système de miniatures vidéo HD chargé');
-  
-  class PolitiqueStackCards {
+        // ========================================
+        // SYSTÈME D'EMPILEMENT POLITIQUE
+        // ========================================
+        class PolitiqueStackCards {
             constructor() {
                 this.section = null;
                 this.wrapper = null;
@@ -3006,49 +2592,29 @@ function checkImageExists(url) {
             }
 
             init() {
-                // Attendre que le DOM soit chargé
-                if (document.readyState === 'loading') {
-                    document.addEventListener('DOMContentLoaded', () => this.setup());
-                } else {
-                    this.setup();
-                }
-            }
-
-            setup() {
                 this.section = document.querySelector('.section-politique');
-                if (!this.section) {
-                    console.warn('⚠️ Section politique non trouvée');
-                    return;
-                }
+                if (!this.section) return;
 
-                // Créer la structure d'empilement
                 this.createStackStructure();
-                
-                // Écouter le scroll
                 window.addEventListener('scroll', () => this.handleScroll(), { passive: true });
-                
-                // Responsive
                 window.addEventListener('resize', () => this.updateLayout());
                 
                 console.log('✅ Animation empilement politique initialisée');
             }
 
             createStackStructure() {
-                // Récupérer la grille existante
                 const grid = this.section.querySelector('#politiqueGrid');
                 if (!grid) return;
 
                 const articles = grid.querySelectorAll('.article-card');
                 if (articles.length === 0) return;
 
-                // Créer le wrapper sticky
                 const wrapper = document.createElement('div');
                 wrapper.className = 'politique-stack-wrapper';
 
                 const stack = document.createElement('div');
                 stack.className = 'politique-cards-stack';
 
-                // Convertir les articles en cartes empilées
                 articles.forEach((article, index) => {
                     const card = this.createStackCard(article, index);
                     stack.appendChild(card);
@@ -3056,15 +2622,10 @@ function checkImageExists(url) {
                 });
 
                 wrapper.appendChild(stack);
-
-                // Remplacer la grille par le wrapper
                 grid.replaceWith(wrapper);
                 this.wrapper = wrapper;
 
-                // Ajouter l'indicateur de progression
                 this.createProgressIndicator();
-
-                // Initialiser les positions
                 this.updateCardPositions();
             }
 
@@ -3107,7 +2668,6 @@ function checkImageExists(url) {
                     </div>
                 `;
 
-                // Ajouter le clic
                 const articleId = article.getAttribute('onclick');
                 if (articleId) {
                     card.setAttribute('onclick', articleId);
@@ -3138,12 +2698,10 @@ function checkImageExists(url) {
                 const windowHeight = window.innerHeight;
                 const sectionHeight = this.section.offsetHeight;
 
-                // Calculer la progression dans la section
                 const scrollProgress = Math.max(0, Math.min(1, 
                     (windowHeight - rect.top) / (sectionHeight - windowHeight)
                 ));
 
-                // Déterminer l'index de la carte active
                 const totalCards = this.cards.length;
                 const newIndex = Math.floor(scrollProgress * totalCards);
                 const clampedIndex = Math.max(0, Math.min(totalCards - 1, newIndex));
@@ -3154,7 +2712,6 @@ function checkImageExists(url) {
                     this.updateProgressIndicator();
                 }
 
-                // Gestion du scroll continu
                 clearTimeout(this.scrollTimeout);
                 this.isScrolling = true;
                 this.scrollTimeout = setTimeout(() => {
@@ -3168,38 +2725,12 @@ function checkImageExists(url) {
                     const relativePosition = originalIndex - this.currentIndex;
 
                     if (relativePosition < 0) {
-                        // Carte déjà passée
                         card.classList.add('exited');
                         card.setAttribute('data-index', '-1');
                     } else {
-                        // Carte dans la pile ou à venir
                         card.classList.remove('exited');
                         const displayIndex = Math.min(relativePosition, 5);
                         card.setAttribute('data-index', displayIndex);
                     }
                 });
             }
-
-            updateProgressIndicator() {
-                if (!this.progressIndicator) return;
-
-                const dots = this.progressIndicator.querySelectorAll('.stack-progress-dot');
-                dots.forEach((dot, index) => {
-                    dot.classList.toggle('active', index === this.currentIndex);
-                });
-            }
-
-            updateLayout() {
-                // Recalculer les positions en cas de resize
-                this.updateCardPositions();
-            }
-        }
-
-        // Initialiser le système d'empilement
-        const politiqueStack = new PolitiqueStackCards();
-        politiqueStack.init();
-
-        console.log('🎴 Système d\'empilement de cartes Politique chargé');
-  </script>
-</body>
-</html>
