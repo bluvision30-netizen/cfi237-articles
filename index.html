@@ -1450,6 +1450,133 @@
 .videos-scroll-container.can-scroll-right::after {
     opacity: 1;
 }
+
+.section-populaires {
+  background: #fffaf5;
+}
+.badge-populaire {
+  background: linear-gradient(45deg, #ff5722, #ff9800);
+  color: #fff;
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  position: absolute;
+  top: 10px;
+  left: 10px;
+}
+.article-card.populaire {
+  position: relative;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.article-card.populaire:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+}
+
+.section-contact {
+  background: #f6f8fb;
+  text-align: center;
+}
+.contact-form {
+  max-width: 500px;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.contact-form input,
+.contact-form textarea {
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  outline: none;
+}
+.contact-form input:focus,
+.contact-form textarea:focus {
+  border-color: #0077ff;
+}
+.btn-main {
+  background: linear-gradient(90deg, #0077ff, #00bcd4);
+  color: #fff;
+  border: none;
+  padding: 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: transform 0.2s ease, background 0.3s ease;
+}
+.btn-main:hover {
+  transform: scale(1.05);
+  background: linear-gradient(90deg, #0056d2, #0097a7);
+}
+
+.section-cta {
+  background: linear-gradient(135deg, #001f3f, #003f7f);
+  color: #fff;
+  text-align: center;
+}
+.cta-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2rem;
+}
+.cta-card {
+  background: rgba(255,255,255,0.1);
+  padding: 2rem;
+  border-radius: 16px;
+  backdrop-filter: blur(10px);
+  max-width: 400px;
+  flex: 1;
+}
+.btn-cta {
+  display: inline-block;
+  background: #ff9800;
+  color: #fff;
+  padding: 12px 24px;
+  border-radius: 8px;
+  margin-top: 1rem;
+  font-weight: bold;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+.btn-cta:hover {
+  background: #ffb74d;
+  transform: scale(1.08);
+}
+@media (max-width: 768px) {
+  .cta-container { flex-direction: column; }
+}
+
+.pagination {
+  text-align: center;
+  margin-top: 2rem;
+}
+.pagination button {
+  background: #e0e0e0;
+  border: none;
+  padding: 8px 14px;
+  margin: 0 4px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+.pagination button:hover:not(:disabled) {
+  background: #0077ff;
+  color: #fff;
+  transform: scale(1.1);
+}
+.pagination button.active {
+  background: #0077ff;
+  color: #fff;
+}
+.pagination button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+
     </style>
 </head>
 <body>
@@ -1503,6 +1630,14 @@
                 </div>
             </div>
         </section>
+
+<section id="articlesPopulaires" class="section-populaires py-10">
+  <div class="container">
+    <h2 class="section-title">🔥 Articles Populaires</h2>
+    <div class="articles-grid" id="populairesGrid"></div>
+    <div class="pagination" id="pagination"></div>
+  </div>
+</section>
 
         <!-- Main Content -->
         <div class="content-grid">
@@ -1687,6 +1822,32 @@
         </section>
     </div>
 
+<section id="ctaSection" class="section-cta py-12">
+  <div class="container cta-container">
+    <div class="cta-card">
+      <h3>📰 Vous avez une histoire à partager ?</h3>
+      <a href="admin-dashboard-xyz789.html" class="btn-cta">Publiez votre Article</a>
+    </div>
+    <div class="cta-card">
+      <h3>💼 Passionné par le journalisme ?</h3>
+      <a href="#contactRedaction" class="btn-cta">Rejoignez notre Équipe</a>
+    </div>
+  </div>
+</section>
+
+
+
+<section id="contactRedaction" class="section-contact py-10">
+  <div class="container">
+    <h2 class="section-title">📩 Contact Rédaction</h2>
+    <form id="contactForm" class="contact-form">
+      <input type="text" id="nom" placeholder="Votre nom" required>
+      <input type="email" id="email" placeholder="Votre email" required>
+      <textarea id="message" rows="4" placeholder="Votre message..." required></textarea>
+      <button type="submit" class="btn-main">Envoyer le message</button>
+    </form>
+  </div>
+</section>
     <!-- Footer -->
     <footer class="footer">
         <div class="container">
@@ -2766,6 +2927,75 @@ function checkImageExists(url) {
   // Expose fonction pour redémarrer si contenu chargé dynamiquement
   window.startAutoCentering = startAutoCentering;
 })();
+
+// === Articles Populaires ===
+async function afficherArticlesPopulaires() {
+  const res = await fetch("articles.json");
+  const data = await res.json();
+  const articles = Object.values(data.articles);
+
+  const populaires = articles
+    .filter(a => a.statut === "publié")
+    .sort((a, b) => (b.vues + b.likes) - (a.vues + a.likes))
+    .slice(0, 6);
+
+  const grid = document.getElementById("populairesGrid");
+  grid.innerHTML = populaires.map(a => `
+    <article class="article-card populaire">
+      <div class="article-img">
+        <img src="${a.image}" alt="${a.titre}" loading="lazy">
+        <span class="badge-populaire">🔥 Populaire</span>
+      </div>
+      <div class="article-content">
+        <h3>${a.titre}</h3>
+        <p>${a.extrait}</p>
+        <small>👀 ${a.vues} vues • ❤️ ${a.likes} likes</small>
+      </div>
+    </article>
+  `).join("");
+}
+document.addEventListener("DOMContentLoaded", afficherArticlesPopulaires);
+
+document.getElementById("contactForm").addEventListener("submit", e => {
+  e.preventDefault();
+  alert("Merci ! Votre message a été envoyé à la rédaction.");
+  e.target.reset();
+});
+// === Pagination dynamique (20 articles/page) ===
+const ARTICLES_PAR_PAGE = 20;
+let pageActuelle = 1;
+
+async function afficherArticlesRecents(page = 1) {
+  const res = await fetch("articles.json");
+  const data = await res.json();
+  const articles = Object.values(data.articles)
+    .filter(a => a.statut === "publié")
+    .sort((a, b) => new Date(b.date) - new Date(a.date));
+
+  const start = (page - 1) * ARTICLES_PAR_PAGE;
+  const end = start + ARTICLES_PAR_PAGE;
+  const pageArticles = articles.slice(start, end);
+
+  document.getElementById("articlesRecentsGrid").innerHTML = pageArticles.map(a => `
+    <article class="article-card">
+      <img src="${a.image}" alt="${a.titre}" loading="lazy">
+      <h3>${a.titre}</h3>
+      <p>${a.extrait}</p>
+    </article>
+  `).join("");
+
+  // Pagination UI
+  const totalPages = Math.ceil(articles.length / ARTICLES_PAR_PAGE);
+  const pagination = document.getElementById("pagination");
+  pagination.innerHTML = `
+    <button ${page === 1 ? "disabled" : ""} onclick="afficherArticlesRecents(${page - 1})">⬅️ Précédent</button>
+    ${Array.from({ length: totalPages }, (_, i) => `
+      <button class="${page === i + 1 ? 'active' : ''}" onclick="afficherArticlesRecents(${i + 1})">${i + 1}</button>
+    `).join("")}
+    <button ${page === totalPages ? "disabled" : ""} onclick="afficherArticlesRecents(${page + 1})">Suivant ➡️</button>
+  `;
+}
+document.addEventListener("DOMContentLoaded", () => afficherArticlesRecents(pageActuelle));
 
     </script>
 </body>
