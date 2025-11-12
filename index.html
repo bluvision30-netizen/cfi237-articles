@@ -623,28 +623,15 @@
             color: var(--gray);
         }
         
-/* --- Animation fluide pour la section Politique --- */
-.section-politique .article-card {
-  opacity: 0;
-  transform: translateY(40px);
-  transition: all 0.8s ease-out;
-  filter: blur(4px);
-}
-
-.section-politique .article-card.visible {
-  opacity: 1;
-  transform: translateY(0);
-  filter: blur(0);
-}
-
-/* Optionnel : petit effet de survol moderne */
-.section-politique .article-card:hover {
-  transform: translateY(-5px);
-  transition: transform 0.3s ease;
-}
 
         
-      
+        /* Sections spécifiques */
+        .section-politique {
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            padding: 3rem 0;
+            margin: 3rem 0;
+            color: white;
+        }
         
         .section-sports {
             background: linear-gradient(135deg, #15803d, #22c55e);
@@ -2717,22 +2704,6 @@ function checkImageExists(url) {
 
         console.log('✅ Système de miniatures vidéo HD chargé');
 
-// === Animation fluide pour la section Politique ===
-document.addEventListener("DOMContentLoaded", () => {
-  const politiqueCards = document.querySelectorAll(".section-politique .article-card");
-
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add("visible");
-      }
-    });
-  }, {
-    threshold: 0.2
-  });
-
-  politiqueCards.forEach((card) => observer.observe(card));
-});
 
 
 /* ---------- Auto-scroll centré (À la Une + Vidéos) ----------
