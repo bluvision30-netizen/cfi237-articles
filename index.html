@@ -900,17 +900,7 @@
                 font-size: 1.5rem;
             }
             
-            .sidebar {
-                overflow-x: auto;
-                display: flex;
-                gap: 1rem;
-                grid-template-columns: none;
-            }
-            
-            .sidebar-card {
-                min-width: 280px;
-                flex-shrink: 0;
-            }
+      
             
             .categories-grid {
                 grid-template-columns: repeat(2, 1fr);
@@ -920,7 +910,23 @@
                 gap: 1rem;
             }
         }
-        
+        /* --- Sidebar vertical sur mobile --- */
+@media (max-width: 768px) {
+  .sidebar {
+    display: flex;
+    flex-direction: column;
+    overflow-x: visible !important; /* supprime le scroll horizontal */
+    overflow-y: visible !important;
+    gap: 1.5rem;
+  }
+
+  .sidebar-card {
+    min-width: 100% !important;
+    width: 100% !important;
+    flex-shrink: 1 !important;
+  }
+}
+
         @media (max-width: 480px) {
             .header-container {
                 padding: 0 15px;
