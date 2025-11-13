@@ -1979,17 +1979,146 @@
             animation: slideDown 0.3s ease;
         }
         
-        @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+ .mobile-search-result-item {
+    padding: 14px 18px;
+    display: flex;
+    gap: 14px;
+    align-items: center;
+    cursor: pointer;
+    border-bottom: 1px solid var(--light-gray);
+    transition: all 0.2s;
+}     
+.mobile-search-result-item:hover {
+    background: var(--light-gray);
+}
+.mobile-search-result-item:last-child {
+    border-bottom: none;
+}
+
+.mobile-search-result-thumb {
+    width: 70px;
+    height: 70px;
+    border-radius: 10px;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.mobile-search-result-info {
+    flex: 1;
+}
+
+.mobile-search-result-title {
+    font-weight: 600;
+    color: var(--dark);
+    margin-bottom: 4px;
+    font-size: 0.95rem;
+    line-height: 1.4;
+}
+
+.mobile-search-result-meta {
+    font-size: 0.8rem;
+    color: var(--gray);
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.mobile-search-result-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    background: var(--primary);
+    color: white;
+    border-radius: 10px;
+    font-size: 0.7rem;
+    font-weight: 600;
+}
+
+
+/* Responsive */
+@media (max-width: 768px) {
+    .mobile-search-bar {
+        display: block;
+    }
+    
+    .header-search {
+        display: none !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .mobile-search-input {
+        padding: 12px 45px 12px 45px;
+        font-size: 0.9rem;
+    }
+    
+    .mobile-search-icon {
+        left: 15px;
+        font-size: 1rem;
+    }
+    
+    .mobile-search-btn {
+        width: 38px;
+        height: 38px;
+    }
+    
+    .mobile-search-result-thumb {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .mobile-search-result-title {
+        font-size: 0.9rem;
+    }
+    
+    .mobile-search-result-meta {
+        font-size: 0.75rem;
+    }
+}
+
+/* Overlay de fond pour fermer la recherche */
+.mobile-search-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background: rgba(0,0,0,0.5);
+    z-index: 998;
+    display: none;
+}
+
+.mobile-search-overlay.show {
+    display: block;
+}
+
+/* Animation du bouton de recherche */
+@keyframes pulse-search {
+    0%, 100% {
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+    }
+    50% {
+        box-shadow: 0 4px 20px rgba(37, 99, 235, 0.6);
+    }
+}
+
+.mobile-search-btn {
+    animation: pulse-search 2s ease-in-out infinite;
+}
+
+.mobile-search-input:focus ~ .mobile-search-btn {
+    animation: none;
+}
         .search-result-item {
             padding: 14px 18px;
             display: flex;
@@ -2441,47 +2570,100 @@
             opacity: 0.3;
         }
         
-        /* Mobile Search Bar - Always Visible */
-        .mobile-search-bar {
-            display: none;
-            padding: 12px 20px;
-            background: rgba(255,255,255,0.05);
-            border-top: 1px solid rgba(255,255,255,0.1);
-        }
+
+/* Supprimer l'ancien style mobile search bar */
+.mobile-search-bar {
+    display: none;
+    padding: 12px 20px;
+    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+    border-top: 1px solid rgba(255,255,255,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 999;
+}
         
-        .mobile-search-wrapper {
-            position: relative;
-        }
-        
-        .mobile-search-input {
-            width: 100%;
-            padding: 12px 45px 12px 15px;
-            border: 2px solid rgba(255,255,255,0.15);
-            border-radius: 25px;
-            background: rgba(255,255,255,0.08);
-            color: white;
-            font-size: 0.9rem;
-        }
-        
-        .mobile-search-input::placeholder {
-            color: rgba(255,255,255,0.5);
-        }
-        
-        .mobile-search-btn {
-            position: absolute;
-            right: 3px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: var(--primary);
-            border: none;
-            width: 38px;
-            height: 38px;
-            border-radius: 50%;
-            color: white;
-            cursor: pointer;
-        }
-        
-        .mobile-breaking-news {
+    .mobile-search-wrapper {
+    position: relative;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.mobile-search-input {
+    width: 100%;
+    padding: 14px 50px 14px 50px;
+    border: 2px solid rgba(255,255,255,0.15);
+    border-radius: 30px;
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(10px);
+    color: white;
+    font-size: 0.95rem;
+    transition: all 0.3s;
+    outline: none;
+}
+
+.mobile-search-input::placeholder {
+    color: rgba(255,255,255,0.5);
+}
+    
+.mobile-search-input:focus {
+    background: rgba(255,255,255,0.12);
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+}
+     
+
+
+.mobile-search-icon {
+    position: absolute;
+    left: 18px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: rgba(255,255,255,0.5);
+    font-size: 1.1rem;
+    pointer-events: none;
+}
+
+/* Bouton de recherche à droite */
+.mobile-search-btn {
+    position: absolute;
+    right: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    border: none;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+}
+
+/* Résultats de recherche mobile (identique PC) */
+.mobile-search-results {
+    position: absolute;
+    top: calc(100% + 10px);
+    left: 0;
+    right: 0;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+    max-height: 400px;
+    overflow-y: auto;
+    display: none;
+    z-index: 1000;
+    animation: slideDown 0.3s ease;
+}
+    
+.mobile-search-results.show {
+    display: block;
+}
+
+.mobile-breaking-news {
             display: none;
             padding: 12px 20px;
             background: rgba(255,255,255,0.05);
@@ -2695,21 +2877,28 @@
         </div>
     </nav>
 
-    <!-- Mobile Search Bar (Always Visible on Mobile) -->
     <div class="mobile-search-bar">
-        <div class="mobile-search-wrapper">
-            <input 
-                type="text" 
-                id="mobileSearchInput" 
-                class="mobile-search-input"
-                placeholder="🔍 Rechercher..."
-                autocomplete="off"
-            >
-            <button class="mobile-search-btn" onclick="performMobileSearch()">
-                <i class="fas fa-search"></i>
-            </button>
-        </div>
+    <div class="mobile-search-wrapper">
+        <i class="fas fa-search mobile-search-icon"></i>
+        <input 
+            type="text" 
+            id="mobileSearchInput" 
+            class="mobile-search-input"
+            placeholder="Rechercher des articles, vidéos, actualités..."
+            autocomplete="off"
+        >
+        <button class="mobile-search-btn" onclick="performMobileSearch()">
+            <i class="fas fa-arrow-right"></i>
+        </button>
+        
+        <!-- Résultats autocomplete mobile -->
+        <div class="mobile-search-results" id="mobileSearchResults"></div>
     </div>
+</div>
+
+<!-- Overlay pour fermer la recherche mobile -->
+<div class="mobile-search-overlay" id="mobileSearchOverlay"></div>
+
 
     <!-- Mobile Breaking News Button (Always Visible on Mobile) -->
     <div class="mobile-breaking-news">
@@ -4708,11 +4897,11 @@ document.addEventListener('DOMContentLoaded', initArticleTracking);
             });
         }
 
-        function highlightText(text, query) {
-            if (!query) return text;
-            const regex = new RegExp(`(${query})`, 'gi');
-            return text.replace(regex, '<strong style="color: var(--primary);">$1</strong>');
-        }
+       function highlightText(text, query) {
+    if (!query) return text;
+    const regex = new RegExp(`(${query})`, 'gi');
+    return text.replace(regex, '<strong style="color: var(--primary);">$1</strong>');
+}
 
         function performSearch() {
             const query = document.getElementById('headerSearchInput').value;
@@ -4721,10 +4910,9 @@ document.addEventListener('DOMContentLoaded', initArticleTracking);
             }
         }
 
-        function openArticle(id) {
-            window.location.href = `/article-detail.html?id=${id}`;
-        }
-
+       function openArticle(id) {
+    window.location.href = `/article-detail.html?id=${id}`;
+}
         function toggleMobileMenu() {
             const sidebar = document.getElementById('mobileSidebar');
             const overlay = document.getElementById('mobileOverlay');
@@ -4863,6 +5051,150 @@ document.addEventListener('DOMContentLoaded', initArticleTracking);
             loadArticlesCount();
             initAutocomplete();
         });
+
+
+function initMobileAutocomplete() {
+    const input = document.getElementById('mobileSearchInput');
+    const results = document.getElementById('mobileSearchResults');
+    const overlay = document.getElementById('mobileSearchOverlay');
+    let timeout;
+
+    if (!input || !results) return;
+
+    input.addEventListener('input', function() {
+        clearTimeout(timeout);
+        const query = this.value.toLowerCase().trim();
+
+        if (query.length < 2) {
+            results.classList.remove('show');
+            overlay.classList.remove('show');
+            return;
+        }
+
+        timeout = setTimeout(() => {
+            const filtered = allArticles
+                .filter(article => {
+                    return article.titre.toLowerCase().includes(query) ||
+                           article.extrait.toLowerCase().includes(query) ||
+                           article.auteur.toLowerCase().includes(query);
+                })
+                .slice(0, 5);
+
+            if (filtered.length > 0) {
+                results.innerHTML = filtered.map(article => {
+                    const isVideo = article.contentType === 'video' || article.video_url;
+                    return `
+                        <div class="mobile-search-result-item" onclick="openArticle('${article.id}'); closeMobileSearch();">
+                            <img src="${article.image}" alt="${article.titre}" class="mobile-search-result-thumb">
+                            <div class="mobile-search-result-info">
+                                <div class="mobile-search-result-title">${highlightText(article.titre, query)}</div>
+                                <div class="mobile-search-result-meta">
+                                    <span class="mobile-search-result-badge">${article.categorie}</span>
+                                    <span>${article.auteur}</span>
+                                    ${isVideo ? '<span>🎥 Vidéo</span>' : ''}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+                results.classList.add('show');
+                overlay.classList.add('show');
+            } else {
+                results.innerHTML = `
+                    <div class="mobile-search-result-item" style="justify-content: center; flex-direction: column; text-align: center; padding: 30px;">
+                        <i class="fas fa-search" style="color: var(--gray); font-size: 2rem; margin-bottom: 10px;"></i>
+                        <div style="color: var(--gray);">
+                            <div style="font-weight: 600;">Aucun résultat</div>
+                            <div style="font-size: 0.85rem; margin-top: 5px;">Essayez avec d'autres mots-clés</div>
+                        </div>
+                    </div>
+                `;
+                results.classList.add('show');
+                overlay.classList.add('show');
+            }
+        }, 300);
+    });
+
+     input.addEventListener('focus', function() {
+        if (this.value.length >= 2 && results.children.length > 0) {
+            results.classList.add('show');
+            overlay.classList.add('show');
+        }
+    });
+
+    // Close on overlay click
+    if (overlay) {
+        overlay.addEventListener('click', closeMobileSearch);
+    }
+
+    // Close on escape
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeMobileSearch();
+        }
+    });
+}
+
+
+// Fermer la recherche mobile
+function closeMobileSearch() {
+    const results = document.getElementById('mobileSearchResults');
+    const overlay = document.getElementById('mobileSearchOverlay');
+    
+    if (results) results.classList.remove('show');
+    if (overlay) overlay.classList.remove('show');
+}
+
+// Recherche mobile améliorée
+function performMobileSearch() {
+    const query = document.getElementById('mobileSearchInput').value.trim();
+    
+    if (query) {
+        closeMobileSearch();
+        window.location.href = `articles.html?search=${encodeURIComponent(query)}`;
+    } else {
+        // Vibration si pas de texte (mobile)
+        if (navigator.vibrate) {
+            navigator.vibrate(100);
+        }
+        
+        // Focus sur l'input
+        document.getElementById('mobileSearchInput').focus();
+    }
+}
+
+// Initialisation au chargement
+document.addEventListener('DOMContentLoaded', function() {
+    initMobileAutocomplete();
+    
+    // Clear search on page load
+    const mobileInput = document.getElementById('mobileSearchInput');
+    if (mobileInput) {
+        mobileInput.value = '';
+    }
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    const results = document.getElementById('mobileSearchResults');
+    
+    if (results) {
+        const observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                if (mutation.attributeName === 'class') {
+                    if (results.classList.contains('show')) {
+                        document.body.style.overflow = 'hidden';
+                    } else {
+                        document.body.style.overflow = 'auto';
+                    }
+                }
+            });
+        });
+        
+        observer.observe(results, { attributes: true });
+    }
+});
+
+console.log('✅ Mobile Search Bar initialisée (style PC)');
     </script>
 </body>
 </html>
