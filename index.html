@@ -1454,25 +1454,245 @@
 .section-populaires {
   background: #fffaf5;
 }
-.badge-populaire {
-  background: linear-gradient(45deg, #ff5722, #ff9800);
-  color: #fff;
-  padding: 4px 10px;
-  border-radius: 8px;
-  font-size: 0.8rem;
-  position: absolute;
-  top: 10px;
-  left: 10px;
-}
+
+/* Correction des cartes populaires */
+/* Correction des cartes populaires */
 .article-card.populaire {
-  position: relative;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-.article-card.populaire:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    position: relative;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    height: auto;
+    min-height: auto; /* ✅ Retirer la hauteur minimale fixe */
+    display: flex;
+    flex-direction: column;
 }
 
+.article-card.populaire:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+}
+
+.article-card.populaire .article-image {
+    height: 200px;
+    object-fit: cover;
+    width: 100%;
+}
+
+.article-card.populaire .article-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 1.25rem; /* ✅ Ajouter padding si manquant */
+}
+
+.badge-populaire {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: linear-gradient(45deg, #ff5722, #ff9800);
+    color: #fff;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    z-index: 2;
+    box-shadow: 0 2px 8px rgba(255, 87, 34, 0.4);
+}
+
+/* Cards horizontales sur mobile pour Articles Populaires */
+@media (max-width: 768px) {
+    .section-populaires .articles-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .section-populaires .article-card {
+        display: flex;
+        flex-direction: row;
+        height: auto;
+        max-height: 150px;
+    }
+    
+    .section-populaires .article-card > div:first-child {
+        flex: 0 0 140px;
+        width: 140px;
+        height: 150px;
+    }
+    
+    .section-populaires .article-card .article-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    
+    .section-populaires .article-card .article-content {
+        flex: 1;
+        padding: 0.75rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+    
+    .section-populaires .article-card .article-title {
+        font-size: 0.9rem;
+        -webkit-line-clamp: 2;
+        margin-bottom: 0.5rem;
+    }
+    
+    .section-populaires .article-card .article-excerpt {
+        display: none; /* Masquer l'extrait sur mobile */
+    }
+    
+    .section-populaires .article-card .category-badge {
+        font-size: 0.7rem;
+        padding: 0.25rem 0.6rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .section-populaires .article-card .article-meta {
+        font-size: 0.75rem;
+        margin-top: auto;
+    }
+    
+    .section-populaires .article-card .author-avatar {
+        width: 24px;
+        height: 24px;
+        font-size: 0.7rem;
+    }
+    
+    .section-populaires .badge-populaire {
+        top: 5px;
+        left: 5px;
+        padding: 4px 8px;
+        font-size: 0.7rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .section-populaires .article-card {
+        max-height: 130px;
+    }
+    
+    .section-populaires .article-card > div:first-child {
+        flex: 0 0 120px;
+        width: 120px;
+        height: 130px;
+    }
+    
+    .section-populaires .article-card .article-content {
+        padding: 0.6rem;
+    }
+    
+    .section-populaires .article-card .article-title {
+        font-size: 0.85rem;
+        -webkit-line-clamp: 2;
+    }
+    
+    .section-populaires .article-card .article-stats {
+        gap: 0.5rem;
+    }
+}
+
+/* Styles pour les popups */
+.popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.7);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    padding: 20px;
+}
+
+.popup-content {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    max-width: 500px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+.popup-header {
+    display: flex;
+    justify-content: between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.popup-header h3 {
+    margin: 0;
+    color: var(--dark);
+    flex: 1;
+}
+
+.close-popup {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: var(--gray);
+}
+
+.popup-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.popup-form input,
+.popup-form textarea,
+.popup-form select {
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 0.9rem;
+}
+
+.popup-form textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+.popup-btn {
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 1rem;
+}
+
+.popup-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-group label {
+    font-weight: 600;
+    color: var(--dark);
+    font-size: 0.9rem;
+}
+
+.required {
+    color: var(--danger);
+}
 .section-contact {
   background: #f6f8fb;
   text-align: center;
@@ -1631,12 +1851,121 @@
             </div>
         </section>
 
-<section id="articlesPopulaires" class="section-populaires py-10">
-  <div class="container">
-    <h2 class="section-title">🔥 Articles Populaires</h2>
-    <div class="articles-grid" id="populairesGrid"></div>
-  </div>
-</section>
+<!-- Popup Publier Article -->
+<div id="publishPopup" class="popup-overlay">
+    <div class="popup-content">
+        <div class="popup-header">
+            <h3>📝 Publier votre Article</h3>
+            <button class="close-popup" onclick="closePopup('publishPopup')">&times;</button>
+        </div>
+        <form id="publishForm" class="popup-form">
+            <div class="form-group">
+                <label for="authorName">Votre nom complet <span class="required">*</span></label>
+                <input type="text" id="authorName" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="authorEmail">Votre email <span class="required">*</span></label>
+                <input type="email" id="authorEmail" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="articleTitle">Titre de l'article <span class="required">*</span></label>
+                <input type="text" id="articleTitle" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="articleCategory">Catégorie <span class="required">*</span></label>
+                <select id="articleCategory" required>
+                    <option value="">Choisir une catégorie</option>
+                    <option value="Politique">Politique</option>
+                    <option value="Économie">Économie</option>
+                    <option value="Sports">Sports</option>
+                    <option value="Société">Société</option>
+                    <option value="Culture">Culture</option>
+                    <option value="Santé">Santé</option>
+                    <option value="Technologie">Technologie</option>
+                    <option value="International">International</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="articleContent">Contenu de l'article <span class="required">*</span></label>
+                <textarea id="articleContent" placeholder="Rédigez votre article ici..." required></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="articleSources">Sources (optionnel)</label>
+                <textarea id="articleSources" placeholder="Indiquez vos sources si disponibles..."></textarea>
+            </div>
+            
+            <button type="submit" class="popup-btn">Envoyer pour publication</button>
+        </form>
+    </div>
+</div>
+
+<!-- Popup Rejoindre l'Équipe -->
+<div id="joinPopup" class="popup-overlay">
+    <div class="popup-content">
+        <div class="popup-header">
+            <h3>💼 Rejoindre notre Équipe</h3>
+            <button class="close-popup" onclick="closePopup('joinPopup')">&times;</button>
+        </div>
+        <form id="joinForm" class="popup-form">
+            <div class="form-group">
+                <label for="fullName">Nom complet <span class="required">*</span></label>
+                <input type="text" id="fullName" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="joinEmail">Email <span class="required">*</span></label>
+                <input type="email" id="joinEmail" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="phone">Numéro de téléphone <span class="required">*</span></label>
+                <input type="tel" id="phone" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="domain">Domaine d'expertise <span class="required">*</span></label>
+                <select id="domain" required>
+                    <option value="">Choisir votre domaine</option>
+                    <option value="Journalisme">Journalisme</option>
+                    <option value="Photographie">Photographie</option>
+                    <option value="Vidéographie">Vidéographie</option>
+                    <option value="Rédaction">Rédaction</option>
+                    <option value="Édition">Édition</option>
+                    <option value="Communication">Communication</option>
+                    <option value="Autre">Autre</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="experience">Expérience (années) <span class="required">*</span></label>
+                <select id="experience" required>
+                    <option value="">Sélectionner</option>
+                    <option value="0-1">0-1 an</option>
+                    <option value="1-3">1-3 ans</option>
+                    <option value="3-5">3-5 ans</option>
+                    <option value="5+">5+ ans</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="motivation">Lettre de motivation <span class="required">*</span></label>
+                <textarea id="motivation" placeholder="Pourquoi souhaitez-vous rejoindre notre équipe ?..." required></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="portfolio">Lien portfolio/CV (optionnel)</label>
+                <input type="url" id="portfolio" placeholder="https://...">
+            </div>
+            
+            <button type="submit" class="popup-btn">Postuler maintenant</button>
+        </form>
+    </div>
+</div>
 
         <!-- Main Content -->
         <div class="content-grid">
@@ -1651,7 +1980,18 @@
                 </div>
                  <div class="pagination" id="pagination"></div>
             </div>
-
+<!-- Section Articles Populaires corrigée -->
+<section id="articlesPopulaires" class="section-populaires" style="margin: 3rem 0;">
+    <div class="container">
+        <h2 class="section-title">🔥 Articles Populaires</h2>
+        <div class="articles-grid" id="populairesGrid">
+            <div class="loading">
+                <i class="fas fa-spinner"></i>
+                <p>Chargement des articles populaires...</p>
+            </div>
+        </div>
+    </div>
+</section>
             <!-- Sidebar -->
             <aside class="sidebar">
                 <!-- Trending -->
@@ -1822,19 +2162,20 @@
         </section>
     </div>
 
-<section id="ctaSection" class="section-cta py-12">
-  <div class="container cta-container">
-    <div class="cta-card">
-      <h3>📰 Vous avez une histoire à partager ?</h3>
-      <a href="admin-dashboard-xyz789.html" class="btn-cta">Publiez votre Article</a>
+<section id="ctaSection" class="section-cta" style="background: linear-gradient(135deg, #001f3f, #003f7f); color: #fff; text-align: center; padding: 3rem 0; margin: 3rem 0;">
+    <div class="container" style="max-width: 1400px; margin: 0 auto; padding: 0 20px;">
+        <div class="cta-container" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 2rem;">
+            <div class="cta-card" style="background: rgba(255,255,255,0.1); padding: 2rem; border-radius: 16px; backdrop-filter: blur(10px); max-width: 400px; flex: 1;">
+                <h3 style="margin-bottom: 1rem;">📰 Vous avez une histoire à partager ?</h3>
+                <a href="#" class="btn-cta" onclick="openPopup('publishPopup'); return false;" style="display: inline-block; background: #ff9800; color: #fff; padding: 12px 24px; border-radius: 8px; margin-top: 1rem; font-weight: bold; text-decoration: none; transition: all 0.3s ease;">Publiez votre Article</a>
+            </div>
+            <div class="cta-card" style="background: rgba(255,255,255,0.1); padding: 2rem; border-radius: 16px; backdrop-filter: blur(10px); max-width: 400px; flex: 1;">
+                <h3 style="margin-bottom: 1rem;">💼 Passionné par le journalisme ?</h3>
+                <a href="#" class="btn-cta" onclick="openPopup('joinPopup'); return false;" style="display: inline-block; background: #ff9800; color: #fff; padding: 12px 24px; border-radius: 8px; margin-top: 1rem; font-weight: bold; text-decoration: none; transition: all 0.3s ease;">Rejoignez notre Équipe</a>
+            </div>
+        </div>
     </div>
-    <div class="cta-card">
-      <h3>💼 Passionné par le journalisme ?</h3>
-      <a href="#contactRedaction" class="btn-cta">Rejoignez notre Équipe</a>
-    </div>
-  </div>
 </section>
-
 
 
 <section id="contactRedaction" class="section-contact py-10">
@@ -1930,9 +2271,10 @@ async function loadArticles() {
         
         displayHeroSlider();
         displayCarousel();
-        displayArticles();
+        displayArticlesPaginated(1); // ✅ UTILISER LA VERSION PAGINÉE
+        displayArticlesPopulaires(); // ✅ AJOUTER CETTE LIGNE
         displayTrending();
-        displayVideos(); // ← Cette fonction est maintenant corrigée
+        displayVideos();
         displaySociete();
         displayFeatured();
         displayEvents();
@@ -2929,32 +3271,8 @@ function checkImageExists(url) {
 })();
 
 // === Articles Populaires ===
-async function afficherArticlesPopulaires() {
-  const res = await fetch("articles.json");
-  const data = await res.json();
-  const articles = Object.values(data.articles);
 
-  const populaires = articles
-    .filter(a => a.statut === "publié")
-    .sort((a, b) => (b.vues + b.likes) - (a.vues + a.likes))
-    .slice(0, 6);
 
-  const grid = document.getElementById("populairesGrid");
-  grid.innerHTML = populaires.map(a => `
-    <article class="article-card populaire">
-      <div class="article-img">
-        <img src="${a.image}" alt="${a.titre}" loading="lazy">
-        <span class="badge-populaire">🔥 Populaire</span>
-      </div>
-      <div class="article-content">
-        <h3>${a.titre}</h3>
-        <p>${a.extrait}</p>
-        <small>👀 ${a.vues} vues • ❤️ ${a.likes} likes</small>
-      </div>
-    </article>
-  `).join("");
-}
-document.addEventListener("DOMContentLoaded", afficherArticlesPopulaires);
 
 document.getElementById("contactForm").addEventListener("submit", e => {
   e.preventDefault();
@@ -2962,7 +3280,7 @@ document.getElementById("contactForm").addEventListener("submit", e => {
   e.target.reset();
 });
 // === Pagination dynamique (20 articles/page) ===
-const ARTICLES_PAR_PAGE = 20;
+const ARTICLES_PAR_PAGE = 5;
 let pageActuelle = 1;
 
 async function afficherArticlesRecents(page = 1) {
@@ -2996,6 +3314,221 @@ async function afficherArticlesRecents(page = 1) {
   `;
 }
 document.addEventListener("DOMContentLoaded", () => afficherArticlesRecents(pageActuelle));
+// Fonctions pour les popups
+function openPopup(popupId) {
+    document.getElementById(popupId).style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+}
+
+function closePopup(popupId) {
+    document.getElementById(popupId).style.display = 'none';
+    document.body.style.overflow = 'auto';
+}
+
+// Fermer en cliquant en dehors
+document.querySelectorAll('.popup-overlay').forEach(overlay => {
+    overlay.addEventListener('click', function(e) {
+        if (e.target === this) {
+            closePopup(this.id);
+        }
+    });
+});
+
+// Gestion du formulaire de publication
+document.getElementById('publishForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const formData = {
+        nom: document.getElementById('authorName').value,
+        email: document.getElementById('authorEmail').value,
+        titre: document.getElementById('articleTitle').value,
+        categorie: document.getElementById('articleCategory').value,
+        contenu: document.getElementById('articleContent').value,
+        sources: document.getElementById('articleSources').value
+    };
+    
+    const message = `📝 NOUVEL ARTICLE POUR ABU MEDIA GROUP%0A%0A` +
+                   `👤 Auteur: ${formData.nom}%0A` +
+                   `📧 Email: ${formData.email}%0A` +
+                   `📰 Titre: ${formData.titre}%0A` +
+                   `📂 Catégorie: ${formData.categorie}%0A` +
+                   `📄 Contenu: ${formData.contenu}%0A` +
+                   `🔍 Sources: ${formData.sources || 'Non spécifiées'}`;
+    
+    const whatsappUrl = `https://wa.me/237697691987?text=${message}`;
+    
+    closePopup('publishPopup');
+    window.open(whatsappUrl, '_blank');
+    this.reset();
+});
+
+// Gestion du formulaire de recrutement
+document.getElementById('joinForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const formData = {
+        nom: document.getElementById('fullName').value,
+        email: document.getElementById('joinEmail').value,
+        telephone: document.getElementById('phone').value,
+        domaine: document.getElementById('domain').value,
+        experience: document.getElementById('experience').value,
+        motivation: document.getElementById('motivation').value,
+        portfolio: document.getElementById('portfolio').value
+    };
+    
+    const message = `💼 CANDIDATURE ABU MEDIA GROUP%0A%0A` +
+                   `👤 Nom: ${formData.nom}%0A` +
+                   `📧 Email: ${formData.email}%0A` +
+                   `📞 Téléphone: ${formData.telephone}%0A` +
+                   `🎯 Domaine: ${formData.domaine}%0A` +
+                   `📈 Expérience: ${formData.experience}%0A` +
+                   `💬 Motivation: ${formData.motivation}%0A` +
+                   `🔗 Portfolio: ${formData.portfolio || 'Non fourni'}`;
+    
+    const whatsappUrl = `https://wa.me/237697691984?text=${message}`;
+    
+    closePopup('joinPopup');
+    window.open(whatsappUrl, '_blank');
+    this.reset();
+});
+
+
+// Mettre à jour la section CTA avec les popups
+document.querySelector('.section-cta').innerHTML = `
+    <div class="container cta-container">
+        <div class="cta-card">
+            <h3>📰 Vous avez une histoire à partager ?</h3>
+            <a href="#" class="btn-cta" onclick="openPopup('publishPopup'); return false;">Publiez votre Article</a>
+        </div>
+        <div class="cta-card">
+            <h3>💼 Passionné par le journalisme ?</h3>
+            <a href="#" class="btn-cta" onclick="openPopup('joinPopup'); return false;">Rejoignez notre Équipe</a>
+        </div>
+    </div>
+`;
+
+function displayArticlesPaginated(page = 1) {
+    const mainArticles = allArticles
+        .filter(a => !a.sections || a.sections.includes('main'))
+        .sort((a, b) => new Date(b.date) - new Date(a.date));
+    
+    const totalPages = Math.ceil(mainArticles.length / ARTICLES_PAR_PAGE);
+    const startIndex = (page - 1) * ARTICLES_PAR_PAGE;
+    const endIndex = startIndex + ARTICLES_PAR_PAGE;
+    const pageArticles = mainArticles.slice(startIndex, endIndex);
+    
+    const grid = document.getElementById('articlesGrid');
+    
+    if (pageArticles.length === 0) {
+        grid.innerHTML = '<div class="empty-state"><i class="fas fa-inbox"></i><p>Aucun article disponible</p></div>';
+        return;
+    }
+    
+    grid.innerHTML = pageArticles.map(article => `
+        <article class="article-card" onclick="openArticle('${article.id}')">
+            <img src="${article.image}" alt="${article.titre}" class="article-image" loading="lazy">
+            <div class="article-content">
+                <span class="category-badge">${article.categorie}</span>
+                <h3 class="article-title">${article.titre}</h3>
+                <p class="article-excerpt">${article.extrait}</p>
+                <div class="article-meta">
+                    <div class="article-author">
+                        <div class="author-avatar">${getInitial(article.auteur)}</div>
+                        <span>${article.auteur}</span>
+                    </div>
+                    <div class="article-stats">
+                        <span class="stat"><i class="fas fa-eye"></i> ${article.vues || 0}</span>
+                        <span class="stat"><i class="fas fa-heart"></i> ${article.likes || 0}</span>
+                    </div>
+                </div>
+            </div>
+        </article>
+    `).join('');
+    
+    // Mise à jour de la pagination
+    updatePagination(page, totalPages);
+}
+
+function updatePagination(currentPage, totalPages) {
+    const pagination = document.getElementById('pagination');
+    
+    if (totalPages <= 1) {
+        pagination.innerHTML = '';
+        return;
+    }
+    
+    let paginationHTML = '';
+    
+    // Bouton précédent
+    if (currentPage > 1) {
+        paginationHTML += `<button onclick="changePage(${currentPage - 1})">⬅️ Précédent</button>`;
+    }
+    
+    // Pages
+    for (let i = 1; i <= totalPages; i++) {
+        if (i === currentPage) {
+            paginationHTML += `<button class="active">${i}</button>`;
+        } else {
+            paginationHTML += `<button onclick="changePage(${i})">${i}</button>`;
+        }
+    }
+    
+    // Bouton suivant
+    if (currentPage < totalPages) {
+        paginationHTML += `<button onclick="changePage(${currentPage + 1})">Suivant ➡️</button>`;
+    }
+    
+    pagination.innerHTML = paginationHTML;
+}
+
+function changePage(page) {
+    pageActuelle = page;
+    displayArticlesPaginated(page);
+    document.getElementById('articlesGrid').scrollIntoView({ behavior: 'smooth' });
+}
+
+// Fonction pour afficher les articles populaires
+// Fonction pour afficher les articles populaires
+function displayArticlesPopulaires() {
+    const populaires = [...allArticles]
+        .sort((a, b) => {
+            const scoreA = (a.vues || 0) + (a.likes || 0) * 2;
+            const scoreB = (b.vues || 0) + (b.likes || 0) * 2;
+            return scoreB - scoreA;
+        })
+        .slice(0, 6);
+    
+    const grid = document.getElementById('populairesGrid');
+    
+    if (populaires.length === 0) {
+        grid.innerHTML = '<div class="empty-state"><i class="fas fa-fire"></i><p>Aucun article populaire</p></div>';
+        return;
+    }
+    
+    grid.innerHTML = populaires.map(article => `
+        <article class="article-card" onclick="openArticle('${article.id}')">
+            <div style="position: relative;">
+                <img src="${article.image}" alt="${article.titre}" class="article-image" loading="lazy">
+                <span class="badge-populaire">🔥 Populaire</span>
+            </div>
+            <div class="article-content">
+                <span class="category-badge">${article.categorie}</span>
+                <h3 class="article-title">${article.titre}</h3>
+                <p class="article-excerpt">${article.extrait}</p>
+                <div class="article-meta">
+                    <div class="article-author">
+                        <div class="author-avatar">${getInitial(article.auteur)}</div>
+                        <span>${article.auteur}</span>
+                    </div>
+                    <div class="article-stats">
+                        <span class="stat"><i class="fas fa-eye"></i> ${article.vues || 0}</span>
+                        <span class="stat"><i class="fas fa-heart"></i> ${article.likes || 0}</span>
+                    </div>
+                </div>
+            </div>
+        </article>
+    `).join('');
+}
 
     </script>
 </body>
