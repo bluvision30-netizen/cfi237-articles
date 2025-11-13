@@ -31,64 +31,7 @@
             background: #fff;
         }
         
-        /* Header */
-        .header {
-            background: var(--dark);
-            color: white;
-            padding: 1rem 0;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        
-        .header-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .logo {
-            font-size: 1.5rem;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .logo i {
-            color: var(--primary);
-        }
-        
-        .nav-menu {
-            display: flex;
-            gap: 2rem;
-            list-style: none;
-        }
-        
-        .nav-menu a {
-            color: white;
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.3s;
-        }
-        
-        .nav-menu a:hover {
-            color: var(--primary);
-        }
-        
-        .mobile-menu-btn {
-            display: none;
-            background: none;
-            border: none;
-            color: white;
-            font-size: 1.5rem;
-            cursor: pointer;
-        }
-        
+  
         /* Container */
         .container {
             max-width: 1400px;
@@ -1834,33 +1777,1027 @@
   opacity: 0.5;
   cursor: not-allowed;
 }
-
+     /* Top Bar avec info */
+        .top-bar {
+            background: var(--dark);
+            color: rgba(255,255,255,0.8);
+            padding: 8px 0;
+            font-size: 0.85rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .top-bar-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .top-bar-left {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+        
+        .top-bar-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .top-bar-item i {
+            color: var(--primary);
+        }
+        
+        .social-links-top {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .social-links-top a {
+            color: rgba(255,255,255,0.8);
+            transition: all 0.3s;
+            font-size: 1rem;
+        }
+        
+        .social-links-top a:hover {
+            color: var(--primary);
+            transform: translateY(-2px);
+        }
+        
+        /* Main Header */
+        .main-header {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+        
+        .header-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            gap: 2rem;
+            align-items: center;
+        }
+        
+        /* Logo amélioré */
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: white;
+            transition: all 0.3s;
+        }
+        
+        .logo:hover {
+            transform: translateY(-2px);
+        }
+        
+        .logo-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4);
+        }
+        
+        .logo-text {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .logo-title {
+            font-size: 1.4rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            line-height: 1;
+        }
+        
+        .logo-subtitle {
+            font-size: 0.7rem;
+            color: rgba(255,255,255,0.7);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+       /* Search Bar centrale */
+        .header-search {
+            position: relative;
+            max-width: 600px;
+        }
+        
+        .search-wrapper {
+            position: relative;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 14px 50px 14px 50px;
+            border: 2px solid rgba(255,255,255,0.15);
+            border-radius: 30px;
+            background: rgba(255,255,255,0.08);
+            backdrop-filter: blur(10px);
+            color: white;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+        }
+        
+        .search-input::placeholder {
+            color: rgba(255,255,255,0.5);
+        }
+        
+        .search-input:focus {
+            outline: none;
+            background: rgba(255,255,255,0.12);
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255,255,255,0.5);
+            font-size: 1.1rem;
+        }
+        
+        .search-btn {
+            position: absolute;
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border: none;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+        }
+        
+        .search-btn:hover {
+            transform: translateY(-50%) scale(1.1);
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.6);
+        }
+        
+        /* Autocomplete moderne */
+        .search-results {
+            position: absolute;
+            top: calc(100% + 10px);
+            left: 0;
+            right: 0;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            max-height: 400px;
+            overflow-y: auto;
+            display: none;
+            z-index: 1000;
+        }
+        
+        .search-results.show {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+        
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .search-result-item {
+            padding: 14px 18px;
+            display: flex;
+            gap: 14px;
+            align-items: center;
+            cursor: pointer;
+            border-bottom: 1px solid var(--light-gray);
+            transition: all 0.2s;
+        }
+        
+        .search-result-item:hover {
+            background: var(--light-gray);
+        }
+        
+        .search-result-item:last-child {
+            border-bottom: none;
+        }
+        
+        .search-result-thumb {
+            width: 70px;
+            height: 70px;
+            border-radius: 10px;
+            object-fit: cover;
+            flex-shrink: 0;
+        }
+        
+        .search-result-info {
+            flex: 1;
+        }
+        
+        .search-result-title {
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 4px;
+            font-size: 0.95rem;
+            line-height: 1.4;
+        }
+        
+        .search-result-meta {
+            font-size: 0.8rem;
+            color: var(--gray);
+            display: flex;
+            gap: 12px;
+        }
+        
+        .search-result-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            background: var(--primary);
+            color: white;
+            border-radius: 10px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+        /* Header Actions */
+        .header-actions {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+        
+        .action-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 18px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+        
+        .btn-articles {
+            background: rgba(255,255,255,0.1);
+            color: white;
+            border: 2px solid rgba(255,255,255,0.2);
+        }
+        
+        .btn-articles:hover {
+            background: rgba(255,255,255,0.15);
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+        
+        .btn-admin {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+            border: none;
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+        }
+        
+        .btn-admin:hover {
+            box-shadow: 0 6px 20px rgba(239, 68, 68, 0.5);
+            transform: translateY(-2px);
+        }
+        
+        .mobile-menu-btn {
+            display: none;
+            background: rgba(255,255,255,0.1);
+            border: 2px solid rgba(255,255,255,0.2);
+            color: white;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.3s;
+        }
+        
+        .mobile-menu-btn:hover {
+            background: rgba(255,255,255,0.15);
+        }
+        
+        /* Navigation secondaire */
+        .nav-bar {
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .nav-menu {
+            display: flex;
+            gap: 0;
+            list-style: none;
+        }
+        
+        .nav-menu li a {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 14px 20px;
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+            position: relative;
+            cursor: pointer;
+        }
+        
+        .nav-menu li a:hover,
+        .nav-menu li a.active {
+            color: white;
+            background: rgba(255,255,255,0.08);
+        }
+        
+        .nav-menu li a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--primary);
+            transform: scaleX(0);
+            transition: transform 0.3s;
+        }
+        
+        .nav-menu li a:hover::after,
+        .nav-menu li a.active::after {
+            transform: scaleX(1);
+        }
+        
+        .breaking-news {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 18px;
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            border-radius: 25px;
+            color: white;
+            font-size: 0.85rem;
+            font-weight: 600;
+            animation: pulse 2s ease-in-out infinite;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .breaking-news:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 0 15px rgba(239, 68, 68, 0);
+        }
+        
+        @keyframes pulse {
+            0%, 100% {
+                box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+            }
+            50% {
+                box-shadow: 0 0 0 10px rgba(239, 68, 68, 0);
+            }
+        }
+        
+        .breaking-news i {
+            animation: blink 1s ease-in-out infinite;
+        }
+        
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+        
+        /* Mobile Sidebar */
+        .mobile-sidebar {
+            position: fixed;
+            top: 0;
+            left: -100%;
+            width: 300px;
+            height: 100vh;
+            background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+            z-index: 2000;
+            transition: left 0.3s;
+            overflow-y: auto;
+            box-shadow: 4px 0 20px rgba(0,0,0,0.3);
+        }
+        
+        .mobile-sidebar.show {
+            left: 0;
+        }
+        
+        .mobile-sidebar-header {
+            padding: 24px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .mobile-close {
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+        
+        .mobile-nav {
+            padding: 20px;
+        }
+        
+        .mobile-nav a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 16px;
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            border-radius: 10px;
+            margin-bottom: 8px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .mobile-nav a:hover {
+            background: rgba(255,255,255,0.1);
+            color: white;
+        }
+        
+        .mobile-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: rgba(0,0,0,0.5);
+            z-index: 1999;
+            display: none;
+        }
+        
+        .mobile-overlay.show {
+            display: block;
+        }
+        
+        /* Breaking News Popup */
+        .breaking-popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: rgba(0,0,0,0.8);
+            z-index: 3000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .breaking-popup.show {
+            display: flex;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .breaking-popup-content {
+            background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+            border-radius: 20px;
+            max-width: 900px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            animation: slideUp 0.3s ease;
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .breaking-popup-header {
+            padding: 24px 30px;
+            border-bottom: 2px solid rgba(239, 68, 68, 0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(220, 38, 38, 0.1));
+        }
+        
+        .breaking-popup-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        
+        .breaking-popup-title i {
+            color: #ef4444;
+            animation: blink 1s ease-in-out infinite;
+        }
+        
+        .popup-close {
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: white;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.3rem;
+            transition: all 0.3s;
+        }
+        
+        .popup-close:hover {
+            background: #ef4444;
+            transform: rotate(90deg);
+        }
+        
+        .breaking-popup-body {
+            padding: 30px;
+        }
+        
+        .breaking-item {
+            background: rgba(255,255,255,0.05);
+            border-left: 4px solid #ef4444;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .breaking-item:hover {
+            background: rgba(255,255,255,0.08);
+            transform: translateX(5px);
+        }
+        
+        .breaking-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+        
+        .breaking-badge {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .breaking-time {
+            color: rgba(255,255,255,0.5);
+            font-size: 0.85rem;
+        }
+        
+        .breaking-item-title {
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+        
+        .breaking-item-excerpt {
+            color: rgba(255,255,255,0.7);
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin-bottom: 12px;
+        }
+        
+        .breaking-item-meta {
+            display: flex;
+            gap: 16px;
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.6);
+        }
+        
+        .breaking-empty {
+            text-align: center;
+            padding: 60px 20px;
+            color: rgba(255,255,255,0.5);
+        }
+        
+        .breaking-empty i {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            opacity: 0.3;
+        }
+        
+        /* Mobile Search Bar - Always Visible */
+        .mobile-search-bar {
+            display: none;
+            padding: 12px 20px;
+            background: rgba(255,255,255,0.05);
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .mobile-search-wrapper {
+            position: relative;
+        }
+        
+        .mobile-search-input {
+            width: 100%;
+            padding: 12px 45px 12px 15px;
+            border: 2px solid rgba(255,255,255,0.15);
+            border-radius: 25px;
+            background: rgba(255,255,255,0.08);
+            color: white;
+            font-size: 0.9rem;
+        }
+        
+        .mobile-search-input::placeholder {
+            color: rgba(255,255,255,0.5);
+        }
+        
+        .mobile-search-btn {
+            position: absolute;
+            right: 3px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--primary);
+            border: none;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            color: white;
+            cursor: pointer;
+        }
+        
+        .mobile-breaking-news {
+            display: none;
+            padding: 12px 20px;
+            background: rgba(255,255,255,0.05);
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .mobile-breaking-news .breaking-news {
+            width: 100%;
+            justify-content: center;
+        }
+        
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .header-container {
+                grid-template-columns: auto 1fr auto;
+            }
+            
+            .nav-menu {
+                gap: 0;
+            }
+            
+            .nav-menu li a {
+                padding: 14px 16px;
+                font-size: 0.85rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .top-bar {
+                display: none;
+            }
+            
+            .header-container {
+                grid-template-columns: auto 1fr auto;
+                gap: 1rem;
+            }
+            
+            .logo-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 1.2rem;
+            }
+            
+            .logo-title {
+                font-size: 1.1rem;
+            }
+            
+            .logo-subtitle {
+                font-size: 0.65rem;
+            }
+            
+            .header-search {
+                display: none;
+            }
+            
+            .header-actions {
+                display: none;
+            }
+            
+            .mobile-menu-btn {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            
+            .nav-bar {
+                display: none;
+            }
+            
+            .mobile-search-bar {
+                display: block;
+            }
+            
+            .mobile-breaking-news {
+                display: block;
+            }
+        }
+        
+        /* Content demo */
+        .demo-content {
+            max-width: 1400px;
+            margin: 40px auto;
+            padding: 20px;
+            text-align: center;
+            color: var(--gray);
+        }
+        
+        .demo-content h2 {
+            font-size: 2rem;
+            color: var(--dark);
+            margin-bottom: 1rem;
+        }
 
     </style>
 </head>
 <body>
-    <!-- Header -->
-    <header class="header">
-        <div class="header-container">
-            <div class="logo">
-                <i class="fas fa-newspaper"></i>
-                <span>Abu Media Group</span>
+   <!-- Top Bar -->
+    <div class="top-bar">
+        <div class="top-bar-container">
+            <div class="top-bar-left">
+                <div class="top-bar-item">
+                    <i class="fas fa-calendar"></i>
+                    <span id="currentDate"></span>
+                </div>
+                <div class="top-bar-item">
+                    <i class="fas fa-newspaper"></i>
+                    <span id="articleCount">0 articles</span>
+                </div>
             </div>
-            <nav>
-                <ul class="nav-menu">
-                    <li><a href="#accueil">Accueil</a></li>
-                    <li><a href="#actualites">Actualités</a></li>
-                    <li><a href="#videos">Vidéos</a></li>
-                    <li><a href="#societe">Société</a></li>
-                    <li><a href="#contact">Contact</a></li>
-                </ul>
-            </nav>
-            <button class="mobile-menu-btn">
+            <div class="social-links-top">
+                <a href="#" title="Facebook"><i class="fab fa-facebook"></i></a>
+                <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
+                <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
+                <a href="#" title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                <a href="#" title="YouTube"><i class="fab fa-youtube"></i></a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Header -->
+    <header class="main-header">
+        <div class="header-container">
+            <!-- Logo -->
+            <a href="index.html" class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-newspaper"></i>
+                </div>
+                <div class="logo-text">
+                    <div class="logo-title">Abu Media</div>
+                    <div class="logo-subtitle">Actualités Cameroun</div>
+                </div>
+            </a>
+
+            <!-- Search Bar -->
+            <div class="header-search">
+                <div class="search-wrapper">
+                    <i class="fas fa-search search-icon"></i>
+                    <input 
+                        type="text" 
+                        id="headerSearchInput" 
+                        class="search-input"
+                        placeholder="Rechercher des articles, vidéos, actualités..."
+                        autocomplete="off"
+                    >
+                    <button class="search-btn" onclick="performSearch()">
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+                
+                <!-- Autocomplete Results -->
+                <div class="search-results" id="searchResults"></div>
+            </div>
+
+            <!-- Header Actions -->
+            <div class="header-actions">
+                <a href="articles.html" class="action-btn btn-articles">
+                    <i class="fas fa-th-large"></i>
+                    <span>Tous les Articles</span>
+                </a>
+                <a href="admin-dashboard-xyz789.html" class="action-btn btn-admin">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Admin</span>
+                </a>
+            </div>
+
+            <!-- Mobile Menu Button -->
+            <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
                 <i class="fas fa-bars"></i>
             </button>
         </div>
     </header>
 
+    <!-- Navigation Bar -->
+    <nav class="nav-bar">
+        <div class="nav-container">
+            <ul class="nav-menu">
+                <li><a href="index.html">
+                    <i class="fas fa-home"></i>
+                    Accueil
+                </a></li>
+                <li><a href="articles.html?category=Politique">
+                    <i class="fas fa-landmark"></i>
+                    Politique
+                </a></li>
+                <li><a href="articles.html?category=Sports">
+                    <i class="fas fa-futbol"></i>
+                    Sports
+                </a></li>
+                <li><a href="articles.html?category=Économie">
+                    <i class="fas fa-chart-line"></i>
+                    Économie
+                </a></li>
+                <li><a href="articles.html?category=Société">
+                    <i class="fas fa-users"></i>
+                    Société
+                </a></li>
+                <li><a href="articles.html?category=International">
+                    <i class="fas fa-globe"></i>
+                    International
+                </a></li>
+                <li><a href="articles.html?type=video">
+                    <i class="fas fa-video"></i>
+                    Vidéos
+                </a></li>
+            </ul>
+            
+            <div class="breaking-news" onclick="openBreakingNews()">
+                <i class="fas fa-bolt"></i>
+                <span>BREAKING NEWS</span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Search Bar (Always Visible on Mobile) -->
+    <div class="mobile-search-bar">
+        <div class="mobile-search-wrapper">
+            <input 
+                type="text" 
+                id="mobileSearchInput" 
+                class="mobile-search-input"
+                placeholder="🔍 Rechercher..."
+                autocomplete="off"
+            >
+            <button class="mobile-search-btn" onclick="performMobileSearch()">
+                <i class="fas fa-search"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Mobile Breaking News Button (Always Visible on Mobile) -->
+    <div class="mobile-breaking-news">
+        <div class="breaking-news" onclick="openBreakingNews()">
+            <i class="fas fa-bolt"></i>
+            <span>À LA UNE</span>
+        </div>
+    </div>
+
+    <!-- Mobile Sidebar -->
+    <div class="mobile-sidebar" id="mobileSidebar">
+        <div class="mobile-sidebar-header">
+            <a href="index.html" class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-newspaper"></i>
+                </div>
+                <div class="logo-text">
+                    <div class="logo-title">Abu Media</div>
+                    <div class="logo-subtitle">Menu</div>
+                </div>
+            </a>
+            <button class="mobile-close" onclick="toggleMobileMenu()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="mobile-nav">
+            <a href="index.html">
+                <i class="fas fa-home"></i>
+                Accueil
+            </a>
+            <a href="articles.html">
+                <i class="fas fa-th-large"></i>
+                Tous les Articles
+            </a>
+            <a href="articles.html?category=Politique">
+                <i class="fas fa-landmark"></i>
+                Politique
+            </a>
+            <a href="articles.html?category=Sports">
+                <i class="fas fa-futbol"></i>
+                Sports
+            </a>
+            <a href="articles.html?category=Économie">
+                <i class="fas fa-chart-line"></i>
+                Économie
+            </a>
+            <a href="articles.html?category=Société">
+                <i class="fas fa-users"></i>
+                Société
+            </a>
+            <a href="articles.html?category=International">
+                <i class="fas fa-globe"></i>
+                International
+            </a>
+            <a href="articles.html?type=video">
+                <i class="fas fa-video"></i>
+                Vidéos
+            </a>
+            <a href="admin-dashboard-xyz789.html">
+                <i class="fas fa-shield-alt"></i>
+                Administration
+            </a>
+        </div>
+    </div>
+    
+    <div class="mobile-overlay" id="mobileOverlay" onclick="toggleMobileMenu()"></div>
+
+    <!-- Breaking News Popup -->
+    <div class="breaking-popup" id="breakingPopup">
+        <div class="breaking-popup-content">
+            <div class="breaking-popup-header">
+                <div class="breaking-popup-title">
+                    <i class="fas fa-bolt"></i>
+                    À la Une
+                </div>
+                <button class="popup-close" onclick="closeBreakingNews()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="breaking-popup-body" id="breakingContent">
+                <div class="loading">
+                    <i class="fas fa-spinner"></i>
+                    <p style="margin-top: 1rem; color: white;">Chargement...</p>
+                </div>
+            </div>
+        </div>
+    </div>
     <!-- Hero Slider -->
     <div class="container">
         <section class="hero-section" id="heroSection">
@@ -3673,6 +4610,259 @@ function trackArticleView(articleId) {
 
 // Initialisation
 document.addEventListener('DOMContentLoaded', initArticleTracking);
+       
+
+       // Date actuelle
+        function updateDate() {
+            const options = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            };
+            const date = new Date().toLocaleDateString('fr-FR', options);
+            document.getElementById('currentDate').textContent = date;
+        }
+
+        // Load articles count
+        async function loadArticlesCount() {
+            try {
+                const response = await fetch('/articles.json?t=' + Date.now());
+                const data = await response.json();
+                allArticles = Object.values(data.articles || {}).filter(a => a && a.id);
+                document.getElementById('articleCount').textContent = `${allArticles.length} articles`;
+            } catch (error) {
+                console.error('Erreur:', error);
+            }
+        }
+
+        // Autocomplete search
+        function initAutocomplete() {
+            const input = document.getElementById('headerSearchInput');
+            const results = document.getElementById('searchResults');
+            let timeout;
+
+            input.addEventListener('input', function() {
+                clearTimeout(timeout);
+                const query = this.value.toLowerCase().trim();
+
+                if (query.length < 2) {
+                    results.classList.remove('show');
+                    return;
+                }
+
+                timeout = setTimeout(() => {
+                    const filtered = allArticles
+                        .filter(article => {
+                            return article.titre.toLowerCase().includes(query) ||
+                                   article.extrait.toLowerCase().includes(query) ||
+                                   article.auteur.toLowerCase().includes(query);
+                        })
+                        .slice(0, 5);
+
+                    if (filtered.length > 0) {
+                        results.innerHTML = filtered.map(article => {
+                            const isVideo = article.contentType === 'video' || article.video_url;
+                            return `
+                                <div class="search-result-item" onclick="openArticle('${article.id}')">
+                                    <img src="${article.image}" alt="${article.titre}" class="search-result-thumb">
+                                    <div class="search-result-info">
+                                        <div class="search-result-title">${highlightText(article.titre, query)}</div>
+                                        <div class="search-result-meta">
+                                            <span class="search-result-badge">${article.categorie}</span>
+                                            <span>${article.auteur}</span>
+                                            ${isVideo ? '<span>🎥 Vidéo</span>' : ''}
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                        }).join('');
+                        results.classList.add('show');
+                    } else {
+                        results.innerHTML = `
+                            <div class="search-result-item" style="justify-content: center;">
+                                <i class="fas fa-search" style="color: var(--gray); font-size: 2rem;"></i>
+                                <div style="text-align: center; color: var(--gray);">
+                                    <div style="font-weight: 600;">Aucun résultat</div>
+                                    <div style="font-size: 0.85rem;">Essayez avec d'autres mots-clés</div>
+                                </div>
+                            </div>
+                        `;
+                        results.classList.add('show');
+                    }
+                }, 300);
+            });
+
+            // Close on click outside
+            document.addEventListener('click', function(e) {
+                if (!input.contains(e.target) && !results.contains(e.target)) {
+                    results.classList.remove('show');
+                }
+            });
+
+            // Enter key
+            input.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    performSearch();
+                }
+            });
+        }
+
+        function highlightText(text, query) {
+            if (!query) return text;
+            const regex = new RegExp(`(${query})`, 'gi');
+            return text.replace(regex, '<strong style="color: var(--primary);">$1</strong>');
+        }
+
+        function performSearch() {
+            const query = document.getElementById('headerSearchInput').value;
+            if (query) {
+                window.location.href = `articles.html?search=${encodeURIComponent(query)}`;
+            }
+        }
+
+        function openArticle(id) {
+            window.location.href = `/article-detail.html?id=${id}`;
+        }
+
+        function toggleMobileMenu() {
+            const sidebar = document.getElementById('mobileSidebar');
+            const overlay = document.getElementById('mobileOverlay');
+            sidebar.classList.toggle('show');
+            overlay.classList.toggle('show');
+        }
+
+        // Breaking News Popup
+        async function openBreakingNews() {
+            const popup = document.getElementById('breakingPopup');
+            const content = document.getElementById('breakingContent');
+            
+            popup.classList.add('show');
+            
+            try {
+                // Filter articles with "hero" or "a-la-une" sections
+                const breakingArticles = allArticles.filter(article => {
+                    return article.sections && 
+                           (article.sections.includes('hero') || 
+                            article.sections.includes('a-la-une') ||
+                            article.sections.includes('featured'));
+                }).slice(0, 10);
+
+                if (breakingArticles.length === 0) {
+                    content.innerHTML = `
+                        <div class="breaking-empty">
+                            <i class="fas fa-newspaper"></i>
+                            <h3 style="color: white; margin-bottom: 10px;">Aucune actualité à la une</h3>
+                            <p>Revenez plus tard pour les dernières nouvelles</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                content.innerHTML = breakingArticles.map(article => {
+                    const timeAgo = getTimeAgo(article.date);
+                    const isVideo = article.contentType === 'video' || article.video_url;
+                    
+                    return `
+                        <div class="breaking-item" onclick="openArticle('${article.id}')">
+                            <div class="breaking-item-header">
+                                <span class="breaking-badge">
+                                    <i class="fas fa-fire"></i>
+                                    ${article.categorie}
+                                </span>
+                                <span class="breaking-time">
+                                    <i class="fas fa-clock"></i>
+                                    ${timeAgo}
+                                </span>
+                            </div>
+                            <div class="breaking-item-title">
+                                ${isVideo ? '🎥 ' : ''}${article.titre}
+                            </div>
+                            <div class="breaking-item-excerpt">
+                                ${article.extrait}
+                            </div>
+                            <div class="breaking-item-meta">
+                                <span><i class="fas fa-user"></i> ${article.auteur}</span>
+                                <span><i class="fas fa-eye"></i> ${article.vues || 0} vues</span>
+                                <span><i class="fas fa-heart"></i> ${article.likes || 0} likes</span>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+            } catch (error) {
+                console.error('Erreur:', error);
+                content.innerHTML = `
+                    <div class="breaking-empty">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <h3 style="color: white; margin-bottom: 10px;">Erreur de chargement</h3>
+                        <p>Impossible de charger les actualités</p>
+                    </div>
+                `;
+            }
+        }
+
+        function closeBreakingNews() {
+            document.getElementById('breakingPopup').classList.remove('show');
+        }
+
+        function getTimeAgo(dateString) {
+            const date = new Date(dateString);
+            const now = new Date();
+            const diffMs = now - date;
+            const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+            const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+            
+            if (diffHours < 1) return 'À l\'instant';
+            if (diffHours < 24) return `Il y a ${diffHours}h`;
+            if (diffDays === 1) return 'Hier';
+            if (diffDays < 7) return `Il y a ${diffDays}j`;
+            if (diffDays < 30) return `Il y a ${Math.floor(diffDays/7)} sem`;
+            return date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
+        }
+
+        // Mobile search
+        function performMobileSearch() {
+            const query = document.getElementById('mobileSearchInput').value;
+            if (query) {
+                window.location.href = `articles.html?search=${encodeURIComponent(query)}`;
+            }
+        }
+
+        // Enter key for mobile search
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileInput = document.getElementById('mobileSearchInput');
+            if (mobileInput) {
+                mobileInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        performMobileSearch();
+                    }
+                });
+            }
+        });
+
+        // Close popup on outside click
+        document.getElementById('breakingPopup').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeBreakingNews();
+            }
+        });
+
+        // Active nav item
+        const currentPath = window.location.pathname;
+        document.querySelectorAll('.nav-menu a').forEach(link => {
+            if (link.getAttribute('href') === currentPath || 
+                (currentPath.includes('index.html') && link.getAttribute('href') === 'index.html')) {
+                link.classList.add('active');
+            }
+        });
+
+        // Init
+        document.addEventListener('DOMContentLoaded', function() {
+            updateDate();
+            loadArticlesCount();
+            initAutocomplete();
+        });
     </script>
 </body>
 </html>
