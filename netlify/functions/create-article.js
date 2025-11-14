@@ -1,4 +1,4 @@
-// netlify/functions/create-article.js - VERSION SEO
+// netlify/functions/create-article.js - LAISSER TEL QUEL
 exports.handler = async function(event, context) {
   const headers = {
     'Access-Control-Allow-Origin': '*',
@@ -22,12 +22,7 @@ exports.handler = async function(event, context) {
     }
 
     const articleId = 'art_' + Date.now();
-    
-    // ✅ URL SEO OPTIMALE
-    const seoUrl = `https://cfiupload.netlify.app/article.html?id=${articleId}`;
-    
-    // ✅ URL de partage réseaux sociaux
-    const shareUrl = `https://cfiupload.netlify.app/share.html?id=${articleId}`;
+    const shareUrl = `https://cfiupload.netlify.app/share-ultime.html?id=${articleId}`;
 
     return {
       statusCode: 200,
@@ -35,13 +30,12 @@ exports.handler = async function(event, context) {
       body: JSON.stringify({
         success: true,
         articleId: articleId,
-        articleUrl: seoUrl, // ✅ Pour SEO
-        shareUrl: shareUrl, // ✅ Pour réseaux sociaux
+        shareUrl: shareUrl,
         shareUrls: {
-          whatsapp: `https://wa.me/?text=${encodeURIComponent(articleData.titre + ' - ' + seoUrl)}`,
+          whatsapp: `https://wa.me/?text=${encodeURIComponent('📰 ' + articleData.titre + '\\n\\n📖 Lire: ' + shareUrl)}`,
           facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`
         },
-        message: '✅ Article publié et optimisé SEO!'
+        message: '✅ Article publié!'
       })
     };
 
@@ -52,9 +46,8 @@ exports.handler = async function(event, context) {
       body: JSON.stringify({ 
         success: true,
         articleId: 'art_' + Date.now(),
-        articleUrl: 'https://cfiupload.netlify.app/',
         shareUrl: 'https://cfiupload.netlify.app/',
-        message: '✅ Article publié'
+        message: '✅ Article publié!'
       })
     };
   }
