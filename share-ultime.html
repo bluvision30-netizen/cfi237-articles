@@ -1,54 +1,136 @@
-// netlify/functions/create-article.js - LAISSER TEL QUEL
-exports.handler = async function(event, context) {
-  const headers = {
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Headers': 'Content-Type',
-    'Access-Control-Allow-Methods': 'POST, OPTIONS'
-  };
-
-  if (event.httpMethod === 'OPTIONS') {
-    return { statusCode: 200, headers, body: '' };
-  }
-
-  try {
-    const articleData = JSON.parse(event.body);
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Abu Media Group - Actualités</title>
     
-    if (!articleData.titre || !articleData.categorie || !articleData.image) {
-      return {
-        statusCode: 400,
-        headers,
-        body: JSON.stringify({ success: false, error: 'Champs requis manquants' })
-      };
-    }
+    <!-- ✅ META TAGS ULTIME FACEBOOK/WHATSAPP -->
+    <meta property="og:title" content="Abu Media Group - Actualités Cameroun">
+    <meta property="og:description" content="Découvrez les dernières actualités du Cameroun et d'Afrique. Informations fraîches et fiables.">
+    <meta property="og:image" content="https://res.cloudinary.com/dkuciagop/image/upload/v1762782479/jvzl3jgsygsvk1dcz6oz.jpg">
+    <meta property="og:url" content="https://cfiupload.netlify.app/">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Abu Media Group">
+    
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:type" content="image/jpeg">
+    
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Abu Media Group">
+    <meta name="twitter:description" content="Actualités Cameroun - Informations fiables">
+    <meta name="twitter:image" content="https://res.cloudinary.com/dkuciagop/image/upload/v1762782479/jvzl3jgsygsvk1dcz6oz.jpg">
+    
+    <style>
+        body { 
+            margin: 0; 
+            padding: 20px; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: Arial, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container { 
+            max-width: 500px; 
+            background: white; 
+            padding: 40px; 
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .logo {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+        h1 { 
+            color: #2d3748; 
+            margin-bottom: 15px;
+            font-size: 1.8rem;
+        }
+        p {
+            color: #4a5568;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+        .btn { 
+            display: inline-block; 
+            padding: 15px 25px; 
+            margin: 8px; 
+            border-radius: 10px; 
+            color: white; 
+            text-decoration: none; 
+            font-weight: bold;
+            transition: transform 0.3s ease;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+        .whatsapp { background: #25D366; }
+        .facebook { background: #3b5998; }
+        .site { background: #667eea; }
+        
+        .features {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin: 30px 0;
+        }
+        .feature {
+            background: #f7fafc;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">📰</div>
+        <h1>Abu Media Group</h1>
+        <p>Votre source d'information fiable au Cameroun. Actualités politiques, économiques, sportives et culturelles.</p>
+        
+        <div class="features">
+            <div class="feature">🇨🇲 Actualités Cameroun</div>
+            <div class="feature">🌍 International</div>
+            <div class="feature">⚽ Sports</div>
+            <div class="feature">💼 Économie</div>
+        </div>
+        
+        <div>
+            <a href="https://cfiupload.netlify.app/" class="btn site">🌐 Voir le Site</a>
+            <a href="https://wa.me/?text=📰 Découvrez Abu Media Group - Vos actualités fiables au Cameroun https://cfiupload.netlify.app/" class="btn whatsapp">📱 Partager WhatsApp</a>
+            <a href="https://www.facebook.com/sharer/sharer.php?u=https://cfiupload.netlify.app/" class="btn facebook">📘 Partager Facebook</a>
+        </div>
+        
+        <div style="margin-top: 25px; padding: 15px; background: #f0fff4; border-radius: 8px; border: 1px solid #9ae6b4;">
+            <p style="margin: 0; color: #276749; font-size: 0.9rem;">
+                ✅ <strong>SEO Optimisé</strong> - Google friendly<br>
+                ✅ <strong>Réseaux sociaux</strong> - Meta tags parfaits
+            </p>
+        </div>
+    </div>
 
-    const articleId = 'art_' + Date.now();
-    const shareUrl = `https://cfiupload.netlify.app/share-ultime.html?id=${articleId}`;
-
-    return {
-      statusCode: 200,
-      headers,
-      body: JSON.stringify({
-        success: true,
-        articleId: articleId,
-        shareUrl: shareUrl,
-        shareUrls: {
-          whatsapp: `https://wa.me/?text=${encodeURIComponent('📰 ' + articleData.titre + '\\n\\n📖 Lire: ' + shareUrl)}`,
-          facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`
-        },
-        message: '✅ Article publié!'
-      })
-    };
-
-  } catch (error) {
-    return {
-      statusCode: 200,
-      headers,
-      body: JSON.stringify({ 
-        success: true,
-        articleId: 'art_' + Date.now(),
-        shareUrl: 'https://cfiupload.netlify.app/',
-        message: '✅ Article publié!'
-      })
-    };
-  }
-};
+    <script>
+        // Redirection si ID article dans l'URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const articleId = urlParams.get('id');
+        
+        if (articleId && articleId.startsWith('art_')) {
+            setTimeout(() => {
+                window.location.href = `https://cfiupload.netlify.app/article-detail.html?id=${articleId}`;
+            }, 2000);
+        }
+        
+        // Détection réseaux sociaux
+        if (navigator.userAgent.includes('WhatsApp')) {
+            document.title = '📱 ' + document.title;
+        }
+        if (navigator.userAgent.includes('Facebook')) {
+            document.title = '📘 ' + document.title;
+        }
+    </script>
+</body>
+</html>
