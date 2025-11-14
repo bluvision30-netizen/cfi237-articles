@@ -1,4 +1,4 @@
-// netlify/functions/delete-article.js
+// netlify/functions/delete-article.js - VERSION CORRIGÉE
 const fetch = require('node-fetch');
 
 exports.handler = async function(event, context) {
@@ -25,10 +25,15 @@ exports.handler = async function(event, context) {
       throw new Error('ID article manquant');
     }
 
+    console.log('🗑️ Suppression article:', id);
+
     // Lire articles.json
     const articlesUrl = `https://api.github.com/repos/${REPO}/contents/articles.json`;
     const getResponse = await fetch(articlesUrl, {
-      headers: { 'Authorization': `token ${GITHUB_TOKEN}` }
+      headers: { 
+        'Authorization': `token ${GITHUB_TOKEN}`,
+        'Accept': 'application/vnd.github.v3+json'
+      }
     });
 
     if (!getResponse.ok) {
@@ -41,22 +46,26 @@ exports.handler = async function(event, context) {
 
     // Vérifier que l'article existe
     if (!articlesData.articles[id]) {
-      throw new Error('Article introuvable');
+      throw new Error('Article introuvable dans la base');
     }
 
     const articleTitre = articlesData.articles[id].titre;
+    console.log('📄 Article trouvé:', articleTitre);
 
     // Supprimer l'article
     delete articlesData.articles[id];
-    articlesData.lastUpdate = new.toISOString();
+    articlesData.lastUpdate = new Date().toISOString();
     articlesData.totalArticles = Object.keys(articlesData.articles).length;
+
+    console.log('💾 Sauvegarde dans GitHub...');
 
     // Sauvegarder dans GitHub
     const updateResponse = await fetch(articlesUrl, {
       method: 'PUT',
       headers: {
         'Authorization': `token ${GITHUB_TOKEN}`,
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Accept': 'application/vnd.github.v3+json'
       },
       body: JSON.stringify({
         message: `🗑️ Suppression: ${articleTitre}`,
@@ -66,14 +75,21 @@ exports.handler = async function(event, context) {
     });
 
     if (!updateResponse.ok) {
-      throw new Error('Erreur sauvegarde GitHub');
+      const errorText = await updateResponse.text();
+      console.error('Erreur GitHub:', errorText);
+      throw new Error('Erreur sauvegarde GitHub: ' + errorText);
     }
 
-    // Supprimer la page share (optionnel)
+    console.log('✅ Article supprimé avec succès');
+
+    // Supprimer la page share (optionnel, ne pas bloquer si erreur)
     try {
       const shareUrl = `https://api.github.com/repos/${REPO}/contents/share/${id}.html`;
       const shareResponse = await fetch(shareUrl, {
-        headers: { 'Authorization': `token ${GITHUB_TOKEN}` }
+        headers: { 
+          'Authorization': `token ${GITHUB_TOKEN}`,
+          'Accept': 'application/vnd.github.v3+json'
+        }
       });
       
       if (shareResponse.ok) {
@@ -82,16 +98,18 @@ exports.handler = async function(event, context) {
           method: 'DELETE',
           headers: {
             'Authorization': `token ${GITHUB_TOKEN}`,
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Accept': 'application/vnd.github.v3+json'
           },
           body: JSON.stringify({
             message: `🗑️ Suppression page share: ${id}`,
             sha: shareData.sha
           })
         });
+        console.log('✅ Page share supprimée');
       }
     } catch (err) {
-      console.log('Page share non trouvée ou déjà supprimée');
+      console.log('⚠️ Page share non trouvée ou déjà supprimée');
     }
 
     return {
@@ -105,7 +123,7 @@ exports.handler = async function(event, context) {
     };
 
   } catch (error) {
-    console.error('Erreur delete:', error);
+    console.error('❌ Erreur delete:', error);
     return {
       statusCode: 500,
       headers,
