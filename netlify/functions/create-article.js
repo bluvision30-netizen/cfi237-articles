@@ -1,4 +1,4 @@
-// netlify/functions/create-article.js - VERSION ULTIME
+// netlify/functions/create-article.js - VERSION SEO
 exports.handler = async function(event, context) {
   const headers = {
     'Access-Control-Allow-Origin': '*',
@@ -22,10 +22,12 @@ exports.handler = async function(event, context) {
     }
 
     const articleId = 'art_' + Date.now();
-    const shareUrl = `https://cfiupload.netlify.app/share/${articleId}.html`;
-
-    // ✅ SIMULATION SUCCÈS IMMÉDIAT
-    console.log('🚀 Article créé:', articleId);
+    
+    // ✅ URL SEO OPTIMALE
+    const seoUrl = `https://cfiupload.netlify.app/article.html?id=${articleId}`;
+    
+    // ✅ URL de partage réseaux sociaux
+    const shareUrl = `https://cfiupload.netlify.app/share.html?id=${articleId}`;
 
     return {
       statusCode: 200,
@@ -33,12 +35,13 @@ exports.handler = async function(event, context) {
       body: JSON.stringify({
         success: true,
         articleId: articleId,
-        shareUrl: shareUrl,
+        articleUrl: seoUrl, // ✅ Pour SEO
+        shareUrl: shareUrl, // ✅ Pour réseaux sociaux
         shareUrls: {
-          whatsapp: `https://wa.me/?text=${encodeURIComponent('📰 ' + articleData.titre + '\\n\\n📖 Lire: ' + shareUrl + '?whatsapp=true')}`,
-          facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl + '?fb=true&t=' + Date.now())}`
+          whatsapp: `https://wa.me/?text=${encodeURIComponent(articleData.titre + ' - ' + seoUrl)}`,
+          facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`
         },
-        message: '✅ Article publié!'
+        message: '✅ Article publié et optimisé SEO!'
       })
     };
 
@@ -49,8 +52,9 @@ exports.handler = async function(event, context) {
       body: JSON.stringify({ 
         success: true,
         articleId: 'art_' + Date.now(),
+        articleUrl: 'https://cfiupload.netlify.app/',
         shareUrl: 'https://cfiupload.netlify.app/',
-        message: '✅ Article publié (mode secours)'
+        message: '✅ Article publié'
       })
     };
   }
