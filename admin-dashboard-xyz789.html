@@ -510,46 +510,72 @@
                             <div class="form-group">
                                 <label class="form-label">Catégorie *</label>
                                 <select class="form-control" id="categorie" required>
-                                    <option value="">Choisir...</option>
+                                    <option value="">Choisir une catégorie</option>
                                     <option value="Politique">Politique</option>
                                     <option value="Économie">Économie</option>
                                     <option value="Sports">Sports</option>
                                     <option value="Société">Société</option>
                                     <option value="Culture">Culture</option>
+                                    <option value="Santé">Santé</option>
+                                    <option value="Technologie">Technologie</option>
+                                    <option value="International">International</option>
                                 </select>
                             </div>
                             
                             <div class="form-group">
                                 <label class="form-label">Auteur *</label>
-                                <input type="text" class="form-control" id="auteur" required>
+                                <input type="text" class="form-control" id="auteur" required placeholder="Ex: Rodrigue Ngando">
                             </div>
                         </div>
                     </div>
 
-                    <!-- SECTIONS -->
+                    <!-- SECTIONS - COMPLET -->
                     <div class="form-section">
                         <h3 class="section-title">
-                            <i class="fas fa-layer-group"></i> Sections
+                            <i class="fas fa-layer-group"></i> Sections d'affichage
                         </h3>
                         
                         <div style="display:grid; grid-template-columns:repeat(2,1fr); gap:12px;">
-                            <label style="display:flex; align-items:center; gap:8px; cursor:pointer; padding:12px; border:2px solid rgba(255,255,255,0.1); border-radius:10px;">
+                            <label style="display:flex; align-items:center; gap:8px; cursor:pointer; padding:12px; border:2px solid rgba(255,255,255,0.1); border-radius:10px; transition: all 0.3s ease;">
                                 <input type="checkbox" name="sections" value="main" checked> 
                                 <span>📰 Articles principaux</span>
                             </label>
-                            <label style="display:flex; align-items:center; gap:8px; cursor:pointer; padding:12px; border:2px solid rgba(255,255,255,0.1); border-radius:10px;">
+                            <label style="display:flex; align-items:center; gap:8px; cursor:pointer; padding:12px; border:2px solid rgba(255,255,255,0.1); border-radius:10px; transition: all 0.3s ease;">
                                 <input type="checkbox" name="sections" value="hero"> 
-                                <span>🌟 À la une</span>
+                                <span>🌟 Slider À la une</span>
                             </label>
-                            <label style="display:flex; align-items:center; gap:8px; cursor:pointer; padding:12px; border:2px solid rgba(255,255,255,0.1); border-radius:10px;">
+                            <label style="display:flex; align-items:center; gap:8px; cursor:pointer; padding:12px; border:2px solid rgba(255,255,255,0.1); border-radius:10px; transition: all 0.3s ease;">
+                                <input type="checkbox" name="sections" value="a-la-une"> 
+                                <span>🔥 Carousel À la Une</span>
+                            </label>
+                            <label style="display:flex; align-items:center; gap:8px; cursor:pointer; padding:12px; border:2px solid rgba(255,255,255,0.1); border-radius:10px; transition: all 0.3s ease;">
+                                <input type="checkbox" name="sections" value="featured"> 
+                                <span>⭐ À ne pas manquer</span>
+                            </label>
+                            <label style="display:flex; align-items:center; gap:8px; cursor:pointer; padding:12px; border:2px solid rgba(255,255,255,0.1); border-radius:10px; transition: all 0.3s ease;">
                                 <input type="checkbox" name="sections" value="trending"> 
                                 <span>📈 Trending</span>
                             </label>
-                            <label style="display:flex; align-items:center; gap:8px; cursor:pointer; padding:12px; border:2px solid rgba(255,255,255,0.1); border-radius:10px;">
+                            <label style="display:flex; align-items:center; gap:8px; cursor:pointer; padding:12px; border:2px solid rgba(255,255,255,0.1); border-radius:10px; transition: all 0.3s ease;">
                                 <input type="checkbox" name="sections" value="videos"> 
                                 <span>🎥 Vidéos</span>
                             </label>
+                            <label style="display:flex; align-items:center; gap:8px; cursor:pointer; padding:12px; border:2px solid rgba(255,255,255,0.1); border-radius:10px; transition: all 0.3s ease;">
+                                <input type="checkbox" name="sections" value="debates"> 
+                                <span>💬 Grands Débats</span>
+                            </label>
+                            <label style="display:flex; align-items:center; gap:8px; cursor:pointer; padding:12px; border:2px solid rgba(255,255,255,0.1); border-radius:10px; transition: all 0.3s ease;">
+                                <input type="checkbox" name="sections" value="societe"> 
+                                <span>👥 Société</span>
+                            </label>
+                            <label style="display:flex; align-items:center; gap:8px; cursor:pointer; padding:12px; border:2px solid rgba(255,255,255,0.1); border-radius:10px; transition: all 0.3s ease;">
+                                <input type="checkbox" name="sections" value="events"> 
+                                <span>📅 Événements</span>
+                            </label>
                         </div>
+                        <p style="margin-top: 12px; font-size: 0.85rem; color: #64748b;">
+                            <i class="fas fa-info-circle"></i> Cochez toutes les sections où l'article doit apparaître
+                        </p>
                     </div>
 
                     <!-- CONTENU -->
@@ -605,7 +631,16 @@
                         <option value="Économie">Économie</option>
                         <option value="Sports">Sports</option>
                         <option value="Société">Société</option>
+                        <option value="Culture">Culture</option>
+                        <option value="Santé">Santé</option>
+                        <option value="Technologie">Technologie</option>
+                        <option value="International">International</option>
                     </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Auteur</label>
+                    <input type="text" class="form-control" id="editAuteur">
                 </div>
                 
                 <div class="form-group">
@@ -832,14 +867,18 @@
         // EDIT ARTICLE
         function editArticle(id) {
             const article = allArticles.find(a => a.id === id);
-            if (!article) return;
+            if (!article) {
+                showAlert('error', 'Article introuvable', 'Impossible de charger cet article');
+                return;
+            }
             
             editingArticleId = id;
             document.getElementById('editArticleId').value = id;
-            document.getElementById('editTitre').value = article.titre;
-            document.getElementById('editCategorie').value = article.categorie;
-            document.getElementById('editExtrait').value = article.extrait;
-            document.getElementById('editContenu').value = article.contenu;
+            document.getElementById('editTitre').value = article.titre || '';
+            document.getElementById('editCategorie').value = article.categorie || 'Politique';
+            document.getElementById('editAuteur').value = article.auteur || 'Admin';
+            document.getElementById('editExtrait').value = article.extrait || '';
+            document.getElementById('editContenu').value = article.contenu || '';
             
             document.getElementById('editModal').classList.add('show');
         }
@@ -849,45 +888,109 @@
             editingArticleId = null;
         }
 
-        // EDIT FORM SUBMIT
+        // EDIT FORM SUBMIT - VERSION NETLIFY
         document.getElementById('editForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
             const articleId = document.getElementById('editArticleId').value;
+            const article = allArticles.find(a => a.id === articleId);
+            
+            if (!article) {
+                showAlert('error', 'Article introuvable');
+                return;
+            }
             
             const updateData = {
                 id: articleId,
                 titre: document.getElementById('editTitre').value,
                 categorie: document.getElementById('editCategorie').value,
+                auteur: document.getElementById('editAuteur').value,
                 extrait: document.getElementById('editExtrait').value,
-                contenu: document.getElementById('editContenu').value
+                contenu: document.getElementById('editContenu').value,
+                image: article.image, // Garder l'image existante
+                images: article.images, // Garder les images existantes
+                sections: article.sections || ['main'],
+                contentType: article.contentType || 'article',
+                video_url: article.video_url || null,
+                date: article.date // Garder la date originale
             };
             
+            // Désactiver le bouton
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            const originalHTML = submitBtn.innerHTML;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enregistrement...';
+            
             try {
-                // Mettre à jour localement
-                const index = allArticles.findIndex(a => a.id === articleId);
-                if (index !== -1) {
-                    allArticles[index] = { ...allArticles[index], ...updateData };
+                // MISE À JOUR VIA NETLIFY FUNCTION
+                const response = await fetch('/.netlify/functions/update-article', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(updateData)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    // Mettre à jour localement
+                    const index = allArticles.findIndex(a => a.id === articleId);
+                    if (index !== -1) {
+                        allArticles[index] = { ...allArticles[index], ...updateData };
+                    }
+                    
+                    showAlert('success', '✅ Article modifié !', 'Les modifications ont été enregistrées avec succès');
+                    closeEditModal();
+                    
+                    // Recharger depuis GitHub après 1 seconde
+                    setTimeout(() => {
+                        loadArticles();
+                    }, 1000);
+                } else {
+                    throw new Error(result.error || 'Erreur inconnue');
                 }
                 
-                showAlert('success', 'Article modifié !', 'Les modifications ont été enregistrées');
-                closeEditModal();
-                loadArticles();
             } catch (error) {
-                showAlert('error', 'Erreur modification', error.message);
+                console.error('Erreur modification:', error);
+                showAlert('error', '⚠️ Erreur modification', error.message || 'Impossible de sauvegarder. Vérifiez votre connexion.');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalHTML;
             }
         });
 
-        // DELETE ARTICLE
+        // DELETE ARTICLE - VERSION NETLIFY
         async function deleteArticle(id) {
-            if (!confirm('Supprimer cet article ?')) return;
+            if (!confirm('⚠️ ATTENTION : Êtes-vous sûr de vouloir supprimer cet article définitivement ?')) {
+                return;
+            }
             
             try {
-                allArticles = allArticles.filter(a => a.id !== id);
-                showAlert('success', 'Article supprimé !', 'L\'article a été supprimé avec succès');
-                loadArticles();
+                // SUPPRESSION VIA NETLIFY FUNCTION
+                const response = await fetch('/.netlify/functions/delete-article', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id: id })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    // Supprimer localement immédiatement
+                    allArticles = allArticles.filter(a => a.id !== id);
+                    
+                    showAlert('success', '🗑️ Article supprimé !', 'L\'article a été supprimé avec succès');
+                    
+                    // Recharger depuis GitHub après 1 seconde
+                    setTimeout(() => {
+                        loadArticles();
+                    }, 1000);
+                } else {
+                    throw new Error(result.error || 'Erreur de suppression');
+                }
+                
             } catch (error) {
-                showAlert('error', 'Erreur suppression', error.message);
+                console.error('Erreur suppression:', error);
+                showAlert('error', '⚠️ Erreur suppression', error.message || 'Impossible de supprimer. Réessayez.');
             }
         }
 
