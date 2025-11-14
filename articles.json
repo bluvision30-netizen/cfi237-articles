@@ -2,7 +2,7 @@
   "articles": {
     "art_1762785670248_d448tmrit": {
       "id": "art_1762785670248_d448tmrit",
-      "titre": "Test de github et netifly",
+      "titre": "Test de github",
       "categorie": "Économie",
       "sections": [
         "main"
@@ -13,7 +13,7 @@
       "extrait": "Test de github et netifly",
       "contenu": "Test de github et netifly",
       "auteur": "Orlus Fosso",
-      "video_url": "",
+      "video_url": null,
       "date": "2025-11-10T14:41:10.248Z",
       "vues": 0,
       "likes": 0,
@@ -326,6 +326,6 @@
       "video_url": null
     }
   },
-  "lastUpdate": "2025-11-14T04:02:55.434Z",
+  "lastUpdate": "2025-11-14T09:01:47.925Z",
   "totalArticles": 17
 }
