@@ -3,13 +3,11 @@
 
 [[redirects]]
   from = "/share/*"
-  to = "/share/:splat"
+  to = "/share/ultime.html"
   status = 200
 
-[[redirects]]
-  from = "/articles.json"
-  to = "/articles.json"
-  status = 200
+[functions]
+  directory = "netlify/functions"
 
 # Configuration des fonctions
 [functions]
