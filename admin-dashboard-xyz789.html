@@ -605,7 +605,7 @@
 
     </main>
 
-    <!-- MODAL EDIT -->
+    <!-- MODAL EDIT - VERSION COMPLÈTE -->
     <div class="modal" id="editModal">
         <div class="modal-content" style="position:relative;">
             <button class="modal-close" onclick="closeEditModal()">
@@ -619,28 +619,86 @@
             <form id="editForm">
                 <input type="hidden" id="editArticleId">
                 
+                <!-- IMAGE ACTUELLE -->
+                <div class="form-group">
+                    <label class="form-label">Image de couverture actuelle</label>
+                    <div style="position:relative; display:inline-block;">
+                        <img id="editImagePreview" src="" style="max-width:100%; height:200px; object-fit:cover; border-radius:12px; border:2px solid rgba(255,255,255,0.1);">
+                        <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('editImageInput').click()" style="position:absolute; bottom:10px; right:10px;">
+                            <i class="fas fa-camera"></i> Changer
+                        </button>
+                    </div>
+                    <input type="file" id="editImageInput" accept="image/*" style="display:none;">
+                    <input type="hidden" id="editImageUrl">
+                </div>
+                
                 <div class="form-group">
                     <label class="form-label">Titre</label>
                     <input type="text" class="form-control" id="editTitre">
                 </div>
                 
-                <div class="form-group">
-                    <label class="form-label">Catégorie</label>
-                    <select class="form-control" id="editCategorie">
-                        <option value="Politique">Politique</option>
-                        <option value="Économie">Économie</option>
-                        <option value="Sports">Sports</option>
-                        <option value="Société">Société</option>
-                        <option value="Culture">Culture</option>
-                        <option value="Santé">Santé</option>
-                        <option value="Technologie">Technologie</option>
-                        <option value="International">International</option>
-                    </select>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+                    <div class="form-group">
+                        <label class="form-label">Catégorie</label>
+                        <select class="form-control" id="editCategorie">
+                            <option value="Politique">Politique</option>
+                            <option value="Économie">Économie</option>
+                            <option value="Sports">Sports</option>
+                            <option value="Société">Société</option>
+                            <option value="Culture">Culture</option>
+                            <option value="Santé">Santé</option>
+                            <option value="Technologie">Technologie</option>
+                            <option value="International">International</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Auteur</label>
+                        <input type="text" class="form-control" id="editAuteur">
+                    </div>
                 </div>
                 
+                <!-- SECTIONS -->
                 <div class="form-group">
-                    <label class="form-label">Auteur</label>
-                    <input type="text" class="form-control" id="editAuteur">
+                    <label class="form-label">Sections d'affichage</label>
+                    <div style="display:grid; grid-template-columns:repeat(2,1fr); gap:8px; max-height:200px; overflow-y:auto; padding:12px; background:rgba(255,255,255,0.05); border-radius:8px;">
+                        <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-size:0.9rem;">
+                            <input type="checkbox" name="editSections" value="main"> 
+                            <span>📰 Principaux</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-size:0.9rem;">
+                            <input type="checkbox" name="editSections" value="hero"> 
+                            <span>🌟 Slider</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-size:0.9rem;">
+                            <input type="checkbox" name="editSections" value="a-la-une"> 
+                            <span>🔥 Carousel</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-size:0.9rem;">
+                            <input type="checkbox" name="editSections" value="featured"> 
+                            <span>⭐ Important</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-size:0.9rem;">
+                            <input type="checkbox" name="editSections" value="trending"> 
+                            <span>📈 Trending</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-size:0.9rem;">
+                            <input type="checkbox" name="editSections" value="videos"> 
+                            <span>🎥 Vidéos</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-size:0.9rem;">
+                            <input type="checkbox" name="editSections" value="debates"> 
+                            <span>💬 Débats</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-size:0.9rem;">
+                            <input type="checkbox" name="editSections" value="societe"> 
+                            <span>👥 Société</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-size:0.9rem;">
+                            <input type="checkbox" name="editSections" value="events"> 
+                            <span>📅 Événements</span>
+                        </label>
+                    </div>
                 </div>
                 
                 <div class="form-group">
@@ -653,7 +711,7 @@
                     <textarea class="form-control" id="editContenu" rows="8"></textarea>
                 </div>
                 
-                <div style="display:flex; gap:12px;">
+                <div style="display:flex; gap:12px; margin-top:24px;">
                     <button type="submit" class="btn btn-primary" style="flex:1;">
                         <i class="fas fa-save"></i> Enregistrer
                     </button>
