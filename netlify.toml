@@ -7,14 +7,13 @@
   status = 200
 
 [[redirects]]
-  from = "/articles.json"
-  to = "/articles.json"
+  from = "/share/*"
+  to = "/share-ultime.html"
   status = 200
 
 # Configuration des fonctions
 [functions]
   directory = "netlify/functions"
-
 # Headers de sécurité
 [[headers]]
   for = "/*"
