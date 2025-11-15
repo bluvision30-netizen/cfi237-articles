@@ -324,8 +324,27 @@
       "vues": 0,
       "likes": 0,
       "share_url": "/share/art_1763128047914_8rawugnsb.html"
+    },
+    "art_1763186296025_hp30f0toa": {
+      "id": "art_1763186296025_hp30f0toa",
+      "titre": "AFROBIZ UNIVERSAL AWARDS",
+      "categorie": "Culture",
+      "sections": [
+        "main"
+      ],
+      "contentType": "article",
+      "image": "https://res.cloudinary.com/dkuciagop/image/upload/v1763186290/jd8vsxd5eh2ung1ciiwd.jpg",
+      "images": "[\"https://res.cloudinary.com/dkuciagop/image/upload/v1763186290/jd8vsxd5eh2ung1ciiwd.jpg\"]",
+      "extrait": "AFROBIZ UNIVERSAL AWARDS",
+      "contenu": "AFROBIZ UNIVERSAL AWARDS",
+      "auteur": "Orlus Fosso",
+      "video_url": "",
+      "date": "2025-11-15T05:58:16.027Z",
+      "vues": 0,
+      "likes": 0,
+      "share_url": "/share/art_1763186296025_hp30f0toa.html"
     }
   },
-  "lastUpdate": "2025-11-14T13:47:28.121Z",
-  "totalArticles": 17
+  "lastUpdate": "2025-11-15T05:58:16.236Z",
+  "totalArticles": 18
 }
