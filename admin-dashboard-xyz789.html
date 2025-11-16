@@ -832,96 +832,316 @@
             `;
         }
 
-        // FORM SUBMIT
-        document.getElementById('articleForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            if (uploadedImages.length === 0) {
-                showAlert('error', 'Veuillez uploader au moins une image');
-                return;
-            }
-            
-            const selectedSections = [];
-            document.querySelectorAll('input[name="sections"]:checked').forEach(cb => {
-                selectedSections.push(cb.value);
-            });
-            
-            const articleData = {
-                titre: document.getElementById('titre').value.trim(),
-                categorie: document.getElementById('categorie').value,
-                sections: selectedSections,
-                image: uploadedImages[0].url,
-                images: JSON.stringify(uploadedImages.map(i => i.url)),
-                extrait: document.getElementById('extrait').value.trim(),
-                contenu: document.getElementById('contenu').value.trim(),
-                auteur: document.getElementById('auteur').value.trim(),
-                contentType: 'article',
-                video_url: null
-            };
-            
-            const submitBtn = document.getElementById('submitBtn');
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Publication...';
-            
-            try {
-                const response = await fetch('/.netlify/functions/create-article', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(articleData)
-                });
-                
-                const result = await response.json();
-                
-                if (result.success) {
-                    showAlert('success', 'Article publié !', `ID: ${result.articleId}`);
-                    setTimeout(() => {
-                        document.getElementById('articleForm').reset();
-                        uploadedImages = [];
-                        displayImagesPreview();
-                    }, 2000);
-                }
-            } catch (error) {
-                showAlert('error', 'Erreur publication', error.message);
-            } finally {
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Publier l\'article';
-            }
+      document.getElementById('articleForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    if (uploadedImages.length === 0) {
+        showAlert('error', 'Veuillez uploader au moins une image');
+        return;
+    }
+    
+    const selectedSections = [];
+    document.querySelectorAll('input[name="sections"]:checked').forEach(cb => {
+        selectedSections.push(cb.value);
+    });
+    
+    const articleData = {
+        titre: document.getElementById('titre').value.trim(),
+        categorie: document.getElementById('categorie').value,
+        sections: selectedSections,
+        image: uploadedImages[0].url,
+        images: JSON.stringify(uploadedImages.map(i => i.url)),
+        extrait: document.getElementById('extrait').value.trim(),
+        contenu: document.getElementById('contenu').value.trim(),
+        auteur: document.getElementById('auteur').value.trim(),
+        contentType: 'article',
+        video_url: null
+    };
+    
+    const submitBtn = document.getElementById('submitBtn');
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Publication...';
+    
+    try {
+        const response = await fetch('/.netlify/functions/create-article', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(articleData)
         });
-
-        // LOAD ARTICLES
-        async function loadArticles() {
-            try {
-                const response = await fetch('/articles.json');
-                const data = await response.json();
-                allArticles = Object.values(data.articles || {});
-                
-                const container = document.getElementById('articlesContainer');
-                container.innerHTML = allArticles.map(article => `
-                    <div class="article-item">
-                        <img src="${article.image}" class="article-thumbnail">
-                        <div class="article-info">
-                            <h3>${article.titre}</h3>
-                            <div class="article-meta">
-                                <span class="badge">${article.categorie}</span>
-                                <span><i class="fas fa-eye"></i> ${article.vues || 0}</span>
-                                <span><i class="fas fa-calendar"></i> ${new Date(article.date).toLocaleDateString('fr-FR')}</span>
-                            </div>
-                        </div>
-                        <div class="article-actions">
-                            <button class="btn btn-secondary btn-sm" onclick="editArticle('${article.id}')">
-                                <i class="fas fa-edit"></i>
-                            </button>
-                            <button class="btn btn-danger btn-sm" onclick="deleteArticle('${article.id}')">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </div>
-                    </div>
-                `).join('');
-            } catch (error) {
-                console.error('Erreur chargement articles:', error);
-            }
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            // AFFICHER LES NOUVEAUX URLS SEO
+            showSuccessWithUrls(result);
+            
+            setTimeout(() => {
+                document.getElementById('articleForm').reset();
+                uploadedImages = [];
+                displayImagesPreview();
+            }, 5000);
+        } else {
+            throw new Error(result.error || 'Erreur publication');
         }
+    } catch (error) {
+        showAlert('error', 'Erreur publication', error.message);
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Publier l\'article';
+    }
+});
 
+       
+// NOUVELLE FONCTION POUR AFFICHER LES URLS
+function showSuccessWithUrls(result) {
+    const successAlert = document.getElementById('successAlert');
+    
+    successAlert.innerHTML = `
+        <i class="fas fa-check-circle" style="font-size:1.5rem; color:#22c55e;"></i>
+        <div style="flex: 1;">
+            <strong style="color:#22c55e;">✅ Article publié avec succès!</strong>
+            
+            <div style="margin-top: 16px; padding: 16px; background: rgba(34, 197, 94, 0.1); border-radius: 8px;">
+                <p style="margin: 8px 0; font-weight: 600; color: #fff;">
+                    🔗 URL de l'article:
+                </p>
+                <a href="${result.articleUrl}" 
+                   target="_blank" 
+                   style="display: block; color: #22c55e; text-decoration: underline; word-break: break-all; margin-bottom: 16px;">
+                    ${result.articleUrl}
+                </a>
+                
+                <p style="margin: 8px 0; font-weight: 600; color: #fff;">
+                    📱 Liens de partage:
+                </p>
+                <div style="display: grid; gap: 8px;">
+                    <a href="${result.shareUrls.whatsapp}" 
+                       target="_blank"
+                       style="display: flex; align-items: center; gap: 8px; padding: 8px 12px; background: rgba(37, 211, 102, 0.2); border-radius: 6px; color: #25D366; text-decoration: none; font-weight: 600;">
+                        <i class="fab fa-whatsapp"></i> Partager sur WhatsApp
+                    </a>
+                    <a href="${result.shareUrls.facebook}" 
+                       target="_blank"
+                       style="display: flex; align-items: center; gap: 8px; padding: 8px 12px; background: rgba(59, 89, 152, 0.2); border-radius: 6px; color: #3b5998; text-decoration: none; font-weight: 600;">
+                        <i class="fab fa-facebook-f"></i> Partager sur Facebook
+                    </a>
+                    <a href="${result.shareUrls.twitter}" 
+                       target="_blank"
+                       style="display: flex; align-items: center; gap: 8px; padding: 8px 12px; background: rgba(29, 161, 242, 0.2); border-radius: 6px; color: #1DA1F2; text-decoration: none; font-weight: 600;">
+                        <i class="fab fa-twitter"></i> Partager sur Twitter
+                    </a>
+                </div>
+            </div>
+            
+            <p style="margin-top: 12px; font-size: 0.9rem; opacity: 0.8;">
+                ID: ${result.articleId} | Slug: ${result.slug}
+            </p>
+        </div>
+    `;
+    
+    successAlert.classList.add('show');
+    
+    setTimeout(() => {
+        successAlert.classList.remove('show');
+    }, 10000);
+}
+
+// MISE À JOUR DE LA LISTE DES ARTICLES POUR AFFICHER LES NOUVEAUX URLS
+async function loadArticles() {
+    try {
+        const response = await fetch('/articles.json?t=' + Date.now());
+        const data = await response.json();
+        allArticles = Object.values(data.articles || {});
+        
+        const container = document.getElementById('articlesContainer');
+        container.innerHTML = allArticles.map(article => {
+            // Générer l'URL SEO
+            const articleUrl = article.slug 
+                ? `https://cfiupload.netlify.app/article/${article.slug}.html`
+                : `https://cfiupload.netlify.app/article-detail.html?id=${article.id}`;
+            
+            return `
+                <div class="article-item">
+                    <img src="${article.image}" class="article-thumbnail" alt="${article.titre}">
+                    <div class="article-info">
+                        <h3>${article.titre}</h3>
+                        <div class="article-meta">
+                            <span class="badge">${article.categorie}</span>
+                            <span><i class="fas fa-eye"></i> ${article.vues || 0}</span>
+                            <span><i class="fas fa-calendar"></i> ${new Date(article.date).toLocaleDateString('fr-FR')}</span>
+                        </div>
+                        ${article.slug ? `
+                            <div style="margin-top: 8px;">
+                                <a href="${articleUrl}" 
+                                   target="_blank" 
+                                   style="color: #667eea; font-size: 0.85rem; text-decoration: none;">
+                                    <i class="fas fa-external-link-alt"></i> Voir l'article SEO
+                                </a>
+                            </div>
+                        ` : ''}
+                    </div>
+                    <div class="article-actions">
+                        <button class="btn btn-secondary btn-sm" onclick="shareArticle('${article.id}', '${article.slug || ''}')">
+                            <i class="fas fa-share-alt"></i>
+                        </button>
+                        <button class="btn btn-secondary btn-sm" onclick="editArticle('${article.id}')">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteArticle('${article.id}')">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    } catch (error) {
+        console.error('Erreur chargement articles:', error);
+        showAlert('error', 'Impossible de charger les articles');
+    }
+}
+
+// FONCTION POUR PARTAGER UN ARTICLE
+function shareArticle(articleId, slug) {
+    const article = allArticles.find(a => a.id === articleId);
+    if (!article) return;
+    
+    // Utiliser le slug si disponible, sinon l'ancien système
+    const articleUrl = slug 
+        ? `https://cfiupload.netlify.app/article/${slug}.html`
+        : `https://cfiupload.netlify.app/article-detail.html?id=${articleId}`;
+    
+    // Créer modal de partage
+    const modal = document.createElement('div');
+    modal.className = 'modal show';
+    modal.innerHTML = `
+        <div class="modal-content" style="max-width: 600px; position: relative;">
+            <button class="modal-close" onclick="this.closest('.modal').remove()">
+                <i class="fas fa-times"></i>
+            </button>
+            
+            <h2 style="margin-bottom: 24px; color: #fff;">
+                <i class="fas fa-share-alt"></i> Partager: ${article.titre}
+            </h2>
+            
+            <div style="margin-bottom: 20px;">
+                <label style="display: block; margin-bottom: 8px; color: #e2e8f0;">URL de l'article:</label>
+                <div style="display: flex; gap: 8px;">
+                    <input type="text" 
+                           value="${articleUrl}" 
+                           readonly
+                           id="shareUrlInput"
+                           style="flex: 1; padding: 12px; background: #0f172a; border: 2px solid rgba(255,255,255,0.1); border-radius: 8px; color: #fff;">
+                    <button onclick="copyShareUrl()" 
+                            class="btn btn-secondary">
+                        <i class="fas fa-copy"></i> Copier
+                    </button>
+                </div>
+            </div>
+            
+            <div style="display: grid; gap: 12px;">
+                <a href="https://wa.me/?text=${encodeURIComponent(article.titre + ' - ' + articleUrl)}" 
+                   target="_blank"
+                   class="btn btn-primary"
+                   style="background: #25D366;">
+                    <i class="fab fa-whatsapp"></i> Partager sur WhatsApp
+                </a>
+                <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(articleUrl)}" 
+                   target="_blank"
+                   class="btn btn-primary"
+                   style="background: #3b5998;">
+                    <i class="fab fa-facebook-f"></i> Partager sur Facebook
+                </a>
+                <a href="https://twitter.com/intent/tweet?text=${encodeURIComponent(article.titre)}&url=${encodeURIComponent(articleUrl)}" 
+                   target="_blank"
+                   class="btn btn-primary"
+                   style="background: #1DA1F2;">
+                    <i class="fab fa-twitter"></i> Partager sur Twitter
+                </a>
+            </div>
+            
+            ${slug ? `
+                <p style="margin-top: 16px; padding: 12px; background: rgba(34, 197, 94, 0.1); border-radius: 8px; color: #22c55e; font-size: 0.9rem;">
+                    <i class="fas fa-check-circle"></i> Page SEO optimisée disponible
+                </p>
+            ` : `
+                <p style="margin-top: 16px; padding: 12px; background: rgba(251, 191, 36, 0.1); border-radius: 8px; color: #fbbf24; font-size: 0.9rem;">
+                    <i class="fas fa-info-circle"></i> Ancien article - Pas de page SEO
+                </p>
+            `}
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+}
+
+// COPIER URL
+function copyShareUrl() {
+    const input = document.getElementById('shareUrlInput');
+    input.select();
+    document.execCommand('copy');
+    
+    showAlert('success', 'URL copiée!', 'L\'URL a été copiée dans le presse-papiers');
+}
+
+// STATS DASHBOARD
+function updateDashboardStats() {
+    const dashboard = document.getElementById('dashboard');
+    if (!dashboard) return;
+    
+    const articlesWithSeo = allArticles.filter(a => a.slug).length;
+    const articlesWithoutSeo = allArticles.length - articlesWithSeo;
+    
+    dashboard.querySelector('.content-card').innerHTML = `
+        <h3 style="color:#fff; margin-bottom:20px;">Vue d'ensemble</h3>
+        
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-top: 24px;">
+            <div style="background: rgba(34, 197, 94, 0.1); padding: 20px; border-radius: 12px; border: 2px solid rgba(34, 197, 94, 0.3);">
+                <div style="font-size: 2rem; font-weight: 700; color: #22c55e;">
+                    ${allArticles.length}
+                </div>
+                <div style="color: #94a3b8; margin-top: 8px;">
+                    <i class="fas fa-newspaper"></i> Articles totaux
+                </div>
+            </div>
+            
+            <div style="background: rgba(102, 126, 234, 0.1); padding: 20px; border-radius: 12px; border: 2px solid rgba(102, 126, 234, 0.3);">
+                <div style="font-size: 2rem; font-weight: 700; color: #667eea;">
+                    ${articlesWithSeo}
+                </div>
+                <div style="color: #94a3b8; margin-top: 8px;">
+                    <i class="fas fa-rocket"></i> Pages SEO créées
+                </div>
+            </div>
+            
+            <div style="background: rgba(251, 191, 36, 0.1); padding: 20px; border-radius: 12px; border: 2px solid rgba(251, 191, 36, 0.3);">
+                <div style="font-size: 2rem; font-weight: 700; color: #fbbf24;">
+                    ${articlesWithoutSeo}
+                </div>
+                <div style="color: #94a3b8; margin-top: 8px;">
+                    <i class="fas fa-exclamation-triangle"></i> Sans SEO
+                </div>
+            </div>
+        </div>
+        
+        <div style="margin-top: 30px; padding: 20px; background: rgba(102, 126, 234, 0.05); border-radius: 12px; border: 2px solid rgba(102, 126, 234, 0.1);">
+            <h4 style="color: #fff; margin-bottom: 12px;">
+                <i class="fas fa-info-circle"></i> Nouveau système SEO
+            </h4>
+            <ul style="color: #94a3b8; line-height: 1.8;">
+                <li>✅ Pages statiques optimisées pour Google</li>
+                <li>✅ Meta tags complets (Open Graph, Twitter, Schema.org)</li>
+                <li>✅ URLs SEO-friendly: /article/titre-optimise.html</li>
+                <li>✅ Partage WhatsApp/Facebook avec images</li>
+                <li>✅ Galeries photos intégrées</li>
+            </ul>
+        </div>
+    `;
+}
+
+// Appeler updateDashboardStats après le chargement des articles
+loadArticles().then(() => {
+    updateDashboardStats();
+});
         // EDIT ARTICLE
         function editArticle(id) {
             const article = allArticles.find(a => a.id === id);
