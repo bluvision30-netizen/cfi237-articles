@@ -404,8 +404,25 @@
       "vues": 0,
       "likes": 0,
       "share_url": "/share/art_1763188854341_sarpmhhth.html"
+    },
+    "art_1763314477698_8aitwa2cw": {
+      "id": "art_1763314477698_8aitwa2cw",
+      "slug": "la-parfum-fdl-paris-de-flore-de-lile",
+      "titre": "La parfum fdl paris de flore de lile",
+      "categorie": "Culture",
+      "sections": [
+        "main"
+      ],
+      "image": "https://res.cloudinary.com/dkuciagop/image/upload/v1763314431/uusnxfjrr0ylmdseyv5m.jpg",
+      "images": "[\"https://res.cloudinary.com/dkuciagop/image/upload/v1763314431/uusnxfjrr0ylmdseyv5m.jpg\"]",
+      "extrait": "La parfum fdl paris de flore de lile",
+      "contenu": "La parfum fdl paris de flore de lile",
+      "auteur": "Franky Fossi",
+      "date": "2025-11-16T17:34:37.906Z",
+      "vues": 0,
+      "likes": 0
     }
   },
-  "lastUpdate": "2025-11-15T06:40:54.528Z",
-  "totalArticles": 21
+  "lastUpdate": "2025-11-16T17:34:37.906Z",
+  "totalArticles": 22
 }
