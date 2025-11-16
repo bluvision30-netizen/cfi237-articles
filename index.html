@@ -3454,33 +3454,32 @@ async function loadArticles() {
         showError();
     }
 }
-        // Hero Slider
-        function displayHeroSlider() {
-            heroArticles = allArticles
-                .filter(a => a.sections && a.sections.includes('hero'))
-                .slice(0, 5);
-            
-            if (heroArticles.length === 0) {
-                heroArticles = allArticles.slice(0, 3);
-            }
-            
-            const slider = document.getElementById('heroSlider');
-            slider.innerHTML = heroArticles.map((article, index) => `
-                <div class="hero-slide ${index === 0 ? 'active' : ''}">
-                    <img src="${article.image}" alt="${article.titre}" loading="${index === 0 ? 'eager' : 'lazy'}">
-                    <div class="hero-content">
-                        <span class="hero-category">${article.categorie}</span>
-                        <h2 class="hero-title">${article.titre}</h2>
-                        <div class="hero-meta">
-                            <span><i class="fas fa-user"></i> ${article.auteur}</span>
-                            <span><i class="fas fa-clock"></i> ${formatDate(article.date)}</span>
-                        </div>
-                    </div>
+      function displayHeroSlider() {
+    heroArticles = allArticles
+        .filter(a => a.sections && a.sections.includes('hero'))
+        .slice(0, 5);
+    
+    if (heroArticles.length === 0) {
+        heroArticles = allArticles.slice(0, 3);
+    }
+    
+    const slider = document.getElementById('heroSlider');
+    slider.innerHTML = heroArticles.map((article, index) => `
+        <div class="hero-slide ${index === 0 ? 'active' : ''}" onclick="openArticle('${article.id}')">
+            <img src="${article.image}" alt="${article.titre}" loading="${index === 0 ? 'eager' : 'lazy'}">
+            <div class="hero-content">
+                <span class="hero-category">${article.categorie}</span>
+                <h2 class="hero-title">${article.titre}</h2>
+                <div class="hero-meta">
+                    <span><i class="fas fa-user"></i> ${article.auteur}</span>
+                    <span><i class="fas fa-clock"></i> ${formatDate(article.date)}</span>
                 </div>
-            `).join('');
-            
-            startAutoSlide();
-        }
+            </div>
+        </div>
+    `).join('');
+    
+    startAutoSlide();
+}
 
         function nextSlide() {
             currentSlide = (currentSlide + 1) % heroArticles.length;
@@ -3504,39 +3503,38 @@ async function loadArticles() {
             }, 5000);
         }
 
-        // Carousel À la Une
-        function displayCarousel() {
-            const carousel = allArticles
-                .filter(a => a.sections && a.sections.includes('a-la-une'))
-                .slice(0, 8);
-            
-            const container = document.getElementById('carouselALaUne');
-            
-            if (carousel.length === 0) {
-                container.innerHTML = '<p style="color: var(--gray);">Aucun article en carousel</p>';
-                return;
-            }
-            
-            container.innerHTML = carousel.map(article => `
-                <div class="carousel-card" onclick="openArticle('${article.id}')">
-                    <img src="${article.image}" alt="${article.titre}" loading="lazy">
-                    <div class="carousel-card-content">
-                        <span class="category-badge">${article.categorie}</span>
-                        <h3 class="carousel-card-title">${article.titre}</h3>
-                        <div class="article-meta">
-                            <div class="article-author">
-                                <div class="author-avatar">${getInitial(article.auteur)}</div>
-                                <span>${article.auteur}</span>
-                            </div>
-                            <div class="article-date">
-                                <i class="fas fa-clock"></i>
-                                ${formatDate(article.date)}
-                            </div>
-                        </div>
+       function displayCarousel() {
+    const carousel = allArticles
+        .filter(a => a.sections && a.sections.includes('a-la-une'))
+        .slice(0, 8);
+    
+    const container = document.getElementById('carouselALaUne');
+    
+    if (carousel.length === 0) {
+        container.innerHTML = '<p style="color: var(--gray);">Aucun article en carousel</p>';
+        return;
+    }
+    
+    container.innerHTML = carousel.map(article => `
+        <div class="carousel-card" onclick="openArticle('${article.id}')">
+            <img src="${article.image}" alt="${article.titre}" loading="lazy">
+            <div class="carousel-card-content">
+                <span class="category-badge">${article.categorie}</span>
+                <h3 class="carousel-card-title">${article.titre}</h3>
+                <div class="article-meta">
+                    <div class="article-author">
+                        <div class="author-avatar">${getInitial(article.auteur)}</div>
+                        <span>${article.auteur}</span>
+                    </div>
+                    <div class="article-date">
+                        <i class="fas fa-clock"></i>
+                        ${formatDate(article.date)}
                     </div>
                 </div>
-            `).join('');
-        }
+            </div>
+        </div>
+    `).join('');
+}
 
         // Articles principaux
         function displayArticles() {
@@ -3574,39 +3572,42 @@ async function loadArticles() {
         }
 
         // Trending
-        function displayTrending() {
-            const trending = [...allArticles]
-                .sort((a, b) => {
-                    const scoreA = (a.vues || 0) + (a.likes || 0) * 2;
-                    const scoreB = (b.vues || 0) + (b.likes || 0) * 2;
-                    return scoreB - scoreA;
-                })
-                .slice(0, 5);
-            
-            const container = document.getElementById('trendingList');
-            
-            if (trending.length === 0) {
-                container.innerHTML = '<p style="color: var(--gray); font-size: 0.9rem;">Aucun article trending</p>';
-                return;
-            }
-            
-            container.innerHTML = trending.map((article, index) => `
-                <div class="trending-item" onclick="openArticle('${article.id}')">
-                    <div class="trending-number">${index + 1}</div>
-                    <div class="trending-content">
-                        <h4>${article.titre}</h4>
-                        <div class="trending-stats">
-                            <span><i class="fas fa-clock"></i> ${formatDate(article.date)}</span>
-                        </div>
-                    </div>
+       function displayTrending() {
+    const trending = [...allArticles]
+        .sort((a, b) => {
+            const scoreA = (a.vues || 0) + (a.likes || 0) * 2;
+            const scoreB = (b.vues || 0) + (b.likes || 0) * 2;
+            return scoreB - scoreA;
+        })
+        .slice(0, 5);
+    
+    const container = document.getElementById('trendingList');
+    
+    if (trending.length === 0) {
+        container.innerHTML = '<p style="color: var(--gray); font-size: 0.9rem;">Aucun article trending</p>';
+        return;
+    }
+    
+    container.innerHTML = trending.map((article, index) => `
+        <div class="trending-item" onclick="openArticle('${article.id}')">
+            <div class="trending-number">${index + 1}</div>
+            <div class="trending-content">
+                <h4>${article.titre}</h4>
+                <div class="trending-stats">
+                    <span><i class="fas fa-clock"></i> ${formatDate(article.date)}</span>
                 </div>
-            `).join('');
-        }
+            </div>
+        </div>
+    `).join('');
+}
 
- async function displayVideos() {
+/**
+ * Vidéos avec liens SEO
+ */
+async function displayVideos() {
     const videos = allArticles
         .filter(a => a.contentType === 'video' || (a.sections && a.sections.includes('videos')))
-        .slice(0, 12); // Augmenter à 12 pour le scroll
+        .slice(0, 12);
     
     const grid = document.getElementById('videosGrid');
     
@@ -3620,7 +3621,6 @@ async function loadArticles() {
         return;
     }
     
-    // Afficher loading
     grid.innerHTML = `
         <div class="loading" style="flex: 1; text-align: center; padding: 40px;">
             <i class="fas fa-spinner"></i>
@@ -3628,7 +3628,6 @@ async function loadArticles() {
         </div>
     `;
     
-    // Récupérer miniatures HD
     const videosWithThumbnails = await Promise.all(
         videos.map(async (article) => {
             let thumbnailData = {
@@ -3658,7 +3657,6 @@ async function loadArticles() {
         })
     );
     
-    // Générer HTML
     grid.innerHTML = videosWithThumbnails.map(article => {
         const thumb = article.thumbnailData;
         const qualityBadge = thumb.isYouTube ? 
@@ -3712,12 +3710,11 @@ async function loadArticles() {
         `;
     }).join('');
     
-    // Mettre à jour après rendu
     setTimeout(() => {
         updateScrollIndicators();
     }, 100);
     
-    console.log(`✅ ${videosWithThumbnails.length} vidéos affichées en scroll horizontal`);
+    console.log(`✅ ${videosWithThumbnails.length} vidéos affichées avec liens SEO`);
 }
 
 // Support scroll au clavier
@@ -3831,100 +3828,102 @@ function updateScrollButtons() {
 }
         // Société redesigned
         function displaySociete() {
-            const societe = allArticles
-                .filter(a => a.sections && a.sections.includes('societe'))
-                .slice(0, 6);
-            
-            const grid = document.getElementById('societeGrid');
-            
-            if (societe.length === 0) {
-                grid.innerHTML = '<div class="empty-state"><i class="fas fa-users"></i><p>Aucun article de société disponible</p></div>';
-                return;
-            }
-            
-            grid.innerHTML = societe.map(article => `
-                <article class="societe-card" onclick="openArticle('${article.id}')">
-                    <div class="societe-image-wrapper">
-                        <img src="${article.image}" alt="${article.titre}" loading="lazy">
-                        <div class="societe-overlay">
-                            <span class="societe-tag">
-                                <i class="fas fa-users"></i> Société
-                            </span>
-                        </div>
+    const societe = allArticles
+        .filter(a => a.sections && a.sections.includes('societe'))
+        .slice(0, 6);
+    
+    const grid = document.getElementById('societeGrid');
+    
+    if (societe.length === 0) {
+        grid.innerHTML = '<div class="empty-state"><i class="fas fa-users"></i><p>Aucun article de société disponible</p></div>';
+        return;
+    }
+    
+    grid.innerHTML = societe.map(article => `
+        <article class="societe-card" onclick="openArticle('${article.id}')">
+            <div class="societe-image-wrapper">
+                <img src="${article.image}" alt="${article.titre}" loading="lazy">
+                <div class="societe-overlay">
+                    <span class="societe-tag">
+                        <i class="fas fa-users"></i> Société
+                    </span>
+                </div>
+            </div>
+            <div class="article-content">
+                <h3 class="article-title">${article.titre}</h3>
+                <p class="article-excerpt">${article.extrait}</p>
+                <div class="article-meta">
+                    <div class="article-author">
+                        <div class="author-avatar">${getInitial(article.auteur)}</div>
+                        <span>${article.auteur}</span>
                     </div>
-                    <div class="article-content">
-                        <h3 class="article-title">${article.titre}</h3>
-                        <p class="article-excerpt">${article.extrait}</p>
-                        <div class="article-meta">
-                            <div class="article-author">
-                                <div class="author-avatar">${getInitial(article.auteur)}</div>
-                                <span>${article.auteur}</span>
-                            </div>
-                            <div class="article-date">
-                                <i class="fas fa-clock"></i>
-                                ${formatDate(article.date)}
-                            </div>
-                        </div>
+                    <div class="article-date">
+                        <i class="fas fa-clock"></i>
+                        ${formatDate(article.date)}
                     </div>
-                </article>
-            `).join('');
-        }
+                </div>
+            </div>
+        </article>
+    `).join('');
+}
 
         // Featured (À ne pas manquer)
-        function displayFeatured() {
-            const featured = allArticles
-                .filter(a => a.sections && a.sections.includes('featured'))
-                .slice(0, 5);
-            
-            const container = document.getElementById('featuredList');
-            
-            if (featured.length === 0) {
-                container.innerHTML = '<p style="color: var(--gray); font-size: 0.9rem;">Aucun article vedette</p>';
-                return;
-            }
-            
-            container.innerHTML = featured.map(article => `
-                <div class="featured-item" onclick="openArticle('${article.id}')">
-                    <img src="${article.image}" alt="${article.titre}" class="featured-thumb" loading="lazy">
-                    <div class="featured-content">
-                        <h4>${article.titre}</h4>
-                        <div class="featured-meta">
-                            <span><i class="fas fa-clock"></i> ${formatDate(article.date)}</span>
-                        </div>
-                    </div>
+     function displayFeatured() {
+    const featured = allArticles
+        .filter(a => a.sections && a.sections.includes('featured'))
+        .slice(0, 5);
+    
+    const container = document.getElementById('featuredList');
+    
+    if (featured.length === 0) {
+        container.innerHTML = '<p style="color: var(--gray); font-size: 0.9rem;">Aucun article vedette</p>';
+        return;
+    }
+    
+    container.innerHTML = featured.map(article => `
+        <div class="featured-item" onclick="openArticle('${article.id}')">
+            <img src="${article.image}" alt="${article.titre}" class="featured-thumb" loading="lazy">
+            <div class="featured-content">
+                <h4>${article.titre}</h4>
+                <div class="featured-meta">
+                    <span><i class="fas fa-clock"></i> ${formatDate(article.date)}</span>
                 </div>
-            `).join('');
-        }
+            </div>
+        </div>
+    `).join('');
+}
 
-        // Events - NOUVELLE STRUCTURE
-        function displayEvents() {
-            const events = allArticles
-                .filter(a => a.sections && a.sections.includes('events'))
-                .slice(0, 4);
-            
-            const container = document.getElementById('eventsList');
-            
-            if (events.length === 0) {
-                container.innerHTML = '<p style="color: var(--gray); font-size: 0.9rem;">Aucun événement à venir</p>';
-                return;
-            }
-            
-            container.innerHTML = events.map(article => `
-                <div class="event-card" onclick="openArticle('${article.id}')">
-                    <div class="event-image-container">
-                        <img src="${article.image}" alt="${article.titre}" class="event-image" loading="lazy">
-                    </div>
-                    <div class="event-content">
-                        <h4 class="event-title">${article.titre}</h4>
-                        <p class="event-excerpt">${article.extrait}</p>
-                        <div class="event-date">
-                            <i class="fas fa-calendar"></i>
-                            ${formatDate(article.date)}
-                        </div>
-                    </div>
+/**
+ * Events avec liens SEO
+ */
+function displayEvents() {
+    const events = allArticles
+        .filter(a => a.sections && a.sections.includes('events'))
+        .slice(0, 4);
+    
+    const container = document.getElementById('eventsList');
+    
+    if (events.length === 0) {
+        container.innerHTML = '<p style="color: var(--gray); font-size: 0.9rem;">Aucun événement à venir</p>';
+        return;
+    }
+    
+    container.innerHTML = events.map(article => `
+        <div class="event-card" onclick="openArticle('${article.id}')">
+            <div class="event-image-container">
+                <img src="${article.image}" alt="${article.titre}" class="event-image" loading="lazy">
+            </div>
+            <div class="event-content">
+                <h4 class="event-title">${article.titre}</h4>
+                <p class="event-excerpt">${article.extrait}</p>
+                <div class="event-date">
+                    <i class="fas fa-calendar"></i>
+                    ${formatDate(article.date)}
                 </div>
-            `).join('');
-        }
+            </div>
+        </div>
+    `).join('');
+}
 
         // Categories
         function displayCategories() {
@@ -4059,9 +4058,51 @@ function updateScrollButtons() {
             return name ? name.charAt(0).toUpperCase() : 'A';
         }
 
-        function openArticle(id) {
-            window.location.href = `/article-detail.html?id=${id}`;
-        }
+      /**
+ * Obtenir l'URL complète d'un article (SEO ou legacy)
+ * @param {Object} article - L'objet article
+ * @returns {string} URL complète de l'article
+ */
+function getArticleUrl(article) {
+    if (!article) return '#';
+    
+    // Si l'article a un slug SEO → utiliser la page statique
+    if (article.slug) {
+        return `/article/${article.slug}.html`;
+    }
+    
+    // Fallback → ancien système avec ID
+    return `/article-detail.html?id=${article.id}`;
+}
+
+/**
+ * Ouvrir un article (navigation intelligente)
+ * @param {string} articleId - ID de l'article
+ */
+function openArticle(articleId) {
+    const article = allArticles.find(a => a.id === articleId);
+    
+    if (!article) {
+        console.error('❌ Article introuvable:', articleId);
+        return;
+    }
+    
+    const url = getArticleUrl(article);
+    window.location.href = url;
+}
+
+/**
+ * Créer un lien HTML vers un article
+ * @param {Object} article - L'objet article
+ * @param {string} content - Contenu HTML du lien
+ * @param {string} className - Classes CSS optionnelles
+ * @returns {string} HTML du lien
+ */
+function createArticleLink(article, content, className = '') {
+    const url = getArticleUrl(article);
+    return `<a href="${url}" class="${className}">${content}</a>`;
+}
+
 
         function showError() {
             document.getElementById('heroSlider').innerHTML = `
@@ -4614,10 +4655,8 @@ function displayArticlesPaginated(page = 1) {
         </article>
     `).join('');
     
-    // Mise à jour de la pagination
     updatePagination(page, totalPages);
 }
-
 function updatePagination(currentPage, totalPages) {
     const pagination = document.getElementById('pagination');
     
@@ -4675,28 +4714,27 @@ function displayArticlesPopulaires() {
     }
     
     grid.innerHTML = populaires.map(article => `
-      <article class="article-card" onclick="openArticle('${article.id}')" data-article-id="${article.id}">
-    <div style="position: relative;">
-        <img src="${article.image}" alt="${article.titre}" class="article-image" loading="lazy">
-        ${getPopularityBadge(article.vues, article.likes)}
-    </div>
-    <div class="article-content">
-        <span class="category-badge">${article.categorie}</span>
-        <h3 class="article-title">${article.titre}</h3>
-        <p class="article-excerpt">${article.extrait}</p>
-        <div class="article-meta">
-            <div class="article-author">
-                <div class="author-avatar">${getInitial(article.auteur)}</div>
-                <span>${article.auteur}</span>
+        <article class="article-card" onclick="openArticle('${article.id}')" data-article-id="${article.id}">
+            <div style="position: relative;">
+                <img src="${article.image}" alt="${article.titre}" class="article-image" loading="lazy">
+                ${getPopularityBadge(article.vues, article.likes)}
             </div>
-            <div class="article-date">
-                <i class="fas fa-clock"></i>
-                ${formatDate(article.date)}
+            <div class="article-content">
+                <span class="category-badge">${article.categorie}</span>
+                <h3 class="article-title">${article.titre}</h3>
+                <p class="article-excerpt">${article.extrait}</p>
+                <div class="article-meta">
+                    <div class="article-author">
+                        <div class="author-avatar">${getInitial(article.auteur)}</div>
+                        <span>${article.auteur}</span>
+                    </div>
+                    <div class="article-date">
+                        <i class="fas fa-clock"></i>
+                        ${formatDate(article.date)}
+                    </div>
+                </div>
             </div>
-           
-        </div>
-    </div>
-</article>
+        </article>
     `).join('');
 }
 // SYSTEME DE STATS INTELLIGENT
@@ -4827,75 +4865,73 @@ document.addEventListener('DOMContentLoaded', initArticleTracking);
 
         // Autocomplete search
         function initAutocomplete() {
-            const input = document.getElementById('headerSearchInput');
-            const results = document.getElementById('searchResults');
-            let timeout;
+    const input = document.getElementById('headerSearchInput');
+    const results = document.getElementById('searchResults');
+    let timeout;
 
-            input.addEventListener('input', function() {
-                clearTimeout(timeout);
-                const query = this.value.toLowerCase().trim();
+    input.addEventListener('input', function() {
+        clearTimeout(timeout);
+        const query = this.value.toLowerCase().trim();
 
-                if (query.length < 2) {
-                    results.classList.remove('show');
-                    return;
-                }
+        if (query.length < 2) {
+            results.classList.remove('show');
+            return;
+        }
 
-                timeout = setTimeout(() => {
-                    const filtered = allArticles
-                        .filter(article => {
-                            return article.titre.toLowerCase().includes(query) ||
-                                   article.extrait.toLowerCase().includes(query) ||
-                                   article.auteur.toLowerCase().includes(query);
-                        })
-                        .slice(0, 5);
+        timeout = setTimeout(() => {
+            const filtered = allArticles
+                .filter(article => {
+                    return article.titre.toLowerCase().includes(query) ||
+                           article.extrait.toLowerCase().includes(query) ||
+                           article.auteur.toLowerCase().includes(query);
+                })
+                .slice(0, 5);
 
-                    if (filtered.length > 0) {
-                        results.innerHTML = filtered.map(article => {
-                            const isVideo = article.contentType === 'video' || article.video_url;
-                            return `
-                                <div class="search-result-item" onclick="openArticle('${article.id}')">
-                                    <img src="${article.image}" alt="${article.titre}" class="search-result-thumb">
-                                    <div class="search-result-info">
-                                        <div class="search-result-title">${highlightText(article.titre, query)}</div>
-                                        <div class="search-result-meta">
-                                            <span class="search-result-badge">${article.categorie}</span>
-                                            <span>${article.auteur}</span>
-                                            ${isVideo ? '<span>🎥 Vidéo</span>' : ''}
-                                        </div>
-                                    </div>
-                                </div>
-                            `;
-                        }).join('');
-                        results.classList.add('show');
-                    } else {
-                        results.innerHTML = `
-                            <div class="search-result-item" style="justify-content: center;">
-                                <i class="fas fa-search" style="color: var(--gray); font-size: 2rem;"></i>
-                                <div style="text-align: center; color: var(--gray);">
-                                    <div style="font-weight: 600;">Aucun résultat</div>
-                                    <div style="font-size: 0.85rem;">Essayez avec d'autres mots-clés</div>
+            if (filtered.length > 0) {
+                results.innerHTML = filtered.map(article => {
+                    const isVideo = article.contentType === 'video' || article.video_url;
+                    return `
+                        <div class="search-result-item" onclick="openArticle('${article.id}')">
+                            <img src="${article.image}" alt="${article.titre}" class="search-result-thumb">
+                            <div class="search-result-info">
+                                <div class="search-result-title">${highlightText(article.titre, query)}</div>
+                                <div class="search-result-meta">
+                                    <span class="search-result-badge">${article.categorie}</span>
+                                    <span>${article.auteur}</span>
+                                    ${isVideo ? '<span>🎥 Vidéo</span>' : ''}
                                 </div>
                             </div>
-                        `;
-                        results.classList.add('show');
-                    }
-                }, 300);
-            });
+                        </div>
+                    `;
+                }).join('');
+                results.classList.add('show');
+            } else {
+                results.innerHTML = `
+                    <div class="search-result-item" style="justify-content: center;">
+                        <i class="fas fa-search" style="color: var(--gray); font-size: 2rem;"></i>
+                        <div style="text-align: center; color: var(--gray);">
+                            <div style="font-weight: 600;">Aucun résultat</div>
+                            <div style="font-size: 0.85rem;">Essayez avec d'autres mots-clés</div>
+                        </div>
+                    </div>
+                `;
+                results.classList.add('show');
+            }
+        }, 300);
+    });
 
-            // Close on click outside
-            document.addEventListener('click', function(e) {
-                if (!input.contains(e.target) && !results.contains(e.target)) {
-                    results.classList.remove('show');
-                }
-            });
-
-            // Enter key
-            input.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    performSearch();
-                }
-            });
+    document.addEventListener('click', function(e) {
+        if (!input.contains(e.target) && !results.contains(e.target)) {
+            results.classList.remove('show');
         }
+    });
+
+    input.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            performSearch();
+        }
+    });
+}
 
        function highlightText(text, query) {
     if (!query) return text;
@@ -4910,9 +4946,7 @@ document.addEventListener('DOMContentLoaded', initArticleTracking);
             }
         }
 
-       function openArticle(id) {
-    window.location.href = `/article-detail.html?id=${id}`;
-}
+
         function toggleMobileMenu() {
             const sidebar = document.getElementById('mobileSidebar');
             const overlay = document.getElementById('mobileOverlay');
@@ -4922,73 +4956,72 @@ document.addEventListener('DOMContentLoaded', initArticleTracking);
 
         // Breaking News Popup
         async function openBreakingNews() {
-            const popup = document.getElementById('breakingPopup');
-            const content = document.getElementById('breakingContent');
-            
-            popup.classList.add('show');
-            
-            try {
-                // Filter articles with "hero" or "a-la-une" sections
-                const breakingArticles = allArticles.filter(article => {
-                    return article.sections && 
-                           (article.sections.includes('hero') || 
-                            article.sections.includes('a-la-une') ||
-                            article.sections.includes('featured'));
-                }).slice(0, 10);
+    const popup = document.getElementById('breakingPopup');
+    const content = document.getElementById('breakingContent');
+    
+    popup.classList.add('show');
+    
+    try {
+        const breakingArticles = allArticles.filter(article => {
+            return article.sections && 
+                   (article.sections.includes('hero') || 
+                    article.sections.includes('a-la-une') ||
+                    article.sections.includes('featured'));
+        }).slice(0, 10);
 
-                if (breakingArticles.length === 0) {
-                    content.innerHTML = `
-                        <div class="breaking-empty">
-                            <i class="fas fa-newspaper"></i>
-                            <h3 style="color: white; margin-bottom: 10px;">Aucune actualité à la une</h3>
-                            <p>Revenez plus tard pour les dernières nouvelles</p>
-                        </div>
-                    `;
-                    return;
-                }
-
-                content.innerHTML = breakingArticles.map(article => {
-                    const timeAgo = getTimeAgo(article.date);
-                    const isVideo = article.contentType === 'video' || article.video_url;
-                    
-                    return `
-                        <div class="breaking-item" onclick="openArticle('${article.id}')">
-                            <div class="breaking-item-header">
-                                <span class="breaking-badge">
-                                    <i class="fas fa-fire"></i>
-                                    ${article.categorie}
-                                </span>
-                                <span class="breaking-time">
-                                    <i class="fas fa-clock"></i>
-                                    ${timeAgo}
-                                </span>
-                            </div>
-                            <div class="breaking-item-title">
-                                ${isVideo ? '🎥 ' : ''}${article.titre}
-                            </div>
-                            <div class="breaking-item-excerpt">
-                                ${article.extrait}
-                            </div>
-                            <div class="breaking-item-meta">
-                                <span><i class="fas fa-user"></i> ${article.auteur}</span>
-                                <span><i class="fas fa-eye"></i> ${article.vues || 0} vues</span>
-                                <span><i class="fas fa-heart"></i> ${article.likes || 0} likes</span>
-                            </div>
-                        </div>
-                    `;
-                }).join('');
-
-            } catch (error) {
-                console.error('Erreur:', error);
-                content.innerHTML = `
-                    <div class="breaking-empty">
-                        <i class="fas fa-exclamation-triangle"></i>
-                        <h3 style="color: white; margin-bottom: 10px;">Erreur de chargement</h3>
-                        <p>Impossible de charger les actualités</p>
-                    </div>
-                `;
-            }
+        if (breakingArticles.length === 0) {
+            content.innerHTML = `
+                <div class="breaking-empty">
+                    <i class="fas fa-newspaper"></i>
+                    <h3 style="color: white; margin-bottom: 10px;">Aucune actualité à la une</h3>
+                    <p>Revenez plus tard pour les dernières nouvelles</p>
+                </div>
+            `;
+            return;
         }
+
+        content.innerHTML = breakingArticles.map(article => {
+            const timeAgo = getTimeAgo(article.date);
+            const isVideo = article.contentType === 'video' || article.video_url;
+            
+            return `
+                <div class="breaking-item" onclick="openArticle('${article.id}')">
+                    <div class="breaking-item-header">
+                        <span class="breaking-badge">
+                            <i class="fas fa-fire"></i>
+                            ${article.categorie}
+                        </span>
+                        <span class="breaking-time">
+                            <i class="fas fa-clock"></i>
+                            ${timeAgo}
+                        </span>
+                    </div>
+                    <div class="breaking-item-title">
+                        ${isVideo ? '🎥 ' : ''}${article.titre}
+                    </div>
+                    <div class="breaking-item-excerpt">
+                        ${article.extrait}
+                    </div>
+                    <div class="breaking-item-meta">
+                        <span><i class="fas fa-user"></i> ${article.auteur}</span>
+                        <span><i class="fas fa-eye"></i> ${article.vues || 0} vues</span>
+                        <span><i class="fas fa-heart"></i> ${article.likes || 0} likes</span>
+                    </div>
+                </div>
+            `;
+        }).join('');
+
+    } catch (error) {
+        console.error('Erreur:', error);
+        content.innerHTML = `
+            <div class="breaking-empty">
+                <i class="fas fa-exclamation-triangle"></i>
+                <h3 style="color: white; margin-bottom: 10px;">Erreur de chargement</h3>
+                <p>Impossible de charger les actualités</p>
+            </div>
+        `;
+    }
+}
 
         function closeBreakingNews() {
             document.getElementById('breakingPopup').classList.remove('show');
@@ -5099,41 +5132,24 @@ function initMobileAutocomplete() {
                 }).join('');
                 results.classList.add('show');
                 overlay.classList.add('show');
-            } else {
-                results.innerHTML = `
-                    <div class="mobile-search-result-item" style="justify-content: center; flex-direction: column; text-align: center; padding: 30px;">
-                        <i class="fas fa-search" style="color: var(--gray); font-size: 2rem; margin-bottom: 10px;"></i>
-                        <div style="color: var(--gray);">
-                            <div style="font-weight: 600;">Aucun résultat</div>
-                            <div style="font-size: 0.85rem; margin-top: 5px;">Essayez avec d'autres mots-clés</div>
-                        </div>
-                    </div>
-                `;
-                results.classList.add('show');
-                overlay.classList.add('show');
             }
         }, 300);
     });
-
-     input.addEventListener('focus', function() {
-        if (this.value.length >= 2 && results.children.length > 0) {
-            results.classList.add('show');
-            overlay.classList.add('show');
-        }
-    });
-
-    // Close on overlay click
-    if (overlay) {
-        overlay.addEventListener('click', closeMobileSearch);
-    }
-
-    // Close on escape
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') {
-            closeMobileSearch();
-        }
-    });
 }
+
+// ==========================================
+// 🚀 CONSOLE DEBUG
+// ==========================================
+
+console.log('✅ Système de navigation SEO chargé');
+console.log('📌 Fonctions disponibles:');
+console.log('  - getArticleUrl(article) → Obtenir URL SEO ou legacy');
+console.log('  - openArticle(id) → Navigation intelligente');
+console.log('  - createArticleLink(article, content) → Créer lien HTML');
+console.log('');
+console.log('🔗 Format URLs:');
+console.log('  - SEO: /article/titre-optimise.html');
+console.log('  - Legacy: /article-detail.html?id=xxx');
 
 
 // Fermer la recherche mobile
