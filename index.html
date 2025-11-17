@@ -3454,7 +3454,7 @@ async function loadArticles() {
         showError();
     }
 }
-      function displayHeroSlider() {
+    function displayHeroSlider() {
     heroArticles = allArticles
         .filter(a => a.sections && a.sections.includes('hero'))
         .slice(0, 5);
@@ -3465,9 +3465,14 @@ async function loadArticles() {
     
     const slider = document.getElementById('heroSlider');
     slider.innerHTML = heroArticles.map((article, index) => `
-        <div class="hero-slide ${index === 0 ? 'active' : ''}" onclick="openArticle('${article.id}')">
-            <img src="${article.image}" alt="${article.titre}" loading="${index === 0 ? 'eager' : 'lazy'}">
-            <div class="hero-content">
+        <div class="hero-slide ${index === 0 ? 'active' : ''}" 
+             onclick="openArticle('${article.id}')" 
+             style="cursor: pointer;">
+            <img src="${article.image}" 
+                 alt="${article.titre}" 
+                 loading="${index === 0 ? 'eager' : 'lazy'}"
+                 style="pointer-events: none;">
+            <div class="hero-content" style="pointer-events: none;">
                 <span class="hero-category">${article.categorie}</span>
                 <h2 class="hero-title">${article.titre}</h2>
                 <div class="hero-meta">
@@ -3503,7 +3508,8 @@ async function loadArticles() {
             }, 5000);
         }
 
-       function displayCarousel() {
+       
+function displayCarousel() {
     const carousel = allArticles
         .filter(a => a.sections && a.sections.includes('a-la-une'))
         .slice(0, 8);
@@ -3515,27 +3521,61 @@ async function loadArticles() {
         return;
     }
     
-    container.innerHTML = carousel.map(article => `
-        <div class="carousel-card" onclick="openArticle('${article.id}')">
-            <img src="${article.image}" alt="${article.titre}" loading="lazy">
-            <div class="carousel-card-content">
-                <span class="category-badge">${article.categorie}</span>
-                <h3 class="carousel-card-title">${article.titre}</h3>
-                <div class="article-meta">
-                    <div class="article-author">
-                        <div class="author-avatar">${getInitial(article.auteur)}</div>
-                        <span>${article.auteur}</span>
-                    </div>
-                    <div class="article-date">
-                        <i class="fas fa-clock"></i>
-                        ${formatDate(article.date)}
+    container.innerHTML = carousel.map(article => {
+        const realViews = getArticleViews(article.id);
+        
+        return `
+            <div class="carousel-card" onclick="openArticle('${article.id}')">
+                <img src="${article.image}" alt="${article.titre}" loading="lazy">
+                <div class="carousel-card-content">
+                    <span class="category-badge">${article.categorie}</span>
+                    <h3 class="carousel-card-title">${article.titre}</h3>
+                    <div class="article-meta">
+                        <div class="article-author">
+                            <div class="author-avatar">${getInitial(article.auteur)}</div>
+                            <span>${article.auteur}</span>
+                        </div>
+                        <div class="article-stats">
+                            <span><i class="fas fa-eye"></i> ${realViews}</span>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    `).join('');
+        `;
+    }).join('');
+}
+document.addEventListener('DOMContentLoaded', function() {
+    loadArticles().then(() => {
+        displayHeroSlider();
+        displayCarousel();
+        displayArticlesPaginated(1);
+        displayArticlesPopulaires();
+        displayTrending();
+        displayVideos();
+        // ... autres sections
+    });
+});
+
+// ✅ 10. EXPORT DES STATISTIQUES
+function exportArticleStats() {
+    const views = JSON.parse(localStorage.getItem('article_views') || '{}');
+    const stats = allArticles.map(article => ({
+        id: article.id,
+        titre: article.titre,
+        vues: views[article.id] || 0,
+        likes: article.likes || 0,
+        score: (views[article.id] || 0) * 10 + (article.likes || 0) * 2
+    })).sort((a, b) => b.score - a.score);
+    
+    console.table(stats.slice(0, 10));
+    return stats;
 }
 
+// Rendre disponible globalement
+window.exportArticleStats = exportArticleStats;
+
+console.log('✅ Système de tracking des vues activé');
+console.log('📊 Utilisez exportArticleStats() pour voir les stats');
         // Articles principaux
         function displayArticles() {
             const mainArticles = allArticles
@@ -4079,6 +4119,7 @@ function getArticleUrl(article) {
  * Ouvrir un article (navigation intelligente)
  * @param {string} articleId - ID de l'article
  */
+// ✅ 2. FONCTION OPENARTICLE AVEC TRACKING DES VUES
 function openArticle(articleId) {
     const article = allArticles.find(a => a.id === articleId);
     
@@ -4087,6 +4128,10 @@ function openArticle(articleId) {
         return;
     }
     
+    // 📊 TRACKING: Incrémenter les vues localement
+    trackArticleView(articleId);
+    
+    // Navigation intelligente (SEO ou legacy)
     const url = getArticleUrl(article);
     window.location.href = url;
 }
@@ -4739,11 +4784,13 @@ function displayArticlesPopulaires() {
 }
 // SYSTEME DE STATS INTELLIGENT
 function getPopularityBadge(views, likes) {
-    if (views > 1000 || likes > 100) return '<span class="badge-populaire">🔥 Viral</span>';
-    if (views > 500 || likes > 50) return '<span class="badge-populaire">⭐ Populaire</span>';
-    if (views > 100 || likes > 10) return '<span class="badge-populaire">🚀 Tendance</span>';
-    if (views > 0 || likes > 0) return '<span class="badge-populaire">🆕 Nouveau</span>';
-    return '<span class="badge-populaire">✨ Nouveau</span>';
+    const totalEngagement = views + ((likes || 0) * 2);
+    
+    if (totalEngagement >= 100) return '<span class="badge-populaire">🔥 VIRAL</span>';
+    if (totalEngagement >= 50) return '<span class="badge-populaire">⭐ POPULAIRE</span>';
+    if (totalEngagement >= 20) return '<span class="badge-populaire">🚀 TENDANCE</span>';
+    if (totalEngagement >= 5) return '<span class="badge-populaire">💎 NOUVEAU</span>';
+    return '<span class="badge-populaire">✨ FRAIS</span>';
 }
 
 function getSmartStats(views, likes) {
@@ -4816,28 +4863,82 @@ function initArticleTracking() {
     });
 }
 
+// ✅ 3. SYSTÈME DE TRACKING DES VUES
 function trackArticleView(articleId) {
-    if (sessionStorage.getItem(`viewed_${articleId}`)) return;
+    // Récupérer les vues depuis localStorage
+    let views = JSON.parse(localStorage.getItem('article_views') || '{}');
     
-    fetch('/.netlify/functions/update-stats', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ articleId, type: 'view' })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            sessionStorage.setItem(`viewed_${articleId}`, 'true');
-            // Met à jour l'affichage si nécessaire
-            updateArticleStats(articleId, data.newCount, 'views');
-        }
-    })
-    .catch(console.error);
+    // Incrémenter
+    views[articleId] = (views[articleId] || 0) + 1;
+    
+    // Sauvegarder
+    localStorage.setItem('article_views', JSON.stringify(views));
+    
+    console.log(`📊 Vue enregistrée pour article ${articleId}: ${views[articleId]} vues`);
 }
 
 // Initialisation
 document.addEventListener('DOMContentLoaded', initArticleTracking);
        
+
+
+function getArticleViews(articleId) {
+    const views = JSON.parse(localStorage.getItem('article_views') || '{}');
+    return views[articleId] || 0;
+}
+
+// ✅ 5. ARTICLES POPULAIRES (PAR VUES RÉELLES)
+function displayArticlesPopulaires() {
+    // Charger les vues depuis localStorage
+    const views = JSON.parse(localStorage.getItem('article_views') || '{}');
+    
+    // Ajouter les vues aux articles
+    const articlesWithViews = allArticles.map(article => ({
+        ...article,
+        realViews: views[article.id] || 0
+    }));
+    
+    // Trier par vues réelles
+    const populaires = articlesWithViews
+        .sort((a, b) => {
+            // Priorité: vues réelles > likes > vues base de données
+            const scoreA = (a.realViews * 10) + (a.likes || 0) * 2 + (a.vues || 0);
+            const scoreB = (b.realViews * 10) + (b.likes || 0) * 2 + (b.vues || 0);
+            return scoreB - scoreA;
+        })
+        .slice(0, 6);
+    
+    const grid = document.getElementById('populairesGrid');
+    
+    if (populaires.length === 0) {
+        grid.innerHTML = '<div class="empty-state"><i class="fas fa-fire"></i><p>Aucun article populaire</p></div>';
+        return;
+    }
+    
+    grid.innerHTML = populaires.map(article => `
+        <article class="article-card" onclick="openArticle('${article.id}')" data-article-id="${article.id}">
+            <div style="position: relative;">
+                <img src="${article.image}" alt="${article.titre}" class="article-image" loading="lazy">
+                ${getPopularityBadge(article.realViews, article.likes)}
+            </div>
+            <div class="article-content">
+                <span class="category-badge">${article.categorie}</span>
+                <h3 class="article-title">${article.titre}</h3>
+                <p class="article-excerpt">${article.extrait}</p>
+                <div class="article-meta">
+                    <div class="article-author">
+                        <div class="author-avatar">${getInitial(article.auteur)}</div>
+                        <span>${article.auteur}</span>
+                    </div>
+                    <div class="article-stats">
+                        <span class="stat"><i class="fas fa-eye"></i> ${article.realViews}</span>
+                        <span class="stat"><i class="fas fa-heart"></i> ${article.likes || 0}</span>
+                    </div>
+                </div>
+            </div>
+        </article>
+    `).join('');
+}
 
        // Date actuelle
         function updateDate() {
