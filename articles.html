@@ -720,7 +720,47 @@
             section: '',
             search: ''
         };
+// ✅ 1. OBTENIR URL ARTICLE (SEO ou Legacy)
+function getArticleUrl(article) {
+    if (!article) return '#';
+    
+    // Si l'article a un slug SEO → utiliser la page statique
+    if (article.slug) {
+        return `/article/${article.slug}.html`;
+    }
+    
+    // Fallback → ancien système avec ID
+    return `/article-detail.html?id=${article.id}`;
+}
 
+// ✅ 2. TRACKING DES VUES
+function trackArticleView(articleId) {
+    let views = JSON.parse(localStorage.getItem('article_views') || '{}');
+    views[articleId] = (views[articleId] || 0) + 1;
+    localStorage.setItem('article_views', JSON.stringify(views));
+    console.log(`📊 Vue enregistrée: ${articleId} → ${views[articleId]} vues`);
+}
+
+function getArticleViews(articleId) {
+    const views = JSON.parse(localStorage.getItem('article_views') || '{}');
+    return views[articleId] || 0;
+}
+// ✅ 3. OPENARTICLE AVEC TRACKING
+function openArticle(articleId) {
+    const article = allArticles.find(a => a.id === articleId);
+    
+    if (!article) {
+        console.error('❌ Article introuvable:', articleId);
+        return;
+    }
+    
+    // Tracker la vue
+    trackArticleView(articleId);
+    
+    // Navigation intelligente
+    const url = getArticleUrl(article);
+    window.location.href = url;
+}
         async function loadArticles() {
             try {
                 const response = await fetch('/articles.json?t=' + Date.now());
@@ -830,20 +870,32 @@
             updateUrl();
         }
 
-        function sortArticles() {
-            switch (currentFilters.sort) {
-                case 'popular':
-                    filteredArticles.sort((a, b) => (b.vues || 0) - (a.vues || 0));
-                    break;
-                case 'trending':
-                    filteredArticles.sort((a, b) => (b.likes || 0) - (a.likes || 0));
-                    break;
-                case 'recent':
-                default:
-                    filteredArticles.sort((a, b) => new Date(b.date) - new Date(a.date));
-                    break;
-            }
-        }
+    function sortArticles() {
+    const views = JSON.parse(localStorage.getItem('article_views') || '{}');
+    
+    switch (currentFilters.sort) {
+        case 'popular':
+            // Trier par vues réelles
+            filteredArticles.sort((a, b) => {
+                const viewsA = views[a.id] || 0;
+                const viewsB = views[b.id] || 0;
+                return viewsB - viewsA;
+            });
+            break;
+        case 'trending':
+            // Trier par likes + vues combinés
+            filteredArticles.sort((a, b) => {
+                const scoreA = (views[a.id] || 0) + (a.likes || 0) * 2;
+                const scoreB = (views[b.id] || 0) + (b.likes || 0) * 2;
+                return scoreB - scoreA;
+            });
+            break;
+        case 'recent':
+        default:
+            filteredArticles.sort((a, b) => new Date(b.date) - new Date(a.date));
+            break;
+    }
+}
 
         function updateActiveFilters() {
             const container = document.getElementById('activeFilters');
@@ -901,56 +953,57 @@
         }
 
         function displayArticles() {
-            const grid = document.getElementById('articlesGrid');
-            const totalPages = Math.ceil(filteredArticles.length / ARTICLES_PER_PAGE);
-            
-            document.getElementById('resultsCount').textContent = filteredArticles.length;
-            
-            if (filteredArticles.length === 0) {
-                grid.innerHTML = `
-                    <div class="empty-state">
-                        <i class="fas fa-inbox"></i>
-                        <h3>Aucun article trouvé</h3>
-                        <p>Essayez de modifier vos filtres</p>
+    const grid = document.getElementById('articlesGrid');
+    const totalPages = Math.ceil(filteredArticles.length / ARTICLES_PER_PAGE);
+    
+    document.getElementById('resultsCount').textContent = filteredArticles.length;
+    
+    if (filteredArticles.length === 0) {
+        grid.innerHTML = `
+            <div class="empty-state">
+                <i class="fas fa-inbox"></i>
+                <h3>Aucun article trouvé</h3>
+                <p>Essayez de modifier vos filtres</p>
+            </div>
+        `;
+        document.getElementById('pagination').innerHTML = '';
+        return;
+    }
+    
+    const startIndex = (currentPage - 1) * ARTICLES_PER_PAGE;
+    const endIndex = startIndex + ARTICLES_PER_PAGE;
+    const pageArticles = filteredArticles.slice(startIndex, endIndex);
+    
+    grid.innerHTML = pageArticles.map(article => {
+        const isVideo = article.contentType === 'video' || article.video_url;
+        const realViews = getArticleViews(article.id); // ✅ VUES RÉELLES
+        
+        return `
+            <article class="article-card" onclick="openArticle('${article.id}')">
+                <div class="article-image-wrapper">
+                    <img src="${article.image}" alt="${article.titre}" class="article-image" loading="lazy">
+                    ${isVideo ? '<div class="video-badge"><i class="fas fa-play"></i> VIDÉO</div>' : ''}
+                </div>
+                <div class="article-content">
+                    <span class="category-badge">${article.categorie}</span>
+                    <h3 class="article-title">${article.titre}</h3>
+                    <p class="article-excerpt">${article.extrait}</p>
+                    <div class="article-meta">
+                        <div>
+                            <i class="fas fa-user"></i> ${article.auteur}
+                        </div>
+                        <div class="article-stats">
+                            <span class="stat"><i class="fas fa-eye"></i> ${realViews}</span>
+                            <span class="stat"><i class="fas fa-heart"></i> ${article.likes || 0}</span>
+                        </div>
                     </div>
-                `;
-                document.getElementById('pagination').innerHTML = '';
-                return;
-            }
-            
-            const startIndex = (currentPage - 1) * ARTICLES_PER_PAGE;
-            const endIndex = startIndex + ARTICLES_PER_PAGE;
-            const pageArticles = filteredArticles.slice(startIndex, endIndex);
-            
-            grid.innerHTML = pageArticles.map(article => {
-                const isVideo = article.contentType === 'video' || article.video_url;
-                
-                return `
-                    <article class="article-card" onclick="openArticle('${article.id}')">
-                        <div class="article-image-wrapper">
-                            <img src="${article.image}" alt="${article.titre}" class="article-image" loading="lazy">
-                            ${isVideo ? '<div class="video-badge"><i class="fas fa-play"></i> VIDÉO</div>' : ''}
-                        </div>
-                        <div class="article-content">
-                            <span class="category-badge">${article.categorie}</span>
-                            <h3 class="article-title">${article.titre}</h3>
-                            <p class="article-excerpt">${article.extrait}</p>
-                            <div class="article-meta">
-                                <div>
-                                    <i class="fas fa-user"></i> ${article.auteur}
-                                </div>
--stats">
-                                    <span class="stat"><i class="fas fa-eye"></i> ${article.vues || 0}</span>
-                                    <span class="stat"><i class="fas fa-heart"></i> ${article.likes || 0}</span>
-                                </div>
-                            </div>
-                        </div>
-                    </article>
-                `;
-            }).join('');
-            
-            updatePagination(totalPages);
-        }
+                </div>
+            </article>
+        `;
+    }).join('');
+    
+    updatePagination(totalPages);
+}
 
         function updatePagination(totalPages) {
             const pagination = document.getElementById('pagination');
@@ -1034,59 +1087,90 @@
         }
 
         function initAutocomplete() {
-            const headerInput = document.getElementById('headerSearchInput');
-            const resultsDiv = document.getElementById('headerSearchResults');
-            let searchTimeout;
+    const headerInput = document.getElementById('headerSearchInput');
+    const resultsDiv = document.getElementById('headerSearchResults');
+    let searchTimeout;
+    
+    headerInput.addEventListener('input', function() {
+        clearTimeout(searchTimeout);
+        const query = this.value.toLowerCase().trim();
+        
+        if (query.length < 2) {
+            resultsDiv.classList.remove('show');
+            return;
+        }
+        
+        searchTimeout = setTimeout(() => {
+            const results = allArticles
+                .filter(article => {
+                    return article.titre.toLowerCase().includes(query) ||
+                           article.extrait.toLowerCase().includes(query) ||
+                           article.auteur.toLowerCase().includes(query);
+                })
+                .slice(0, 5);
             
-            headerInput.addEventListener('input', function() {
-                clearTimeout(searchTimeout);
-                const query = this.value.toLowerCase().trim();
-                
-                if (query.length < 2) {
-                    resultsDiv.classList.remove('show');
-                    return;
-                }
-                
-                searchTimeout = setTimeout(() => {
-                    const results = allArticles
-                        .filter(article => {
-                            return article.titre.toLowerCase().includes(query) ||
-                                   article.extrait.toLowerCase().includes(query) ||
-                                   article.auteur.toLowerCase().includes(query);
-                        })
-                        .slice(0, 5);
+            if (results.length > 0) {
+                resultsDiv.innerHTML = results.map(article => {
+                    const realViews = getArticleViews(article.id);
                     
-                    if (results.length > 0) {
-                        resultsDiv.innerHTML = results.map(article => `
-                            <div class="search-result-item" onclick="goToSearch('${escapeHtml(article.titre)}')">
-                                <img src="${article.image}" alt="${article.titre}" class="search-result-thumb">
-                                <div class="search-result-info">
-                                    <div class="search-result-title">${highlightText(article.titre, query)}</div>
-                                    <div class="search-result-meta">
-                                        ${article.categorie} • ${article.auteur}
-                                    </div>
+                    return `
+                        <div class="search-result-item" onclick="openArticle('${article.id}')">
+                            <img src="${article.image}" alt="${article.titre}" class="search-result-thumb">
+                            <div class="search-result-info">
+                                <div class="search-result-title">${highlightText(article.titre, query)}</div>
+                                <div class="search-result-meta">
+                                    ${article.categorie} • ${article.auteur} • ${realViews} vues
                                 </div>
                             </div>
-                        `).join('');
-                        resultsDiv.classList.add('show');
-                    } else {
-                        resultsDiv.innerHTML = `
-                            <div class="search-result-item" style="justify-content: center; color: var(--gray);">
-                                <i class="fas fa-search"></i>
-                                <span>Aucun résultat trouvé</span>
-                            </div>
-                        `;
-                        resultsDiv.classList.add('show');
-                    }
-                }, 300);
-            });
-            
-            document.addEventListener('click', function(e) {
-                if (!headerInput.contains(e.target) && !resultsDiv.contains(e.target)) {
-                    resultsDiv.classList.remove('show');
-                }
-            });
+                        </div>
+                    `;
+                }).join('');
+                resultsDiv.classList.add('show');
+            } else {
+                resultsDiv.innerHTML = `
+                    <div class="search-result-item" style="justify-content: center; color: var(--gray);">
+                        <i class="fas fa-search"></i>
+                        <span>Aucun résultat trouvé</span>
+                    </div>
+                `;
+                resultsDiv.classList.add('show');
+            }
+        }, 300);
+    });
+    
+    document.addEventListener('click', function(e) {
+        if (!headerInput.contains(e.target) && !resultsDiv.contains(e.target)) {
+            resultsDiv.classList.remove('show');
         }
+    });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    loadArticles();
+    console.log('✅ articles.html avec navigation SEO chargé');
+});
+
+
+// ✅ 9. STATS CONSOLE
+console.log('📊 SYSTÈME DE TRACKING ACTIVÉ');
+console.log('Utilisez exportArticleStats() pour voir les statistiques');
+
+function exportArticleStats() {
+    const views = JSON.parse(localStorage.getItem('article_views') || '{}');
+    const stats = allArticles.map(article => ({
+        id: article.id,
+        titre: article.titre,
+        slug: article.slug || 'N/A',
+        vues: views[article.id] || 0,
+        likes: article.likes || 0,
+        categorie: article.categorie
+    })).sort((a, b) => b.vues - a.vues);
+    
+    console.table(stats.slice(0, 10));
+    return stats;
+}
+
+window.exportArticleStats = exportArticleStats;
 
         function highlightText(text, query) {
             if (!query) return text;
@@ -1101,11 +1185,11 @@
         }
 
         function goToSearch(searchTerm) {
-            document.getElementById('searchInput').value = searchTerm;
-            document.getElementById('headerSearchResults').classList.remove('show');
-            document.getElementById('headerSearchInput').value = '';
-            applyFilters();
-        }
+    document.getElementById('searchInput').value = searchTerm;
+    document.getElementById('headerSearchResults').classList.remove('show');
+    document.getElementById('headerSearchInput').value = '';
+    applyFilters();
+}
 
         document.getElementById('filterType').addEventListener('change', applyFilters);
         document.getElementById('filterCategory').addEventListener('change', applyFilters);
