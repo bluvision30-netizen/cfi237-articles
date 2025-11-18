@@ -710,10 +710,7 @@
 
 <script>
     let allArticles = [];
-    const articlesGrid = document.getElementById('articles-grid');
-    const searchInput = document.getElementById('search-input');
-    const categoryFilter = document.getElementById('category-filter');
-    const sortFilter = document.getElementById('sort-filter');
+    let articlesGrid, searchInput, categoryFilter, sortFilter;
 
     async function loadArticles() {
         try {
@@ -730,7 +727,9 @@
             displayLatestArticles();
         } catch (error) {
             console.error('❌ Erreur:', error);
-            articlesGrid.innerHTML = '<p class="error">Erreur lors du chargement des articles.</p>';
+            if (articlesGrid) {
+                articlesGrid.innerHTML = '<p class="error">Erreur lors du chargement des articles.</p>';
+            }
         }
     }
 
@@ -790,6 +789,8 @@
     }
 
     function populateCategoryFilter() {
+        if (!categoryFilter) return;
+        
         const categories = [...new Set(allArticles.map(article => article.category))];
         categoryFilter.innerHTML = '<option value="">Toutes les catégories</option>';
         categories.forEach(category => {
@@ -803,38 +804,61 @@
     function applyFilters() {
         let filteredArticles = [...allArticles];
         
-        const searchTerm = searchInput.value.toLowerCase();
-        if (searchTerm) {
-            filteredArticles = filteredArticles.filter(article =>
-                article.title.toLowerCase().includes(searchTerm) ||
-                article.excerpt.toLowerCase().includes(searchTerm)
-            );
+        if (searchInput) {
+            const searchTerm = searchInput.value.toLowerCase();
+            if (searchTerm) {
+                filteredArticles = filteredArticles.filter(article =>
+                    article.title.toLowerCase().includes(searchTerm) ||
+                    article.excerpt.toLowerCase().includes(searchTerm)
+                );
+            }
         }
         
-        const selectedCategory = categoryFilter.value;
-        if (selectedCategory) {
-            filteredArticles = filteredArticles.filter(article => 
-                article.category === selectedCategory
-            );
+        if (categoryFilter) {
+            const selectedCategory = categoryFilter.value;
+            if (selectedCategory) {
+                filteredArticles = filteredArticles.filter(article => 
+                    article.category === selectedCategory
+                );
+            }
         }
         
-        const sortOption = sortFilter.value;
-        if (sortOption === 'date-desc') {
-            filteredArticles.sort((a, b) => new Date(b.date) - new Date(a.date));
-        } else if (sortOption === 'date-asc') {
-            filteredArticles.sort((a, b) => new Date(a.date) - new Date(b.date));
-        } else if (sortOption === 'title') {
-            filteredArticles.sort((a, b) => a.title.localeCompare(b.title));
+        if (sortFilter) {
+            const sortOption = sortFilter.value;
+            if (sortOption === 'date-desc') {
+                filteredArticles.sort((a, b) => new Date(b.date) - new Date(a.date));
+            } else if (sortOption === 'date-asc') {
+                filteredArticles.sort((a, b) => new Date(a.date) - new Date(b.date));
+            } else if (sortOption === 'title') {
+                filteredArticles.sort((a, b) => a.title.localeCompare(b.title));
+            }
         }
         
         displayArticles(filteredArticles);
     }
 
-    searchInput.addEventListener('input', applyFilters);
-    categoryFilter.addEventListener('change', applyFilters);
-    sortFilter.addEventListener('change', applyFilters);
-
-    document.addEventListener('DOMContentLoaded', loadArticles);
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialiser les éléments DOM
+        articlesGrid = document.getElementById('articles-grid');
+        searchInput = document.getElementById('search-input');
+        categoryFilter = document.getElementById('category-filter');
+        sortFilter = document.getElementById('sort-filter');
+        
+        // Ajouter les event listeners seulement si les éléments existent
+        if (searchInput) {
+            searchInput.addEventListener('input', applyFilters);
+        }
+        if (categoryFilter) {
+            categoryFilter.addEventListener('change', applyFilters);
+        }
+        if (sortFilter) {
+            sortFilter.addEventListener('change', applyFilters);
+        }
+        
+        // Charger les articles
+        loadArticles();
+    });
 </script>
 </body>
 </html>
+
