@@ -20,22 +20,6 @@
       "vues": 0,
       "likes": 0
     },
-    "art_1762837001352_cj3zq5w50": {
-      "id": "art_1762837001352_cj3zq5w50",
-      "titre": "merime kenne pdg fondation",
-      "categorie": "Économie",
-      "sections": [
-        "main"
-      ],
-      "image": "https://res.cloudinary.com/dkuciagop/image/upload/v1762836982/oepsbberihxrw8nifkjj.jpg",
-      "images": "[\"https://res.cloudinary.com/dkuciagop/image/upload/v1762836982/oepsbberihxrw8nifkjj.jpg\"]",
-      "extrait": "merime kenne pdg fondation",
-      "contenu": "merime kenne pdg fondation",
-      "auteur": "franky fosso",
-      "date": "2025-11-11T04:56:41.542Z",
-      "vues": 0,
-      "likes": 0
-    },
     "art_1762841980390_210qt6qvw": {
       "id": "art_1762841980390_210qt6qvw",
       "titre": "lancement des awarsd",
@@ -310,6 +294,6 @@
       "likes": 0
     }
   },
-  "lastUpdate": "2025-11-18T03:24:36.123Z",
-  "totalArticles": 16
+  "lastUpdate": "2025-11-18T03:24:38.203Z",
+  "totalArticles": 15
 }
