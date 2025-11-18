@@ -219,8 +219,28 @@
       "date": "2025-11-18T12:35:27.601Z",
       "vues": 0,
       "likes": 0
+    },
+    "art_1763492981132_p10b7s4rm": {
+      "id": "art_1763492981132_p10b7s4rm",
+      "slug": "issa-tchiroma-declare-president",
+      "titre": "ISSA TCHIROMA DECLARE PRESIDENT",
+      "categorie": "Politique",
+      "sections": [
+        "main",
+        "videos"
+      ],
+      "image": "https://res.cloudinary.com/dkuciagop/image/upload/v1763492956/vggdk33zhokksag8g9s0.jpg",
+      "images": "[\"https://res.cloudinary.com/dkuciagop/image/upload/v1763492956/vggdk33zhokksag8g9s0.jpg\",\"https://res.cloudinary.com/dkuciagop/image/upload/v1763492959/itjdrs4dmsaeltzbvutp.jpg\"]",
+      "extrait": "ISSA TCHIROMA DECLARE PRESIDENT",
+      "contenu": "ISSA TCHIROMA DECLARE PRESIDENT PAR NZUIMANTO ET LES AUTRES",
+      "auteur": "Orlus Fosso",
+      "contentType": "video",
+      "video_url": "https://youtu.be/IeHt5lL_vJs",
+      "date": "2025-11-18T19:09:41.328Z",
+      "vues": 0,
+      "likes": 0
     }
   },
-  "lastUpdate": "2025-11-18T18:48:33.656Z",
-  "totalArticles": 11
+  "lastUpdate": "2025-11-18T19:09:41.328Z",
+  "totalArticles": 12
 }
