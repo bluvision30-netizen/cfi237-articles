@@ -1,25 +1,5 @@
 {
   "articles": {
-    "art_1762797319250_svhrcic2e": {
-      "id": "art_1762797319250_svhrcic2e",
-      "titre": "ca commence a donner",
-      "categorie": "Société",
-      "sections": [
-        "main"
-      ],
-      "contentType": "article",
-      "image": "https://res.cloudinary.com/dkuciagop/image/upload/v1762797256/z4ixaaq0eb947fd4taut.jpg",
-      "images": "[\"https://res.cloudinary.com/dkuciagop/image/upload/v1762797256/z4ixaaq0eb947fd4taut.jpg\"]",
-      "extrait": "ca commence a donner",
-      "contenu": "ca commence a donner",
-      "auteur": "Ben Oway",
-      "video_url": "",
-      "date": "2025-11-10T17:55:19.250Z",
-      "vues": 0,
-      "likes": 0,
-      "share_url": "/share/art_1762797319250_svhrcic2e.html",
-      "statut": "publié"
-    },
     "art_1762830245344_9krf07i8z": {
       "id": "art_1762830245344_9krf07i8z",
       "titre": "merime kenne pdg fondation",
@@ -476,6 +456,6 @@
       "likes": 0
     }
   },
-  "lastUpdate": "2025-11-18T03:07:55.744Z",
-  "totalArticles": 25
+  "lastUpdate": "2025-11-18T03:08:00.344Z",
+  "totalArticles": 24
 }
