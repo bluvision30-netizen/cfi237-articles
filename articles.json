@@ -100,25 +100,6 @@
       "contentType": "article",
       "video_url": null
     },
-    "art_1763092782934_zeujlz7zp": {
-      "id": "art_1763092782934_zeujlz7zp",
-      "titre": "lancement des awarsd",
-      "categorie": "Société",
-      "sections": [
-        "main",
-        "hero"
-      ],
-      "image": "https://res.cloudinary.com/dkuciagop/image/upload/v1763092759/tvlfqkh95uqdmndmhp6z.jpg",
-      "images": "[\"https://res.cloudinary.com/dkuciagop/image/upload/v1763092759/tvlfqkh95uqdmndmhp6z.jpg\"]",
-      "extrait": "lancement des awarsd",
-      "contenu": "lancement des awarsd",
-      "auteur": "franky fosso",
-      "date": "2025-11-14T03:59:43.124Z",
-      "vues": 0,
-      "likes": 0,
-      "contentType": "article",
-      "video_url": null
-    },
     "art_1763092975287_gzdvvz3s6": {
       "id": "art_1763092975287_gzdvvz3s6",
       "titre": "AFROBIZ UNIVERSAL AWARDS",
@@ -294,6 +275,6 @@
       "likes": 0
     }
   },
-  "lastUpdate": "2025-11-18T03:24:38.203Z",
-  "totalArticles": 15
+  "lastUpdate": "2025-11-18T03:24:44.179Z",
+  "totalArticles": 14
 }
