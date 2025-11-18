@@ -100,24 +100,6 @@
       "contentType": "article",
       "video_url": null
     },
-    "art_1763092975287_gzdvvz3s6": {
-      "id": "art_1763092975287_gzdvvz3s6",
-      "titre": "AFROBIZ UNIVERSAL AWARDS",
-      "categorie": "Économie",
-      "sections": [
-        "main"
-      ],
-      "image": "https://res.cloudinary.com/dkuciagop/image/upload/v1763092953/upnjtnadxmim0gzdsiy7.jpg",
-      "images": "[\"https://res.cloudinary.com/dkuciagop/image/upload/v1763092953/upnjtnadxmim0gzdsiy7.jpg\",\"https://res.cloudinary.com/dkuciagop/image/upload/v1763092954/sy6qet15rgkkno1ftzqo.jpg\",\"https://res.cloudinary.com/dkuciagop/image/upload/v1763092955/ngmtncubdukvcsxxilwe.jpg\",\"https://res.cloudinary.com/dkuciagop/image/upload/v1763092956/idb0yx3c1foxagllxgwx.jpg\"]",
-      "extrait": "lancement des awarsd",
-      "contenu": "lancement des awarsd",
-      "auteur": "franky fosso",
-      "date": "2025-11-14T04:02:55.434Z",
-      "vues": 0,
-      "likes": 0,
-      "contentType": "article",
-      "video_url": null
-    },
     "art_1763128047914_8rawugnsb": {
       "id": "art_1763128047914_8rawugnsb",
       "titre": "Crise Post Electorale au Cameroun: ORLUS FOSSO Renvoie les AWARDS DU MADE IN CAMEROON en Décembre.",
@@ -275,6 +257,6 @@
       "likes": 0
     }
   },
-  "lastUpdate": "2025-11-18T03:24:44.179Z",
-  "totalArticles": 14
+  "lastUpdate": "2025-11-18T03:24:47.184Z",
+  "totalArticles": 13
 }
