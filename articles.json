@@ -120,25 +120,6 @@
       "likes": 0,
       "share_url": "/share/art_1763128047914_8rawugnsb.html"
     },
-    "art_1763186296025_hp30f0toa": {
-      "id": "art_1763186296025_hp30f0toa",
-      "titre": "AFROBIZ UNIVERSAL AWARDS",
-      "categorie": "Culture",
-      "sections": [
-        "main"
-      ],
-      "contentType": "article",
-      "image": "https://res.cloudinary.com/dkuciagop/image/upload/v1763186290/jd8vsxd5eh2ung1ciiwd.jpg",
-      "images": "[\"https://res.cloudinary.com/dkuciagop/image/upload/v1763186290/jd8vsxd5eh2ung1ciiwd.jpg\"]",
-      "extrait": "AFROBIZ UNIVERSAL AWARDS",
-      "contenu": "AFROBIZ UNIVERSAL AWARDS",
-      "auteur": "Orlus Fosso",
-      "video_url": "",
-      "date": "2025-11-15T05:58:16.027Z",
-      "vues": 0,
-      "likes": 0,
-      "share_url": "/share/art_1763186296025_hp30f0toa.html"
-    },
     "art_1763187197668_a2u4zc2l9": {
       "id": "art_1763187197668_a2u4zc2l9",
       "titre": "Le Président du Conseil d' Administration de l' Association pour la Promotion de la Communication (ASPCO) évoque la crise post-électorale comme principale raison de ce report.",
@@ -257,6 +238,6 @@
       "likes": 0
     }
   },
-  "lastUpdate": "2025-11-18T03:24:47.184Z",
-  "totalArticles": 13
+  "lastUpdate": "2025-11-18T03:24:50.732Z",
+  "totalArticles": 12
 }
