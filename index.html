@@ -39,30 +39,39 @@
             padding: 0 20px;
         }
         
-        /* Hero Slider */
+    
+        /* ========================================
+           🆕 NOUVEAU HERO SLIDER
+           ======================================== */
+        
         .hero-section {
             margin: 2rem 0;
             position: relative;
             height: 500px;
             overflow: hidden;
             border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
         }
         
         .hero-slider {
             position: relative;
+            width: 100%;
             height: 100%;
+            overflow: hidden;
+        }
+        
+        .hero-slides-container {
+            display: flex;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.5s ease-in-out;
         }
         
         .hero-slide {
-            position: absolute;
+            position: relative;
+            flex: 0 0 100%;
             width: 100%;
             height: 100%;
-            opacity: 0;
-            transition: opacity 0.5s ease;
-        }
-        
-        .hero-slide.active {
-            opacity: 1;
         }
         
         .hero-slide img {
@@ -79,6 +88,12 @@
             background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
             color: white;
             padding: 3rem;
+            transform: translateY(0);
+            transition: transform 0.3s ease;
+        }
+        
+        .hero-slide:hover .hero-content {
+            transform: translateY(-5px);
         }
         
         .hero-category {
@@ -127,6 +142,73 @@
         
         .slider-btn:hover {
             background: var(--primary);
+        }
+        
+        .slider-dots {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            z-index: 10;
+        }
+        
+        .slider-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.3);
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .slider-dot.active {
+            background: white;
+            transform: scale(1.2);
+        }
+        
+        .hero-link {
+            display: block;
+            width: 100%;
+            height: 100%;
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-section {
+                height: 350px;
+                border-radius: 8px;
+            }
+            
+            .hero-content {
+                padding: 1.5rem;
+            }
+            
+            .hero-title {
+                font-size: 1.25rem;
+            }
+            
+            .slider-dots {
+                bottom: 10px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .hero-section {
+                height: 300px;
+            }
+            
+            .hero-content {
+                padding: 1rem;
+            }
+            
+            .hero-title {
+                font-size: 1.1rem;
+            }
         }
         
         /* Section Title */
@@ -2757,32 +2839,6 @@
             margin-bottom: 1rem;
         }
 
-
-/* New Hero styles (minimal & responsive) */
-.new-hero { margin: 2rem 0; }
-.new-hero .hero-wrapper { position: relative; overflow: hidden; border-radius: 12px; height: 520px; background:#111; }
-@media (max-width:768px){ .new-hero .hero-wrapper{ height:320px; } }
-
-.new-hero .hero-track { display:flex; height:100%; transition: transform 600ms cubic-bezier(.2,.9,.2,1); will-change: transform; }
-.new-hero .hero-slide { min-width:100%; height:100%; position:relative; display:block; flex-shrink:0; color:#fff; }
-.new-hero .hero-slide a{ display:block; width:100%; height:100%; text-decoration:none; color:inherit; position:relative; }
-.new-hero .hero-slide img { width:100%; height:100%; object-fit:cover; display:block; filter: brightness(.65); }
-.new-hero .hero-caption { position:absolute; left:24px; bottom:28px; right:24px; z-index:3; max-width:900px; }
-.new-hero .hero-category { display:inline-block; background:rgba(0,0,0,0.5); padding:6px 12px; border-radius:999px; font-weight:700; margin-bottom:10px; }
-.new-hero .hero-title { font-size:28px; line-height:1.05; font-weight:800; margin:0 0 8px; }
-@media (max-width:768px){ .new-hero .hero-title{ font-size:18px; } }
-.new-hero .hero-meta { font-size:13px; opacity:.9; }
-
-.new-hero .hero-control { position:absolute; top:50%; transform:translateY(-50%); z-index:5; width:48px; height:48px; border-radius:999px; border:none; background:rgba(0,0,0,0.35); color:#fff; font-size:28px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
-.new-hero .prev{ left:14px; } .new-hero .next{ right:14px; }
-
-.new-hero .hero-dots{ text-align:center; margin-top:12px; display:flex; gap:8px; justify-content:center; }
-.new-hero .hero-dot{ width:10px; height:10px; border-radius:50%; background:#cbd5e1; cursor:pointer; border:none; }
-.new-hero .hero-dot.active{ background:#2563eb; transform:scale(1.15); }
-
-.new-hero .sr-only{ position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0; }
-
-
     </style>
 </head>
 <body>
@@ -3015,14 +3071,24 @@
     </div>
     <!-- Hero Slider -->
     <div class="container">
-        <section class="hero-section new-hero" id="newHero">
-  <div class="hero-wrapper" id="newHeroWrapper" aria-roledescription="carousel" tabindex="0">
-    <button class="hero-control prev" id="newHeroPrev" aria-label="Slide précédent">‹</button>
-    <div class="hero-track" id="newHeroTrack" role="list"></div>
-    <button class="hero-control next" id="newHeroNext" aria-label="Slide suivant">›</button>
-  </div>
-  <div class="hero-dots" id="newHeroDots" role="tablist" aria-label="Navigation slides"></div>
-</section>
+           <section class="hero-section">
+            <div class="hero-slider" id="heroSlider">
+                <div class="hero-slides-container" id="heroSlidesContainer">
+                    <!-- Les slides seront générés dynamiquement -->
+                </div>
+                <div class="slider-nav">
+                    <button class="slider-btn" onclick="prevSlide()">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <button class="slider-btn" onclick="nextSlide()">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+                <div class="slider-dots" id="sliderDots">
+                    <!-- Les dots seront générés dynamiquement -->
+                </div>
+            </div>
+        </section>
 
         <!-- À la Une Carousel -->
         <section class="carousel-section">
@@ -3471,207 +3537,73 @@ async function loadArticles() {
         console.error('❌ Erreur:', error);
         showError();
     }
-} const MAX_SLIDES = 5;
-  const AUTOPLAY_MS = 5000;
+}
+    // ========================================
+        // 🆕 NOUVEAU SYSTÈME HERO SLIDER
+        // ========================================
 
-  // Elements
-  const track = document.getElementById('newHeroTrack');
-  const dotsWrap = document.getElementById('newHeroDots');
-  const prevBtn = document.getElementById('newHeroPrev');
-  const nextBtn = document.getElementById('newHeroNext');
-  const wrapper = document.getElementById('newHeroWrapper');
+        function displayNewHeroSlider() {
+            // Filtrer les articles pour le hero (articles avec section 'hero' ou les 3 plus récents)
+            heroArticles = allArticles
+                .filter(a => a.sections && a.sections.includes('hero'))
+                .slice(0, 5);
 
-  // State
-  let slides = [];
-  let current = 0;
-  let autoplayTimer = null;
-  let startX = 0;
-  let isDragging = false;
+            if (heroArticles.length === 0) {
+                heroArticles = allArticles.slice(0, 3);
+            }
 
-  // Helper to compute url
-  function articleUrl(a){
-    if(!a) return '#';
-    if(a.slug) return `/article/${a.slug}.html`;
-    return `/article-detail.html?id=${encodeURIComponent(a.id)}`;
-  }
+            const slidesContainer = document.getElementById('heroSlidesContainer');
+            const dotsContainer = document.getElementById('sliderDots');
 
-  // Build slides from allArticles (global)
-  function build() {
-    // wait if allArticles not ready
-    if(!window.allArticles || !Array.isArray(window.allArticles) || window.allArticles.length === 0){
-      // try again shortly
-      setTimeout(build, 200);
-      return;
-    }
-
-    // choose hero articles
-    let heroList = window.allArticles.filter(a => a.sections && a.sections.includes('hero')).slice(0, MAX_SLIDES);
-    if(heroList.length === 0) heroList = window.allArticles.slice(0, Math.min(MAX_SLIDES, window.allArticles.length));
-
-    slides = heroList;
-
-    // create DOM
-    track.innerHTML = slides.map((a, i) => {
-      // sanitize values
-      const title = (a.titre || 'Sans titre').replace(/"/g,'&quot;');
-      const category = a.categorie || '';
-      const author = a.auteur || '';
-      const date = a.date ? (new Date(a.date)).toLocaleDateString('fr-FR',{day:'numeric', month:'short', year:'numeric'}) : '';
-      const url = articleUrl(a);
-
-      return `
-        <div class="hero-slide" role="listitem" aria-hidden="${i!==0}">
-          <a href="${url}" aria-label="${title}">
-            <img src="${a.image || ''}" alt="${title}">
-            <div class="hero-caption">
-              ${category ? `<div class="hero-category">${category}</div>` : ''}
-              <h2 class="hero-title">${title}</h2>
-              <div class="hero-meta">${author} • ${date}</div>
-            </div>
-          </a>
-        </div>
-      `;
-    }).join('');
-
-    // dots
-    dotsWrap.innerHTML = slides.map((s, i) => `<button class="hero-dot ${i===0? 'active':''}" data-index="${i}" aria-label="Aller au slide ${i+1}"></button>`).join('');
-
-    // set widths & initial pos
-    goTo(0);
-
-    // attach events
-    attachEvents();
-    startAutoplay();
-  }
-
-  function attachEvents(){
-    // prev / next
-    prevBtn && prevBtn.addEventListener('click', e => { e.preventDefault(); stopAutoplay(); prev(); });
-    nextBtn && nextBtn.addEventListener('click', e => { e.preventDefault(); stopAutoplay(); next(); });
-
-    // dots
-    dotsWrap.querySelectorAll('.hero-dot').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        const idx = Number(btn.dataset.index);
-        stopAutoplay();
-        goTo(idx);
-      });
-    });
-
-    // keyboard
-    wrapper.addEventListener('keydown', (e) => {
-      if(e.key === 'ArrowLeft') { stopAutoplay(); prev(); }
-      if(e.key === 'ArrowRight') { stopAutoplay(); next(); }
-    });
-
-    // touch / swipe
-    track.addEventListener('touchstart', onTouchStart, {passive:true});
-    track.addEventListener('touchmove', onTouchMove, {passive:true});
-    track.addEventListener('touchend', onTouchEnd);
-
-    // mouse drag (desktop)
-    track.addEventListener('mousedown', (e)=>{ isDragging=true; startX=e.clientX; stopAutoplay(); });
-    window.addEventListener('mouseup', (e)=>{ if(isDragging){ isDragging=false; handleDragEnd(e.clientX); } });
-    window.addEventListener('mousemove', (e)=>{ if(isDragging) handleDragMove(e.clientX); });
-
-    // visibility change -> pause autoplay
-    document.addEventListener('visibilitychange', ()=> { if(document.hidden) stopAutoplay(); else startAutoplay(); });
-  }
-
-  function onTouchStart(e){ startX = e.touches[0].clientX; }
-  function onTouchMove(e){ /* nothing - we only need startX for end */ }
-  function onTouchEnd(e){
-    const endX = (e.changedTouches && e.changedTouches[0]) ? e.changedTouches[0].clientX : startX;
-    const diff = endX - startX;
-    if(Math.abs(diff) > 50){
-      stopAutoplay();
-      if(diff < 0) next(); else prev();
-    }
-  }
-
-  function handleDragMove(currentX){
-    // optional: could implement dragging translation for smoother UX
-  }
-  function handleDragEnd(endX){
-    const diff = endX - startX;
-    if(Math.abs(diff) > 80){
-      if(diff < 0) next(); else prev();
-    }
-  }
-
-  function updateUI(){
-    const slideEls = track.querySelectorAll('.hero-slide');
-    slideEls.forEach((el, i) => el.setAttribute('aria-hidden', i !== current));
-    dotsWrap.querySelectorAll('.hero-dot').forEach((d,i)=> d.classList.toggle('active', i===current));
-  }
-
-  function goTo(index){
-    if(!slides || slides.length === 0) return;
-    current = ((index % slides.length) + slides.length) % slides.length;
-    const translate = -current * 100;
-    track.style.transform = `translateX(${translate}%)`;
-    updateUI();
-  }
-
-  function next(){ goTo(current + 1); }
-  function prev(){ goTo(current - 1); }
-
-  function startAutoplay(){
-    if(autoplayTimer) return;
-    autoplayTimer = setInterval(()=> { next(); }, AUTOPLAY_MS);
-  }
-  function stopAutoplay(){
-    if(autoplayTimer){ clearInterval(autoplayTimer); autoplayTimer = null; }
-  }
-
-  // Build when page ready (or retry until allArticles exists)
-  document.addEventListener('DOMContentLoaded', build);
-
-  // Also expose for manual re-init if articles change
-  window.rebuildNewHero = () => { stopAutoplay(); build(); };
-
-;
-    function displayHeroSlider() {
-    heroArticles = allArticles
-        .filter(a => a.sections && a.sections.includes('hero'))
-        .slice(0, 5);
-
-    if (heroArticles.length === 0) {
-        heroArticles = allArticles.slice(0, 3);
-    }
-
-    const slider = document.getElementById('heroSlider');
-
-    slider.innerHTML = heroArticles.map((article, index) => {
-
-        // 🔥 URL CORRECTE : SEO si slug existe, sinon fallback ID
-        const url = article.slug 
-            ? `/article/${article.slug}.html`
-            : `/article-detail.html?id=${article.id}`;
-
-        return `
-            <div class="hero-slide ${index === 0 ? 'active' : ''}">
-                <a href="${url}" class="hero-link">
-                    <img src="${article.image}" 
-                         alt="${article.titre}" 
-                         loading="${index === 0 ? 'eager' : 'lazy'}">
-                    
-                    <div class="hero-content">
-                        <span class="hero-category">${article.categorie}</span>
-                        <h2 class="hero-title">${article.titre}</h2>
-                        <div class="hero-meta">
-                            <span><i class="fas fa-user"></i> ${article.auteur}</span>
-                            <span><i class="fas fa-clock"></i> ${formatDate(article.date)}</span>
+            if (heroArticles.length === 0) {
+                slidesContainer.innerHTML = `
+                    <div class="hero-slide">
+                        <div style="background: linear-gradient(135deg, var(--primary), var(--secondary)); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: white;">
+                            <div style="text-align: center;">
+                                <i class="fas fa-newspaper" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+                                <h2 style="font-size: 1.5rem;">Aucun article disponible</h2>
+                                <p>Revenez plus tard pour les dernières actualités</p>
+                            </div>
                         </div>
                     </div>
-                </a>
-            </div>
-        `;
-    }).join('');
+                `;
+                dotsContainer.innerHTML = '';
+                return;
+            }
 
-    startAutoSlide();
-}
+            // Générer les slides
+            slidesContainer.innerHTML = heroArticles.map((article, index) => {
+                // 🔥 URL CORRECTE : SEO si slug existe, sinon fallback ID
+                const url = getArticleUrl(article);
 
+                return `
+                    <div class="hero-slide">
+                        <a href="${url}" class="hero-link" data-article-id="${article.id}">
+                            <img src="${article.image}" 
+                                 alt="${article.titre}" 
+                                 loading="${index === 0 ? 'eager' : 'lazy'}">
+                            
+                            <div class="hero-content">
+                                <span class="hero-category">${article.categorie}</span>
+                                <h2 class="hero-title">${article.titre}</h2>
+                                <div class="hero-meta">
+                                    <span><i class="fas fa-user"></i> ${article.auteur}</span>
+                                    <span><i class="fas fa-clock"></i> ${formatDate(article.date)}</span>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                `;
+            }).join('');
+
+            // Générer les dots
+            dotsContainer.innerHTML = heroArticles.map((_, index) => `
+                <button class="slider-dot ${index === 0 ? 'active' : ''}" onclick="goToSlide(${index})"></button>
+            `).join('');
+
+            // Démarrer l'auto-slide
+            startAutoSlide();
+        }
 
         function nextSlide() {
             currentSlide = (currentSlide + 1) % heroArticles.length;
@@ -3683,19 +3615,46 @@ async function loadArticles() {
             updateSlide();
         }
 
+        function goToSlide(index) {
+            currentSlide = index;
+            updateSlide();
+        }
+
         function updateSlide() {
-            document.querySelectorAll('.hero-slide').forEach((slide, i) => {
-                slide.classList.toggle('active', i === currentSlide);
+            const slidesContainer = document.getElementById('heroSlidesContainer');
+            const dots = document.querySelectorAll('.slider-dot');
+            
+            // Mettre à jour la position du conteneur
+            slidesContainer.style.transform = `translateX(-${currentSlide * 100}%)`;
+            
+            // Mettre à jour les dots
+            dots.forEach((dot, index) => {
+                dot.classList.toggle('active', index === currentSlide);
             });
         }
 
         function startAutoSlide() {
-            setInterval(() => {
+            // Arrêter l'intervalle précédent s'il existe
+            if (slideInterval) clearInterval(slideInterval);
+            
+            // Démarrer un nouvel intervalle
+            slideInterval = setInterval(() => {
                 nextSlide();
             }, 5000);
         }
+               function getArticleUrl(article) {
+            if (!article) return '#';
+            
+            // Si l'article a un slug SEO → utiliser la page statique
+            if (article.slug) {
+                return `/article/${article.slug}.html`;
+            }
+            
+            // Fallback → ancien système avec ID
+            return `/article-detail.html?id=${article.id}`;
+        }
 
-       
+
 function displayCarousel() {
     const carousel = allArticles
         .filter(a => a.sections && a.sections.includes('a-la-une'))
@@ -4307,22 +4266,85 @@ function getArticleUrl(article) {
  * @param {string} articleId - ID de l'article
  */
 // ✅ 2. FONCTION OPENARTICLE AVEC TRACKING DES VUES
-function openArticle(articleId) {
-    const article = allArticles.find(a => a.id === articleId);
-    
-    if (!article) {
-        console.error('❌ Article introuvable:', articleId);
-        return;
-    }
-    
-    // 📊 TRACKING: Incrémenter les vues localement
-    trackArticleView(articleId);
-    
-    // Navigation intelligente (SEO ou legacy)
-    const url = getArticleUrl(article);
-    window.location.href = url;
-}
+   function openArticle(articleId) {
+            const article = allArticles.find(a => a.id === articleId);
+            
+            if (!article) {
+                console.error('❌ Article introuvable:', articleId);
+                return;
+            }
+            
+            // 📊 TRACKING: Incrémenter les vues localement
+            trackArticleView(articleId);
+            
+            // Navigation intelligente (SEO ou legacy)
+            const url = getArticleUrl(article);
+            window.location.href = url;
+        }
 
+  function trackArticleView(articleId) {
+            // Récupérer les vues depuis localStorage
+            let views = JSON.parse(localStorage.getItem('article_views') || '{}');
+            
+            // Incrémenter
+            views[articleId] = (views[articleId] || 0) + 1;
+            
+            // Sauvegarder
+            localStorage.setItem('article_views', JSON.stringify(views));
+            
+            console.log(`📊 Vue enregistrée pour article ${articleId}: ${views[articleId]} vues`);
+        }
+
+        // ========================================
+        // 🛠️ FONCTIONS UTILITAIRES
+        // ========================================
+
+        function formatDate(dateString) {
+            if (!dateString) return 'Date inconnue';
+            const date = new Date(dateString);
+            const options = { day: 'numeric', month: 'short', year: 'numeric' };
+            return date.toLocaleDateString('fr-FR', options);
+        }
+
+        function showError() {
+            const slidesContainer = document.getElementById('heroSlidesContainer');
+            slidesContainer.innerHTML = `
+                <div class="hero-slide">
+                    <div style="background: linear-gradient(135deg, #ef4444, #dc2626); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: white;">
+                        <div style="text-align: center;">
+                            <i class="fas fa-exclamation-circle" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+                            <h2 style="font-size: 1.5rem;">Erreur de chargement</h2>
+                            <p>Impossible de charger les articles</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // ========================================
+        // 🚀 INITIALISATION
+        // ========================================
+
+        document.addEventListener('DOMContentLoaded', function() {
+            loadArticles();
+            
+            // Mettre à jour la date
+            updateDate();
+            
+            // Initialiser l'autocomplete
+            initAutocomplete();
+        });
+
+        function updateDate() {
+            const options = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            };
+            const date = new Date().toLocaleDateString('fr-FR', options);
+            document.getElementById('currentDate').textContent = date;
+        }
 /**
  * Créer un lien HTML vers un article
  * @param {Object} article - L'objet article
