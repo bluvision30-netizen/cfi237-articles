@@ -20,24 +20,6 @@
       "vues": 0,
       "likes": 0
     },
-    "art_1762841980390_210qt6qvw": {
-      "id": "art_1762841980390_210qt6qvw",
-      "titre": "lancement des awarsd",
-      "categorie": "Économie",
-      "sections": [
-        "main"
-      ],
-      "image": "https://res.cloudinary.com/dkuciagop/image/upload/v1762841947/ebcrytyqjlwuulris9xm.jpg",
-      "images": "[\"https://res.cloudinary.com/dkuciagop/image/upload/v1762841947/ebcrytyqjlwuulris9xm.jpg\"]",
-      "extrait": "lancement des awarsd",
-      "contenu": "lancement des awarsd",
-      "auteur": "franky fosso",
-      "date": "2025-11-11T06:19:40.610Z",
-      "vues": 0,
-      "likes": 0,
-      "contentType": "video",
-      "video_url": "https://youtu.be/wNgHu-_O-_E?list=RDNFYXVcRLaDQ"
-    },
     "art_1762863921372_p3plj67ko": {
       "id": "art_1762863921372_p3plj67ko",
       "titre": "Réélu avec 53,66 % des voix, le chef de l’État prête serment le 6 novembre, tandis que l’appel à la « ville morte » lancé par l’opposant Issa Tchiroma Bakary provoque un ralentissement et un arrêt qua",
@@ -259,6 +241,6 @@
       "likes": 0
     }
   },
-  "lastUpdate": "2025-11-18T12:35:27.601Z",
-  "totalArticles": 13
+  "lastUpdate": "2025-11-18T18:47:07.603Z",
+  "totalArticles": 12
 }
