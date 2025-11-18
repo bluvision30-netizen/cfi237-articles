@@ -120,25 +120,6 @@
       "likes": 0,
       "share_url": "/share/art_1763128047914_8rawugnsb.html"
     },
-    "art_1763187197668_a2u4zc2l9": {
-      "id": "art_1763187197668_a2u4zc2l9",
-      "titre": "Le Président du Conseil d' Administration de l' Association pour la Promotion de la Communication (ASPCO) évoque la crise post-électorale comme principale raison de ce report.",
-      "categorie": "Économie",
-      "sections": [
-        "main"
-      ],
-      "contentType": "article",
-      "image": "https://res.cloudinary.com/dkuciagop/image/upload/v1763187189/br5xhgljgbwdokirtu0j.jpg",
-      "images": "[\"https://res.cloudinary.com/dkuciagop/image/upload/v1763187189/br5xhgljgbwdokirtu0j.jpg\"]",
-      "extrait": "Le Président du Conseil d' Administration de l' Association pour la Promotion de la Communication (ASPCO) évoque la crise post-électorale comme principale raison de ce report.",
-      "contenu": "Le Président du Conseil d' Administration de l' Association pour la Promotion de la Communication (ASPCO) évoque la crise post-électorale comme principale raison de ce report.",
-      "auteur": "Orlus Fosso",
-      "video_url": "",
-      "date": "2025-11-15T06:13:17.670Z",
-      "vues": 0,
-      "likes": 0,
-      "share_url": "/share/art_1763187197668_a2u4zc2l9.html"
-    },
     "art_1763188854341_sarpmhhth": {
       "id": "art_1763188854341_sarpmhhth",
       "titre": "VILLES MORTES: QUE VAUT VRAIMENT CETTE STRATEGIE DE TCHIROMA",
@@ -238,6 +219,6 @@
       "likes": 0
     }
   },
-  "lastUpdate": "2025-11-18T03:24:50.732Z",
-  "totalArticles": 12
+  "lastUpdate": "2025-11-18T03:24:54.800Z",
+  "totalArticles": 11
 }
