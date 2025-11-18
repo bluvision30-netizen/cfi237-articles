@@ -3518,7 +3518,7 @@ async function loadArticles() {
         
         console.log('📰 Articles chargés:', allArticles.length);
         
-        displayHeroSlider();
+        displayNewHeroSlider();
         displayCarousel();
         displayArticlesPaginated(1); // ✅ UTILISER LA VERSION PAGINÉE
         displayArticlesPopulaires(); // ✅ AJOUTER CETTE LIGNE
@@ -3542,7 +3542,7 @@ async function loadArticles() {
         // 🆕 NOUVEAU SYSTÈME HERO SLIDER
         // ========================================
 
-        function displayNewHeroSlider() {
+         function displayNewHeroSlider() {
             // Filtrer les articles pour le hero (articles avec section 'hero' ou les 3 plus récents)
             heroArticles = allArticles
                 .filter(a => a.sections && a.sections.includes('hero'))
@@ -3606,16 +3606,19 @@ async function loadArticles() {
         }
 
         function nextSlide() {
+            if (heroArticles.length === 0) return;
             currentSlide = (currentSlide + 1) % heroArticles.length;
             updateSlide();
         }
 
         function prevSlide() {
+            if (heroArticles.length === 0) return;
             currentSlide = (currentSlide - 1 + heroArticles.length) % heroArticles.length;
             updateSlide();
         }
 
         function goToSlide(index) {
+            if (heroArticles.length === 0) return;
             currentSlide = index;
             updateSlide();
         }
@@ -3623,6 +3626,8 @@ async function loadArticles() {
         function updateSlide() {
             const slidesContainer = document.getElementById('heroSlidesContainer');
             const dots = document.querySelectorAll('.slider-dot');
+            
+            if (!slidesContainer || heroArticles.length === 0) return;
             
             // Mettre à jour la position du conteneur
             slidesContainer.style.transform = `translateX(-${currentSlide * 100}%)`;
@@ -3637,23 +3642,13 @@ async function loadArticles() {
             // Arrêter l'intervalle précédent s'il existe
             if (slideInterval) clearInterval(slideInterval);
             
-            // Démarrer un nouvel intervalle
-            slideInterval = setInterval(() => {
-                nextSlide();
-            }, 5000);
-        }
-               function getArticleUrl(article) {
-            if (!article) return '#';
-            
-            // Si l'article a un slug SEO → utiliser la page statique
-            if (article.slug) {
-                return `/article/${article.slug}.html`;
+            // Démarrer un nouvel intervalle seulement s'il y a des articles
+            if (heroArticles.length > 1) {
+                slideInterval = setInterval(() => {
+                    nextSlide();
+                }, 5000);
             }
-            
-            // Fallback → ancien système avec ID
-            return `/article-detail.html?id=${article.id}`;
         }
-
 
 function displayCarousel() {
     const carousel = allArticles
@@ -3692,7 +3687,7 @@ function displayCarousel() {
 }
 document.addEventListener('DOMContentLoaded', function() {
     loadArticles().then(() => {
-        displayHeroSlider();
+        displayNewHeroSlider();
         displayCarousel();
         displayArticlesPaginated(1);
         displayArticlesPopulaires();
