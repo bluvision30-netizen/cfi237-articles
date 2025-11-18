@@ -711,27 +711,26 @@
 <script>
     let allArticles = [];
     let articlesGrid, searchInput, categoryFilter, sortFilter;
-
-    async function loadArticles() {
-        try {
-            console.log('🔄 Chargement des articles...');
-            const response = await fetch('/data/articles.json');
-            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-            
-            const data = await response.json();
-            allArticles = data.articles || [];
-            console.log('📰 Articles chargés:', allArticles.length);
-            
-            populateCategoryFilter();
-            applyFilters();
-            displayLatestArticles();
-        } catch (error) {
-            console.error('❌ Erreur:', error);
-            if (articlesGrid) {
-                articlesGrid.innerHTML = '<p class="error">Erreur lors du chargement des articles.</p>';
-            }
+async function loadArticles() {
+    try {
+        console.log('🔄 Chargement des articles...');
+        const response = await fetch('articles.json'); // ← CHANGE ICI
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        
+        const data = await response.json();
+        allArticles = data.articles || [];
+        console.log('📰 Articles chargés:', allArticles.length);
+        
+        populateCategoryFilter();
+        applyFilters();
+        displayLatestArticles();
+    } catch (error) {
+        console.error('❌ Erreur:', error);
+        if (articlesGrid) {
+            articlesGrid.innerHTML = '<p class="error">Erreur lors du chargement des articles.</p>';
         }
     }
+}
 
     function displayArticles(articlesToDisplay) {
         if (!articlesGrid) {
@@ -861,4 +860,5 @@
 </script>
 </body>
 </html>
+
 
