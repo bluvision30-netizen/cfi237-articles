@@ -3519,7 +3519,83 @@
             // Afficher les sections principales
             displayNewHeroSlider();
             displayCarousel();
-            displayArticlesPaginated(1);
+             displayArticlesInIndex(articles);
+            
+            // EXEMPLE D'UTILISATION DANS L'AFFICHAGE DES ARTICLES
+        function displayArticlesInIndex(articles) {
+        const container = document.getElementById('articlesContainer');
+    
+     container.innerHTML = articles.map(article => {
+        const thumbnail = getArticleThumbnail(article);
+        const isVideo = article.contentType === 'video' && article.video_url;
+        
+        return `
+            <div class="article-card">
+                <div class="article-image">
+                    <img src="${thumbnail}" alt="${article.titre}" loading="lazy">
+                    ${isVideo ? '<div class="video-indicator"><i class="fas fa-play"></i></div>' : ''}
+                </div>
+                <div class="article-content">
+                    <span class="category">${article.categorie}</span>
+                    ${isVideo ? '<span class="video-badge"><i class="fas fa-video"></i> VIDÉO</span>' : ''}
+                    <h3>${article.titre}</h3>
+                    <p>${article.extrait}</p>
+                    <div class="article-meta">
+                        <span><i class="fas fa-user"></i> ${article.auteur}</span>
+                        <span><i class="fas fa-calendar"></i> ${formatDate(article.date)}</span>
+                    </div>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+// CSS POUR LES INDICATEURS VIDÉO (à ajouter dans index.css)
+const videoIndicatorCSS = `
+.article-card {
+    position: relative;
+}
+
+.video-indicator {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: rgba(255, 0, 0, 0.9);
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    box-shadow: 0 4px 12px rgba(255, 0, 0, 0.3);
+}
+
+.video-badge {
+    background: #ff0000;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    margin-left: 8px;
+}
+
+.article-image {
+    position: relative;
+    overflow: hidden;
+    border-radius: 8px;
+}
+
+.article-image img {
+    transition: transform 0.3s ease;
+}
+
+.article-card:hover .article-image img {
+    transform: scale(1.05);
+}
+`;rticlesPaginated(1);
             displayArticlesPopulaires();
             displayTrending();
             displayVideos();
@@ -4434,6 +4510,38 @@
     }
 
     console.log('✅ Script JavaScript corrigé et initialisé');
+
+
+
+    function getArticleThumbnail(article) {
+    // Si c'est une vidéo, utiliser la miniature YouTube
+    if (article.contentType === 'video' && article.video_url) {
+        const videoId = extractYouTubeId(article.video_url);
+        if (videoId) {
+            return `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+        }
+    }
+    
+    // Sinon utiliser l'image normale
+    return article.image;
+}
+function extractYouTubeId(url) {
+    if (!url) return null;
+    
+    const patterns = [
+        /(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&]+)/,
+        /youtube\.com\/embed\/([^?]+)/,
+        /youtube\.com\/v\/([^?]+)/
+    ];
+    
+    for (let pattern of patterns) {
+        const match = url.match(pattern);
+        if (match && match[1]) {
+            return match[1];
+        }
+    }
+    return null;
+}
 </script>
 </body>
 </html>
