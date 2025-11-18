@@ -952,59 +952,51 @@ function openArticle(articleId) {
             applyFilters();
         }
 
-        function displayArticles() {
-    const grid = document.getElementById('articlesGrid');
-    const totalPages = Math.ceil(filteredArticles.length / ARTICLES_PER_PAGE);
+   function displayArticles(articlesToDisplay) {
+    articlesGrid.innerHTML = '';
     
-    document.getElementById('resultsCount').textContent = filteredArticles.length;
-    
-    if (filteredArticles.length === 0) {
-        grid.innerHTML = `
-            <div class="empty-state">
-                <i class="fas fa-inbox"></i>
-                <h3>Aucun article trouvé</h3>
-                <p>Essayez de modifier vos filtres</p>
-            </div>
-        `;
-        document.getElementById('pagination').innerHTML = '';
+    if (articlesToDisplay.length === 0) {
+        articlesGrid.innerHTML = '<p class="no-results">Aucun article trouvé.</p>';
         return;
     }
     
-    const startIndex = (currentPage - 1) * ARTICLES_PER_PAGE;
-    const endIndex = startIndex + ARTICLES_PER_PAGE;
-    const pageArticles = filteredArticles.slice(startIndex, endIndex);
-    
-    grid.innerHTML = pageArticles.map(article => {
-        const isVideo = article.contentType === 'video' || article.video_url;
-        const realViews = getArticleViews(article.id); // ✅ VUES RÉELLES
-        
-        return `
-            <article class="article-card" onclick="openArticle('${article.id}')">
-                <div class="article-image-wrapper">
-                    <img src="${article.image}" alt="${article.titre}" class="article-image" loading="lazy">
-                    ${isVideo ? '<div class="video-badge"><i class="fas fa-play"></i> VIDÉO</div>' : ''}
-                </div>
+    articlesToDisplay.forEach(article => {
+        const articleCard = document.createElement('div');
+        articleCard.className = 'article-card';
+        articleCard.innerHTML = `
+            <a href="/article/${article.slug}.html" class="article-link">
+                <img src="${article.image}" alt="${article.title}">
                 <div class="article-content">
-                    <span class="category-badge">${article.categorie}</span>
-                    <h3 class="article-title">${article.titre}</h3>
-                    <p class="article-excerpt">${article.extrait}</p>
+                    <span class="article-category">${article.category}</span>
+                    <h3>${article.title}</h3>
+                    <p>${article.excerpt}</p>
                     <div class="article-meta">
-                        <div>
-                            <i class="fas fa-user"></i> ${article.auteur}
-                        </div>
-                        <div class="article-stats">
-                            <span class="stat"><i class="fas fa-eye"></i> ${realViews}</span>
-                            <span class="stat"><i class="fas fa-heart"></i> ${article.likes || 0}</span>
-                        </div>
+                        <span>${article.author}</span>
+                        <span>${article.date}</span>
                     </div>
                 </div>
-            </article>
+            </a>
         `;
-    }).join('');
-    
-    updatePagination(totalPages);
+        articlesGrid.appendChild(articleCard);
+    });
 }
-
+function displayLatestArticles() {
+    const latestArticlesContainer = document.getElementById('latest-articles');
+    const latestArticles = allArticles.slice(0, 3);
+    
+    latestArticles.forEach(article => {
+        const articleCard = document.createElement('div');
+        articleCard.className = 'latest-article-card';
+        articleCard.innerHTML = `
+            <a href="/article/${article.slug}.html">
+                <img src="${article.image}" alt="${article.title}">
+                <h4>${article.title}</h4>
+                <p>${article.excerpt.substring(0, 100)}...</p>
+            </a>
+        `;
+        latestArticlesContainer.appendChild(articleCard);
+    });
+}
         function updatePagination(totalPages) {
             const pagination = document.getElementById('pagination');
             
