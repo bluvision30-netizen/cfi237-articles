@@ -1,22 +1,5 @@
 {
   "articles": {
-    "art_1762830245344_9krf07i8z": {
-      "id": "art_1762830245344_9krf07i8z",
-      "titre": "merime kenne pdg fondation",
-      "categorie": "Sports",
-      "sections": [
-        "main",
-        "debates"
-      ],
-      "image": "https://res.cloudinary.com/dkuciagop/image/upload/v1762830220/nv56iypcrvoncj07f01q.jpg",
-      "images": "[\"https://res.cloudinary.com/dkuciagop/image/upload/v1762830220/nv56iypcrvoncj07f01q.jpg\"]",
-      "extrait": "merime kenne pdg fondation",
-      "contenu": "merime kenne pdg fondation",
-      "auteur": "franky fosso",
-      "date": "2025-11-11T03:04:05.523Z",
-      "vues": 0,
-      "likes": 0
-    },
     "art_1762833332883_qwu9jas1m": {
       "id": "art_1762833332883_qwu9jas1m",
       "titre": "lancement des awarsd",
@@ -363,6 +346,6 @@
       "likes": 0
     }
   },
-  "lastUpdate": "2025-11-18T03:24:03.124Z",
-  "totalArticles": 19
+  "lastUpdate": "2025-11-18T03:24:16.980Z",
+  "totalArticles": 18
 }
