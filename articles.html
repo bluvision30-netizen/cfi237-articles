@@ -708,157 +708,591 @@
         <div class="pagination" id="pagination"></div>
     </div>
 
-<script>
-    let allArticles = [];
-    let articlesGrid, searchInput, categoryFilter, sortFilter;
-async function loadArticles() {
-    try {
-        console.log('🔄 Chargement des articles...');
-        const response = await fetch('articles.json'); // ← CHANGE ICI
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-        
-        const data = await response.json();
-        allArticles = data.articles || [];
-        console.log('📰 Articles chargés:', allArticles.length);
-        
-        populateCategoryFilter();
-        applyFilters();
-        displayLatestArticles();
-    } catch (error) {
-        console.error('❌ Erreur:', error);
-        if (articlesGrid) {
-            articlesGrid.innerHTML = '<p class="error">Erreur lors du chargement des articles.</p>';
+    <script>
+        const ARTICLES_PER_PAGE = 20;
+        let allArticles = [];
+        let filteredArticles = [];
+        let currentPage = 1;
+        let currentFilters = {
+            type: '',
+            category: '',
+            sort: 'recent',
+            section: '',
+            search: ''
+        };
+// ✅ 1. OBTENIR URL ARTICLE (SEO ou Legacy)
+function getArticleUrl(article) {
+    if (!article) return '#';
+    
+    // Si l'article a un slug SEO → utiliser la page statique
+    if (article.slug) {
+        return `/article/${article.slug}.html`;
+    }
+    
+    // Fallback → ancien système avec ID
+    return `/article-detail.html?id=${article.id}`;
+}
+
+// ✅ 2. TRACKING DES VUES
+function trackArticleView(articleId) {
+    let views = JSON.parse(localStorage.getItem('article_views') || '{}');
+    views[articleId] = (views[articleId] || 0) + 1;
+    localStorage.setItem('article_views', JSON.stringify(views));
+    console.log(`📊 Vue enregistrée: ${articleId} → ${views[articleId]} vues`);
+}
+
+function getArticleViews(articleId) {
+    const views = JSON.parse(localStorage.getItem('article_views') || '{}');
+    return views[articleId] || 0;
+}
+// ✅ 3. OPENARTICLE AVEC TRACKING
+function openArticle(articleId) {
+    const article = allArticles.find(a => a.id === articleId);
+    
+    if (!article) {
+        console.error('❌ Article introuvable:', articleId);
+        return;
+    }
+    
+    // Tracker la vue
+    trackArticleView(articleId);
+    
+    // Navigation intelligente
+    const url = getArticleUrl(article);
+    window.location.href = url;
+}
+        async function loadArticles() {
+            try {
+                const response = await fetch('/articles.json?t=' + Date.now());
+                if (!response.ok) throw new Error('Erreur chargement');
+                
+                const data = await response.json();
+                allArticles = Object.values(data.articles || {})
+                    .filter(article => article && article.id)
+                    .sort((a, b) => new Date(b.date) - new Date(a.date));
+                
+                console.log('📰 Articles chargés:', allArticles.length);
+                
+                readUrlParams();
+                applyFilters();
+                initAutocomplete();
+                
+            } catch (error) {
+                console.error('❌ Erreur:', error);
+                showError();
+            }
         }
+
+        function readUrlParams() {
+            const params = new URLSearchParams(window.location.search);
+            
+            if (params.get('type')) {
+                currentFilters.type = params.get('type');
+                document.getElementById('filterType').value = currentFilters.type;
+            }
+            if (params.get('category')) {
+                currentFilters.category = params.get('category');
+                document.getElementById('filterCategory').value = currentFilters.category;
+            }
+            if (params.get('sort')) {
+                currentFilters.sort = params.get('sort');
+                document.getElementById('filterSort').value = currentFilters.sort;
+            }
+            if (params.get('section')) {
+                currentFilters.section = params.get('section');
+                document.getElementById('filterSection').value = currentFilters.section;
+            }
+            if (params.get('search')) {
+                currentFilters.search = params.get('search');
+                document.getElementById('searchInput').value = currentFilters.search;
+            }
+            if (params.get('page')) {
+                currentPage = parseInt(params.get('page')) || 1;
+            }
+        }
+
+        function updateUrl() {
+            const params = new URLSearchParams();
+            
+            if (currentFilters.type) params.set('type', currentFilters.type);
+            if (currentFilters.category) params.set('category', currentFilters.category);
+            if (currentFilters.sort) params.set('sort', currentFilters.sort);
+            if (currentFilters.section) params.set('section', currentFilters.section);
+            if (currentFilters.search) params.set('search', currentFilters.search);
+            if (currentPage > 1) params.set('page', currentPage);
+            
+            const newUrl = params.toString() ? `?${params.toString()}` : window.location.pathname;
+            window.history.replaceState({}, '', newUrl);
+        }
+
+        function applyFilters() {
+            currentFilters.type = document.getElementById('filterType').value;
+            currentFilters.category = document.getElementById('filterCategory').value;
+            currentFilters.sort = document.getElementById('filterSort').value;
+            currentFilters.section = document.getElementById('filterSection').value;
+            currentFilters.search = document.getElementById('searchInput').value.toLowerCase();
+            
+            filteredArticles = allArticles.filter(article => {
+                if (currentFilters.type) {
+                    const isVideo = article.contentType === 'video' || article.video_url;
+                    if (currentFilters.type === 'video' && !isVideo) return false;
+                    if (currentFilters.type === 'article' && isVideo) return false;
+                }
+                
+                if (currentFilters.category && article.categorie !== currentFilters.category) {
+                    return false;
+                }
+                
+                if (currentFilters.section) {
+                    if (!article.sections || !article.sections.includes(currentFilters.section)) {
+                        return false;
+                    }
+                }
+                
+                if (currentFilters.search) {
+                    const searchLower = currentFilters.search;
+                    const matchTitle = article.titre.toLowerCase().includes(searchLower);
+                    const matchExcerpt = article.extrait.toLowerCase().includes(searchLower);
+                    const matchAuthor = article.auteur.toLowerCase().includes(searchLower);
+                    
+                    if (!matchTitle && !matchExcerpt && !matchAuthor) {
+                        return false;
+                    }
+                }
+                
+                return true;
+            });
+            
+            sortArticles();
+            currentPage = 1;
+            updateActiveFilters();
+            displayArticles();
+            updateUrl();
+        }
+
+    function sortArticles() {
+    const views = JSON.parse(localStorage.getItem('article_views') || '{}');
+    
+    switch (currentFilters.sort) {
+        case 'popular':
+            // Trier par vues réelles
+            filteredArticles.sort((a, b) => {
+                const viewsA = views[a.id] || 0;
+                const viewsB = views[b.id] || 0;
+                return viewsB - viewsA;
+            });
+            break;
+        case 'trending':
+            // Trier par likes + vues combinés
+            filteredArticles.sort((a, b) => {
+                const scoreA = (views[a.id] || 0) + (a.likes || 0) * 2;
+                const scoreB = (views[b.id] || 0) + (b.likes || 0) * 2;
+                return scoreB - scoreA;
+            });
+            break;
+        case 'recent':
+        default:
+            filteredArticles.sort((a, b) => new Date(b.date) - new Date(a.date));
+            break;
     }
 }
 
-    function displayArticles(articlesToDisplay) {
-        if (!articlesGrid) {
-            console.error('❌ Element articles-grid introuvable');
-            return;
+        function updateActiveFilters() {
+            const container = document.getElementById('activeFilters');
+            const tags = [];
+            
+            if (currentFilters.type) {
+                const label = currentFilters.type === 'video' ? '🎥 Vidéos' : '📄 Articles';
+                tags.push(`<div class="filter-tag">${label}<button onclick="removeFilter('type')">×</button></div>`);
+            }
+            if (currentFilters.category) {
+                tags.push(`<div class="filter-tag">${currentFilters.category}<button onclick="removeFilter('category')">×</button></div>`);
+            }
+            if (currentFilters.section) {
+                tags.push(`<div class="filter-tag">Section: ${getSectionLabel(currentFilters.section)}<button onclick="removeFilter('section')">×</button></div>`);
+            }
+            if (currentFilters.search) {
+                tags.push(`<div class="filter-tag">Recherche: "${currentFilters.search}"<button onclick="removeFilter('search')">×</button></div>`);
+            }
+            
+            if (tags.length > 0) {
+                tags.push('<button class="clear-filters" onclick="clearAllFilters()">Effacer tout</button>');
+                container.innerHTML = tags.join('');
+            } else {
+                container.innerHTML = '';
+            }
         }
-        
-        articlesGrid.innerHTML = '';
-        
-        if (!articlesToDisplay || articlesToDisplay.length === 0) {
-            articlesGrid.innerHTML = '<p class="no-results">Aucun article trouvé.</p>';
-            return;
+
+        function removeFilter(filterName) {
+            currentFilters[filterName] = '';
+            const elementId = 'filter' + filterName.charAt(0).toUpperCase() + filterName.slice(1);
+            const element = document.getElementById(elementId);
+            if (element) element.value = '';
+            if (filterName === 'search') {
+                document.getElementById('searchInput').value = '';
+            }
+            applyFilters();
         }
+
+        function clearAllFilters() {
+            currentFilters = {
+                type: '',
+                category: '',
+                sort: 'recent',
+                section: '',
+                search: ''
+            };
+            
+            document.getElementById('filterType').value = '';
+            document.getElementById('filterCategory').value = '';
+            document.getElementById('filterSort').value = 'recent';
+            document.getElementById('filterSection').value = '';
+            document.getElementById('searchInput').value = '';
+            
+            applyFilters();
+        }
+
+        function displayArticles() {
+    const grid = document.getElementById('articlesGrid');
+    const totalPages = Math.ceil(filteredArticles.length / ARTICLES_PER_PAGE);
+    
+    document.getElementById('resultsCount').textContent = filteredArticles.length;
+    
+    if (filteredArticles.length === 0) {
+        grid.innerHTML = `
+            <div class="empty-state">
+                <i class="fas fa-inbox"></i>
+                <h3>Aucun article trouvé</h3>
+                <p>Essayez de modifier vos filtres</p>
+            </div>
+        `;
+        document.getElementById('pagination').innerHTML = '';
+        return;
+    }
+    
+    const startIndex = (currentPage - 1) * ARTICLES_PER_PAGE;
+    const endIndex = startIndex + ARTICLES_PER_PAGE;
+    const pageArticles = filteredArticles.slice(startIndex, endIndex);
+    
+    grid.innerHTML = pageArticles.map(article => {
+        const isVideo = article.contentType === 'video' || article.video_url;
+        const realViews = getArticleViews(article.id); // ✅ VUES RÉELLES
         
-        articlesToDisplay.forEach(article => {
-            const articleCard = document.createElement('div');
-            articleCard.className = 'article-card';
-            articleCard.innerHTML = `
-                <a href="/article/${article.slug}.html" class="article-link">
-                    <img src="${article.image}" alt="${article.title}">
-                    <div class="article-content">
-                        <span class="article-category">${article.category}</span>
-                        <h3>${article.title}</h3>
-                        <p>${article.excerpt}</p>
-                        <div class="article-meta">
-                            <span>${article.author}</span>
-                            <span>${article.date}</span>
+        return `
+            <article class="article-card" onclick="openArticle('${article.id}')">
+                <div class="article-image-wrapper">
+                    <img src="${article.image}" alt="${article.titre}" class="article-image" loading="lazy">
+                    ${isVideo ? '<div class="video-badge"><i class="fas fa-play"></i> VIDÉO</div>' : ''}
+                </div>
+                <div class="article-content">
+                    <span class="category-badge">${article.categorie}</span>
+                    <h3 class="article-title">${article.titre}</h3>
+                    <p class="article-excerpt">${article.extrait}</p>
+                    <div class="article-meta">
+                        <div>
+                            <i class="fas fa-user"></i> ${article.auteur}
+                        </div>
+                        <div class="article-stats">
+                            <span class="stat"><i class="fas fa-eye"></i> ${getArticleViews(article.id)}</span>
+                            <span class="stat"><i class="fas fa-heart"></i> ${article.likes || 0}</span>
                         </div>
                     </div>
-                </a>
+                </div>
+            </article>
+        `;
+    }).join('');
+    
+    updatePagination(totalPages);
+}
+
+        function updatePagination(totalPages) {
+            const pagination = document.getElementById('pagination');
+            
+            if (totalPages <= 1) {
+                pagination.innerHTML = '';
+                document.getElementById('pageInfo').textContent = '';
+                return;
+            }
+            
+            let html = '';
+            
+            html += `<button onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>
+                <i class="fas fa-chevron-left"></i>
+            </button>`;
+            
+            if (currentPage > 3) {
+                html += `<button onclick="changePage(1)">1</button>`;
+                if (currentPage > 4) {
+                    html += `<span class="page-info">...</span>`;
+                }
+            }
+            
+            for (let i = Math.max(1, currentPage - 2); i <= Math.min(totalPages, currentPage + 2); i++) {
+                html += `<button onclick="changePage(${i})" ${i === currentPage ? 'class="active"' : ''}>${i}</button>`;
+            }
+            
+            if (currentPage < totalPages - 2) {
+                if (currentPage < totalPages - 3) {
+                    html += `<span class="page-info">...</span>`;
+                }
+                html += `<button onclick="changePage(${totalPages})">${totalPages}</button>`;
+            }
+            
+            html += `<button onclick="changePage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>
+                <i class="fas fa-chevron-right"></i>
+            </button>`;
+            
+            pagination.innerHTML = html;
+            
+            const startItem = (currentPage - 1) * ARTICLES_PER_PAGE + 1;
+            const endItem = Math.min(currentPage * ARTICLES_PER_PAGE, filteredArticles.length);
+            document.getElementById('pageInfo').textContent = `Page ${currentPage} sur ${totalPages} (${startItem}-${endItem})`;
+        }
+
+        function changePage(page) {
+            const totalPages = Math.ceil(filteredArticles.length / ARTICLES_PER_PAGE);
+            if (page < 1 || page > totalPages) return;
+            
+            currentPage = page;
+            displayArticles();
+            updateUrl();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function getSectionLabel(section) {
+            const labels = {
+                'hero': '🌟 Slider',
+                'a-la-une': '🔥 Carousel',
+                'featured': '⭐ Important',
+                'trending': '📈 Trending',
+                'videos': '🎥 Vidéos',
+                'societe': '👥 Société',
+                'events': '📅 Événements'
+            };
+            return labels[section] || section;
+        }
+
+       function openArticle(articleId) {
+    const article = allArticles.find(a => a.id === articleId);
+    
+    if (!article) {
+        console.error('❌ Article introuvable:', articleId);
+        return;
+    }
+    
+    // 📊 TRACKING: Incrémenter les vues
+    trackArticleView(articleId);
+    
+    // Navigation intelligente (SEO ou legacy)
+    const url = getArticleUrl(article);
+    window.location.href = url;
+}
+
+
+// ✅ OBTENIR URL ARTICLE (SEO ou Legacy)
+function getArticleUrl(article) {
+    if (!article) return '#';
+    
+    // Si l'article a un slug SEO → utiliser la page statique
+    if (article.slug) {
+        return `/article/${article.slug}.html`;
+    }
+    
+    // Fallback → ancien système avec ID
+    return `/article-detail.html?id=${article.id}`;
+}
+
+// ✅ TRACKING DES VUES
+function trackArticleView(articleId) {
+    let views = JSON.parse(localStorage.getItem('article_views') || '{}');
+    views[articleId] = (views[articleId] || 0) + 1;
+    localStorage.setItem('article_views', JSON.stringify(views));
+    console.log(`📊 Vue enregistrée: ${articleId} → ${views[articleId]} vues`);
+}
+
+function getArticleViews(articleId) {
+    const views = JSON.parse(localStorage.getItem('article_views') || '{}');
+    return views[articleId] || 0;
+}
+
+        function showError() {
+            document.getElementById('articlesGrid').innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <h3>Erreur de chargement</h3>
+                    <p>Impossible de charger les articles</p>
+                </div>
             `;
-            articlesGrid.appendChild(articleCard);
-        });
-    }
+        }
 
-    function displayLatestArticles() {
-        const latestArticlesContainer = document.getElementById('latest-articles');
-        if (!latestArticlesContainer) return;
+        function initAutocomplete() {
+    const headerInput = document.getElementById('headerSearchInput');
+    const resultsDiv = document.getElementById('headerSearchResults');
+    let searchTimeout;
+    
+    headerInput.addEventListener('input', function() {
+        clearTimeout(searchTimeout);
+        const query = this.value.toLowerCase().trim();
         
-        const latestArticles = allArticles.slice(0, 3);
-        latestArticlesContainer.innerHTML = '';
+        if (query.length < 2) {
+            resultsDiv.classList.remove('show');
+            return;
+        }
         
-        latestArticles.forEach(article => {
-            const articleCard = document.createElement('div');
-            articleCard.className = 'latest-article-card';
-            articleCard.innerHTML = `
-                <a href="/article/${article.slug}.html">
-                    <img src="${article.image}" alt="${article.title}">
-                    <h4>${article.title}</h4>
-                    <p>${article.excerpt.substring(0, 100)}...</p>
-                </a>
-            `;
-            latestArticlesContainer.appendChild(articleCard);
-        });
-    }
-
-    function populateCategoryFilter() {
-        if (!categoryFilter) return;
-        
-        const categories = [...new Set(allArticles.map(article => article.category))];
-        categoryFilter.innerHTML = '<option value="">Toutes les catégories</option>';
-        categories.forEach(category => {
-            const option = document.createElement('option');
-            option.value = category;
-            option.textContent = category;
-            categoryFilter.appendChild(option);
-        });
-    }
-
-    function applyFilters() {
-        let filteredArticles = [...allArticles];
-        
-        if (searchInput) {
-            const searchTerm = searchInput.value.toLowerCase();
-            if (searchTerm) {
-                filteredArticles = filteredArticles.filter(article =>
-                    article.title.toLowerCase().includes(searchTerm) ||
-                    article.excerpt.toLowerCase().includes(searchTerm)
-                );
+        searchTimeout = setTimeout(() => {
+            const results = allArticles
+                .filter(article => {
+                    return article.titre.toLowerCase().includes(query) ||
+                           article.extrait.toLowerCase().includes(query) ||
+                           article.auteur.toLowerCase().includes(query);
+                })
+                .slice(0, 5);
+            
+            if (results.length > 0) {
+                resultsDiv.innerHTML = results.map(article => {
+                    const realViews = getArticleViews(article.id);
+                    
+                    return `
+                    const realViews = getArticleViews(article.id);
+                        <div class="search-result-item" onclick="openArticle('${article.id}')">
+                            <img src="${article.image}" alt="${article.titre}" class="search-result-thumb">
+                            <div class="search-result-info">
+                                <div class="search-result-title">${highlightText(article.titre, query)}</div>
+                                <div class="search-result-meta">
+                                    ${article.categorie} • ${article.auteur} • ${realViews} vues
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+                resultsDiv.classList.add('show');
+            } else {
+                resultsDiv.innerHTML = `
+                    <div class="search-result-item" style="justify-content: center; color: var(--gray);">
+                        <i class="fas fa-search"></i>
+                        <span>Aucun résultat trouvé</span>
+                    </div>
+                `;
+                resultsDiv.classList.add('show');
             }
-        }
-        
-        if (categoryFilter) {
-            const selectedCategory = categoryFilter.value;
-            if (selectedCategory) {
-                filteredArticles = filteredArticles.filter(article => 
-                    article.category === selectedCategory
-                );
-            }
-        }
-        
-        if (sortFilter) {
-            const sortOption = sortFilter.value;
-            if (sortOption === 'date-desc') {
-                filteredArticles.sort((a, b) => new Date(b.date) - new Date(a.date));
-            } else if (sortOption === 'date-asc') {
-                filteredArticles.sort((a, b) => new Date(a.date) - new Date(b.date));
-            } else if (sortOption === 'title') {
-                filteredArticles.sort((a, b) => a.title.localeCompare(b.title));
-            }
-        }
-        
-        displayArticles(filteredArticles);
-    }
-
-    document.addEventListener('DOMContentLoaded', function() {
-        // Initialiser les éléments DOM
-        articlesGrid = document.getElementById('articles-grid');
-        searchInput = document.getElementById('search-input');
-        categoryFilter = document.getElementById('category-filter');
-        sortFilter = document.getElementById('sort-filter');
-        
-        // Ajouter les event listeners seulement si les éléments existent
-        if (searchInput) {
-            searchInput.addEventListener('input', applyFilters);
-        }
-        if (categoryFilter) {
-            categoryFilter.addEventListener('change', applyFilters);
-        }
-        if (sortFilter) {
-            sortFilter.addEventListener('change', applyFilters);
-        }
-        
-        // Charger les articles
-        loadArticles();
+        }, 300);
     });
-</script>
+    
+    document.addEventListener('click', function(e) {
+        if (!headerInput.contains(e.target) && !resultsDiv.contains(e.target)) {
+            resultsDiv.classList.remove('show');
+        }
+    });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    loadArticles();
+    console.log('✅ articles.html avec navigation SEO chargé');
+});
+
+
+// ✅ 9. STATS CONSOLE
+console.log('📊 SYSTÈME DE TRACKING ACTIVÉ');
+console.log('Utilisez exportArticleStats() pour voir les statistiques');
+
+function exportArticleStats() {
+    const views = JSON.parse(localStorage.getItem('article_views') || '{}');
+    const stats = allArticles.map(article => ({
+        id: article.id,
+        titre: article.titre,
+        slug: article.slug || 'N/A',
+        vues: views[article.id] || 0,
+        likes: article.likes || 0,
+        categorie: article.categorie
+    })).sort((a, b) => b.vues - a.vues);
+    
+    console.table(stats.slice(0, 10));
+    return stats;
+}
+
+window.exportArticleStats = exportArticleStats;
+
+        function highlightText(text, query) {
+            if (!query) return text;
+            const regex = new RegExp(`(${query})`, 'gi');
+            return text.replace(regex, '<strong style="color: var(--primary);">$1</strong>');
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function goToSearch(searchTerm) {
+    document.getElementById('searchInput').value = searchTerm;
+    document.getElementById('headerSearchResults').classList.remove('show');
+    document.getElementById('headerSearchInput').value = '';
+    applyFilters();
+}
+
+        document.getElementById('filterType').addEventListener('change', applyFilters);
+        document.getElementById('filterCategory').addEventListener('change', applyFilters);
+        document.getElementById('filterSort').addEventListener('change', applyFilters);
+        document.getElementById('filterSection').addEventListener('change', applyFilters);
+        document.getElementById('searchInput').addEventListener('input', debounce(applyFilters, 500));
+        
+        document.querySelector('.header-search-btn').addEventListener('click', function() {
+            const query = document.getElementById('headerSearchInput').value;
+            if (query) {
+                goToSearch(query);
+            }
+        });
+        
+        document.getElementById('headerSearchInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const query = this.value;
+                if (query) {
+                    goToSearch(query);
+                }
+            }
+        });
+
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        document.addEventListener('DOMContentLoaded', loadArticles);
+
+        window.addEventListener('popstate', function() {
+            readUrlParams();
+            applyFilters();
+        });
+
+
+        // 📊 STATS CONSOLE
+console.log('📊 SYSTÈME DE TRACKING ACTIVÉ');
+console.log('Utilisez exportArticleStats() pour voir les statistiques');
+
+function exportArticleStats() {
+    const views = JSON.parse(localStorage.getItem('article_views') || '{}');
+    const stats = allArticles.map(article => ({
+        id: article.id,
+        titre: article.titre,
+        slug: article.slug || 'N/A',
+        vues: views[article.id] || 0,
+        likes: article.likes || 0,
+        categorie: article.categorie
+    })).sort((a, b) => b.vues - a.vues);
+    
+    console.table(stats.slice(0, 10));
+    return stats;
+}
+
+window.exportArticleStats = exportArticleStats;
+    </script>
 </body>
 </html>
-
-
