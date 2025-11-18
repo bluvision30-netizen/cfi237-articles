@@ -245,64 +245,23 @@ async function createArticlePage(articleData, articleId, slug) {
 // ==========================================
 // GÉNÉRER HTML MODERNE (VERSION SIMPLIFIÉE)
 // ==========================================
-// ==========================================
-// GÉNÉRER HTML MODERNE AVEC SUPPORT VIDÉO
-// ==========================================
 function generateModernArticleHTML(articleData, articleId, slug, images) {
-  const firstImage = images[0] || articleData.image;
-  const articleUrl = `https://cfiupload.netlify.app/article/${slug}.html`;
-  const currentDate = new Date().toISOString();
-  
-  // Détecter si c'est une vidéo
-  const isVideo = articleData.contentType === 'video' && articleData.video_url;
-  const videoId = isVideo ? extractYouTubeId(articleData.video_url) : null;
-  
-  // Générer le contenu vidéo ou image
-  let mediaContent = '';
-  
-  if (isVideo && videoId) {
-    mediaContent = `
-    <div class="video-container">
-        <div class="video-wrapper">
-            <iframe 
-                src="https://www.youtube.com/embed/${videoId}" 
-                frameborder="0" 
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                allowfullscreen
-                loading="lazy">
-            </iframe>
-        </div>
-        <div class="video-meta">
-            <a href="${articleData.video_url}" target="_blank" class="video-source">
-                <i class="fab fa-youtube"></i> Voir sur YouTube
-            </a>
-        </div>
-    </div>`;
-  } else {
-    // Contenu image normal
-    mediaContent = `
-    <div class="article-hero" style="background-image: url('${firstImage}')">
-        <div class="hero-overlay">
-            <span class="category">${articleData.categorie}</span>
-            <h1>${articleData.titre}</h1>
-            <div class="meta">
-                <span><i class="fas fa-user"></i> ${articleData.auteur}</span>
-                <span><i class="fas fa-calendar"></i> ${new Date().toLocaleDateString('fr-FR')}</span>
-                ${isVideo ? '<span><i class="fas fa-video"></i> Vidéo</span>' : ''}
-            </div>
-        </div>
-    </div>`;
-  }
-
-  // Générer galerie seulement pour les articles (pas les vidéos)
-  let galleryContent = '';
-  if (!isVideo && images.length > 1) {
-    galleryContent = `
-    <div class="gallery">
-        ${images.slice(1).map(img => `<img src="${img}" alt="Photo" loading="lazy">`).join('')}
-    </div>`;
-  }
-
+    // UTILISER LA MINIATURE YOUTUBE SI C'EST UNE VIDÉO
+    let firstImage = images[0] || articleData.image;
+    
+    if (articleData.contentType === 'video' && articleData.video_url) {
+        const videoId = extractYouTubeId(articleData.video_url);
+        if (videoId) {
+            firstImage = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+        }
+    }
+    
+    // Le reste du code reste identique...
+    const articleUrl = `https://cfiupload.netlify.app/article/${slug}.html`;
+    const isVideo = articleData.contentType === 'video' && articleData.video_url;
+    const videoId = isVideo ? extractYouTubeId(articleData.video_url) : null;
+    
+  // HTML simplifié pour éviter dépassement de taille
   return `<!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -318,59 +277,9 @@ function generateModernArticleHTML(articleData, articleId, slug, images) {
     <meta property="og:description" content="${articleData.extrait}">
     <meta property="og:image" content="${firstImage}">
     <meta property="og:url" content="${articleUrl}">
-    ${isVideo ? `<meta property="og:video" content="${articleData.video_url}">` : ''}
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="/styles/article-modern.css">
-    <style>
-        .video-container {
-            margin: 20px 0;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
-        }
-        .video-wrapper {
-            position: relative;
-            padding-bottom: 56.25%; /* 16:9 */
-            height: 0;
-            background: #000;
-        }
-        .video-wrapper iframe {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
-        .video-meta {
-            padding: 16px;
-            background: #1e293b;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .video-source {
-            color: #ff0000;
-            text-decoration: none;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: opacity 0.3s;
-        }
-        .video-source:hover {
-            opacity: 0.8;
-        }
-        .video-badge {
-            background: #ff0000;
-            color: white;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 600;
-        }
-    </style>
 </head>
 <body>
     <div class="top-bar">
@@ -381,34 +290,28 @@ function generateModernArticleHTML(articleData, articleId, slug, images) {
     </div>
     
     <article class="article-container">
-        ${isVideo ? `
-        <header>
-            <div style="padding: 20px 0;">
+        <header class="article-hero" style="background-image: url('${firstImage}')">
+            <div class="hero-overlay">
                 <span class="category">${articleData.categorie}</span>
-                ${isVideo ? '<span class="video-badge"><i class="fas fa-video"></i> VIDÉO</span>' : ''}
-            </div>
-            <h1>${articleData.titre}</h1>
-            <div class="meta">
-                <span><i class="fas fa-user"></i> ${articleData.auteur}</span>
-                <span><i class="fas fa-calendar"></i> ${new Date().toLocaleDateString('fr-FR')}</span>
+                <h1>${articleData.titre}</h1>
+                <div class="meta">
+                    <span><i class="fas fa-user"></i> ${articleData.auteur}</span>
+                    <span><i class="fas fa-calendar"></i> ${new Date().toLocaleDateString('fr-FR')}</span>
+                </div>
             </div>
         </header>
-        ${mediaContent}
-        ` : mediaContent}
         
         <div class="article-content">
             <div class="excerpt">${articleData.extrait}</div>
+            <div class="body">
+                ${articleData.contenu.split('\n\n').map(p => `<p>${p}</p>`).join('')}
+            </div>
             
-            ${isVideo ? `
-            <div class="body">
-                ${articleData.contenu.split('\n\n').map(p => `<p>${p}</p>`).join('')}
-            </div>
-            ` : `
-            <div class="body">
-                ${articleData.contenu.split('\n\n').map(p => `<p>${p}</p>`).join('')}
-            </div>
-            ${galleryContent}
-            `}
+            ${images.length > 1 ? `
+                <div class="gallery">
+                    ${images.slice(1).map(img => `<img src="${img}" alt="Photo" loading="lazy">`).join('')}
+                </div>
+            ` : ''}
             
             <div class="share">
                 <a href="https://wa.me/?text=${encodeURIComponent(articleData.titre + ' - ' + articleUrl)}" class="share-btn whatsapp">
@@ -436,27 +339,6 @@ function generateModernArticleHTML(articleData, articleId, slug, images) {
     <script src="/js/article-interactions.js"></script>
 </body>
 </html>`;
-}
-
-// ==========================================
-// EXTRACT YOUTUBE ID
-// ==========================================
-function extractYouTubeId(url) {
-  if (!url) return null;
-  
-  const patterns = [
-    /(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&]+)/,
-    /youtube\.com\/embed\/([^?]+)/,
-    /youtube\.com\/v\/([^?]+)/
-  ];
-  
-  for (let pattern of patterns) {
-    const match = url.match(pattern);
-    if (match && match[1]) {
-      return match[1];
-    }
-  }
-  return null;
 }
 
 console.log('✅ Fonction create-article chargée');
