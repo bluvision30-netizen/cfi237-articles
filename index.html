@@ -3487,393 +3487,280 @@
         </div>
     </footer>
 
-    <script>
-        let allArticles = [];
-        let currentSlide = 0;
-        let heroArticles = [];
-let videosContainer;
-let videosWrapper;// Initialiser après chargement
-document.addEventListener('DOMContentLoaded', function() {
-    videosContainer = document.getElementById('videosScrollContainer');
-    videosWrapper = document.getElementById('videosGrid');
-    
-    // Écouter le scroll pour mettre à jour les indicateurs
-    if (videosWrapper) {
-        videosWrapper.addEventListener('scroll', updateScrollIndicators);
-        updateScrollIndicators();
-    }
-});
-
-        // Charger les articles depuis GitHub
-        // Charger les articles depuis GitHub
-async function loadArticles() {
-    try {
-        const response = await fetch('/articles.json?t=' + Date.now());
-        if (!response.ok) throw new Error('Erreur chargement');
-        
-        const data = await response.json();
-        allArticles = Object.values(data.articles || {})
-            .filter(article => article && article.id)
-            .sort((a, b) => new Date(b.date) - new Date(a.date));
-        
-        console.log('📰 Articles chargés:', allArticles.length);
-        
-        displayNewHeroSlider();
-        displayCarousel();
-        displayArticlesPaginated(1); // ✅ UTILISER LA VERSION PAGINÉE
-        displayArticlesPopulaires(); // ✅ AJOUTER CETTE LIGNE
-        displayTrending();
-        displayVideos();
-        displaySociete();
-        displayFeatured();
-        displayEvents();
-        displayCategories();
-        displayPolitique();
-        displaySports();
-        displayInternational();
-        updateAboutStats();
-        
-    } catch (error) {
-        console.error('❌ Erreur:', error);
-        showError();
-    }
-}
+ <script>
     // ========================================
-        // 🆕 NOUVEAU SYSTÈME HERO SLIDER
-        // ========================================
+    // 🎯 VARIABLES GLOBALES
+    // ========================================
+    let allArticles = [];
+    let currentSlide = 0;
+    let heroArticles = [];
+    let slideInterval = null;
+    let pageActuelle = 1;
+    const ARTICLES_PAR_PAGE = 20;
 
-         function displayNewHeroSlider() {
-            // Filtrer les articles pour le hero (articles avec section 'hero' ou les 3 plus récents)
-            heroArticles = allArticles
-                .filter(a => a.sections && a.sections.includes('hero'))
-                .slice(0, 5);
-
-            if (heroArticles.length === 0) {
-                heroArticles = allArticles.slice(0, 3);
-            }
-
-            const slidesContainer = document.getElementById('heroSlidesContainer');
-            const dotsContainer = document.getElementById('sliderDots');
-
-            if (heroArticles.length === 0) {
-                slidesContainer.innerHTML = `
-                    <div class="hero-slide">
-                        <div style="background: linear-gradient(135deg, var(--primary), var(--secondary)); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: white;">
-                            <div style="text-align: center;">
-                                <i class="fas fa-newspaper" style="font-size: 3rem; margin-bottom: 1rem;"></i>
-                                <h2 style="font-size: 1.5rem;">Aucun article disponible</h2>
-                                <p>Revenez plus tard pour les dernières actualités</p>
-                            </div>
-                        </div>
-                    </div>
-                `;
-                dotsContainer.innerHTML = '';
-                return;
-            }
-
-            // Générer les slides
-            slidesContainer.innerHTML = heroArticles.map((article, index) => {
-                // 🔥 URL CORRECTE : SEO si slug existe, sinon fallback ID
-                const url = getArticleUrl(article);
-
-                return `
-                    <div class="hero-slide">
-                        <a href="${url}" class="hero-link" data-article-id="${article.id}">
-                            <img src="${article.image}" 
-                                 alt="${article.titre}" 
-                                 loading="${index === 0 ? 'eager' : 'lazy'}">
-                            
-                            <div class="hero-content">
-                                <span class="hero-category">${article.categorie}</span>
-                                <h2 class="hero-title">${article.titre}</h2>
-                                <div class="hero-meta">
-                                    <span><i class="fas fa-user"></i> ${article.auteur}</span>
-                                    <span><i class="fas fa-clock"></i> ${formatDate(article.date)}</span>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                `;
-            }).join('');
-
-            // Générer les dots
-            dotsContainer.innerHTML = heroArticles.map((_, index) => `
-                <button class="slider-dot ${index === 0 ? 'active' : ''}" onclick="goToSlide(${index})"></button>
-            `).join('');
-
-            // Démarrer l'auto-slide
-            startAutoSlide();
-        }
-
-        function nextSlide() {
-            if (heroArticles.length === 0) return;
-            currentSlide = (currentSlide + 1) % heroArticles.length;
-            updateSlide();
-        }
-
-        function prevSlide() {
-            if (heroArticles.length === 0) return;
-            currentSlide = (currentSlide - 1 + heroArticles.length) % heroArticles.length;
-            updateSlide();
-        }
-
-        function goToSlide(index) {
-            if (heroArticles.length === 0) return;
-            currentSlide = index;
-            updateSlide();
-        }
-
-        function updateSlide() {
-            const slidesContainer = document.getElementById('heroSlidesContainer');
-            const dots = document.querySelectorAll('.slider-dot');
+    // ========================================
+    // 🚀 CHARGEMENT DES ARTICLES
+    // ========================================
+    async function loadArticles() {
+        try {
+            const response = await fetch('/articles.json?t=' + Date.now());
+            if (!response.ok) throw new Error('Erreur chargement');
             
-            if (!slidesContainer || heroArticles.length === 0) return;
+            const data = await response.json();
+            allArticles = Object.values(data.articles || {})
+                .filter(article => article && article.id)
+                .sort((a, b) => new Date(b.date) - new Date(a.date));
             
-            // Mettre à jour la position du conteneur
-            slidesContainer.style.transform = `translateX(-${currentSlide * 100}%)`;
+            console.log('📰 Articles chargés:', allArticles.length);
             
-            // Mettre à jour les dots
-            dots.forEach((dot, index) => {
-                dot.classList.toggle('active', index === currentSlide);
-            });
+            // Mettre à jour le compteur d'articles
+            updateArticleCount();
+            
+            // Afficher les sections principales
+            displayNewHeroSlider();
+            displayCarousel();
+            displayArticlesPaginated(1);
+            displayArticlesPopulaires();
+            displayTrending();
+            displayVideos();
+            displaySociete();
+            displayFeatured();
+            displayEvents();
+            displayCategories();
+            displayPolitique();
+            displaySports();
+            displayInternational();
+            updateAboutStats();
+            
+        } catch (error) {
+            console.error('❌ Erreur:', error);
+            showError();
         }
-
-        function startAutoSlide() {
-            // Arrêter l'intervalle précédent s'il existe
-            if (slideInterval) clearInterval(slideInterval);
-            
-            // Démarrer un nouvel intervalle seulement s'il y a des articles
-            if (heroArticles.length > 1) {
-                slideInterval = setInterval(() => {
-                    nextSlide();
-                }, 5000);
-            }
-        }
-
-function displayCarousel() {
-    const carousel = allArticles
-        .filter(a => a.sections && a.sections.includes('a-la-une'))
-        .slice(0, 8);
-    
-    const container = document.getElementById('carouselALaUne');
-    
-    if (carousel.length === 0) {
-        container.innerHTML = '<p style="color: var(--gray);">Aucun article en carousel</p>';
-        return;
     }
-    
-    container.innerHTML = carousel.map(article => {
-        const realViews = getArticleViews(article.id);
-        
-        return `
-            <div class="carousel-card" onclick="openArticle('${article.id}')">
-                <img src="${article.image}" alt="${article.titre}" loading="lazy">
-                <div class="carousel-card-content">
-                    <span class="category-badge">${article.categorie}</span>
-                    <h3 class="carousel-card-title">${article.titre}</h3>
-                    <div class="article-meta">
-                        <div class="article-author">
-                            <div class="author-avatar">${getInitial(article.auteur)}</div>
-                            <span>${article.auteur}</span>
-                        </div>
-                        <div class="article-stats">
-                            <span><i class="fas fa-eye"></i> ${realViews}</span>
+
+    // ========================================
+    // 🆕 NOUVEAU HERO SLIDER CORRIGÉ
+    // ========================================
+    function displayNewHeroSlider() {
+        // Filtrer les articles pour le hero
+        heroArticles = allArticles
+            .filter(a => a.sections && a.sections.includes('hero'))
+            .slice(0, 5);
+
+        if (heroArticles.length === 0) {
+            heroArticles = allArticles.slice(0, 3);
+        }
+
+        const slidesContainer = document.getElementById('heroSlidesContainer');
+        const dotsContainer = document.getElementById('sliderDots');
+
+        if (!slidesContainer || !dotsContainer) {
+            console.error('❌ Conteneurs Hero Slider non trouvés');
+            return;
+        }
+
+        if (heroArticles.length === 0) {
+            slidesContainer.innerHTML = `
+                <div class="hero-slide">
+                    <div style="background: linear-gradient(135deg, var(--primary), var(--secondary)); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: white;">
+                        <div style="text-align: center;">
+                            <i class="fas fa-newspaper" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+                            <h2 style="font-size: 1.5rem;">Aucun article disponible</h2>
+                            <p>Revenez plus tard pour les dernières actualités</p>
                         </div>
                     </div>
                 </div>
-            </div>
-        `;
-    }).join('');
-}
-document.addEventListener('DOMContentLoaded', function() {
-    loadArticles().then(() => {
-        displayNewHeroSlider();
-        displayCarousel();
-        displayArticlesPaginated(1);
-        displayArticlesPopulaires();
-        displayTrending();
-        displayVideos();
-        // ... autres sections
-    });
-});
+            `;
+            dotsContainer.innerHTML = '';
+            return;
+        }
 
-// ✅ 10. EXPORT DES STATISTIQUES
-function exportArticleStats() {
-    const views = JSON.parse(localStorage.getItem('article_views') || '{}');
-    const stats = allArticles.map(article => ({
-        id: article.id,
-        titre: article.titre,
-        vues: views[article.id] || 0,
-        likes: article.likes || 0,
-        score: (views[article.id] || 0) * 10 + (article.likes || 0) * 2
-    })).sort((a, b) => b.score - a.score);
-    
-    console.table(stats.slice(0, 10));
-    return stats;
-}
+        // Générer les slides
+        slidesContainer.innerHTML = heroArticles.map((article, index) => {
+            const url = getArticleUrl(article);
+            return `
+                <div class="hero-slide">
+                    <a href="${url}" class="hero-link" data-article-id="${article.id}">
+                        <img src="${article.image}" 
+                             alt="${article.titre}" 
+                             loading="${index === 0 ? 'eager' : 'lazy'}">
+                        
+                        <div class="hero-content">
+                            <span class="hero-category">${article.categorie}</span>
+                            <h2 class="hero-title">${article.titre}</h2>
+                            <div class="hero-meta">
+                                <span><i class="fas fa-user"></i> ${article.auteur}</span>
+                                <span><i class="fas fa-clock"></i> ${formatDate(article.date)}</span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            `;
+        }).join('');
 
-// Rendre disponible globalement
-window.exportArticleStats = exportArticleStats;
+        // Générer les dots
+        dotsContainer.innerHTML = heroArticles.map((_, index) => `
+            <button class="slider-dot ${index === 0 ? 'active' : ''}" onclick="goToSlide(${index})"></button>
+        `).join('');
 
-console.log('✅ Système de tracking des vues activé');
-console.log('📊 Utilisez exportArticleStats() pour voir les stats');
-        // Articles principaux
-        function displayArticles() {
-            const mainArticles = allArticles
-                .filter(a => !a.sections || a.sections.includes('main'))
-                .slice(0, 12);
-            
-            const grid = document.getElementById('articlesGrid');
-            
-            if (mainArticles.length === 0) {
-                grid.innerHTML = '<div class="empty-state"><i class="fas fa-inbox"></i><p>Aucun article disponible</p></div>';
-                return;
-            }
-            
-            grid.innerHTML = mainArticles.map(article => `
-                <article class="article-card" onclick="openArticle('${article.id}')">
-                    <img src="${article.image}" alt="${article.titre}" class="article-image" loading="lazy">
-                    <div class="article-content">
+        // Réinitialiser et démarrer l'auto-slide
+        currentSlide = 0;
+        startAutoSlide();
+    }
+
+    function nextSlide() {
+        if (heroArticles.length === 0) return;
+        currentSlide = (currentSlide + 1) % heroArticles.length;
+        updateSlide();
+    }
+
+    function prevSlide() {
+        if (heroArticles.length === 0) return;
+        currentSlide = (currentSlide - 1 + heroArticles.length) % heroArticles.length;
+        updateSlide();
+    }
+
+    function goToSlide(index) {
+        if (heroArticles.length === 0) return;
+        currentSlide = index;
+        updateSlide();
+    }
+
+    function updateSlide() {
+        const slidesContainer = document.getElementById('heroSlidesContainer');
+        const dots = document.querySelectorAll('.slider-dot');
+        
+        if (!slidesContainer || heroArticles.length === 0) return;
+        
+        // Mettre à jour la position du conteneur
+        slidesContainer.style.transform = `translateX(-${currentSlide * 100}%)`;
+        
+        // Mettre à jour les dots
+        dots.forEach((dot, index) => {
+            dot.classList.toggle('active', index === currentSlide);
+        });
+    }
+
+    function startAutoSlide() {
+        // Arrêter l'intervalle précédent
+        if (slideInterval) clearInterval(slideInterval);
+        
+        // Démarrer un nouvel intervalle seulement s'il y a des articles
+        if (heroArticles.length > 1) {
+            slideInterval = setInterval(() => {
+                nextSlide();
+            }, 5000);
+        }
+    }
+
+    // ========================================
+    // 🧭 SYSTÈME DE NAVIGATION
+    // ========================================
+    function getArticleUrl(article) {
+        if (!article) return '#';
+        
+        // Si l'article a un slug SEO → utiliser la page statique
+        if (article.slug) {
+            return `/article/${article.slug}.html`;
+        }
+        
+        // Fallback → ancien système avec ID
+        return `/article-detail.html?id=${article.id}`;
+    }
+
+    function openArticle(articleId) {
+        const article = allArticles.find(a => a.id === articleId);
+        
+        if (!article) {
+            console.error('❌ Article introuvable:', articleId);
+            return;
+        }
+        
+        // 📊 TRACKING: Incrémenter les vues localement
+        trackArticleView(articleId);
+        
+        // Navigation intelligente (SEO ou legacy)
+        const url = getArticleUrl(article);
+        window.location.href = url;
+    }
+
+    // ========================================
+    // 📊 SYSTÈME DE TRACKING DES VUES
+    // ========================================
+    function trackArticleView(articleId) {
+        let views = JSON.parse(localStorage.getItem('article_views') || '{}');
+        views[articleId] = (views[articleId] || 0) + 1;
+        localStorage.setItem('article_views', JSON.stringify(views));
+        console.log(`📊 Vue enregistrée pour article ${articleId}: ${views[articleId]} vues`);
+    }
+
+    function getArticleViews(articleId) {
+        const views = JSON.parse(localStorage.getItem('article_views') || '{}');
+        return views[articleId] || 0;
+    }
+
+    // ========================================
+    // 📰 FONCTIONS D'AFFICHAGE DES ARTICLES
+    // ========================================
+    function displayCarousel() {
+        const carousel = allArticles
+            .filter(a => a.sections && a.sections.includes('a-la-une'))
+            .slice(0, 8);
+        
+        const container = document.getElementById('carouselALaUne');
+        if (!container) return;
+        
+        if (carousel.length === 0) {
+            container.innerHTML = '<p style="color: var(--gray);">Aucun article en carousel</p>';
+            return;
+        }
+        
+        container.innerHTML = carousel.map(article => {
+            const realViews = getArticleViews(article.id);
+            return `
+                <div class="carousel-card" onclick="openArticle('${article.id}')">
+                    <img src="${article.image}" alt="${article.titre}" loading="lazy">
+                    <div class="carousel-card-content">
                         <span class="category-badge">${article.categorie}</span>
-                        <h3 class="article-title">${article.titre}</h3>
-                        <p class="article-excerpt">${article.extrait}</p>
+                        <h3 class="carousel-card-title">${article.titre}</h3>
                         <div class="article-meta">
                             <div class="article-author">
                                 <div class="author-avatar">${getInitial(article.auteur)}</div>
                                 <span>${article.auteur}</span>
                             </div>
-                            <div class="article-date">
-                                <i class="fas fa-clock"></i>
-                                ${formatDate(article.date)}
+                            <div class="article-stats">
+                                <span><i class="fas fa-eye"></i> ${realViews}</span>
                             </div>
                         </div>
                     </div>
-                </article>
-            `).join('');
-        }
-
-        // Trending
-       function displayTrending() {
-    const trending = [...allArticles]
-        .sort((a, b) => {
-            const scoreA = (a.vues || 0) + (a.likes || 0) * 2;
-            const scoreB = (b.vues || 0) + (b.likes || 0) * 2;
-            return scoreB - scoreA;
-        })
-        .slice(0, 5);
-    
-    const container = document.getElementById('trendingList');
-    
-    if (trending.length === 0) {
-        container.innerHTML = '<p style="color: var(--gray); font-size: 0.9rem;">Aucun article trending</p>';
-        return;
-    }
-    
-    container.innerHTML = trending.map((article, index) => `
-        <div class="trending-item" onclick="openArticle('${article.id}')">
-            <div class="trending-number">${index + 1}</div>
-            <div class="trending-content">
-                <h4>${article.titre}</h4>
-                <div class="trending-stats">
-                    <span><i class="fas fa-clock"></i> ${formatDate(article.date)}</span>
                 </div>
-            </div>
-        </div>
-    `).join('');
-}
-
-/**
- * Vidéos avec liens SEO
- */
-async function displayVideos() {
-    const videos = allArticles
-        .filter(a => a.contentType === 'video' || (a.sections && a.sections.includes('videos')))
-        .slice(0, 12);
-    
-    const grid = document.getElementById('videosGrid');
-    
-    if (videos.length === 0) {
-        grid.innerHTML = `
-            <div class="empty-state" style="flex: 1; text-align: center; padding: 60px 20px;">
-                <i class="fas fa-video"></i>
-                <p>Aucune vidéo disponible pour le moment</p>
-            </div>
-        `;
-        return;
+            `;
+        }).join('');
     }
-    
-    grid.innerHTML = `
-        <div class="loading" style="flex: 1; text-align: center; padding: 40px;">
-            <i class="fas fa-spinner"></i>
-            <p style="margin-top: 1rem;">Chargement des vidéos HD...</p>
-        </div>
-    `;
-    
-    const videosWithThumbnails = await Promise.all(
-        videos.map(async (article) => {
-            let thumbnailData = {
-                url: article.image,
-                quality: 'standard',
-                isYouTube: false
-            };
-            
-            if (article.video_url) {
-                const platform = detectVideoPlatform(article.video_url);
-                
-                if (platform === 'youtube') {
-                    const thumbnail = await getYouTubeThumbnail(article.video_url);
-                    if (thumbnail) {
-                        thumbnailData = {
-                            url: thumbnail.url,
-                            quality: thumbnail.quality,
-                            width: thumbnail.width,
-                            height: thumbnail.height,
-                            isYouTube: true
-                        };
-                    }
-                }
-            }
-            
-            return { ...article, thumbnailData };
-        })
-    );
-    
-    grid.innerHTML = videosWithThumbnails.map(article => {
-        const thumb = article.thumbnailData;
-        const qualityBadge = thumb.isYouTube ? 
-            `<div class="quality-badge">${thumb.quality === 'maxresdefault' ? 'HD' : 'SD'}</div>` : '';
+
+    function displayArticlesPaginated(page = 1) {
+        const mainArticles = allArticles
+            .filter(a => !a.sections || a.sections.includes('main'))
+            .sort((a, b) => new Date(b.date) - new Date(a.date));
         
-        return `
-            <article class="article-card video-card" onclick="openArticle('${article.id}')">
-                <div class="video-thumbnail">
-                    <img src="${thumb.url}" 
-                         alt="${article.titre}" 
-                         class="article-image" 
-                         loading="lazy">
-                    
-                    <div class="video-overlay">
-                        <div class="play-button">
-                            <i class="fas fa-play"></i>
-                        </div>
-                    </div>
-                    
-                    ${qualityBadge}
-                    
-                    ${thumb.isYouTube ? `
-                        <div class="platform-badge youtube">
-                            <i class="fab fa-youtube"></i> YouTube
-                        </div>
-                    ` : ''}
-                    
-                    <div class="duration-badge">
-                        <i class="fas fa-play-circle"></i> VIDÉO
-                    </div>
-                </div>
-                
+        const totalPages = Math.ceil(mainArticles.length / ARTICLES_PAR_PAGE);
+        const startIndex = (page - 1) * ARTICLES_PAR_PAGE;
+        const endIndex = startIndex + ARTICLES_PAR_PAGE;
+        const pageArticles = mainArticles.slice(startIndex, endIndex);
+        
+        const grid = document.getElementById('articlesGrid');
+        if (!grid) return;
+        
+        if (pageArticles.length === 0) {
+            grid.innerHTML = '<div class="empty-state"><i class="fas fa-inbox"></i><p>Aucun article disponible</p></div>';
+            return;
+        }
+        
+        grid.innerHTML = pageArticles.map(article => `
+            <article class="article-card" onclick="openArticle('${article.id}')">
+                <img src="${article.image}" alt="${article.titre}" class="article-image" loading="lazy">
                 <div class="article-content">
-                    <span class="category-badge video-badge">
-                        🎥 ${article.categorie}
-                    </span>
+                    <span class="category-badge">${article.categorie}</span>
                     <h3 class="article-title">${article.titre}</h3>
                     <p class="article-excerpt">${article.extrait}</p>
                     <div class="article-meta">
@@ -3888,308 +3775,131 @@ async function displayVideos() {
                     </div>
                 </div>
             </article>
-        `;
-    }).join('');
-    
-    setTimeout(() => {
-        updateScrollIndicators();
-    }, 100);
-    
-    console.log(`✅ ${videosWithThumbnails.length} vidéos affichées avec liens SEO`);
-}
-
-// Support scroll au clavier
-document.addEventListener('keydown', function(e) {
-    if (!videosWrapper) return;
-    
-    if (e.key === 'ArrowLeft') {
-        scrollVideosLeft();
-    } else if (e.key === 'ArrowRight') {
-        scrollVideosRight();
+        `).join('');
+        
+        updatePagination(page, totalPages);
     }
-});
 
-// Support scroll tactile avec détection de direction
-let touchStartX = 0;
-let touchEndX = 0;
-
-if (videosWrapper) {
-    videosWrapper.addEventListener('touchstart', function(e) {
-        touchStartX = e.changedTouches[0].screenX;
-    }, { passive: true });
-    
-    videosWrapper.addEventListener('touchend', function(e) {
-        touchEndX = e.changedTouches[0].screenX;
-        handleSwipe();
-    }, { passive: true });
-}
-
-function handleSwipe() {
-    if (touchEndX < touchStartX - 50) {
-        // Swipe gauche
-        updateScrollIndicators();
-    }
-    if (touchEndX > touchStartX + 50) {
-        // Swipe droite
-        updateScrollIndicators();
-    }
-}
-/**
- * Scroll vers la gauche
- */
-function scrollVideosLeft() {
-    if (!videosWrapper) return;
-    
-    const scrollAmount = 400; // Distance de scroll
-    videosWrapper.scrollBy({
-        left: -scrollAmount,
-        behavior: 'smooth'
-    });
-}
-
-/**
- * Scroll vers la droite
- */
-function scrollVideosRight() {
-    if (!videosWrapper) return;
-    
-    const scrollAmount = 400;
-    videosWrapper.scrollBy({
-        left: scrollAmount,
-        behavior: 'smooth'
-    });
-}
-
-/**
- * Mettre à jour les indicateurs de scroll
- */
-function updateScrollIndicators() {
-    if (!videosWrapper || !videosContainer) return;
-    
-    const scrollLeft = videosWrapper.scrollLeft;
-    const scrollWidth = videosWrapper.scrollWidth;
-    const clientWidth = videosWrapper.clientWidth;
-    
-    // Peut scroller à gauche ?
-    if (scrollLeft > 10) {
-        videosContainer.classList.add('can-scroll-left');
-    } else {
-        videosContainer.classList.remove('can-scroll-left');
-    }
-    
-    // Peut scroller à droite ?
-    if (scrollLeft < scrollWidth - clientWidth - 10) {
-        videosContainer.classList.add('can-scroll-right');
-    } else {
-        videosContainer.classList.remove('can-scroll-right');
-    }
-    
-    // Mettre à jour les boutons
-    updateScrollButtons();
-}
-
-/**
- * Mettre à jour l'état des boutons
- */
-function updateScrollButtons() {
-    const leftBtn = document.querySelector('.scroll-left');
-    const rightBtn = document.querySelector('.scroll-right');
-    
-    if (!videosWrapper || !leftBtn || !rightBtn) return;
-    
-    const scrollLeft = videosWrapper.scrollLeft;
-    const scrollWidth = videosWrapper.scrollWidth;
-    const clientWidth = videosWrapper.clientWidth;
-    
-    // Désactiver bouton gauche si au début
-    leftBtn.disabled = scrollLeft <= 10;
-    
-    // Désactiver bouton droite si à la fin
-    rightBtn.disabled = scrollLeft >= scrollWidth - clientWidth - 10;
-}
-        // Société redesigned
-        function displaySociete() {
-    const societe = allArticles
-        .filter(a => a.sections && a.sections.includes('societe'))
-        .slice(0, 6);
-    
-    const grid = document.getElementById('societeGrid');
-    
-    if (societe.length === 0) {
-        grid.innerHTML = '<div class="empty-state"><i class="fas fa-users"></i><p>Aucun article de société disponible</p></div>';
-        return;
-    }
-    
-    grid.innerHTML = societe.map(article => `
-        <article class="societe-card" onclick="openArticle('${article.id}')">
-            <div class="societe-image-wrapper">
-                <img src="${article.image}" alt="${article.titre}" loading="lazy">
-                <div class="societe-overlay">
-                    <span class="societe-tag">
-                        <i class="fas fa-users"></i> Société
-                    </span>
-                </div>
-            </div>
-            <div class="article-content">
-                <h3 class="article-title">${article.titre}</h3>
-                <p class="article-excerpt">${article.extrait}</p>
-                <div class="article-meta">
-                    <div class="article-author">
-                        <div class="author-avatar">${getInitial(article.auteur)}</div>
-                        <span>${article.auteur}</span>
-                    </div>
-                    <div class="article-date">
-                        <i class="fas fa-clock"></i>
-                        ${formatDate(article.date)}
-                    </div>
-                </div>
-            </div>
-        </article>
-    `).join('');
-}
-
-        // Featured (À ne pas manquer)
-     function displayFeatured() {
-    const featured = allArticles
-        .filter(a => a.sections && a.sections.includes('featured'))
-        .slice(0, 5);
-    
-    const container = document.getElementById('featuredList');
-    
-    if (featured.length === 0) {
-        container.innerHTML = '<p style="color: var(--gray); font-size: 0.9rem;">Aucun article vedette</p>';
-        return;
-    }
-    
-    container.innerHTML = featured.map(article => `
-        <div class="featured-item" onclick="openArticle('${article.id}')">
-            <img src="${article.image}" alt="${article.titre}" class="featured-thumb" loading="lazy">
-            <div class="featured-content">
-                <h4>${article.titre}</h4>
-                <div class="featured-meta">
-                    <span><i class="fas fa-clock"></i> ${formatDate(article.date)}</span>
-                </div>
-            </div>
-        </div>
-    `).join('');
-}
-
-/**
- * Events avec liens SEO
- */
-function displayEvents() {
-    const events = allArticles
-        .filter(a => a.sections && a.sections.includes('events'))
-        .slice(0, 4);
-    
-    const container = document.getElementById('eventsList');
-    
-    if (events.length === 0) {
-        container.innerHTML = '<p style="color: var(--gray); font-size: 0.9rem;">Aucun événement à venir</p>';
-        return;
-    }
-    
-    container.innerHTML = events.map(article => `
-        <div class="event-card" onclick="openArticle('${article.id}')">
-            <div class="event-image-container">
-                <img src="${article.image}" alt="${article.titre}" class="event-image" loading="lazy">
-            </div>
-            <div class="event-content">
-                <h4 class="event-title">${article.titre}</h4>
-                <p class="event-excerpt">${article.extrait}</p>
-                <div class="event-date">
-                    <i class="fas fa-calendar"></i>
-                    ${formatDate(article.date)}
-                </div>
-            </div>
-        </div>
-    `).join('');
-}
-
-        // Categories
-        function displayCategories() {
-            const categories = {
-                'Politique': { icon: 'fa-landmark', color: '#3b82f6' },
-                'Économie': { icon: 'fa-chart-line', color: '#10b981' },
-                'Sports': { icon: 'fa-futbol', color: '#22c55e' },
-                'Société': { icon: 'fa-users', color: '#8b5cf6' },
-                'Culture': { icon: 'fa-palette', color: '#ec4899' },
-                'Santé': { icon: 'fa-heartbeat', color: '#ef4444' },
-                'Technologie': { icon: 'fa-laptop-code', color: '#06b6d4' },
-                'International': { icon: 'fa-globe', color: '#f97316' }
-            };
-            
-            const container = document.getElementById('categoriesGrid');
-            const categoryCounts = {};
-            
-            allArticles.forEach(article => {
-                categoryCounts[article.categorie] = (categoryCounts[article.categorie] || 0) + 1;
-            });
-            
-            container.innerHTML = Object.entries(categories).map(([name, data]) => `
-                <div class="category-item" onclick="filterByCategory('${name}')" style="border-color: ${data.color};">
-                    <i class="fas ${data.icon}" style="color: ${data.color};"></i>
-                    <div class="category-name">${name}</div>
-                    <div class="category-count">${categoryCounts[name] || 0} articles</div>
-                </div>
-            `).join('');
+    function displayArticlesPopulaires() {
+        const views = JSON.parse(localStorage.getItem('article_views') || '{}');
+        const articlesWithViews = allArticles.map(article => ({
+            ...article,
+            realViews: views[article.id] || 0
+        }));
+        
+        const populaires = articlesWithViews
+            .sort((a, b) => {
+                const scoreA = (a.realViews * 10) + (a.likes || 0) * 2 + (a.vues || 0);
+                const scoreB = (b.realViews * 10) + (b.likes || 0) * 2 + (b.vues || 0);
+                return scoreB - scoreA;
+            })
+            .slice(0, 6);
+        
+        const grid = document.getElementById('populairesGrid');
+        if (!grid) return;
+        
+        if (populaires.length === 0) {
+            grid.innerHTML = '<div class="empty-state"><i class="fas fa-fire"></i><p>Aucun article populaire</p></div>';
+            return;
         }
-
-        // Politique
-        function displayPolitique() {
-            const politique = allArticles
-                .filter(a => a.categorie === 'Politique')
-                .slice(0, 6);
-            
-            const grid = document.getElementById('politiqueGrid');
-            
-            if (politique.length === 0) {
-                grid.innerHTML = '<div class="empty-state"><i class="fas fa-vote-yea"></i><p style="color: rgba(255,255,255,0.8);">Aucun article politique</p></div>';
-                return;
-            }
-            
-            grid.innerHTML = politique.map(article => createColoredCard(article)).join('');
-        }
-
-        // Sports
-        function displaySports() {
-            const sports = allArticles
-                .filter(a => a.categorie === 'Sports')
-                .slice(0, 6);
-            
-            const grid = document.getElementById('sportsGrid');
-            
-            if (sports.length === 0) {
-                grid.innerHTML = '<div class="empty-state"><i class="fas fa-trophy"></i><p style="color: rgba(255,255,255,0.8);">Aucun article sportif</p></div>';
-                return;
-            }
-            
-            grid.innerHTML = sports.map(article => createColoredCard(article)).join('');
-        }
-
-        // International
-        function displayInternational() {
-            const international = allArticles
-                .filter(a => a.categorie === 'International')
-                .slice(0, 6);
-            
-            const grid = document.getElementById('internationalGrid');
-            
-            if (international.length === 0) {
-                grid.innerHTML = '<div class="empty-state"><i class="fas fa-globe"></i><p style="color: rgba(255,255,255,0.8);">Aucun article international</p></div>';
-                return;
-            }
-            
-            grid.innerHTML = international.map(article => createColoredCard(article)).join('');
-        }
-
-        // Helper pour créer une carte colorée
-        function createColoredCard(article) {
-            return `
-                <article class="article-card colored-card" onclick="openArticle('${article.id}')">
+        
+        grid.innerHTML = populaires.map(article => `
+            <article class="article-card" onclick="openArticle('${article.id}')" data-article-id="${article.id}">
+                <div style="position: relative;">
                     <img src="${article.image}" alt="${article.titre}" class="article-image" loading="lazy">
+                    ${getPopularityBadge(article.realViews, article.likes)}
+                </div>
+                <div class="article-content">
+                    <span class="category-badge">${article.categorie}</span>
+                    <h3 class="article-title">${article.titre}</h3>
+                    <p class="article-excerpt">${article.extrait}</p>
+                    <div class="article-meta">
+                        <div class="article-author">
+                            <div class="author-avatar">${getInitial(article.auteur)}</div>
+                            <span>${article.auteur}</span>
+                        </div>
+                        <div class="article-stats">
+                            <span class="stat"><i class="fas fa-eye"></i> ${article.realViews}</span>
+                            <span class="stat"><i class="fas fa-heart"></i> ${article.likes || 0}</span>
+                        </div>
+                    </div>
+                </div>
+            </article>
+        `).join('');
+    }
+
+    function displayTrending() {
+        const trending = [...allArticles]
+            .sort((a, b) => {
+                const scoreA = (a.vues || 0) + (a.likes || 0) * 2;
+                const scoreB = (b.vues || 0) + (b.likes || 0) * 2;
+                return scoreB - scoreA;
+            })
+            .slice(0, 5);
+        
+        const container = document.getElementById('trendingList');
+        if (!container) return;
+        
+        if (trending.length === 0) {
+            container.innerHTML = '<p style="color: var(--gray); font-size: 0.9rem;">Aucun article trending</p>';
+            return;
+        }
+        
+        container.innerHTML = trending.map((article, index) => `
+            <div class="trending-item" onclick="openArticle('${article.id}')">
+                <div class="trending-number">${index + 1}</div>
+                <div class="trending-content">
+                    <h4>${article.titre}</h4>
+                    <div class="trending-stats">
+                        <span><i class="fas fa-clock"></i> ${formatDate(article.date)}</span>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function displayVideos() {
+        const videos = allArticles
+            .filter(a => a.contentType === 'video' || (a.sections && a.sections.includes('videos')))
+            .slice(0, 6);
+        
+        const grid = document.getElementById('videosGrid');
+        if (!grid) return;
+        
+        if (videos.length === 0) {
+            grid.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-video"></i>
+                    <p>Aucune vidéo disponible pour le moment</p>
+                </div>
+            `;
+            return;
+        }
+        
+        grid.innerHTML = videos.map(article => {
+            const isVideo = article.contentType === 'video' || article.video_url;
+            return `
+                <article class="article-card video-card" onclick="openArticle('${article.id}')">
+                    <div class="video-thumbnail">
+                        <img src="${article.image}" alt="${article.titre}" class="article-image" loading="lazy">
+                        <div class="video-overlay">
+                            <div class="play-button">
+                                <i class="fas fa-play"></i>
+                            </div>
+                        </div>
+                        ${isVideo ? `
+                            <div class="platform-badge youtube">
+                                <i class="fab fa-youtube"></i> YouTube
+                            </div>
+                        ` : ''}
+                        <div class="duration-badge">
+                            <i class="fas fa-play-circle"></i> VIDÉO
+                        </div>
+                    </div>
                     <div class="article-content">
-                        <span class="category-badge">${article.categorie}</span>
+                        <span class="category-badge video-badge">
+                            🎥 ${article.categorie}
+                        </span>
                         <h3 class="article-title">${article.titre}</h3>
                         <p class="article-excerpt">${article.extrait}</p>
                         <div class="article-meta">
@@ -4205,104 +3915,309 @@ function displayEvents() {
                     </div>
                 </article>
             `;
-        }
-
-        // Update About Stats
-        function updateAboutStats() {
-            const totalArticles = allArticles.length;
-            const totalViews = allArticles.reduce((sum, a) => sum + (a.vues || 0), 0);
-            
-            document.getElementById('totalArticlesStat').textContent = totalArticles;
-            document.getElementById('totalViewsStat').textContent = formatNumber(totalViews);
-        }
-
-        function formatNumber(num) {
-            if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
-            if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
-            return num;
-        }
-
-        function filterByCategory(category) {
-            document.querySelector('#articlesGrid').scrollIntoView({ behavior: 'smooth' });
-            console.log('Filtrer par:', category);
-        }
-
-        function formatDate(dateString) {
-            if (!dateString) return 'Date inconnue';
-            const date = new Date(dateString);
-            const options = { day: 'numeric', month: 'short', year: 'numeric' };
-            return date.toLocaleDateString('fr-FR', options);
-        }
-
-        // Utilitaires
-        function getInitial(name) {
-            return name ? name.charAt(0).toUpperCase() : 'A';
-        }
-
-      /**
- * Obtenir l'URL complète d'un article (SEO ou legacy)
- * @param {Object} article - L'objet article
- * @returns {string} URL complète de l'article
- */
-function getArticleUrl(article) {
-    if (!article) return '#';
-    
-    // Si l'article a un slug SEO → utiliser la page statique
-    if (article.slug) {
-        return `/article/${article.slug}.html`;
+        }).join('');
     }
-    
-    // Fallback → ancien système avec ID
-    return `/article-detail.html?id=${article.id}`;
-}
 
-/**
- * Ouvrir un article (navigation intelligente)
- * @param {string} articleId - ID de l'article
- */
-// ✅ 2. FONCTION OPENARTICLE AVEC TRACKING DES VUES
-   function openArticle(articleId) {
-            const article = allArticles.find(a => a.id === articleId);
-            
-            if (!article) {
-                console.error('❌ Article introuvable:', articleId);
-                return;
+    function displaySociete() {
+        const societe = allArticles
+            .filter(a => a.sections && a.sections.includes('societe'))
+            .slice(0, 6);
+        
+        const grid = document.getElementById('societeGrid');
+        if (!grid) return;
+        
+        if (societe.length === 0) {
+            grid.innerHTML = '<div class="empty-state"><i class="fas fa-users"></i><p>Aucun article de société disponible</p></div>';
+            return;
+        }
+        
+        grid.innerHTML = societe.map(article => `
+            <article class="societe-card" onclick="openArticle('${article.id}')">
+                <div class="societe-image-wrapper">
+                    <img src="${article.image}" alt="${article.titre}" loading="lazy">
+                    <div class="societe-overlay">
+                        <span class="societe-tag">
+                            <i class="fas fa-users"></i> Société
+                        </span>
+                    </div>
+                </div>
+                <div class="article-content">
+                    <h3 class="article-title">${article.titre}</h3>
+                    <p class="article-excerpt">${article.extrait}</p>
+                    <div class="article-meta">
+                        <div class="article-author">
+                            <div class="author-avatar">${getInitial(article.auteur)}</div>
+                            <span>${article.auteur}</span>
+                        </div>
+                        <div class="article-date">
+                            <i class="fas fa-clock"></i>
+                            ${formatDate(article.date)}
+                        </div>
+                    </div>
+                </div>
+            </article>
+        `).join('');
+    }
+
+    function displayFeatured() {
+        const featured = allArticles
+            .filter(a => a.sections && a.sections.includes('featured'))
+            .slice(0, 5);
+        
+        const container = document.getElementById('featuredList');
+        if (!container) return;
+        
+        if (featured.length === 0) {
+            container.innerHTML = '<p style="color: var(--gray); font-size: 0.9rem;">Aucun article vedette</p>';
+            return;
+        }
+        
+        container.innerHTML = featured.map(article => `
+            <div class="featured-item" onclick="openArticle('${article.id}')">
+                <img src="${article.image}" alt="${article.titre}" class="featured-thumb" loading="lazy">
+                <div class="featured-content">
+                    <h4>${article.titre}</h4>
+                    <div class="featured-meta">
+                        <span><i class="fas fa-clock"></i> ${formatDate(article.date)}</span>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function displayEvents() {
+        const events = allArticles
+            .filter(a => a.sections && a.sections.includes('events'))
+            .slice(0, 4);
+        
+        const container = document.getElementById('eventsList');
+        if (!container) return;
+        
+        if (events.length === 0) {
+            container.innerHTML = '<p style="color: var(--gray); font-size: 0.9rem;">Aucun événement à venir</p>';
+            return;
+        }
+        
+        container.innerHTML = events.map(article => `
+            <div class="event-card" onclick="openArticle('${article.id}')">
+                <div class="event-image-container">
+                    <img src="${article.image}" alt="${article.titre}" class="event-image" loading="lazy">
+                </div>
+                <div class="event-content">
+                    <h4 class="event-title">${article.titre}</h4>
+                    <p class="event-excerpt">${article.extrait}</p>
+                    <div class="event-date">
+                        <i class="fas fa-calendar"></i>
+                        ${formatDate(article.date)}
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function displayCategories() {
+        const categories = {
+            'Politique': { icon: 'fa-landmark', color: '#3b82f6' },
+            'Économie': { icon: 'fa-chart-line', color: '#10b981' },
+            'Sports': { icon: 'fa-futbol', color: '#22c55e' },
+            'Société': { icon: 'fa-users', color: '#8b5cf6' },
+            'Culture': { icon: 'fa-palette', color: '#ec4899' },
+            'Santé': { icon: 'fa-heartbeat', color: '#ef4444' },
+            'Technologie': { icon: 'fa-laptop-code', color: '#06b6d4' },
+            'International': { icon: 'fa-globe', color: '#f97316' }
+        };
+        
+        const container = document.getElementById('categoriesGrid');
+        if (!container) return;
+        
+        const categoryCounts = {};
+        allArticles.forEach(article => {
+            categoryCounts[article.categorie] = (categoryCounts[article.categorie] || 0) + 1;
+        });
+        
+        container.innerHTML = Object.entries(categories).map(([name, data]) => `
+            <div class="category-item" onclick="filterByCategory('${name}')" style="border-color: ${data.color};">
+                <i class="fas ${data.icon}" style="color: ${data.color};"></i>
+                <div class="category-name">${name}</div>
+                <div class="category-count">${categoryCounts[name] || 0} articles</div>
+            </div>
+        `).join('');
+    }
+
+    function displayPolitique() {
+        const politique = allArticles
+            .filter(a => a.categorie === 'Politique')
+            .slice(0, 6);
+        
+        const grid = document.getElementById('politiqueGrid');
+        if (!grid) return;
+        
+        if (politique.length === 0) {
+            grid.innerHTML = '<div class="empty-state"><i class="fas fa-vote-yea"></i><p style="color: rgba(255,255,255,0.8);">Aucun article politique</p></div>';
+            return;
+        }
+        
+        grid.innerHTML = politique.map(article => createColoredCard(article)).join('');
+    }
+
+    function displaySports() {
+        const sports = allArticles
+            .filter(a => a.categorie === 'Sports')
+            .slice(0, 6);
+        
+        const grid = document.getElementById('sportsGrid');
+        if (!grid) return;
+        
+        if (sports.length === 0) {
+            grid.innerHTML = '<div class="empty-state"><i class="fas fa-trophy"></i><p style="color: rgba(255,255,255,0.8);">Aucun article sportif</p></div>';
+            return;
+        }
+        
+        grid.innerHTML = sports.map(article => createColoredCard(article)).join('');
+    }
+
+    function displayInternational() {
+        const international = allArticles
+            .filter(a => a.categorie === 'International')
+            .slice(0, 6);
+        
+        const grid = document.getElementById('internationalGrid');
+        if (!grid) return;
+        
+        if (international.length === 0) {
+            grid.innerHTML = '<div class="empty-state"><i class="fas fa-globe"></i><p style="color: rgba(255,255,255,0.8);">Aucun article international</p></div>';
+            return;
+        }
+        
+        grid.innerHTML = international.map(article => createColoredCard(article)).join('');
+    }
+
+    function createColoredCard(article) {
+        return `
+            <article class="article-card colored-card" onclick="openArticle('${article.id}')">
+                <img src="${article.image}" alt="${article.titre}" class="article-image" loading="lazy">
+                <div class="article-content">
+                    <span class="category-badge">${article.categorie}</span>
+                    <h3 class="article-title">${article.titre}</h3>
+                    <p class="article-excerpt">${article.extrait}</p>
+                    <div class="article-meta">
+                        <div class="article-author">
+                            <div class="author-avatar">${getInitial(article.auteur)}</div>
+                            <span>${article.auteur}</span>
+                        </div>
+                        <div class="article-date">
+                            <i class="fas fa-clock"></i>
+                            ${formatDate(article.date)}
+                        </div>
+                    </div>
+                </div>
+            </article>
+        `;
+    }
+
+    // ========================================
+    // 🛠️ FONCTIONS UTILITAIRES
+    // ========================================
+    function updatePagination(currentPage, totalPages) {
+        const pagination = document.getElementById('pagination');
+        if (!pagination) return;
+        
+        if (totalPages <= 1) {
+            pagination.innerHTML = '';
+            return;
+        }
+        
+        let paginationHTML = '';
+        
+        // Bouton précédent
+        if (currentPage > 1) {
+            paginationHTML += `<button onclick="changePage(${currentPage - 1})">⬅️ Précédent</button>`;
+        }
+        
+        // Pages
+        for (let i = 1; i <= totalPages; i++) {
+            if (i === currentPage) {
+                paginationHTML += `<button class="active">${i}</button>`;
+            } else {
+                paginationHTML += `<button onclick="changePage(${i})">${i}</button>`;
             }
-            
-            // 📊 TRACKING: Incrémenter les vues localement
-            trackArticleView(articleId);
-            
-            // Navigation intelligente (SEO ou legacy)
-            const url = getArticleUrl(article);
-            window.location.href = url;
         }
-
-  function trackArticleView(articleId) {
-            // Récupérer les vues depuis localStorage
-            let views = JSON.parse(localStorage.getItem('article_views') || '{}');
-            
-            // Incrémenter
-            views[articleId] = (views[articleId] || 0) + 1;
-            
-            // Sauvegarder
-            localStorage.setItem('article_views', JSON.stringify(views));
-            
-            console.log(`📊 Vue enregistrée pour article ${articleId}: ${views[articleId]} vues`);
+        
+        // Bouton suivant
+        if (currentPage < totalPages) {
+            paginationHTML += `<button onclick="changePage(${currentPage + 1})">Suivant ➡️</button>`;
         }
+        
+        pagination.innerHTML = paginationHTML;
+    }
 
-        // ========================================
-        // 🛠️ FONCTIONS UTILITAIRES
-        // ========================================
-
-        function formatDate(dateString) {
-            if (!dateString) return 'Date inconnue';
-            const date = new Date(dateString);
-            const options = { day: 'numeric', month: 'short', year: 'numeric' };
-            return date.toLocaleDateString('fr-FR', options);
+    function changePage(page) {
+        pageActuelle = page;
+        displayArticlesPaginated(page);
+        const articlesGrid = document.getElementById('articlesGrid');
+        if (articlesGrid) {
+            articlesGrid.scrollIntoView({ behavior: 'smooth' });
         }
+    }
 
-        function showError() {
-            const slidesContainer = document.getElementById('heroSlidesContainer');
+    function updateAboutStats() {
+        const totalArticles = allArticles.length;
+        const totalViews = allArticles.reduce((sum, a) => sum + (a.vues || 0), 0);
+        
+        const articlesStat = document.getElementById('totalArticlesStat');
+        const viewsStat = document.getElementById('totalViewsStat');
+        const categoriesStat = document.getElementById('totalCategoriesStat');
+        
+        if (articlesStat) articlesStat.textContent = totalArticles;
+        if (viewsStat) viewsStat.textContent = formatNumber(totalViews);
+        if (categoriesStat) categoriesStat.textContent = '8'; // Valeur fixe ou calculée
+    }
+
+    function updateArticleCount() {
+        const articleCount = document.getElementById('articleCount');
+        if (articleCount) {
+            articleCount.textContent = `${allArticles.length} articles`;
+        }
+    }
+
+    function formatDate(dateString) {
+        if (!dateString) return 'Date inconnue';
+        const date = new Date(dateString);
+        const options = { day: 'numeric', month: 'short', year: 'numeric' };
+        return date.toLocaleDateString('fr-FR', options);
+    }
+
+    function formatNumber(num) {
+        if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+        if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
+        return num;
+    }
+
+    function getInitial(name) {
+        return name ? name.charAt(0).toUpperCase() : 'A';
+    }
+
+    function getPopularityBadge(views, likes) {
+        const totalEngagement = views + ((likes || 0) * 2);
+        
+        if (totalEngagement >= 100) return '<span class="badge-populaire">🔥 VIRAL</span>';
+        if (totalEngagement >= 50) return '<span class="badge-populaire">⭐ POPULAIRE</span>';
+        if (totalEngagement >= 20) return '<span class="badge-populaire">🚀 TENDANCE</span>';
+        if (totalEngagement >= 5) return '<span class="badge-populaire">💎 NOUVEAU</span>';
+        return '<span class="badge-populaire">✨ FRAIS</span>';
+    }
+
+    function filterByCategory(category) {
+        const articlesGrid = document.getElementById('articlesGrid');
+        if (articlesGrid) {
+            articlesGrid.scrollIntoView({ behavior: 'smooth' });
+        }
+        console.log('Filtrer par:', category);
+    }
+
+    function showError() {
+        const slidesContainer = document.getElementById('heroSlidesContainer');
+        if (slidesContainer) {
             slidesContainer.innerHTML = `
                 <div class="hero-slide">
                     <div style="background: linear-gradient(135deg, #ef4444, #dc2626); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: white;">
@@ -4315,1203 +4230,210 @@ function getArticleUrl(article) {
                 </div>
             `;
         }
-
-        // ========================================
-        // 🚀 INITIALISATION
-        // ========================================
-
-        document.addEventListener('DOMContentLoaded', function() {
-            loadArticles();
-            
-            // Mettre à jour la date
-            updateDate();
-            
-            // Initialiser l'autocomplete
-            initAutocomplete();
-        });
-
-        function updateDate() {
-            const options = { 
-                weekday: 'long', 
-                year: 'numeric', 
-                month: 'long', 
-                day: 'numeric' 
-            };
-            const date = new Date().toLocaleDateString('fr-FR', options);
-            document.getElementById('currentDate').textContent = date;
-        }
-/**
- * Créer un lien HTML vers un article
- * @param {Object} article - L'objet article
- * @param {string} content - Contenu HTML du lien
- * @param {string} className - Classes CSS optionnelles
- * @returns {string} HTML du lien
- */
-function createArticleLink(article, content, className = '') {
-    const url = getArticleUrl(article);
-    return `<a href="${url}" class="${className}">${content}</a>`;
-}
-
-
-        function showError() {
-            document.getElementById('heroSlider').innerHTML = `
-                <div class="empty-state">
-                    <i class="fas fa-exclamation-circle"></i>
-                    <h3>Erreur de chargement</h3>
-                    <p>Impossible de charger les articles</p>
-                </div>
-            `;
-            document.getElementById('articlesGrid').innerHTML = document.getElementById('heroSlider').innerHTML;
-        }
-
-        // Charger au démarrage
-        document.addEventListener('DOMContentLoaded', loadArticles);
-
-        // Menu mobile
-        document.querySelector('.mobile-menu-btn').addEventListener('click', function() {
-            const nav = document.querySelector('.nav-menu');
-            if (nav.style.display === 'flex') {
-                nav.style.display = 'none';
-            } else {
-                nav.style.display = 'flex';
-                nav.style.flexDirection = 'column';
-                nav.style.position = 'absolute';
-                nav.style.top = '100%';
-                nav.style.left = '0';
-                nav.style.right = '0';
-                nav.style.background = 'var(--dark)';
-                nav.style.padding = '1rem';
-                nav.style.boxShadow = '0 4px 10px rgba(0,0,0,0.2)';
-            }
-        });
-
-        // Smooth scroll
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function(e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
-            });
-        });
-
-        // Lazy loading images
-        if ('IntersectionObserver' in window) {
-            const imageObserver = new IntersectionObserver((entries, observer) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        const img = entry.target;
-                        if (img.dataset.src) {
-                            img.src = img.dataset.src;
-                            img.removeAttribute('data-src');
-                        }
-                        observer.unobserve(img);
-                    }
-                });
-            });
-
-            document.querySelectorAll('img[data-src]').forEach(img => {
-                imageObserver.observe(img);
-            });
-        }
-
-        // ========================================
-        // 1️⃣ FONCTIONS UTILITAIRES VIDÉO
-        // ========================================
-
-        /**
-         * Extraire l'ID YouTube depuis n'importe quelle URL
-         */
-        function extractYouTubeId(url) {
-            if (!url) return null;
-            
-            const patterns = [
-                /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/,
-                /youtube\.com\/watch\?v=([^"&?\/\s]{11})/,
-                /youtube\.com\/embed\/([^"&?\/\s]{11})/,
-                /youtu\.be\/([^"&?\/\s]{11})/,
-                /youtube\.com\/shorts\/([^"&?\/\s]{11})/
-            ];
-            
-            for (let pattern of patterns) {
-                const match = url.match(pattern);
-                if (match && match[1]) {
-                    return match[1];
-                }
-            }
-            return null;
-        }
-/**
- * Afficher les vidéos avec miniatures YouTube HD
- */
-async function displayVideos() {
-    const videos = allArticles
-        .filter(a => a.contentType === 'video' || (a.sections && a.sections.includes('videos')))
-        .slice(0, 6);
-    
-    const grid = document.getElementById('videosGrid');
-    
-    if (videos.length === 0) {
-        grid.innerHTML = `
-            <div class="empty-state">
-                <i class="fas fa-video"></i>
-                <p>Aucune vidéo disponible pour le moment</p>
-            </div>
-        `;
-        return;
     }
-    
-    // Afficher d'abord un loading
-    grid.innerHTML = `
-        <div class="loading">
-            <i class="fas fa-spinner"></i>
-            <p style="margin-top: 1rem;">Chargement des vidéos HD...</p>
-        </div>
-    `;
-    
-    // Récupérer les miniatures HD pour chaque vidéo
-    const videosWithThumbnails = await Promise.all(
-        videos.map(async (article) => {
-            let thumbnailData = {
-                url: article.image,
-                quality: 'standard',
-                isYouTube: false
-            };
-            
-            // Si c'est une vidéo YouTube, récupérer la vraie miniature
-            if (article.video_url) {
-                const platform = detectVideoPlatform(article.video_url);
-                
-                if (platform === 'youtube') {
-                    const thumbnail = await getYouTubeThumbnail(article.video_url);
-                    if (thumbnail) {
-                        thumbnailData = {
-                            url: thumbnail.url,
-                            quality: thumbnail.quality,
-                            width: thumbnail.width,
-                            height: thumbnail.height,
-                            isYouTube: true
-                        };
-                    }
-                }
-            }
-            
-            return { ...article, thumbnailData };
-        })
-    );
-    
-    // Générer le HTML avec les miniatures HD
-    grid.innerHTML = videosWithThumbnails.map(article => {
-        const thumb = article.thumbnailData;
-        const qualityBadge = thumb.isYouTube ? 
-            `<div class="quality-badge">${thumb.quality === 'maxresdefault' ? 'HD' : 'SD'}</div>` : '';
-        
-        return `
-            <article class="article-card video-card" onclick="openArticle('${article.id}')">
-                <div class="video-thumbnail">
-                    <img src="${thumb.url}" 
-                         alt="${article.titre}" 
-                         class="article-image" 
-                         loading="lazy">
-                    
-                    <!-- Overlay avec gradient -->
-                    <div class="video-overlay">
-                        <!-- Bouton play animé -->
-                        <div class="play-button">
-                            <i class="fas fa-play"></i>
-                        </div>
-                    </div>
-                    
-                    ${qualityBadge}
-                    
-                    <!-- Badge YouTube -->
-                    ${thumb.isYouTube ? `
-                        <div class="platform-badge youtube">
-                            <i class="fab fa-youtube"></i> YouTube
-                        </div>
-                    ` : ''}
-                    
-                    <!-- Badge durée (optionnel) -->
-                    <div class="duration-badge">
-                        <i class="fas fa-play-circle"></i> VIDÉO
-                    </div>
-                </div>
-                
-                <div class="article-content">
-                    <span class="category-badge video-badge">
-                        🎥 ${article.categorie}
-                    </span>
-                    <h3 class="article-title">${article.titre}</h3>
-                    <p class="article-excerpt">${article.extrait}</p>
-                    <div class="article-meta">
-                        <div class="article-author">
-                            <div class="author-avatar">${getInitial(article.auteur)}</div>
-                            <span>${article.auteur}</span>
-                        </div>
-                        <div class="article-date">
-                            <i class="fas fa-clock"></i>
-                            ${formatDate(article.date)}
-                        </div>
-                    </div>
-                </div>
-            </article>
-        `;
-    }).join('');
-    
-    console.log(`✅ ${videosWithThumbnails.length} vidéos affichées avec miniatures HD`);
-}
-      
-/**
- * Obtenir miniature YouTube HD
- */
-async function getYouTubeThumbnail(videoUrl) {
-    const videoId = extractYouTubeId(videoUrl);
-    if (!videoId) return null;
-    
-    const qualities = [
-        { name: 'maxresdefault', width: 1280, height: 720 },
-        { name: 'sddefault', width: 640, height: 480 },
-        { name: 'hqdefault', width: 480, height: 360 }
-    ];
-    
-    for (let quality of qualities) {
-        const thumbnailUrl = `https://img.youtube.com/vi/${videoId}/${quality.name}.jpg`;
-        const exists = await checkImageExists(thumbnailUrl);
-        
-        if (exists) {
-            return {
-                url: thumbnailUrl,
-                quality: quality.name,
-                width: quality.width,
-                height: quality.height,
-                videoId: videoId
-            };
-        }
-    }
-    
-    // Fallback
-    return {
-        url: `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`,
-        quality: 'hqdefault',
-        width: 480,
-        height: 360,
-        videoId: videoId
-    };
-}
 
-     /**
- * Vérifier si une image existe
- */
-function checkImageExists(url) {
-    return new Promise((resolve) => {
-        const img = new Image();
-        img.onload = () => resolve(true);
-        img.onerror = () => resolve(false);
-        img.src = url;
-        setTimeout(() => resolve(false), 2000);
+    // ========================================
+    // 🎯 INITIALISATION
+    // ========================================
+    document.addEventListener('DOMContentLoaded', function() {
+        loadArticles();
+        updateDate();
+        initAutocomplete();
+        initMobileAutocomplete();
     });
-}
 
-        /**
-         * Détecter la plateforme vidéo
-         */
-        function detectVideoPlatform(url) {
-            if (!url) return null;
-            
-            if (url.includes('youtube.com') || url.includes('youtu.be')) {
-                return 'youtube';
+    function updateDate() {
+        const options = { 
+            weekday: 'long', 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric' 
+        };
+        const date = new Date().toLocaleDateString('fr-FR', options);
+        const dateElement = document.getElementById('currentDate');
+        if (dateElement) {
+            dateElement.textContent = date;
+        }
+    }
+
+    // ========================================
+    // 🔍 FONCTIONS DE RECHERCHE
+    // ========================================
+    function initAutocomplete() {
+        const input = document.getElementById('headerSearchInput');
+        const results = document.getElementById('searchResults');
+        if (!input || !results) return;
+
+        let timeout;
+        input.addEventListener('input', function() {
+            clearTimeout(timeout);
+            const query = this.value.toLowerCase().trim();
+
+            if (query.length < 2) {
+                results.classList.remove('show');
+                return;
             }
-            if (url.includes('facebook.com') || url.includes('fb.watch')) {
-                return 'facebook';
-            }
-            if (url.includes('vimeo.com')) {
-                return 'vimeo';
-            }
-            if (url.includes('dailymotion.com')) {
-                return 'dailymotion';
-            }
-            return 'unknown';
-        }
 
-        /**
-         * Obtenir l'URL d'embed YouTube
-         */
-        function getYouTubeEmbedUrl(videoUrl) {
-            const videoId = extractYouTubeId(videoUrl);
-            if (!videoId) return null;
-            
-            return `https://www.youtube.com/embed/${videoId}?autoplay=0&rel=0&modestbranding=1`;
-        }
+            timeout = setTimeout(() => {
+                const filtered = allArticles
+                    .filter(article => {
+                        return article.titre.toLowerCase().includes(query) ||
+                               article.extrait.toLowerCase().includes(query) ||
+                               article.auteur.toLowerCase().includes(query);
+                    })
+                    .slice(0, 5);
 
-        /**
-         * Obtenir l'URL d'embed Facebook
-         */
-        function getFacebookEmbedUrl(videoUrl) {
-            return `https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(videoUrl)}&show_text=false&width=734`;
-        }
-
-        // FONCTION DE DÉTECTION VIDÉO AMÉLIORÉE
-        function isVideoArticle(article) {
-            // Méthode 1: Vérifier contentType
-            if (article.contentType === 'video') return true;
-            
-            // Méthode 2: Vérifier video_url
-            if (article.video_url) return true;
-            
-            // Méthode 3: Vérifier sections
-            if (article.sections && article.sections.includes('videos')) return true;
-            
-            return false;
-        }
-
-        function getVideoUrl(article) {
-            // Retourne l'URL vidéo si elle existe
-            return article.video_url || null;
-        }
-
-        console.log('✅ Système de miniatures vidéo HD chargé');
-
-
-
-/* ---------- Auto-scroll centré (À la Une + Vidéos) ----------
-   - Centrage calculé par carte (toujours centrer la carte active).
-   - Utilise un index qui avance ; remet à 0 quand arrive à la fin.
-   - Empêche multi-intervals en stockant un id sur l'élément.
-----------------------------------------------------------------*/
-(function(){
-  function centerCardInWrapper(wrapper, card) {
-    if (!wrapper || !card) return;
-    const wrapperRect = wrapper.getBoundingClientRect();
-    const cardRect = card.getBoundingClientRect();
-    // distance relative du début du wrapper
-    const left = card.offsetLeft - (wrapper.clientWidth - card.clientWidth) / 2;
-    wrapper.scrollTo({ left: Math.max(0, Math.round(left)), behavior: 'smooth' });
-  }
-
-  function startAutoCentering(wrapperSelector, itemSelector, delay = 3000) {
-    const wrapper = document.querySelector(wrapperSelector);
-    if (!wrapper) return;
-
-    // évite double setInterval
-    if (wrapper._autoCenterId) return;
-
-    const items = () => wrapper.querySelectorAll(itemSelector);
-    let index = 0;
-
-    // initial centering sur le 1er élément au load
-    setTimeout(() => {
-      const list = items();
-      if (list.length) centerCardInWrapper(wrapper, list[0]);
-    }, 200);
-
-    wrapper._autoCenterId = setInterval(() => {
-      const list = items();
-      if (!list.length) return;
-      index = (index + 1) % list.length;
-      const card = list[index];
-      centerCardInWrapper(wrapper, card);
-
-      // si à la fin, on remet index à 0 au prochain tick automatiquement (boucle naturelle)
-    }, delay);
-  }
-
-  // démarre quand DOM prêt
-  document.addEventListener('DOMContentLoaded', () => {
-    // À la Une : cartes = .carousel-card dans #carouselALaUne
-    startAutoCentering('#carouselALaUne', '.carousel-card', 3000);
-
-    // Vidéos : cartes = .video-card ou .article-card dans #videosGrid
-    startAutoCentering('#videosGrid', '.video-card, .article-card', 3000);
-  });
-
-  // Expose fonction pour redémarrer si contenu chargé dynamiquement
-  window.startAutoCentering = startAutoCentering;
-})();
-
-// === Articles Populaires ===
-
-
-
-document.getElementById("contactForm").addEventListener("submit", e => {
-  e.preventDefault();
-  alert("Merci ! Votre message a été envoyé à la rédaction.");
-  e.target.reset();
-});
-// === Pagination dynamique (20 articles/page) ===
-const ARTICLES_PAR_PAGE = 20;
-let pageActuelle = 1;
-
-async function afficherArticlesRecents(page = 1) {
-  const res = await fetch("articles.json");
-  const data = await res.json();
-  const articles = Object.values(data.articles)
-    .filter(a => a.statut === "publié")
-    .sort((a, b) => new Date(b.date) - new Date(a.date));
-
-  const start = (page - 1) * ARTICLES_PAR_PAGE;
-  const end = start + ARTICLES_PAR_PAGE;
-  const pageArticles = articles.slice(start, end);
-
-  document.getElementById("articlesRecentsGrid").innerHTML = pageArticles.map(a => `
-    <article class="article-card">
-      <img src="${a.image}" alt="${a.titre}" loading="lazy">
-      <h3>${a.titre}</h3>
-      <p>${a.extrait}</p>
-    </article>
-  `).join("");
-
-  // Pagination UI
-  const totalPages = Math.ceil(articles.length / ARTICLES_PAR_PAGE);
-  const pagination = document.getElementById("pagination");
-  pagination.innerHTML = `
-    <button ${page === 1 ? "disabled" : ""} onclick="afficherArticlesRecents(${page - 1})">⬅️ Précédent</button>
-    ${Array.from({ length: totalPages }, (_, i) => `
-      <button class="${page === i + 1 ? 'active' : ''}" onclick="afficherArticlesRecents(${i + 1})">${i + 1}</button>
-    `).join("")}
-    <button ${page === totalPages ? "disabled" : ""} onclick="afficherArticlesRecents(${page + 1})">Suivant ➡️</button>
-  `;
-}
-document.addEventListener("DOMContentLoaded", () => afficherArticlesRecents(pageActuelle));
-// Fonctions pour les popups
-function openPopup(popupId) {
-    document.getElementById(popupId).style.display = 'flex';
-    document.body.style.overflow = 'hidden';
-}
-
-function closePopup(popupId) {
-    document.getElementById(popupId).style.display = 'none';
-    document.body.style.overflow = 'auto';
-}
-
-// Fermer en cliquant en dehors
-document.querySelectorAll('.popup-overlay').forEach(overlay => {
-    overlay.addEventListener('click', function(e) {
-        if (e.target === this) {
-            closePopup(this.id);
-        }
-    });
-});
-
-// Gestion du formulaire de publication
-document.getElementById('publishForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    
-    const formData = {
-        nom: document.getElementById('authorName').value,
-        email: document.getElementById('authorEmail').value,
-        titre: document.getElementById('articleTitle').value,
-        categorie: document.getElementById('articleCategory').value,
-        contenu: document.getElementById('articleContent').value,
-        sources: document.getElementById('articleSources').value
-    };
-    
-    const message = `📝 NOUVEL ARTICLE POUR ABU MEDIA GROUP%0A%0A` +
-                   `👤 Auteur: ${formData.nom}%0A` +
-                   `📧 Email: ${formData.email}%0A` +
-                   `📰 Titre: ${formData.titre}%0A` +
-                   `📂 Catégorie: ${formData.categorie}%0A` +
-                   `📄 Contenu: ${formData.contenu}%0A` +
-                   `🔍 Sources: ${formData.sources || 'Non spécifiées'}`;
-    
-    const whatsappUrl = `https://wa.me/237697691987?text=${message}`;
-    
-    closePopup('publishPopup');
-    window.open(whatsappUrl, '_blank');
-    this.reset();
-});
-
-// Gestion du formulaire de recrutement
-document.getElementById('joinForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    
-    const formData = {
-        nom: document.getElementById('fullName').value,
-        email: document.getElementById('joinEmail').value,
-        telephone: document.getElementById('phone').value,
-        domaine: document.getElementById('domain').value,
-        experience: document.getElementById('experience').value,
-        motivation: document.getElementById('motivation').value,
-        portfolio: document.getElementById('portfolio').value
-    };
-    
-    const message = `💼 CANDIDATURE ABU MEDIA GROUP%0A%0A` +
-                   `👤 Nom: ${formData.nom}%0A` +
-                   `📧 Email: ${formData.email}%0A` +
-                   `📞 Téléphone: ${formData.telephone}%0A` +
-                   `🎯 Domaine: ${formData.domaine}%0A` +
-                   `📈 Expérience: ${formData.experience}%0A` +
-                   `💬 Motivation: ${formData.motivation}%0A` +
-                   `🔗 Portfolio: ${formData.portfolio || 'Non fourni'}`;
-    
-    const whatsappUrl = `https://wa.me/237697691984?text=${message}`;
-    
-    closePopup('joinPopup');
-    window.open(whatsappUrl, '_blank');
-    this.reset();
-});
-
-
-// Mettre à jour la section CTA avec les popups
-document.querySelector('.section-cta').innerHTML = `
-    <div class="container cta-container">
-        <div class="cta-card">
-            <h3>📰 Vous avez une histoire à partager ?</h3>
-            <a href="#" class="btn-cta" onclick="openPopup('publishPopup'); return false;">Publiez votre Article</a>
-        </div>
-        <div class="cta-card">
-            <h3>💼 Passionné par le journalisme ?</h3>
-            <a href="#" class="btn-cta" onclick="openPopup('joinPopup'); return false;">Rejoignez notre Équipe</a>
-        </div>
-    </div>
-`;
-
-function displayArticlesPaginated(page = 1) {
-    const mainArticles = allArticles
-        .filter(a => !a.sections || a.sections.includes('main'))
-        .sort((a, b) => new Date(b.date) - new Date(a.date));
-    
-    const totalPages = Math.ceil(mainArticles.length / ARTICLES_PAR_PAGE);
-    const startIndex = (page - 1) * ARTICLES_PAR_PAGE;
-    const endIndex = startIndex + ARTICLES_PAR_PAGE;
-    const pageArticles = mainArticles.slice(startIndex, endIndex);
-    
-    const grid = document.getElementById('articlesGrid');
-    
-    if (pageArticles.length === 0) {
-        grid.innerHTML = '<div class="empty-state"><i class="fas fa-inbox"></i><p>Aucun article disponible</p></div>';
-        return;
-    }
-    
-    grid.innerHTML = pageArticles.map(article => `
-        <article class="article-card" onclick="openArticle('${article.id}')">
-            <img src="${article.image}" alt="${article.titre}" class="article-image" loading="lazy">
-            <div class="article-content">
-                <span class="category-badge">${article.categorie}</span>
-                <h3 class="article-title">${article.titre}</h3>
-                <p class="article-excerpt">${article.extrait}</p>
-                <div class="article-meta">
-                    <div class="article-author">
-                        <div class="author-avatar">${getInitial(article.auteur)}</div>
-                        <span>${article.auteur}</span>
-                    </div>
-                    <div class="article-date">
-                        <i class="fas fa-clock"></i>
-                        ${formatDate(article.date)}
-                    </div>
-                </div>
-            </div>
-        </article>
-    `).join('');
-    
-    updatePagination(page, totalPages);
-}
-function updatePagination(currentPage, totalPages) {
-    const pagination = document.getElementById('pagination');
-    
-    if (totalPages <= 1) {
-        pagination.innerHTML = '';
-        return;
-    }
-    
-    let paginationHTML = '';
-    
-    // Bouton précédent
-    if (currentPage > 1) {
-        paginationHTML += `<button onclick="changePage(${currentPage - 1})">⬅️ Précédent</button>`;
-    }
-    
-    // Pages
-    for (let i = 1; i <= totalPages; i++) {
-        if (i === currentPage) {
-            paginationHTML += `<button class="active">${i}</button>`;
-        } else {
-            paginationHTML += `<button onclick="changePage(${i})">${i}</button>`;
-        }
-    }
-    
-    // Bouton suivant
-    if (currentPage < totalPages) {
-        paginationHTML += `<button onclick="changePage(${currentPage + 1})">Suivant ➡️</button>`;
-    }
-    
-    pagination.innerHTML = paginationHTML;
-}
-
-function changePage(page) {
-    pageActuelle = page;
-    displayArticlesPaginated(page);
-    document.getElementById('articlesGrid').scrollIntoView({ behavior: 'smooth' });
-}
-
-// Fonction pour afficher les articles populaires
-// Fonction pour afficher les articles populaires
-function displayArticlesPopulaires() {
-    const populaires = [...allArticles]
-        .sort((a, b) => {
-            const scoreA = (a.vues || 0) + (a.likes || 0) * 2;
-            const scoreB = (b.vues || 0) + (b.likes || 0) * 2;
-            return scoreB - scoreA;
-        })
-        .slice(0, 6);
-    
-    const grid = document.getElementById('populairesGrid');
-    
-    if (populaires.length === 0) {
-        grid.innerHTML = '<div class="empty-state"><i class="fas fa-fire"></i><p>Aucun article populaire</p></div>';
-        return;
-    }
-    
-    grid.innerHTML = populaires.map(article => `
-        <article class="article-card" onclick="openArticle('${article.id}')" data-article-id="${article.id}">
-            <div style="position: relative;">
-                <img src="${article.image}" alt="${article.titre}" class="article-image" loading="lazy">
-                ${getPopularityBadge(article.vues, article.likes)}
-            </div>
-            <div class="article-content">
-                <span class="category-badge">${article.categorie}</span>
-                <h3 class="article-title">${article.titre}</h3>
-                <p class="article-excerpt">${article.extrait}</p>
-                <div class="article-meta">
-                    <div class="article-author">
-                        <div class="author-avatar">${getInitial(article.auteur)}</div>
-                        <span>${article.auteur}</span>
-                    </div>
-                    <div class="article-date">
-                        <i class="fas fa-clock"></i>
-                        ${formatDate(article.date)}
-                    </div>
-                </div>
-            </div>
-        </article>
-    `).join('');
-}
-// SYSTEME DE STATS INTELLIGENT
-function getPopularityBadge(views, likes) {
-    const totalEngagement = views + ((likes || 0) * 2);
-    
-    if (totalEngagement >= 100) return '<span class="badge-populaire">🔥 VIRAL</span>';
-    if (totalEngagement >= 50) return '<span class="badge-populaire">⭐ POPULAIRE</span>';
-    if (totalEngagement >= 20) return '<span class="badge-populaire">🚀 TENDANCE</span>';
-    if (totalEngagement >= 5) return '<span class="badge-populaire">💎 NOUVEAU</span>';
-    return '<span class="badge-populaire">✨ FRAIS</span>';
-}
-
-function getSmartStats(views, likes) {
-    const totalEngagement = (views || 0) + ((likes || 0) * 2);
-    
-    if (totalEngagement === 0) {
-        return `<span class="stat"><i class="fas fa-seedling"></i> Frais</span>`;
-    }
-    if (totalEngagement < 10) {
-        return `<span class="stat"><i class="fas fa-eye"></i> ${views || 0}</span>`;
-    }
-    if (totalEngagement < 50) {
-        return `
-            <span class="stat"><i class="fas fa-eye"></i> ${abbreviateNumber(views)}</span>
-            <span class="stat"><i class="fas fa-heart"></i> ${likes || 0}</span>
-        `;
-    }
-    
-    return `
-        <span class="stat"><i class="fas fa-fire"></i> ${abbreviateNumber(views)}</span>
-        <span class="stat"><i class="fas fa-heart" style="color: #ef4444"></i> ${likes || 0}</span>
-    `;
-}
-
-function abbreviateNumber(num) {
-    if (!num) return '0';
-    if (num < 1000) return num;
-    if (num < 1000000) return (num / 1000).toFixed(1) + 'k';
-    return (num / 1000000).toFixed(1) + 'M';
-}
-
-function formatTimeAgo(dateString) {
-    const date = new Date(dateString);
-    const now = new Date();
-    const diffMs = now - date;
-    const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
-    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-    
-    if (diffHours < 1) return 'À l\'instant';
-    if (diffHours < 24) return `Il y a ${diffHours}h`;
-    if (diffDays === 1) return 'Hier';
-    if (diffDays < 7) return `Il y a ${diffDays}j`;
-    if (diffDays < 30) return `Il y a ${Math.floor(diffDays/7)}sem`;
-    return date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
-}
-
-function getInitial(auteur) {
-    return auteur ? auteur.charAt(0).toUpperCase() : 'A';
-}
-
-// TRACKING AUTOMATIQUE DES VUES
-function initArticleTracking() {
-    // Observer les articles qui deviennent visibles
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const articleId = entry.target.dataset.articleId;
-                if (articleId) {
-                    setTimeout(() => trackArticleView(articleId), 1000);
-                }
-            }
-        });
-    }, { threshold: 0.3 });
-
-    // Observer toutes les cartes
-    document.querySelectorAll('.article-card').forEach(card => {
-        if (card.dataset.articleId) {
-            observer.observe(card);
-        }
-    });
-}
-
-// ✅ 3. SYSTÈME DE TRACKING DES VUES
-function trackArticleView(articleId) {
-    // Récupérer les vues depuis localStorage
-    let views = JSON.parse(localStorage.getItem('article_views') || '{}');
-    
-    // Incrémenter
-    views[articleId] = (views[articleId] || 0) + 1;
-    
-    // Sauvegarder
-    localStorage.setItem('article_views', JSON.stringify(views));
-    
-    console.log(`📊 Vue enregistrée pour article ${articleId}: ${views[articleId]} vues`);
-}
-
-// Initialisation
-document.addEventListener('DOMContentLoaded', initArticleTracking);
-       
-
-
-function getArticleViews(articleId) {
-    const views = JSON.parse(localStorage.getItem('article_views') || '{}');
-    return views[articleId] || 0;
-}
-
-// ✅ 5. ARTICLES POPULAIRES (PAR VUES RÉELLES)
-function displayArticlesPopulaires() {
-    // Charger les vues depuis localStorage
-    const views = JSON.parse(localStorage.getItem('article_views') || '{}');
-    
-    // Ajouter les vues aux articles
-    const articlesWithViews = allArticles.map(article => ({
-        ...article,
-        realViews: views[article.id] || 0
-    }));
-    
-    // Trier par vues réelles
-    const populaires = articlesWithViews
-        .sort((a, b) => {
-            // Priorité: vues réelles > likes > vues base de données
-            const scoreA = (a.realViews * 10) + (a.likes || 0) * 2 + (a.vues || 0);
-            const scoreB = (b.realViews * 10) + (b.likes || 0) * 2 + (b.vues || 0);
-            return scoreB - scoreA;
-        })
-        .slice(0, 6);
-    
-    const grid = document.getElementById('populairesGrid');
-    
-    if (populaires.length === 0) {
-        grid.innerHTML = '<div class="empty-state"><i class="fas fa-fire"></i><p>Aucun article populaire</p></div>';
-        return;
-    }
-    
-    grid.innerHTML = populaires.map(article => `
-        <article class="article-card" onclick="openArticle('${article.id}')" data-article-id="${article.id}">
-            <div style="position: relative;">
-                <img src="${article.image}" alt="${article.titre}" class="article-image" loading="lazy">
-                ${getPopularityBadge(article.realViews, article.likes)}
-            </div>
-            <div class="article-content">
-                <span class="category-badge">${article.categorie}</span>
-                <h3 class="article-title">${article.titre}</h3>
-                <p class="article-excerpt">${article.extrait}</p>
-                <div class="article-meta">
-                    <div class="article-author">
-                        <div class="author-avatar">${getInitial(article.auteur)}</div>
-                        <span>${article.auteur}</span>
-                    </div>
-                    <div class="article-stats">
-                        <span class="stat"><i class="fas fa-eye"></i> ${article.realViews}</span>
-                        <span class="stat"><i class="fas fa-heart"></i> ${article.likes || 0}</span>
-                    </div>
-                </div>
-            </div>
-        </article>
-    `).join('');
-}
-
-       // Date actuelle
-        function updateDate() {
-            const options = { 
-                weekday: 'long', 
-                year: 'numeric', 
-                month: 'long', 
-                day: 'numeric' 
-            };
-            const date = new Date().toLocaleDateString('fr-FR', options);
-            document.getElementById('currentDate').textContent = date;
-        }
-
-        // Load articles count
-        async function loadArticlesCount() {
-            try {
-                const response = await fetch('/articles.json?t=' + Date.now());
-                const data = await response.json();
-                allArticles = Object.values(data.articles || {}).filter(a => a && a.id);
-                document.getElementById('articleCount').textContent = `${allArticles.length} articles`;
-            } catch (error) {
-                console.error('Erreur:', error);
-            }
-        }
-
-        // Autocomplete search
-        function initAutocomplete() {
-    const input = document.getElementById('headerSearchInput');
-    const results = document.getElementById('searchResults');
-    let timeout;
-
-    input.addEventListener('input', function() {
-        clearTimeout(timeout);
-        const query = this.value.toLowerCase().trim();
-
-        if (query.length < 2) {
-            results.classList.remove('show');
-            return;
-        }
-
-        timeout = setTimeout(() => {
-            const filtered = allArticles
-                .filter(article => {
-                    return article.titre.toLowerCase().includes(query) ||
-                           article.extrait.toLowerCase().includes(query) ||
-                           article.auteur.toLowerCase().includes(query);
-                })
-                .slice(0, 5);
-
-            if (filtered.length > 0) {
-                results.innerHTML = filtered.map(article => {
-                    const isVideo = article.contentType === 'video' || article.video_url;
-                    return `
-                        <div class="search-result-item" onclick="openArticle('${article.id}')">
-                            <img src="${article.image}" alt="${article.titre}" class="search-result-thumb">
-                            <div class="search-result-info">
-                                <div class="search-result-title">${highlightText(article.titre, query)}</div>
-                                <div class="search-result-meta">
-                                    <span class="search-result-badge">${article.categorie}</span>
-                                    <span>${article.auteur}</span>
-                                    ${isVideo ? '<span>🎥 Vidéo</span>' : ''}
+                if (filtered.length > 0) {
+                    results.innerHTML = filtered.map(article => {
+                        const isVideo = article.contentType === 'video' || article.video_url;
+                        return `
+                            <div class="search-result-item" onclick="openArticle('${article.id}')">
+                                <img src="${article.image}" alt="${article.titre}" class="search-result-thumb">
+                                <div class="search-result-info">
+                                    <div class="search-result-title">${highlightText(article.titre, query)}</div>
+                                    <div class="search-result-meta">
+                                        <span class="search-result-badge">${article.categorie}</span>
+                                        <span>${article.auteur}</span>
+                                        ${isVideo ? '<span>🎥 Vidéo</span>' : ''}
+                                    </div>
                                 </div>
+                            </div>
+                        `;
+                    }).join('');
+                    results.classList.add('show');
+                } else {
+                    results.innerHTML = `
+                        <div class="search-result-item" style="justify-content: center;">
+                            <i class="fas fa-search" style="color: var(--gray); font-size: 2rem;"></i>
+                            <div style="text-align: center; color: var(--gray);">
+                                <div style="font-weight: 600;">Aucun résultat</div>
+                                <div style="font-size: 0.85rem;">Essayez avec d'autres mots-clés</div>
                             </div>
                         </div>
                     `;
-                }).join('');
-                results.classList.add('show');
-            } else {
-                results.innerHTML = `
-                    <div class="search-result-item" style="justify-content: center;">
-                        <i class="fas fa-search" style="color: var(--gray); font-size: 2rem;"></i>
-                        <div style="text-align: center; color: var(--gray);">
-                            <div style="font-weight: 600;">Aucun résultat</div>
-                            <div style="font-size: 0.85rem;">Essayez avec d'autres mots-clés</div>
-                        </div>
-                    </div>
-                `;
-                results.classList.add('show');
+                    results.classList.add('show');
+                }
+            }, 300);
+        });
+
+        document.addEventListener('click', function(e) {
+            if (!input.contains(e.target) && !results.contains(e.target)) {
+                results.classList.remove('show');
             }
-        }, 300);
-    });
+        });
 
-    document.addEventListener('click', function(e) {
-        if (!input.contains(e.target) && !results.contains(e.target)) {
-            results.classList.remove('show');
-        }
-    });
-
-    input.addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-            performSearch();
-        }
-    });
-}
-
-       function highlightText(text, query) {
-    if (!query) return text;
-    const regex = new RegExp(`(${query})`, 'gi');
-    return text.replace(regex, '<strong style="color: var(--primary);">$1</strong>');
-}
-
-        function performSearch() {
-            const query = document.getElementById('headerSearchInput').value;
-            if (query) {
-                window.location.href = `articles.html?search=${encodeURIComponent(query)}`;
+        input.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                performSearch();
             }
+        });
+    }
+
+    function initMobileAutocomplete() {
+        const input = document.getElementById('mobileSearchInput');
+        const results = document.getElementById('mobileSearchResults');
+        const overlay = document.getElementById('mobileSearchOverlay');
+        if (!input || !results || !overlay) return;
+
+        let timeout;
+        input.addEventListener('input', function() {
+            clearTimeout(timeout);
+            const query = this.value.toLowerCase().trim();
+
+            if (query.length < 2) {
+                results.classList.remove('show');
+                overlay.classList.remove('show');
+                return;
+            }
+
+            timeout = setTimeout(() => {
+                const filtered = allArticles
+                    .filter(article => {
+                        return article.titre.toLowerCase().includes(query) ||
+                               article.extrait.toLowerCase().includes(query) ||
+                               article.auteur.toLowerCase().includes(query);
+                    })
+                    .slice(0, 5);
+
+                if (filtered.length > 0) {
+                    results.innerHTML = filtered.map(article => {
+                        const isVideo = article.contentType === 'video' || article.video_url;
+                        return `
+                            <div class="mobile-search-result-item" onclick="openArticle('${article.id}'); closeMobileSearch();">
+                                <img src="${article.image}" alt="${article.titre}" class="mobile-search-result-thumb">
+                                <div class="mobile-search-result-info">
+                                    <div class="mobile-search-result-title">${highlightText(article.titre, query)}</div>
+                                    <div class="mobile-search-result-meta">
+                                        <span class="mobile-search-result-badge">${article.categorie}</span>
+                                        <span>${article.auteur}</span>
+                                        ${isVideo ? '<span>🎥 Vidéo</span>' : ''}
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+                    results.classList.add('show');
+                    overlay.classList.add('show');
+                }
+            }, 300);
+        });
+    }
+
+    function highlightText(text, query) {
+        if (!query) return text;
+        const regex = new RegExp(`(${query})`, 'gi');
+        return text.replace(regex, '<strong style="color: var(--primary);">$1</strong>');
+    }
+
+    function performSearch() {
+        const input = document.getElementById('headerSearchInput');
+        if (input && input.value) {
+            window.location.href = `articles.html?search=${encodeURIComponent(input.value)}`;
         }
+    }
 
+    function performMobileSearch() {
+        const input = document.getElementById('mobileSearchInput');
+        if (input && input.value) {
+            closeMobileSearch();
+            window.location.href = `articles.html?search=${encodeURIComponent(input.value)}`;
+        }
+    }
 
-        function toggleMobileMenu() {
-            const sidebar = document.getElementById('mobileSidebar');
-            const overlay = document.getElementById('mobileOverlay');
+    function closeMobileSearch() {
+        const results = document.getElementById('mobileSearchResults');
+        const overlay = document.getElementById('mobileSearchOverlay');
+        if (results) results.classList.remove('show');
+        if (overlay) overlay.classList.remove('show');
+    }
+
+    // ========================================
+    // 📱 FONCTIONS MOBILE
+    // ========================================
+    function toggleMobileMenu() {
+        const sidebar = document.getElementById('mobileSidebar');
+        const overlay = document.getElementById('mobileOverlay');
+        if (sidebar && overlay) {
             sidebar.classList.toggle('show');
             overlay.classList.toggle('show');
         }
-
-        // Breaking News Popup
-        async function openBreakingNews() {
-    const popup = document.getElementById('breakingPopup');
-    const content = document.getElementById('breakingContent');
-    
-    popup.classList.add('show');
-    
-    try {
-        const breakingArticles = allArticles.filter(article => {
-            return article.sections && 
-                   (article.sections.includes('hero') || 
-                    article.sections.includes('a-la-une') ||
-                    article.sections.includes('featured'));
-        }).slice(0, 10);
-
-        if (breakingArticles.length === 0) {
-            content.innerHTML = `
-                <div class="breaking-empty">
-                    <i class="fas fa-newspaper"></i>
-                    <h3 style="color: white; margin-bottom: 10px;">Aucune actualité à la une</h3>
-                    <p>Revenez plus tard pour les dernières nouvelles</p>
-                </div>
-            `;
-            return;
-        }
-
-        content.innerHTML = breakingArticles.map(article => {
-            const timeAgo = getTimeAgo(article.date);
-            const isVideo = article.contentType === 'video' || article.video_url;
-            
-            return `
-                <div class="breaking-item" onclick="openArticle('${article.id}')">
-                    <div class="breaking-item-header">
-                        <span class="breaking-badge">
-                            <i class="fas fa-fire"></i>
-                            ${article.categorie}
-                        </span>
-                        <span class="breaking-time">
-                            <i class="fas fa-clock"></i>
-                            ${timeAgo}
-                        </span>
-                    </div>
-                    <div class="breaking-item-title">
-                        ${isVideo ? '🎥 ' : ''}${article.titre}
-                    </div>
-                    <div class="breaking-item-excerpt">
-                        ${article.extrait}
-                    </div>
-                    
-                </div>
-            `;
-        }).join('');
-
-    } catch (error) {
-        console.error('Erreur:', error);
-        content.innerHTML = `
-            <div class="breaking-empty">
-                <i class="fas fa-exclamation-triangle"></i>
-                <h3 style="color: white; margin-bottom: 10px;">Erreur de chargement</h3>
-                <p>Impossible de charger les actualités</p>
-            </div>
-        `;
     }
-}
 
-        function closeBreakingNews() {
-            document.getElementById('breakingPopup').classList.remove('show');
+    function openBreakingNews() {
+        const popup = document.getElementById('breakingPopup');
+        if (popup) {
+            popup.classList.add('show');
         }
-
-        function getTimeAgo(dateString) {
-            const date = new Date(dateString);
-            const now = new Date();
-            const diffMs = now - date;
-            const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
-            const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-            
-            if (diffHours < 1) return 'À l\'instant';
-            if (diffHours < 24) return `Il y a ${diffHours}h`;
-            if (diffDays === 1) return 'Hier';
-            if (diffDays < 7) return `Il y a ${diffDays}j`;
-            if (diffDays < 30) return `Il y a ${Math.floor(diffDays/7)} sem`;
-            return date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
-        }
-
-        // Mobile search
-        function performMobileSearch() {
-            const query = document.getElementById('mobileSearchInput').value;
-            if (query) {
-                window.location.href = `articles.html?search=${encodeURIComponent(query)}`;
-            }
-        }
-
-        // Enter key for mobile search
-        document.addEventListener('DOMContentLoaded', function() {
-            const mobileInput = document.getElementById('mobileSearchInput');
-            if (mobileInput) {
-                mobileInput.addEventListener('keypress', function(e) {
-                    if (e.key === 'Enter') {
-                        performMobileSearch();
-                    }
-                });
-            }
-        });
-
-        // Close popup on outside click
-        document.getElementById('breakingPopup').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeBreakingNews();
-            }
-        });
-
-        // Active nav item
-        const currentPath = window.location.pathname;
-        document.querySelectorAll('.nav-menu a').forEach(link => {
-            if (link.getAttribute('href') === currentPath || 
-                (currentPath.includes('index.html') && link.getAttribute('href') === 'index.html')) {
-                link.classList.add('active');
-            }
-        });
-
-        // Init
-        document.addEventListener('DOMContentLoaded', function() {
-            updateDate();
-            loadArticlesCount();
-            initAutocomplete();
-        });
-
-
-function initMobileAutocomplete() {
-    const input = document.getElementById('mobileSearchInput');
-    const results = document.getElementById('mobileSearchResults');
-    const overlay = document.getElementById('mobileSearchOverlay');
-    let timeout;
-
-    if (!input || !results) return;
-
-    input.addEventListener('input', function() {
-        clearTimeout(timeout);
-        const query = this.value.toLowerCase().trim();
-
-        if (query.length < 2) {
-            results.classList.remove('show');
-            overlay.classList.remove('show');
-            return;
-        }
-
-        timeout = setTimeout(() => {
-            const filtered = allArticles
-                .filter(article => {
-                    return article.titre.toLowerCase().includes(query) ||
-                           article.extrait.toLowerCase().includes(query) ||
-                           article.auteur.toLowerCase().includes(query);
-                })
-                .slice(0, 5);
-
-            if (filtered.length > 0) {
-                results.innerHTML = filtered.map(article => {
-                    const isVideo = article.contentType === 'video' || article.video_url;
-                    return `
-                        <div class="mobile-search-result-item" onclick="openArticle('${article.id}'); closeMobileSearch();">
-                            <img src="${article.image}" alt="${article.titre}" class="mobile-search-result-thumb">
-                            <div class="mobile-search-result-info">
-                                <div class="mobile-search-result-title">${highlightText(article.titre, query)}</div>
-                                <div class="mobile-search-result-meta">
-                                    <span class="mobile-search-result-badge">${article.categorie}</span>
-                                    <span>${article.auteur}</span>
-                                    ${isVideo ? '<span>🎥 Vidéo</span>' : ''}
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                }).join('');
-                results.classList.add('show');
-                overlay.classList.add('show');
-            }
-        }, 300);
-    });
-}
-
-// ==========================================
-// 🚀 CONSOLE DEBUG
-// ==========================================
-
-console.log('✅ Système de navigation SEO chargé');
-console.log('📌 Fonctions disponibles:');
-console.log('  - getArticleUrl(article) → Obtenir URL SEO ou legacy');
-console.log('  - openArticle(id) → Navigation intelligente');
-console.log('  - createArticleLink(article, content) → Créer lien HTML');
-console.log('');
-console.log('🔗 Format URLs:');
-console.log('  - SEO: /article/titre-optimise.html');
-console.log('  - Legacy: /article-detail.html?id=xxx');
-
-
-// Fermer la recherche mobile
-function closeMobileSearch() {
-    const results = document.getElementById('mobileSearchResults');
-    const overlay = document.getElementById('mobileSearchOverlay');
-    
-    if (results) results.classList.remove('show');
-    if (overlay) overlay.classList.remove('show');
-}
-
-// Recherche mobile améliorée
-function performMobileSearch() {
-    const query = document.getElementById('mobileSearchInput').value.trim();
-    
-    if (query) {
-        closeMobileSearch();
-        window.location.href = `articles.html?search=${encodeURIComponent(query)}`;
-    } else {
-        // Vibration si pas de texte (mobile)
-        if (navigator.vibrate) {
-            navigator.vibrate(100);
-        }
-        
-        // Focus sur l'input
-        document.getElementById('mobileSearchInput').focus();
     }
-}
 
-// Initialisation au chargement
-document.addEventListener('DOMContentLoaded', function() {
-    initMobileAutocomplete();
-    
-    // Clear search on page load
-    const mobileInput = document.getElementById('mobileSearchInput');
-    if (mobileInput) {
-        mobileInput.value = '';
+    function closeBreakingNews() {
+        const popup = document.getElementById('breakingPopup');
+        if (popup) {
+            popup.classList.remove('show');
+        }
     }
-});
 
-document.addEventListener('DOMContentLoaded', function() {
-    const results = document.getElementById('mobileSearchResults');
-    
-    if (results) {
-        const observer = new MutationObserver(function(mutations) {
-            mutations.forEach(function(mutation) {
-                if (mutation.attributeName === 'class') {
-                    if (results.classList.contains('show')) {
-                        document.body.style.overflow = 'hidden';
-                    } else {
-                        document.body.style.overflow = 'auto';
-                    }
-                }
-            });
-        });
-        
-        observer.observe(results, { attributes: true });
-    }
-});
-
-console.log('✅ Mobile Search Bar initialisée (style PC)');
-    </script>
+    console.log('✅ Script JavaScript corrigé et initialisé');
+</script>
 </body>
 </html>
