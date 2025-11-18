@@ -1,25 +1,5 @@
 {
   "articles": {
-    "art_1762787087226_0sg1botlv": {
-      "id": "art_1762787087226_0sg1botlv",
-      "titre": "netifly a vie",
-      "categorie": "Politique",
-      "sections": [
-        "main"
-      ],
-      "contentType": "article",
-      "image": "https://res.cloudinary.com/dkuciagop/image/upload/v1762786952/sngjwyuowqbjnvjrnoyp.jpg",
-      "images": "[\"https://res.cloudinary.com/dkuciagop/image/upload/v1762786952/sngjwyuowqbjnvjrnoyp.jpg\",\"https://res.cloudinary.com/dkuciagop/image/upload/v1762786960/qwwy3hlmt7oco9ahxitz.jpg\"]",
-      "extrait": "netifly a vie",
-      "contenu": "netifly a vie",
-      "auteur": "Orlus Fosso",
-      "video_url": "",
-      "date": "2025-11-10T15:04:47.227Z",
-      "vues": 0,
-      "likes": 0,
-      "share_url": "/share/art_1762787087226_0sg1botlv.html",
-      "statut": "publié"
-    },
     "art_1762791815395_mj9iwtw44": {
       "id": "art_1762791815395_mj9iwtw44",
       "titre": "teint parfait by nadege paris frappe fort",
@@ -517,6 +497,6 @@
       "likes": 0
     }
   },
-  "lastUpdate": "2025-11-18T02:31:10.289Z",
-  "totalArticles": 27
+  "lastUpdate": "2025-11-18T03:07:48.895Z",
+  "totalArticles": 26
 }
