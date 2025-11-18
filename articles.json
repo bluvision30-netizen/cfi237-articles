@@ -304,24 +304,6 @@
       "likes": 0,
       "share_url": "/share/art_1763188854341_sarpmhhth.html"
     },
-    "art_1763319432131_cquxdwgdr": {
-      "id": "art_1763319432131_cquxdwgdr",
-      "slug": "afrobiz-universal-awards",
-      "titre": "AFROBIZ UNIVERSAL AWARDS",
-      "categorie": "Société",
-      "sections": [
-        "main",
-        "hero"
-      ],
-      "image": "https://res.cloudinary.com/dkuciagop/image/upload/v1763319387/r9hmwy1e5nr0mrykxtgi.png",
-      "images": "[\"https://res.cloudinary.com/dkuciagop/image/upload/v1763319387/r9hmwy1e5nr0mrykxtgi.png\",\"https://res.cloudinary.com/dkuciagop/image/upload/v1763319394/svp7vn7ictokos57fuyu.jpg\"]",
-      "extrait": "AFROBIZ UNIVERSAL AWARDS",
-      "contenu": "AFROBIZ UNIVERSAL AWARDS",
-      "auteur": "Orlus Fosso",
-      "date": "2025-11-16T18:57:12.304Z",
-      "vues": 0,
-      "likes": 0
-    },
     "art_1763321698003_ol19p4q9u": {
       "id": "art_1763321698003_ol19p4q9u",
       "slug": "live-prestation-de-serment-du-president-paul-biya",
@@ -419,6 +401,6 @@
       "likes": 0
     }
   },
-  "lastUpdate": "2025-11-18T03:23:42.486Z",
-  "totalArticles": 22
+  "lastUpdate": "2025-11-18T03:23:46.771Z",
+  "totalArticles": 21
 }
