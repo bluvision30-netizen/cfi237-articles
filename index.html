@@ -39,7 +39,7 @@
             padding: 0 20px;
         }
         
-         /* NOUVEAU HERO SLIDER */
+        /* Hero Slider */
         .hero-section {
             margin: 2rem 0;
             position: relative;
@@ -51,7 +51,6 @@
         .hero-slider {
             position: relative;
             height: 100%;
-            width: 100%;
         }
         
         .hero-slide {
@@ -60,7 +59,6 @@
             height: 100%;
             opacity: 0;
             transition: opacity 0.5s ease;
-            cursor: pointer;
         }
         
         .hero-slide.active {
@@ -81,7 +79,6 @@
             background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
             color: white;
             padding: 3rem;
-            pointer-events: none; /* Permet de cliquer à travers */
         }
         
         .hero-category {
@@ -130,31 +127,6 @@
         
         .slider-btn:hover {
             background: var(--primary);
-        }
-        
-        /* Indicateurs de slide */
-        .slide-indicators {
-            position: absolute;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            gap: 8px;
-            z-index: 10;
-        }
-        
-        .slide-indicator {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.5);
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        
-        .slide-indicator.active {
-            background: white;
-            transform: scale(1.2);
         }
         
         /* Section Title */
@@ -3017,16 +2989,13 @@
     </div>
     <!-- Hero Slider -->
     <div class="container">
-         <section class="hero-section" id="heroSection">
+        <section class="hero-section" id="heroSection">
             <div class="hero-slider" id="heroSlider">
-                <!-- Le contenu sera généré par JavaScript -->
                 <div class="loading">
                     <i class="fas fa-spinner"></i>
                     <p style="margin-top: 1rem;">Chargement...</p>
                 </div>
             </div>
-            
-            <!-- Boutons de navigation -->
             <div class="slider-nav">
                 <button class="slider-btn" onclick="prevSlide()">
                     <i class="fas fa-chevron-left"></i>
@@ -3034,11 +3003,6 @@
                 <button class="slider-btn" onclick="nextSlide()">
                     <i class="fas fa-chevron-right"></i>
                 </button>
-            </div>
-            
-            <!-- Indicateurs de slide -->
-            <div class="slide-indicators" id="slideIndicators">
-                <!-- Généré par JavaScript -->
             </div>
         </section>
 
@@ -3491,35 +3455,30 @@ async function loadArticles() {
     }
 }
     function displayHeroSlider() {
-            // Filtrer les articles pour le slider
-            heroArticles = allArticles
-                .filter(a => a.sections && a.sections.includes('hero'))
-                .slice(0, 5);
-            
-            // Si aucun article n'est marqué pour le hero, prendre les 3 premiers
-            if (heroArticles.length === 0) {
-                heroArticles = allArticles.slice(0, 3);
-            }
-            
-            const slider = document.getElementById('heroSlider');
-            const indicators = document.getElementById('slideIndicators');
-            
-            // Vider le contenu existant
-            slider.innerHTML = '';
-            indicators.innerHTML = '';
-            
-            // Générer les slides
-            heroArticles.forEach((article, index) => {
-                // Créer l'élément slide
-                const slide = document.createElement('div');
-                slide.className = `hero-slide ${index === 0 ? 'active' : ''}`;
-                slide.setAttribute('data-article-id', article.id);
-                
-                // Ajouter l'image
-                slide.innerHTML = `
+    heroArticles = allArticles
+        .filter(a => a.sections && a.sections.includes('hero'))
+        .slice(0, 5);
+
+    if (heroArticles.length === 0) {
+        heroArticles = allArticles.slice(0, 3);
+    }
+
+    const slider = document.getElementById('heroSlider');
+
+    slider.innerHTML = heroArticles.map((article, index) => {
+
+        // 🔥 URL CORRECTE : SEO si slug existe, sinon fallback ID
+        const url = article.slug 
+            ? `/article/${article.slug}.html`
+            : `/article-detail.html?id=${article.id}`;
+
+        return `
+            <div class="hero-slide ${index === 0 ? 'active' : ''}">
+                <a href="${url}" class="hero-link">
                     <img src="${article.image}" 
                          alt="${article.titre}" 
                          loading="${index === 0 ? 'eager' : 'lazy'}">
+                    
                     <div class="hero-content">
                         <span class="hero-category">${article.categorie}</span>
                         <h2 class="hero-title">${article.titre}</h2>
@@ -3528,65 +3487,25 @@ async function loadArticles() {
                             <span><i class="fas fa-clock"></i> ${formatDate(article.date)}</span>
                         </div>
                     </div>
-                `;
-                
-                // Ajouter l'événement de clic
-                slide.addEventListener('click', function() {
-                    const articleId = this.getAttribute('data-article-id');
-                    openArticle(articleId);
-                });
-                
-                // Ajouter au slider
-                slider.appendChild(slide);
-                
-                // Créer l'indicateur
-                const indicator = document.createElement('div');
-                indicator.className = `slide-indicator ${index === 0 ? 'active' : ''}`;
-                indicator.setAttribute('data-slide-index', index);
-                
-                // Ajouter l'événement de clic pour l'indicateur
-                indicator.addEventListener('click', function() {
-                    const slideIndex = parseInt(this.getAttribute('data-slide-index'));
-                    goToSlide(slideIndex);
-                });
-                
-                // Ajouter aux indicateurs
-                indicators.appendChild(indicator);
-            });
-            
-            // Démarrer le défilement automatique
-            startAutoSlide();
-        }
+                </a>
+            </div>
+        `;
+    }).join('');
 
-       function goToSlide(slideIndex) {
-            // Mettre à jour l'index actuel
-            currentSlide = slideIndex;
-            
-            // Mettre à jour les slides
-            document.querySelectorAll('.hero-slide').forEach((slide, index) => {
-                slide.classList.toggle('active', index === currentSlide);
-            });
-            
-            // Mettre à jour les indicateurs
-            document.querySelectorAll('.slide-indicator').forEach((indicator, index) => {
-                indicator.classList.toggle('active', index === currentSlide);
-            });
-            
-            // Redémarrer le défilement automatique
-            resetAutoSlide();
-        }
+    startAutoSlide();
+}
 
-        // Slide suivant
+
         function nextSlide() {
-            const nextIndex = (currentSlide + 1) % heroArticles.length;
-            goToSlide(nextIndex);
+            currentSlide = (currentSlide + 1) % heroArticles.length;
+            updateSlide();
         }
 
-        // Slide précédent
         function prevSlide() {
-            const prevIndex = (currentSlide - 1 + heroArticles.length) % heroArticles.length;
-            goToSlide(prevIndex);
+            currentSlide = (currentSlide - 1 + heroArticles.length) % heroArticles.length;
+            updateSlide();
         }
+
         function updateSlide() {
             document.querySelectorAll('.hero-slide').forEach((slide, i) => {
                 slide.classList.toggle('active', i === currentSlide);
@@ -3594,65 +3513,12 @@ async function loadArticles() {
         }
 
         function startAutoSlide() {
-            slideInterval = setInterval(() => {
+            setInterval(() => {
                 nextSlide();
-            }, 5000); // Change de slide toutes les 5 secondes
+            }, 5000);
         }
 
-         function resetAutoSlide() {
-            clearInterval(slideInterval);
-            startAutoSlide();
-        }
-
-        // Arrêter le défilement automatique au survol
-        function setupSliderHover() {
-            const slider = document.getElementById('heroSlider');
-            
-            slider.addEventListener('mouseenter', () => {
-                clearInterval(slideInterval);
-            });
-            
-            slider.addEventListener('mouseleave', () => {
-                startAutoSlide();
-            });
-        }
-
- // Fonction pour ouvrir un article
-        function openArticle(articleId) {
-            const article = allArticles.find(a => a.id === articleId);
-            
-            if (!article) {
-                console.error('❌ Article introuvable:', articleId);
-                return;
-            }
-            
-            // 📊 TRACKING: Incrémenter les vues localement
-            trackArticleView(articleId);
-            
-            // Navigation intelligente (SEO ou legacy)
-            const url = getArticleUrl(article);
-            window.location.href = url;
-        }
-  function getArticleUrl(article) {
-            if (!article) return '#';
-            
-            // Si l'article a un slug SEO → utiliser la page statique
-            if (article.slug) {
-                return `/article/${article.slug}.html`;
-            }
-            
-            // Fallback → ancien système avec ID
-            return `/article-detail.html?id=${article.id}`;
-        }
-
-      function trackArticleView(articleId) {
-            let views = JSON.parse(localStorage.getItem('article_views') || '{}');
-            views[articleId] = (views[articleId] || 0) + 1;
-            localStorage.setItem('article_views', JSON.stringify(views));
-            console.log(`📊 Vue enregistrée pour article ${articleId}: ${views[articleId]} vues`);
-        }
-   
-        
+       
 function displayCarousel() {
     const carousel = allArticles
         .filter(a => a.sections && a.sections.includes('a-la-une'))
@@ -4237,7 +4103,6 @@ function displayEvents() {
             return date.toLocaleDateString('fr-FR', options);
         }
 
-
         // Utilitaires
         function getInitial(name) {
             return name ? name.charAt(0).toUpperCase() : 'A';
@@ -4302,32 +4167,9 @@ function createArticleLink(article, content, className = '') {
                     <p>Impossible de charger les articles</p>
                 </div>
             `;
+            document.getElementById('articlesGrid').innerHTML = document.getElementById('heroSlider').innerHTML;
         }
- document.addEventListener('DOMContentLoaded', function() {
-            loadArticles();
-            setupSliderHover();
-        });
 
-         // Navigation au clavier
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'ArrowLeft') {
-                prevSlide();
-            } else if (e.key === 'ArrowRight') {
-                nextSlide();
-            }
-        });
-
-        // ==========================================
-        // 🚀 CONSOLE DEBUG
-        // ==========================================
-        console.log('✅ Nouveau Hero Slider initialisé');
-        console.log('📌 Fonctions disponibles:');
-        console.log('  - goToSlide(index) → Aller à un slide spécifique');
-        console.log('  - nextSlide() → Slide suivant');
-        console.log('  - prevSlide() → Slide précédent');
-        console.log('  - startAutoSlide() → Défilement automatique');
-        console.log('  - resetAutoSlide() → Redémarrer défilement automatique');
-        
         // Charger au démarrage
         document.addEventListener('DOMContentLoaded', loadArticles);
 
