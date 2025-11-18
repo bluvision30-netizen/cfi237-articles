@@ -259,8 +259,28 @@
       "date": "2025-11-18T19:39:40.956Z",
       "vues": 0,
       "likes": 0
+    },
+    "art_1763500570019_qfpkj4auh": {
+      "id": "art_1763500570019_qfpkj4auh",
+      "slug": "bahebeck-vs-elimbi-lobe",
+      "titre": "Bahebeck vs Elimbi Lobe",
+      "categorie": "International",
+      "sections": [
+        "main",
+        "videos"
+      ],
+      "image": "https://res.cloudinary.com/dkuciagop/image/upload/v1763500545/swfxxraskhmqhktp5odt.jpg",
+      "images": "[\"https://res.cloudinary.com/dkuciagop/image/upload/v1763500545/swfxxraskhmqhktp5odt.jpg\"]",
+      "extrait": "Tempête sur le plateau ! un débat sous haute tension !⚡💥",
+      "contenu": "🔴 D’un côté, une position nationaliste et radicale, qui défend l’héritage d’Ouandié comme un combat pour la souveraineté et la liberté du Cameroun. 🔵 De l’autre, une vision critique qui remet en cause son action et s’interroge sur les conséquences de son engagement.",
+      "auteur": "Orlus Fosso",
+      "contentType": "video",
+      "video_url": "https://youtu.be/Dp8wdUlCotc",
+      "date": "2025-11-18T21:16:10.216Z",
+      "vues": 0,
+      "likes": 0
     }
   },
-  "lastUpdate": "2025-11-18T19:39:40.956Z",
-  "totalArticles": 13
+  "lastUpdate": "2025-11-18T21:16:10.216Z",
+  "totalArticles": 14
 }
