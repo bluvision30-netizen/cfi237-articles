@@ -17,24 +17,6 @@
       "vues": 0,
       "likes": 0
     },
-    "art_1762830512535_uozpcil0e": {
-      "id": "art_1762830512535_uozpcil0e",
-      "titre": "fondation afrikenne bafoussam",
-      "categorie": "Société",
-      "sections": [
-        "main",
-        "trending",
-        "events"
-      ],
-      "image": "https://res.cloudinary.com/dkuciagop/image/upload/v1762830474/kqjzbvgff4x9h174iybz.jpg",
-      "images": "[\"https://res.cloudinary.com/dkuciagop/image/upload/v1762830474/kqjzbvgff4x9h174iybz.jpg\",\"https://res.cloudinary.com/dkuciagop/image/upload/v1762830475/vtcc7nmswy3lxqjkqwtd.jpg\"]",
-      "extrait": "fondation afrikenne bafoussam",
-      "contenu": "fondation afrikenne bafoussam",
-      "auteur": "franky fosso",
-      "date": "2025-11-11T03:08:32.785Z",
-      "vues": 0,
-      "likes": 0
-    },
     "art_1762833332883_qwu9jas1m": {
       "id": "art_1762833332883_qwu9jas1m",
       "titre": "lancement des awarsd",
@@ -381,6 +363,6 @@
       "likes": 0
     }
   },
-  "lastUpdate": "2025-11-18T03:23:52.922Z",
-  "totalArticles": 20
+  "lastUpdate": "2025-11-18T03:24:03.124Z",
+  "totalArticles": 19
 }
