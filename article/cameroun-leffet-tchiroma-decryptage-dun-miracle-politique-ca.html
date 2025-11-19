@@ -1,25 +1,542 @@
-<!DOCTYPE html>
+
+// ==========================================
+// NETLIFY FUNCTION - CREATE ARTICLE
+// Version corrigée complète
+// ==========================================
+
+exports.handler = async function(event, context) {
+  const headers = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Headers': 'Content-Type',
+    'Access-Control-Allow-Methods': 'POST, OPTIONS'
+  };
+
+  // OPTIONS preflight
+  if (event.httpMethod === 'OPTIONS') {
+    return { statusCode: 200, headers, body: '' };
+  }
+
+  try {
+    console.log('🔥 === DÉBUT CRÉATION ARTICLE ===');
+    
+    // ✅ 1. VALIDATION GITHUB_TOKEN
+    const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
+    if (!GITHUB_TOKEN) {
+        console.error('❌ GITHUB_TOKEN manquant');
+        return {
+            statusCode: 500,
+            headers,
+            body: JSON.stringify({ 
+                success: false,
+                error: 'Configuration serveur manquante',
+                details: 'GITHUB_TOKEN non défini. Ajoutez-le dans Netlify Environment Variables.'
+            })
+        };
+    }
+    console.log('✅ GITHUB_TOKEN présent');
+    
+    // ✅ 2. VALIDATION BODY
+    if (!event.body) {
+        console.error('❌ Body vide');
+        return {
+            statusCode: 400,
+            headers,
+            body: JSON.stringify({ 
+                success: false, 
+                error: 'Corps de requête vide' 
+            })
+        };
+    }
+    
+    // ✅ 3. PARSING JSON
+    let articleData;
+    try {
+        articleData = JSON.parse(event.body);
+        console.log('✅ JSON parsé correctement');
+    } catch (parseError) {
+        console.error('❌ Erreur parsing JSON:', parseError.message);
+        return {
+            statusCode: 400,
+            headers,
+            body: JSON.stringify({ 
+                success: false, 
+                error: 'JSON invalide',
+                details: parseError.message
+            })
+        };
+    }
+    
+    // ✅ 4. VALIDATION TYPE OBJET
+    if (!articleData || typeof articleData !== 'object' || Array.isArray(articleData)) {
+        console.error('❌ Type de données invalide:', typeof articleData);
+        return {
+            statusCode: 400,
+            headers,
+            body: JSON.stringify({ 
+                success: false, 
+                error: 'Format invalide - Objet JSON attendu' 
+            })
+        };
+    }
+    
+    // ✅ 5. VALIDATION CHAMPS REQUIS
+    const requiredFields = {
+        titre: 'string',
+        categorie: 'string',
+        image: 'string',
+        extrait: 'string',
+        contenu: 'string'
+    };
+    
+    const missingFields = [];
+    const invalidFields = [];
+    
+    for (const [field, expectedType] of Object.entries(requiredFields)) {
+        if (!articleData[field]) {
+            missingFields.push(field);
+        } else if (typeof articleData[field] !== expectedType) {
+            invalidFields.push(`${field} (attendu: ${expectedType}, reçu: ${typeof articleData[field]})`);
+        }
+    }
+    
+    if (missingFields.length > 0) {
+        console.error('❌ Champs manquants:', missingFields);
+        return {
+            statusCode: 400,
+            headers,
+            body: JSON.stringify({ 
+                success: false, 
+                error: `Champs requis manquants: ${missingFields.join(', ')}`,
+                missingFields: missingFields
+            })
+        };
+    }
+    
+    if (invalidFields.length > 0) {
+        console.error('❌ Types invalides:', invalidFields);
+        return {
+            statusCode: 400,
+            headers,
+            body: JSON.stringify({ 
+                success: false, 
+                error: `Types de champs invalides: ${invalidFields.join(', ')}`,
+                invalidFields: invalidFields
+            })
+        };
+    }
+    
+    console.log('✅ Tous les champs requis sont valides');
+    console.log('📝 Titre:', articleData.titre);
+    console.log('📂 Catégorie:', articleData.categorie);
+
+    // ✅ 6. GÉNÉRATION ID ET SLUG
+    const articleId = 'art_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    const slug = generateSlug(articleData.titre);
+    
+    console.log('🆔 ID généré:', articleId);
+    console.log('🔗 Slug généré:', slug);
+    
+    // ✅ 7. SAUVEGARDE GITHUB
+    console.log('💾 === DÉBUT SAUVEGARDE GITHUB ===');
+    const saveResult = await saveToGitHub(articleData, articleId, slug, GITHUB_TOKEN);
+    
+    if (!saveResult.success) {
+        throw new Error('Échec sauvegarde GitHub: ' + saveResult.error);
+    }
+    console.log('✅ articles.json sauvegardé');
+    
+    // ✅ 8. CRÉATION PAGE SEO
+    console.log('📄 === DÉBUT CRÉATION PAGE SEO ===');
+    const pageResult = await createArticlePage(articleData, articleId, slug, GITHUB_TOKEN);
+    
+    if (!pageResult.success) {
+        console.warn('⚠️ Page SEO non créée:', pageResult.error);
+    } else {
+        console.log('✅ Page SEO créée');
+    }
+
+    // ✅ 9. SUCCÈS
+    const articleUrl = `https://cfiupload.netlify.app/article/${slug}.html`;
+    
+    console.log('🎉 === ARTICLE PUBLIÉ AVEC SUCCÈS ===');
+    console.log('🔗 URL:', articleUrl);
+    
+    return {
+      statusCode: 200,
+      headers,
+      body: JSON.stringify({
+        success: true,
+        articleId: articleId,
+        slug: slug,
+        articleUrl: articleUrl,
+        articleData: {
+            titre: articleData.titre,
+            categorie: articleData.categorie
+        },
+        shareUrls: {
+          whatsapp: `https://wa.me/?text=${encodeURIComponent(articleData.titre + ' - ' + articleUrl)}`,
+          facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(articleUrl)}`,
+          twitter: `https://twitter.com/intent/tweet?text=${encodeURIComponent(articleData.titre)}&url=${encodeURIComponent(articleUrl)}`
+        },
+        message: '✅ Article publié avec page SEO optimisée!'
+      })
+    };
+
+  } catch (error) {
+    console.error('❌ === ERREUR GLOBALE ===');
+    console.error('Message:', error.message);
+    console.error('Stack:', error.stack);
+    
+    return {
+      statusCode: 500,
+      headers,
+      body: JSON.stringify({ 
+        success: false,
+        error: error.message || 'Erreur serveur interne',
+        stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+      })
+    };
+  }
+};
+
+// ==========================================
+// GÉNÉRER SLUG SEO
+// ==========================================
+function generateSlug(titre) {
+  if (!titre || typeof titre !== 'string') {
+    return 'article-' + Date.now();
+  }
+  
+  try {
+    return titre
+      .toLowerCase()
+      .normalize('NFD').replace(/[\u0300-\u036f]/g, '') // Enlever accents
+      .replace(/[^a-z0-9 -]/g, '') // Caractères spéciaux
+      .replace(/\s+/g, '-') // Espaces -> tirets
+      .replace(/-+/g, '-') // Tireds multiples
+      .replace(/^-+|-+$/g, '') // Tirets début/fin
+      .substring(0, 60) || 'article-' + Date.now();
+  } catch (error) {
+    console.error('❌ Erreur génération slug:', error);
+    return 'article-' + Date.now();
+  }
+}
+
+// ==========================================
+// SAUVEGARDER DANS GITHUB
+// ==========================================
+async function saveToGitHub(articleData, articleId, slug, GITHUB_TOKEN) {
+  try {
+    const REPO = 'bluvision30-netizen/cfi237-articles';
+    const articlesUrl = `https://api.github.com/repos/${REPO}/contents/articles.json`;
+    
+    console.log('📖 Lecture articles.json existant...');
+    
+    let existingData = { articles: {} };
+    let sha = '';
+
+    try {
+      const response = await fetch(articlesUrl, {
+        headers: { 
+          'Authorization': `token ${GITHUB_TOKEN}`,
+          'Accept': 'application/vnd.github.v3+json',
+          'User-Agent': 'Abu-Media-Dashboard'
+        }
+      });
+      
+      if (response.ok) {
+        const fileData = await response.json();
+        const content = Buffer.from(fileData.content, 'base64').toString('utf8');
+        existingData = JSON.parse(content);
+        sha = fileData.sha;
+        console.log(`📚 ${Object.keys(existingData.articles || {}).length} articles existants`);
+      } else if (response.status === 404) {
+        console.log('📝 Création nouveau articles.json');
+      } else {
+        throw new Error(`GitHub API error: ${response.status} - ${await response.text()}`);
+      }
+    } catch (fetchError) {
+      if (fetchError.message.includes('404')) {
+        console.log('📝 Création nouveau articles.json');
+      } else {
+        throw fetchError;
+      }
+    }
+
+    // Créer objet article complet
+    const completeArticle = {
+      id: articleId,
+      slug: slug,
+      titre: articleData.titre,
+      categorie: articleData.categorie,
+      sections: articleData.sections || ['main'],
+      image: articleData.image,
+      images: articleData.images || JSON.stringify([articleData.image]),
+      extrait: articleData.extrait,
+      contenu: articleData.contenu,
+      auteur: articleData.auteur || 'Admin',
+      contentType: articleData.contentType || 'article',
+      video_url: articleData.video_url || null,
+      date: new Date().toISOString(),
+      vues: 0,
+      likes: 0
+    };
+
+    // Ajouter article
+    if (!existingData.articles) existingData.articles = {};
+    existingData.articles[articleId] = completeArticle;
+    existingData.lastUpdate = new Date().toISOString();
+    existingData.totalArticles = Object.keys(existingData.articles).length;
+
+    console.log('💾 Sauvegarde sur GitHub...');
+    
+    const updateResponse = await fetch(articlesUrl, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `token ${GITHUB_TOKEN}`,
+        'Content-Type': 'application/json',
+        'Accept': 'application/vnd.github.v3+json',
+        'User-Agent': 'Abu-Media-Dashboard'
+      },
+      body: JSON.stringify({
+        message: `📰 Nouvel article: ${articleData.titre}`,
+        content: Buffer.from(JSON.stringify(existingData, null, 2)).toString('base64'),
+        sha: sha || undefined
+      })
+    });
+
+    if (!updateResponse.ok) {
+      const errorText = await updateResponse.text();
+      throw new Error(`GitHub API error: ${updateResponse.status} - ${errorText}`);
+    }
+
+    console.log('✅ articles.json mis à jour avec succès');
+    return { success: true };
+
+  } catch (error) {
+    console.error('❌ Erreur saveToGitHub:', error.message);
+    return { success: false, error: error.message };
+  }
+}
+
+// ==========================================
+// RÉCUPÉRER ARTICLES SIMILAIRES
+// ==========================================
+async function getRelatedArticles(categorie, currentArticleId, GITHUB_TOKEN) {
+  try {
+    const REPO = 'bluvision30-netizen/cfi237-articles';
+    const articlesUrl = `https://api.github.com/repos/${REPO}/contents/articles.json`;
+    
+    const response = await fetch(articlesUrl, {
+      headers: { 
+        'Authorization': `token ${GITHUB_TOKEN}`,
+        'Accept': 'application/vnd.github.v3+json',
+        'User-Agent': 'Abu-Media-Dashboard'
+      }
+    });
+    
+    if (response.ok) {
+      const fileData = await response.json();
+      const content = Buffer.from(fileData.content, 'base64').toString('utf8');
+      const articlesData = JSON.parse(content);
+      
+      // Filtrer les articles de même catégorie (exclure l'article actuel)
+      const related = Object.values(articlesData.articles || {})
+        .filter(article => 
+          article.categorie === categorie && 
+          article.id !== currentArticleId
+        )
+        .slice(0, 3); // Maximum 3 articles
+      
+      return related;
+    }
+    return [];
+  } catch (error) {
+    console.error('Erreur récupération articles similaires:', error);
+    return [];
+  }
+}
+
+// ==========================================
+// CRÉER PAGE ARTICLE STATIQUE
+// ==========================================
+async function createArticlePage(articleData, articleId, slug, GITHUB_TOKEN) {
+  try {
+    const REPO = 'bluvision30-netizen/cfi237-articles';
+    
+    // Parse images
+    let images = [articleData.image];
+    try {
+      if (articleData.images) {
+        const parsed = typeof articleData.images === 'string' 
+          ? JSON.parse(articleData.images) 
+          : articleData.images;
+        
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          images = parsed;
+        }
+      }
+    } catch (e) {
+      console.warn('⚠️ Erreur parsing images, utilisation image principale');
+    }
+    
+    // Récupérer les articles similaires
+    console.log('🔍 Récupération articles similaires...');
+    const relatedArticles = await getRelatedArticles(articleData.categorie, articleId, GITHUB_TOKEN);
+    console.log(`📚 ${relatedArticles.length} articles similaires trouvés`);
+    
+    console.log('🎨 Génération HTML...');
+    const articleHTML = generateModernArticleHTML(articleData, articleId, slug, images, relatedArticles);
+    
+    const articleUrl = `https://api.github.com/repos/${REPO}/contents/article/${slug}.html`;
+    
+    console.log(`📤 Upload vers /article/${slug}.html...`);
+    
+    const response = await fetch(articleUrl, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `token ${GITHUB_TOKEN}`,
+        'Content-Type': 'application/json',
+        'Accept': 'application/vnd.github.v3+json',
+        'User-Agent': 'Abu-Media-Dashboard'
+      },
+      body: JSON.stringify({
+        message: `🌐 Page SEO: ${articleData.titre}`,
+        content: Buffer.from(articleHTML).toString('base64')
+      })
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`GitHub API error: ${response.status} - ${errorText}`);
+    }
+
+    console.log(`✅ Page créée: /article/${slug}.html`);
+    return { success: true };
+
+  } catch (error) {
+    console.error('❌ Erreur createArticlePage:', error.message);
+    return { success: false, error: error.message };
+  }
+}
+
+function generateModernArticleHTML(articleData, articleId, slug, images, relatedArticles = []) {
+    const firstImage = images[0] || articleData.image;
+    const articleUrl = `https://cfiupload.netlify.app/article/${slug}.html`;
+    const currentDate = new Date().toISOString();
+    
+    // Déterminer si c'est une vidéo ou un article
+    const isVideo = articleData.contentType === 'video' && articleData.video_url;
+    const videoId = isVideo ? extractYouTubeId(articleData.video_url) : null;
+    const videoThumbnail = isVideo ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg` : null;
+    
+    // Générer le contenu principal selon le type
+    let mainContent = '';
+    
+    if (isVideo) {
+        // STRUCTURE POUR VIDÉO
+        mainContent = `
+            <div class="video-container">
+                <div class="video-wrapper">
+                    <iframe 
+                        src="https://www.youtube.com/embed/${videoId}" 
+                        frameborder="0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                        allowfullscreen>
+                    </iframe>
+                </div>
+            </div>
+            
+            <div class="article-description">
+                <div class="excerpt">${articleData.extrait}</div>
+                <div class="body">
+                    ${articleData.contenu.split('\n\n').map(p => `<p>${p}</p>`).join('')}
+                </div>
+            </div>
+        `;
+    } else {
+        // STRUCTURE POUR ARTICLE AVEC DROP CAP
+        const firstParagraph = articleData.contenu.split('\n\n')[0];
+        const otherParagraphs = articleData.contenu.split('\n\n').slice(1);
+        
+        mainContent = `
+            <div class="article-content">
+                <div class="excerpt">${articleData.extrait}</div>
+                <div class="body">
+                    <p class="first-paragraph">${firstParagraph}</p>
+                    ${otherParagraphs.map(p => `<p>${p}</p>`).join('')}
+                </div>
+                
+                ${images.length > 1 ? `
+                    <div class="gallery">
+                        <h3>Galerie photos</h3>
+                        <div class="gallery-grid">
+                            ${images.slice(1).map(img => `
+                                <div class="gallery-item">
+                                    <img src="${img}" alt="Photo" loading="lazy">
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                ` : ''}
+            </div>
+        `;
+    }
+    
+    // GÉNÉRATION DES ARTICLES SIMILAIRES - CORRIGÉE
+let relatedHTML = '';
+
+if (relatedArticles.length > 0) {
+    relatedArticles.forEach(article => {
+        const articleFullUrl = `https://cfiupload.netlify.app/article/${article.slug}.html`;
+        relatedHTML += `
+            <a href="${articleFullUrl}" target="_blank" style="text-decoration: none; color: inherit;">
+                <div class="related-item">
+                    <h5>${article.titre}</h5>
+                    <div class="related-meta">
+                        <span>${article.auteur}</span>
+                        <span>${new Date(article.date).toLocaleDateString('fr-FR')}</span>
+                    </div>
+                </div>
+            </a>
+        `;
+    });
+} else {
+    relatedHTML = `
+        <a href="https://cfiupload.netlify.app/" target="_blank" style="text-decoration: none; color: inherit;">
+            <div class="related-item">
+                <h5>Découvrez nos autres articles</h5>
+                <div class="related-meta">
+                    <span>Abu Media</span>
+                    <span>${new Date().getFullYear()}</span>
+                </div>
+            </div>
+        </a>
+    `;
+}
+    
+    return `<!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CAMEROUN :: L'EFFET TCHIROMA : DÉCRYPTAGE D'UN "MIRACLE" POLITIQUE :: CAMEROON - Abu Media Group</title>
-    <meta name="description" content="Jamais dans l'histoire du Cameroun, un candidat de l'opposition se présentant à une élection présidentielle, n'avait été gratifié d'une répartition aussi large de ses suffrages sur l'étendue du territoire national.">
-    <link rel="canonical" href="https://cfiupload.netlify.app/article/cameroun-leffet-tchiroma-decryptage-dun-miracle-politique-ca.html">
+    <title>${articleData.titre} - Abu Media Group</title>
+    <meta name="description" content="${articleData.extrait}">
+    <link rel="canonical" href="${articleUrl}">
     
     <!-- Open Graph -->
-    <meta property="og:type" content="article">
-    <meta property="og:title" content="CAMEROUN :: L'EFFET TCHIROMA : DÉCRYPTAGE D'UN "MIRACLE" POLITIQUE :: CAMEROON">
-    <meta property="og:description" content="Jamais dans l'histoire du Cameroun, un candidat de l'opposition se présentant à une élection présidentielle, n'avait été gratifié d'une répartition aussi large de ses suffrages sur l'étendue du territoire national.">
-    <meta property="og:image" content="https://res.cloudinary.com/dkuciagop/image/upload/v1763549250/pnp4z3ufv2ueuwguvznh.jpg">
-    <meta property="og:url" content="https://cfiupload.netlify.app/article/cameroun-leffet-tchiroma-decryptage-dun-miracle-politique-ca.html">
-    
+    <meta property="og:type" content="${isVideo ? 'video.other' : 'article'}">
+    <meta property="og:title" content="${articleData.titre}">
+    <meta property="og:description" content="${articleData.extrait}">
+    <meta property="og:image" content="${isVideo ? videoThumbnail : firstImage}">
+    <meta property="og:url" content="${articleUrl}">
+    ${isVideo ? `<meta property="og:video" content="${articleData.video_url}">` : ''}
     
     <!-- Twitter Card -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="CAMEROUN :: L'EFFET TCHIROMA : DÉCRYPTAGE D'UN "MIRACLE" POLITIQUE :: CAMEROON">
-    <meta name="twitter:description" content="Jamais dans l'histoire du Cameroun, un candidat de l'opposition se présentant à une élection présidentielle, n'avait été gratifié d'une répartition aussi large de ses suffrages sur l'étendue du territoire national.">
-    <meta name="twitter:image" content="https://res.cloudinary.com/dkuciagop/image/upload/v1763549250/pnp4z3ufv2ueuwguvznh.jpg">
+    <meta name="twitter:card" content="${isVideo ? 'player' : 'summary_large_image'}">
+    <meta name="twitter:title" content="${articleData.titre}">
+    <meta name="twitter:description" content="${articleData.extrait}">
+    <meta name="twitter:image" content="${isVideo ? videoThumbnail : firstImage}">
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -101,7 +618,7 @@
             position: relative;
             margin-bottom: 30px;
             box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-            background-image: url('https://res.cloudinary.com/dkuciagop/image/upload/v1763549250/pnp4z3ufv2ueuwguvznh.jpg'); background-size: cover; background-position: center;
+            ${!isVideo ? `background-image: url('${firstImage}'); background-size: cover; background-position: center;` : 'background: linear-gradient(135deg, #667eea 0%, rgb(75, 98, 162) 100%);'}
         }
         
         .hero-overlay {
@@ -538,46 +1055,25 @@
     <article class="article-container">
         <header class="article-hero">
             <div class="hero-overlay">
-                <span class="category">Société</span>
-                <h1>CAMEROUN :: L'EFFET TCHIROMA : DÉCRYPTAGE D'UN "MIRACLE" POLITIQUE :: CAMEROON</h1>
+                <span class="category">${articleData.categorie}</span>
+                <h1>${articleData.titre}</h1>
                 <div class="meta">
-                    <span><i class="fas fa-user"></i> Orlus Fosso</span>
-                    <span><i class="fas fa-calendar"></i> 19/11/2025</span>
+                    <span><i class="fas fa-user"></i> ${articleData.auteur}</span>
+                    <span><i class="fas fa-calendar"></i> ${new Date().toLocaleDateString('fr-FR')}</span>
                 </div>
             </div>
         </header>
         
         <main class="article-main">
-            
-            <div class="article-content">
-                <div class="excerpt">Jamais dans l'histoire du Cameroun, un candidat de l'opposition se présentant à une élection présidentielle, n'avait été gratifié d'une répartition aussi large de ses suffrages sur l'étendue du territoire national.</div>
-                <div class="body">
-                    <p class="first-paragraph">D'aucuns se sont limités à expliquer cette performance par «l'effet d'aubaine» de l'élimination de Maurice KAMTO. C'est sans doute juste, mais insuffisant pour expliquer cette magie électorale.</p>
-                    <p>En effet, ISSA TCHIROMA BAKARY a révélé aux yeux du monde, un terreau politique de la contestation extrêmement vigoureux, mis en hibernation par une opposition du compromis et de la compromission, incarnée par BELLO BOUBA MAÏGARI, qui y faisait figure d'opposant principal, notamment l'Est Cameroun et le Septentrion. </p><p>
-Extraordinairement, le temps d'une campagne électorale, ISSA TCHIROMA BAKARY a réalisé la moitié du chemin vers l'établissement d'un incontournable dialogue pour le retour de la paix dans le NOSO. Sa démarche fut dans cet exercice, d'un COURAGE exceptionnel et d'une très fine INTELLIGENCE POLITIQUE. Qualité d'ailleurs qui ont permis à ce candidat, handicapé par un engagement zélé au service du dictateur BIYA, non seulement de se lester de son désavantage, mais en même temps de prendre de l'ascendant sur ses concurrents.</p><p>
-L'un des indicateurs les plus pertinents de ce qu'il y a lieu d'appeler l'effet TCHIROMA dans l'opinion et le terrain politique camerounais, c'est l'irruption d'internautes nouveaux sur l'échiquier de la résistance, lesquels ont fait littéralement exploser toutes les pages des activistes, des lanceurs d'alertes, des communicants politiques les plus en vue...</p><p>
-Tenez : 
-- en quelques semaines, N'zui Manto, le lanceur d'alerte le plus puissant du Cameroun, a vu son audience se bonifier de quelques centaines de milliers followers, ce qui lui a permis de franchir le cap de 1 million d'abonnés. 
-- Boris Bertolt, le web journaliste le plus introduit, est passé de manière spectaculaire de 300.000 abonnés à 500.000 abonnés sur sa page principale.
-- Le journaliste Paul Chouta, cumule désormais 700.000 abonnés sur ses pages TGV DE L'INFO et Paul Chouta.
-- GÉNÉRAL Valsero , tout naturellement a également Franchi le cap du million d'abonnés.
-- J.Remy NGONO, le plus capé d'entre tous, engrange une progression remarquable, il tutoie désormais 1,5 millions d'abonnés. 
-- Sandy Boston, qui a vu ses deux pages disparaître sous les feux nourris des fantassins de la dictature pendant la campagne, a en moins de deux mois, obtenu 100.000 abonnés sur une nouvelle page. 
-- Mbong Mendzui officiel, le nouveau turbo de la communication politique, est partie de quelques dizaines de milliers d'abonnés à plus de 140.000 dans dans le même temps.
-- Michel Ngatchou, dont les pages ont fait l'objet d'une attaque atomique, a réalisé l'exploit de franchir en quelques semaines, le cap des 50.000 abonnés avec la page MveunNga Voice, qui ne porte même plus son nom...</p>
-                </div>
-                
-                
-            </div>
-        
+            ${mainContent}
             
             <div class="share">
-                <h3>Partager cet article</h3>
+                <h3>Partager cet ${isVideo ? 'vidéo' : 'article'}</h3>
                 <div class="share-buttons">
-                    <a href="https://wa.me/?text=CAMEROUN%20%3A%3A%20L'EFFET%20TCHIROMA%20%3A%20D%C3%89CRYPTAGE%20D'UN%20%22MIRACLE%22%20POLITIQUE%20%3A%3A%20CAMEROON%20-%20https%3A%2F%2Fcfiupload.netlify.app%2Farticle%2Fcameroun-leffet-tchiroma-decryptage-dun-miracle-politique-ca.html" class="share-btn whatsapp">
+                    <a href="https://wa.me/?text=${encodeURIComponent(articleData.titre + ' - ' + articleUrl)}" class="share-btn whatsapp">
                         <i class="fab fa-whatsapp"></i> WhatsApp
                     </a>
-                    <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fcfiupload.netlify.app%2Farticle%2Fcameroun-leffet-tchiroma-decryptage-dun-miracle-politique-ca.html" class="share-btn facebook">
+                    <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(articleUrl)}" class="share-btn facebook">
                         <i class="fab fa-facebook-f"></i> Facebook
                     </a>
                 </div>
@@ -604,9 +1100,9 @@ Tenez :
                     <div class="comment">
                         <div class="comment-header">
                             <span class="comment-author">Rédaction Abu Media</span>
-                            <span class="comment-date">19/11/2025</span>
+                            <span class="comment-date">${new Date().toLocaleDateString('fr-FR')}</span>
                         </div>
-                        <p class="comment-text">Soyez le premier à commenter cet article ! Partagez votre opinion avec notre communauté.</p>
+                        <p class="comment-text">Soyez le premier à commenter cet ${isVideo ? 'vidéo' : 'article'} ! Partagez votre opinion avec notre communauté.</p>
                     </div>
                 </div>
             </div>
@@ -616,31 +1112,7 @@ Tenez :
             <div class="sidebar-card">
                 <h4><i class="fas fa-fire"></i> Articles Similaires</h4>
                 <div id="relatedArticles">
-                    
-                <div class="related-item" onclick="window.location.href='/article/undefined.html'">
-                    <h5>Réélu avec 53,66 % des voix, le chef de l’État prête serment le 6 novembre, tandis que l’appel à la « ville morte » lancé par l’opposant Issa Tchiroma Bakary provoque un ralentissement et un arrêt qua</h5>
-                    <div class="related-meta">
-                        <span>Orlus Fosso</span>
-                        <span>11/11/2025</span>
-                    </div>
-                </div>
-            
-                <div class="related-item" onclick="window.location.href='/article/undefined.html'">
-                    <h5>Relance du transport : Jean Ernest Masséna Ngallè BIBEHE annonce des mesures fortes pour restaurer la sécurité et la mobilité</h5>
-                    <div class="related-meta">
-                        <span>Orlus Fosso</span>
-                        <span>13/11/2025</span>
-                    </div>
-                </div>
-            
-                <div class="related-item" onclick="window.location.href='/article/undefined.html'">
-                    <h5>𝗠𝗼𝗱𝗲𝗿𝗻𝗶𝘀𝗮𝘁𝗶𝗼𝗻 𝗱𝗲 𝗹𝗮 𝗹'𝗔𝗱𝗺𝗶𝗻𝗶𝘀𝘁𝗿𝗮𝘁𝗶𝗼𝗻 𝗣𝘂𝗯𝗹𝗶𝗾𝘂𝗲 𝗖𝗮𝗺𝗲𝗿𝗼𝘂𝗻𝗮𝗶𝘀𝗲 : Discours du Ministre 𝗝𝗼𝘀𝗲𝗽𝗵 𝗟𝗘́, ce Jour à Yaoundé</h5>
-                    <div class="related-meta">
-                        <span>Orlus Fosso</span>
-                        <span>13/11/2025</span>
-                    </div>
-                </div>
-            
+                    ${relatedHTML}
                 </div>
             </div>
             
@@ -648,7 +1120,7 @@ Tenez :
                 <h4><i class="fas fa-info-circle"></i> À propos</h4>
                 <p style="color: #6c757d; line-height: 1.7; font-size: 0.95rem;">
                     <strong style="color: #667eea;">Abu Media Group</strong> - Votre source d'information fiable et actualisée. 
-                    Découvrez nos articles exclusifs et analyses approfondies.
+                    ${isVideo ? 'Retrouvez nos meilleures vidéos et reportages.' : 'Découvrez nos articles exclusifs et analyses approfondies.'}
                 </p>
             </div>
         </aside>
@@ -656,7 +1128,7 @@ Tenez :
     
     <script>
         // Gestion des commentaires avec stockage local
-        const ARTICLE_ID = 'art_1763551204131_2g8yxjpd4';
+        const ARTICLE_ID = '${articleId}';
         const STORAGE_KEY = 'comments_' + ARTICLE_ID;
         
         // Charger les commentaires existants
@@ -688,15 +1160,15 @@ Tenez :
         // Afficher le commentaire par défaut
         function showDefaultComment() {
             const commentsList = document.getElementById('commentsList');
-            commentsList.innerHTML = `
+            commentsList.innerHTML = \`
                 <div class="comment">
                     <div class="comment-header">
                         <span class="comment-author">Rédaction Abu Media</span>
-                        <span class="comment-date">${new Date().toLocaleDateString('fr-FR')}</span>
+                        <span class="comment-date">\${new Date().toLocaleDateString('fr-FR')}</span>
                     </div>
-                    <p class="comment-text">Soyez le premier à commenter cet article ! Partagez votre opinion avec notre communauté.</p>
+                    <p class="comment-text">Soyez le premier à commenter cet ${isVideo ? 'vidéo' : 'article'} ! Partagez votre opinion avec notre communauté.</p>
                 </div>
-            `;
+            \`;
         }
         
         // Ajouter un commentaire au DOM
@@ -704,13 +1176,13 @@ Tenez :
             const commentsList = document.getElementById('commentsList');
             const newComment = document.createElement('div');
             newComment.className = 'comment';
-            newComment.innerHTML = `
+            newComment.innerHTML = \`
                 <div class="comment-header">
-                    <span class="comment-author">${author}</span>
-                    <span class="comment-date">${date}</span>
+                    <span class="comment-author">\${author}</span>
+                    <span class="comment-date">\${date}</span>
                 </div>
-                <p class="comment-text">${text}</p>
-            `;
+                <p class="comment-text">\${text}</p>
+            \`;
             
             commentsList.insertBefore(newComment, commentsList.firstChild);
         }
@@ -770,8 +1242,17 @@ Tenez :
         // Charger les commentaires au chargement de la page
         window.addEventListener('load', loadComments);
         
-        console.log('✅ Page article chargée avec succès');
+        console.log('✅ Page ${isVideo ? 'vidéo' : 'article'} chargée avec succès');
         console.log('📝 Système de commentaires activé');
     </script>
 </body>
-</html>
+</html>`;
+}
+
+// Fonction utilitaire pour extraire l'ID YouTube
+function extractYouTubeId(url) {
+    if (!url) return null;
+    const regExp = /^.*((youtu.be\/)|(v\/)|(\/.+\/))([^#\&\?]*).*/;
+    const match = url.match(regExp);
+    return (match && match[5].length === 11) ? match[5] : null;
+}
