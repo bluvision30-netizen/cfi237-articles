@@ -1,23 +1,5 @@
 {
   "articles": {
-    "art_1763321698003_ol19p4q9u": {
-      "id": "art_1763321698003_ol19p4q9u",
-      "slug": "live-prestation-de-serment-du-president-paul-biya",
-      "titre": "LIVE: PRESTATION DE SERMENT DU PRESIDENT PAUL BIYA",
-      "categorie": "Politique",
-      "sections": [
-        "main",
-        "hero"
-      ],
-      "image": "https://res.cloudinary.com/dkuciagop/image/upload/v1763321658/f2lix4byuexj8r0opyyb.jpg",
-      "images": "[\"https://res.cloudinary.com/dkuciagop/image/upload/v1763321658/f2lix4byuexj8r0opyyb.jpg\"]",
-      "extrait": "La CRTV nous propose une retransmission en Direct de l'Investiture du Président réélu le 12 Octobre dernier",
-      "contenu": "Une ambiance exceptionnelle pour cet événement historique l'Homme du 06 Novembre 1982 Prête serment ce jour pour un nouveau septennat et 8e mandat. celui de la Grandeur et de l' Esperance",
-      "auteur": "Orlus Fosso",
-      "date": "2025-11-16T19:34:58.214Z",
-      "vues": 0,
-      "likes": 0
-    },
     "art_1763500570019_qfpkj4auh": {
       "id": "art_1763500570019_qfpkj4auh",
       "slug": "bahebeck-vs-elimbi-lobe",
@@ -81,6 +63,6 @@
       "likes": 0
     }
   },
-  "lastUpdate": "2025-11-19T14:12:29.808Z",
-  "totalArticles": 4
+  "lastUpdate": "2025-11-19T14:12:32.909Z",
+  "totalArticles": 3
 }
