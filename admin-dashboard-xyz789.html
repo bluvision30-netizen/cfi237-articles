@@ -436,16 +436,106 @@
         }
         
         @media(max-width: 1024px) {
-            .sidebar {
-                transform: translateX(-280px);
-            }
-            .sidebar.show {
-                transform: translateX(0);
-            }
-            .main-content {
-                margin-left: 0;
-            }
-        }
+    .sidebar {
+        transform: translateX(-280px);
+    }
+    .sidebar.show {
+        transform: translateX(0);
+    }
+    .main-content {
+        margin-left: 0;
+    }
+    
+    /* Articles Grid Mobile */
+    .article-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .article-thumbnail {
+        width: 100%;
+        height: 180px;
+    }
+    
+    .article-actions {
+        width: 100%;
+        justify-content: space-between;
+        margin-top: 12px;
+    }
+    
+    .article-actions button {
+        flex: 1;
+    }
+}
+
+@media(max-width: 768px) {
+    .container {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .top-bar {
+        padding: 16px 20px;
+    }
+    
+    .page-title {
+        font-size: 1.4rem;
+    }
+    
+    .main-content {
+        padding: 16px;
+    }
+    
+    /* Formulaire Mobile */
+    .form-section {
+        margin-bottom: 24px;
+    }
+    
+    .section-title {
+        font-size: 1.1rem;
+    }
+    
+    /* Grid 2 colonnes → 1 colonne */
+    [style*="grid-template-columns:1fr 1fr"],
+    [style*="grid-template-columns: 1fr 1fr"] {
+        grid-template-columns: 1fr !important;
+    }
+    
+    /* Sections checkboxes mobile */
+    [style*="grid-template-columns:repeat(2,1fr)"] {
+        grid-template-columns: 1fr !important;
+    }
+    
+    /* Modal Mobile */
+    .modal-content {
+        padding: 24px;
+        margin: 10px;
+    }
+    
+    .modal-close {
+        top: 10px;
+        right: 10px;
+        width: 36px;
+        height: 36px;
+    }
+    
+    /* Boutons actions empilés */
+    .article-actions {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+        width: 100%;
+    }
+    
+    .article-meta {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+    
+    .badge {
+        font-size: 0.75rem;
+    }
+}
     </style>
 </head>
 <body>
@@ -572,7 +662,7 @@
                                 <input type="text" class="form-control" id="auteur" required placeholder="Ex: Rodrigue Ngando">
                             </div>
                             <!-- TYPE DE CONTENU -->
-<div class="form-group">
+    <div class="form-group">
     <label class="form-label">Type de contenu</label>
     <div style="display: flex; gap: 20px; margin-top: 8px;">
         <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 12px 20px; border: 2px solid rgba(255,255,255,0.1); border-radius: 10px; transition: all 0.3s ease; flex: 1;">
@@ -591,16 +681,16 @@
             </div>
         </label>
     </div>
-</div>
+    </div>
 
-<!-- CHAMP URL VIDEO (CACHÉ PAR DÉFAUT) -->
-<div class="form-group" id="videoUrlField" style="display: none;">
+    <!-- CHAMP URL VIDEO (CACHÉ PAR DÉFAUT) -->
+    <div class="form-group" id="videoUrlField" style="display: none;">
     <label class="form-label">URL YouTube <span style="color: #ef4444;">*</span></label>
     <input type="url" class="form-control" id="videoUrl" placeholder="https://www.youtube.com/watch?v=..." style="background: rgba(59, 130, 246, 0.1); border-color: #3b82f6;">
     <div style="font-size: 0.85rem; color: #3b82f6; margin-top: 6px;">
         <i class="fas fa-info-circle"></i> L'URL YouTube sera affichée dans la section vidéos du site
     </div>
-</div>
+    </div>
                         </div>
                     </div>
 
@@ -680,144 +770,127 @@
 
     </main>
 
-    <!-- MODAL EDIT - VERSION COMPLÈTE -->
     <div class="modal" id="editModal">
-        <div class="modal-content" style="position:relative;">
-            <button class="modal-close" onclick="closeEditModal()">
-                <i class="fas fa-times"></i>
-            </button>
-            
-            <h2 style="margin-bottom:24px; color:#fff;">
-                <i class="fas fa-edit"></i> Modifier l'article
-            </h2>
-            
-            <form id="editForm">
-                <input type="hidden" id="editArticleId">
-                
-                <!-- IMAGE ACTUELLE -->
-                <div class="form-group">
-                    <label class="form-label">Image de couverture actuelle</label>
-                    <div style="position:relative; display:inline-block;">
-                        <img id="editImagePreview" src="" style="max-width:100%; height:200px; object-fit:cover; border-radius:12px; border:2px solid rgba(255,255,255,0.1);">
-                        <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('editImageInput').click()" style="position:absolute; bottom:10px; right:10px;">
-                            <i class="fas fa-camera"></i> Changer
-                        </button>
-                    </div>
-                    <input type="file" id="editImageInput" accept="image/*" style="display:none;">
-                    <input type="hidden" id="editImageUrl">
-                </div>
-                
-                <div class="form-group">
-                    <label class="form-label">Titre</label>
-                    <input type="text" class="form-control" id="editTitre">
-                </div>
-                
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
-                    <div class="form-group">
-                        <label class="form-label">Catégorie</label>
-                        <select class="form-control" id="editCategorie">
-                            <option value="Politique">Politique</option>
-                            <option value="Économie">Économie</option>
-                            <option value="Sports">Sports</option>
-                            <option value="Société">Société</option>
-                            <option value="Culture">Culture</option>
-                            <option value="Santé">Santé</option>
-                            <option value="Technologie">Technologie</option>
-                            <option value="International">International</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label">Auteur</label>
-                        <input type="text" class="form-control" id="editAuteur">
-                    </div>
-                    <!-- TYPE DE CONTENU EDIT -->
-<div class="form-group">
-    <label class="form-label">Type de contenu</label>
-    <div style="display: flex; gap: 16px;">
-        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 10px 16px; border: 2px solid rgba(255,255,255,0.1); border-radius: 8px; transition: all 0.3s ease; flex: 1;">
-            <input type="radio" name="editContentType" value="article" checked style="margin: 0;">
-            <span>📰 Article</span>
-        </label>
+    <div class="modal-content" style="position:relative;">
+        <button class="modal-close" onclick="closeEditModal()">
+            <i class="fas fa-times"></i>
+        </button>
         
-        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 10px 16px; border: 2px solid rgba(255,255,255,0.1); border-radius: 8px; transition: all 0.3s ease; flex: 1;">
-            <input type="radio" name="editContentType" value="video" style="margin: 0;">
-            <span>🎥 Vidéo</span>
-        </label>
+        <h2 style="margin-bottom:24px; color:#fff;">
+            <i class="fas fa-edit"></i> Modifier l'article
+        </h2>
+        
+        <form id="editForm">
+            <input type="hidden" id="editArticleId">
+            <input type="hidden" id="editImageUrl">
+            
+            <div class="form-group">
+                <label class="form-label">Titre</label>
+                <input type="text" class="form-control" id="editTitre">
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Catégorie</label>
+                <select class="form-control" id="editCategorie">
+                    <option value="Politique">Politique</option>
+                    <option value="Économie">Économie</option>
+                    <option value="Sports">Sports</option>
+                    <option value="Société">Société</option>
+                    <option value="Culture">Culture</option>
+                    <option value="Santé">Santé</option>
+                    <option value="Technologie">Technologie</option>
+                    <option value="International">International</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Auteur</label>
+                <input type="text" class="form-control" id="editAuteur">
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Type de contenu</label>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 12px; border: 2px solid rgba(255,255,255,0.1); border-radius: 8px;">
+                        <input type="radio" name="editContentType" value="article" checked>
+                        <span>📰 Article</span>
+                    </label>
+                    
+                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 12px; border: 2px solid rgba(255,255,255,0.1); border-radius: 8px;">
+                        <input type="radio" name="editContentType" value="video">
+                        <span>🎥 Vidéo</span>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="form-group" id="editVideoUrlField" style="display: none;">
+                <label class="form-label">URL YouTube</label>
+                <input type="url" class="form-control" id="editVideoUrl" placeholder="https://www.youtube.com/watch?v=...">
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Sections d'affichage</label>
+                <div style="display: grid; grid-template-columns: 1fr; gap: 8px; max-height: 250px; overflow-y: auto; padding: 12px; background: rgba(255,255,255,0.05); border-radius: 8px;">
+                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                        <input type="checkbox" name="editSections" value="main"> 
+                        <span>📰 Principaux</span>
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                        <input type="checkbox" name="editSections" value="hero"> 
+                        <span>🌟 Slider</span>
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                        <input type="checkbox" name="editSections" value="a-la-une"> 
+                        <span>🔥 Carousel</span>
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                        <input type="checkbox" name="editSections" value="featured"> 
+                        <span>⭐ Important</span>
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                        <input type="checkbox" name="editSections" value="trending"> 
+                        <span>📈 Trending</span>
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                        <input type="checkbox" name="editSections" value="videos"> 
+                        <span>🎥 Vidéos</span>
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                        <input type="checkbox" name="editSections" value="debates"> 
+                        <span>💬 Débats</span>
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                        <input type="checkbox" name="editSections" value="societe"> 
+                        <span>👥 Société</span>
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                        <input type="checkbox" name="editSections" value="events"> 
+                        <span>📅 Événements</span>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Extrait</label>
+                <textarea class="form-control" id="editExtrait" rows="3"></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Contenu</label>
+                <textarea class="form-control" id="editContenu" rows="6"></textarea>
+            </div>
+            
+            <div style="display: grid; gap: 12px; margin-top: 24px;">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Enregistrer
+                </button>
+                <button type="button" class="btn btn-secondary" onclick="closeEditModal()">
+                    Annuler
+                </button>
+            </div>
+        </form>
     </div>
 </div>
-
-<!-- CHAMP URL VIDEO EDIT -->
-<div class="form-group" id="editVideoUrlField" style="display: none;">
-    <label class="form-label">URL YouTube</label>
-    <input type="url" class="form-control" id="editVideoUrl" placeholder="https://www.youtube.com/watch?v=..." style="background: rgba(59, 130, 246, 0.1); border-color: #3b82f6;">
-</div>
-                </div>
-                
-                <!-- SECTIONS -->
-                <div class="form-group">
-                    <label class="form-label">Sections d'affichage</label>
-                    <div style="display:grid; grid-template-columns:repeat(2,1fr); gap:8px; max-height:200px; overflow-y:auto; padding:12px; background:rgba(255,255,255,0.05); border-radius:8px;">
-                        <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-size:0.9rem;">
-                            <input type="checkbox" name="editSections" value="main"> 
-                            <span>📰 Principaux</span>
-                        </label>
-                        <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-size:0.9rem;">
-                            <input type="checkbox" name="editSections" value="hero"> 
-                            <span>🌟 Slider</span>
-                        </label>
-                        <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-size:0.9rem;">
-                            <input type="checkbox" name="editSections" value="a-la-une"> 
-                            <span>🔥 Carousel</span>
-                        </label>
-                        <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-size:0.9rem;">
-                            <input type="checkbox" name="editSections" value="featured"> 
-                            <span>⭐ Important</span>
-                        </label>
-                        <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-size:0.9rem;">
-                            <input type="checkbox" name="editSections" value="trending"> 
-                            <span>📈 Trending</span>
-                        </label>
-                        <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-size:0.9rem;">
-                            <input type="checkbox" name="editSections" value="videos"> 
-                            <span>🎥 Vidéos</span>
-                        </label>
-                        <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-size:0.9rem;">
-                            <input type="checkbox" name="editSections" value="debates"> 
-                            <span>💬 Débats</span>
-                        </label>
-                        <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-size:0.9rem;">
-                            <input type="checkbox" name="editSections" value="societe"> 
-                            <span>👥 Société</span>
-                        </label>
-                        <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-size:0.9rem;">
-                            <input type="checkbox" name="editSections" value="events"> 
-                            <span>📅 Événements</span>
-                        </label>
-                    </div>
-                </div>
-                
-                <div class="form-group">
-                    <label class="form-label">Extrait</label>
-                    <textarea class="form-control" id="editExtrait" rows="3"></textarea>
-                </div>
-                
-                <div class="form-group">
-                    <label class="form-label">Contenu</label>
-                    <textarea class="form-control" id="editContenu" rows="8"></textarea>
-                </div>
-                
-                <div style="display:flex; gap:12px; margin-top:24px;">
-                    <button type="submit" class="btn btn-primary" style="flex:1;">
-                        <i class="fas fa-save"></i> Enregistrer
-                    </button>
-                    <button type="button" class="btn btn-secondary" onclick="closeEditModal()">
-                        Annuler
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
 
     <script>
         const CLOUDINARY_CLOUD_NAME = 'dkuciagop';
@@ -850,25 +923,19 @@
             });
         });
 
-        // UPLOAD IMAGES
-        function initImageUpload() {
+function initImageUpload() {
     const uploadArea = document.getElementById('uploadArea');
     const imageInput = document.getElementById('imageInput');
     
-    // Empêcher le double click
-    let isProcessing = false;
+    // ✅ Fix double validation
+    let isUploading = false;
     
     uploadArea.addEventListener('click', (e) => {
         e.preventDefault();
         e.stopPropagation();
         
-        if (!isProcessing) {
-            isProcessing = true;
+        if (!isUploading) {
             imageInput.click();
-            
-            setTimeout(() => {
-                isProcessing = false;
-            }, 1000);
         }
     });
     
@@ -884,22 +951,28 @@
         uploadArea.style.background = 'rgba(102, 126, 234, 0.05)';
     });
     
-    uploadArea.addEventListener('drop', (e) => {
+    uploadArea.addEventListener('drop', async (e) => {
         e.preventDefault();
         uploadArea.style.borderColor = 'rgba(255,255,255,0.2)';
         uploadArea.style.background = 'rgba(102, 126, 234, 0.05)';
         
+        if (isUploading) return;
+        
         const files = Array.from(e.dataTransfer.files);
-        handleMultipleFiles(files);
+        await handleMultipleFiles(files);
     });
     
-    // Gestion fichier unique
-    imageInput.addEventListener('change', (e) => {
+    // ✅ Upload direct sans confirmation
+    imageInput.addEventListener('change', async (e) => {
         const files = Array.from(e.target.files);
-        if (files.length > 0) {
-            handleMultipleFiles(files);
+        
+        if (files.length > 0 && !isUploading) {
+            isUploading = true;
+            await handleMultipleFiles(files);
+            isUploading = false;
         }
-        // Reset l'input
+        
+        // Reset input
         e.target.value = '';
     });
 }
@@ -1521,8 +1594,7 @@ function updateDashboardStats() {
 loadArticles().then(() => {
     updateDashboardStats();
 });
-        // EDIT ARTICLE
-        function editArticle(id) {
+function editArticle(id) {
     const article = allArticles.find(a => a.id === id);
     if (!article) {
         showAlert('error', 'Article introuvable', 'Impossible de charger cet article');
@@ -1536,8 +1608,9 @@ loadArticles().then(() => {
     document.getElementById('editAuteur').value = article.auteur || 'Admin';
     document.getElementById('editExtrait').value = article.extrait || '';
     document.getElementById('editContenu').value = article.contenu || '';
+    document.getElementById('editImageUrl').value = article.image || '';
     
-    // Gérer le type de contenu
+    // Type de contenu
     const contentType = article.contentType || 'article';
     document.querySelector(`input[name="editContentType"][value="${contentType}"]`).checked = true;
     
@@ -1547,6 +1620,18 @@ loadArticles().then(() => {
     } else {
         document.getElementById('editVideoUrlField').style.display = 'none';
     }
+    
+    // ✅ Sections - Décocher tout d'abord
+    document.querySelectorAll('input[name="editSections"]').forEach(cb => {
+        cb.checked = false;
+    });
+    
+    // Cocher les sections de l'article
+    const articleSections = article.sections || ['main'];
+    articleSections.forEach(section => {
+        const checkbox = document.querySelector(`input[name="editSections"][value="${section}"]`);
+        if (checkbox) checkbox.checked = true;
+    });
     
     document.getElementById('editModal').classList.add('show');
 }
@@ -1768,48 +1853,65 @@ document.addEventListener('DOMContentLoaded', function() {
             loadArticles();
             console.log('✅ Admin Panel chargé');
         });
+// MOBILE MENU - VERSION FIXE
+const mobileMenuBtn = document.createElement('button');
+mobileMenuBtn.id = 'mobileMenuBtn';
+mobileMenuBtn.style.cssText = `
+    display: none;
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    width: 56px;
+    height: 56px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border: none;
+    border-radius: 50%;
+    color: #fff;
+    font-size: 1.5rem;
+    box-shadow: 0 8px 32px rgba(102, 126, 234, 0.5);
+    cursor: pointer;
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+`;
+mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+mobileMenuBtn.addEventListener('click', function() {
+    const sidebar = document.getElementById('sidebar');
+    sidebar.classList.toggle('show');
+    
+    // Changer l'icône
+    if (sidebar.classList.contains('show')) {
+        this.innerHTML = '<i class="fas fa-times"></i>';
+    } else {
+        this.innerHTML = '<i class="fas fa-bars"></i>';
+    }
+});
+document.body.appendChild(mobileMenuBtn);
 
-        // MOBILE MENU
-        const mobileMenuBtn = document.createElement('button');
-        mobileMenuBtn.style.cssText = `
-            display: none;
-            position: fixed;
-            bottom: 24px;
-            right: 24px;
-            width: 56px;
-            height: 56px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            border: none;
-            border-radius: 50%;
-            color: #fff;
-            font-size: 1.5rem;
-            box-shadow: 0 8px 32px rgba(102, 126, 234, 0.5);
-            cursor: pointer;
-            z-index: 999;
-        `;
+// ✅ Toujours afficher le bouton sur mobile
+function updateMobileMenu() {
+    if (window.innerWidth <= 1024) {
+        mobileMenuBtn.style.display = 'flex';
+    } else {
+        mobileMenuBtn.style.display = 'none';
+        document.getElementById('sidebar').classList.remove('show');
         mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
-        mobileMenuBtn.addEventListener('click', function() {
-            document.getElementById('sidebar').classList.toggle('show');
-        });
-        document.body.appendChild(mobileMenuBtn);
+    }
+}
 
-        // RESPONSIVE
+// Appliquer au chargement et au redimensionnement
+window.addEventListener('load', updateMobileMenu);
+window.addEventListener('resize', updateMobileMenu);
+
+// ✅ Fermer sidebar quand on clique sur un lien
+document.querySelectorAll('.nav-link').forEach(link => {
+    link.addEventListener('click', function() {
         if (window.innerWidth <= 1024) {
-            mobileMenuBtn.style.display = 'flex';
-            mobileMenuBtn.style.alignItems = 'center';
-            mobileMenuBtn.style.justifyContent = 'center';
+            document.getElementById('sidebar').classList.remove('show');
+            mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
         }
-
-        window.addEventListener('resize', function() {
-            if (window.innerWidth <= 1024) {
-                mobileMenuBtn.style.display = 'flex';
-                mobileMenuBtn.style.alignItems = 'center';
-                mobileMenuBtn.style.justifyContent = 'center';
-            } else {
-                mobileMenuBtn.style.display = 'none';
-                document.getElementById('sidebar').classList.remove('show');
-            }
-        });
+    });
+});
 
         // KEYBOARD SHORTCUTS
         document.addEventListener('keydown', function(e) {
@@ -2046,4 +2148,3 @@ loadArticles().then(() => {
     </script>
 </body>
 </html>
-
