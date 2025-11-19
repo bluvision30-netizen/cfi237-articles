@@ -377,15 +377,72 @@ async function createArticlePage(articleData, articleId, slug, GITHUB_TOKEN) {
 }
 
 // ==========================================
-// GÉNÉRER HTML MODERNE
+// GÉNÉRER HTML MODERNE (VERSION COMPLÈTE INLINE)
 // ==========================================
 function generateModernArticleHTML(articleData, articleId, slug, images) {
     const firstImage = images[0] || articleData.image;
     const articleUrl = `https://cfiupload.netlify.app/article/${slug}.html`;
+    const currentDate = new Date();
+    const formattedDate = currentDate.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' });
     
+    // Déterminer si c'est une vidéo ou un article
     const isVideo = articleData.contentType === 'video' && articleData.video_url;
     const videoId = isVideo ? extractYouTubeId(articleData.video_url) : null;
     const videoThumbnail = isVideo ? `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg` : null;
+    
+    // Générer le contenu principal selon le type
+    let mainContent = '';
+    
+    if (isVideo) {
+        // STRUCTURE POUR VIDÉO
+        mainContent = `
+            <div class="video-container">
+                <div class="video-wrapper">
+                    <iframe 
+                        src="https://www.youtube.com/embed/${videoId}" 
+                        frameborder="0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                        allowfullscreen>
+                    </iframe>
+                </div>
+                <div class="video-meta">
+                    <div class="meta-item">
+                        <i class="fas fa-user"></i>
+                        <span>${articleData.auteur || 'Auteur'}</span>
+                    </div>
+                    <div class="meta-item">
+                        <i class="fas fa-calendar"></i>
+                        <span>${formattedDate}</span>
+                    </div>
+                    <div class="meta-item">
+                        <i class="fas fa-eye"></i>
+                        <span id="viewCount">0 vues</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="excerpt">${articleData.extrait}</div>
+            <div class="body">
+                ${articleData.contenu.split('\n\n').map(p => `<p>${p.replace(/\n/g, '<br>')}</p>`).join('')}
+            </div>
+        `;
+    } else {
+        // STRUCTURE POUR ARTICLE
+        mainContent = `
+            <div class="excerpt">${articleData.extrait}</div>
+            <div class="body">
+                ${articleData.contenu.split('\n\n').map(p => `<p>${p.replace(/\n/g, '<br>')}</p>`).join('')}
+            </div>
+            
+            ${images.length > 1 ? `
+                <div class="gallery">
+                    ${images.slice(1).map(img => `
+                        <img src="${img}" alt="Photo" loading="lazy">
+                    `).join('')}
+                </div>
+            ` : ''}
+        `;
+    }
     
     return `<!DOCTYPE html>
 <html lang="fr">
@@ -402,38 +459,510 @@ function generateModernArticleHTML(articleData, articleId, slug, images) {
     <meta property="og:description" content="${articleData.extrait}">
     <meta property="og:image" content="${isVideo ? videoThumbnail : firstImage}">
     <meta property="og:url" content="${articleUrl}">
+    ${isVideo ? `<meta property="og:video" content="${articleData.video_url}">` : ''}
     
     <!-- Twitter Card -->
-    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:card" content="${isVideo ? 'player' : 'summary_large_image'}">
     <meta name="twitter:title" content="${articleData.titre}">
     <meta name="twitter:description" content="${articleData.extrait}">
     <meta name="twitter:image" content="${isVideo ? videoThumbnail : firstImage}">
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Inter', sans-serif; background: #0f172a; color: #f1f5f9; line-height: 1.6; }
-        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
-        .article-hero { height: 400px; background: url('${firstImage}') center/cover; border-radius: 20px; position: relative; }
-        .article-content { background: #1e293b; padding: 30px; border-radius: 15px; margin-top: 30px; }
-        h1 { font-size: 2.5rem; margin: 20px 0; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #0f172a;
+            color: #f1f5f9;
+            line-height: 1.6;
+        }
+        
+        .top-bar {
+            background: #1e293b;
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            color: #fff;
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: opacity 0.3s;
+        }
+        
+        .logo:hover {
+            opacity: 0.8;
+        }
+        
+        .back-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+        
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .article-container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 40px;
+        }
+        
+        .article-hero {
+            grid-column: 1 / -1;
+            height: 500px;
+            background-size: cover;
+            background-position: center;
+            border-radius: 20px;
+            overflow: hidden;
+            position: relative;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+        
+        .hero-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.5) 50%, transparent 100%);
+            padding: 50px 40px;
+            color: white;
+        }
+        
+        .category {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            display: inline-block;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .article-hero h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            line-height: 1.2;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+        }
+        
+        .meta {
+            display: flex;
+            gap: 25px;
+            font-size: 1rem;
+            opacity: 0.95;
+        }
+        
+        .meta span {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .meta i {
+            color: #667eea;
+        }
+        
+        /* ARTICLE CONTENT */
+        .article-content {
+            background: #1e293b;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        }
+        
+        .excerpt {
+            font-size: 1.3rem;
+            color: #e2e8f0;
+            margin-bottom: 30px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid rgba(102, 126, 234, 0.3);
+            line-height: 1.8;
+            font-weight: 500;
+        }
+        
+        .body {
+            font-size: 1.1rem;
+            line-height: 1.9;
+            color: #cbd5e1;
+        }
+        
+        .body p {
+            margin-bottom: 25px;
+        }
+        
+        .body p:last-child {
+            margin-bottom: 0;
+        }
+        
+        /* GALERIE */
+        .gallery {
+            margin-top: 40px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .gallery img {
+            width: 100%;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            transition: transform 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .gallery img:hover {
+            transform: scale(1.03);
+        }
+        
+        /* VIDÉO */
+        .video-container {
+            margin-bottom: 30px;
+            background: #0f172a;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+        }
+        
+        .video-wrapper {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+        }
+        
+        .video-wrapper iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        
+        .video-meta {
+            padding: 20px;
+            display: flex;
+            gap: 25px;
+            background: rgba(255,255,255,0.03);
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #cbd5e1;
+            font-size: 0.95rem;
+        }
+        
+        .meta-item i {
+            color: #667eea;
+        }
+        
+        /* PARTAGE */
+        .share {
+            margin-top: 50px;
+            padding-top: 40px;
+            border-top: 2px solid rgba(255,255,255,0.1);
+        }
+        
+        .share-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 15px 30px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            margin-right: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .share-btn.whatsapp {
+            background: #25D366;
+            color: white;
+        }
+        
+        .share-btn.facebook {
+            background: #3b5998;
+            color: white;
+        }
+        
+        .share-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 20px rgba(0,0,0,0.3);
+        }
+        
+        /* COMMENTAIRES */
+        .comments {
+            margin-top: 50px;
+            padding-top: 40px;
+            border-top: 2px solid rgba(255,255,255,0.1);
+        }
+        
+        .comments h3 {
+            color: #fff;
+            margin-bottom: 25px;
+            font-size: 1.5rem;
+        }
+        
+        #comments-list {
+            min-height: 100px;
+        }
+        
+        /* SIDEBAR */
+        .sidebar {
+            position: sticky;
+            top: 100px;
+            height: fit-content;
+        }
+        
+        .sidebar-card {
+            background: #1e293b;
+            padding: 30px;
+            border-radius: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        }
+        
+        .sidebar-card h4 {
+            color: #fff;
+            margin-bottom: 25px;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        #related {
+            color: #94a3b8;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+        
+        /* RESPONSIVE */
+        @media (max-width: 1024px) {
+            .article-container {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+            
+            .sidebar {
+                position: static;
+            }
+            
+            .article-hero h1 {
+                font-size: 2.2rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                gap: 15px;
+                align-items: flex-start;
+            }
+            
+            .back-btn {
+                margin-top: 10px;
+            }
+            
+            .article-hero {
+                height: 350px;
+            }
+            
+            .article-hero h1 {
+                font-size: 1.8rem;
+            }
+            
+            .hero-overlay {
+                padding: 30px 25px;
+            }
+            
+            .article-content {
+                padding: 25px;
+            }
+            
+            .excerpt {
+                font-size: 1.1rem;
+            }
+            
+            .body {
+                font-size: 1rem;
+            }
+            
+            .video-meta {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .gallery {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .article-hero {
+                height: 250px;
+            }
+            
+            .article-hero h1 {
+                font-size: 1.4rem;
+            }
+            
+            .meta {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="article-hero"></div>
-        <h1>${articleData.titre}</h1>
-        <div class="article-content">
-            <p>${articleData.extrait}</p>
-            <div>${articleData.contenu}</div>
+    <div class="top-bar">
+        <div class="container">
+            <a href="/" class="logo"><i class="fas fa-newspaper"></i> Abu Media</a>
+            <a href="/" class="back-btn"><i class="fas fa-arrow-left"></i> Retour</a>
         </div>
     </div>
+    
+    <article class="article-container">
+        <header class="article-hero" style="background-image: url('${firstImage}')">
+            <div class="hero-overlay">
+                <span class="category">${articleData.categorie}</span>
+                <h1>${articleData.titre}</h1>
+                ${!isVideo ? `
+                    <div class="meta">
+                        <span><i class="fas fa-user"></i> ${articleData.auteur || 'Admin'}</span>
+                        <span><i class="fas fa-calendar"></i> ${formattedDate}</span>
+                    </div>
+                ` : ''}
+            </div>
+        </header>
+        
+        <div class="article-content">
+            ${mainContent}
+            
+            <div class="share">
+                <a href="https://wa.me/?text=${encodeURIComponent(articleData.titre + ' - ' + articleUrl)}" class="share-btn whatsapp">
+                    <i class="fab fa-whatsapp"></i> WhatsApp
+                </a>
+                <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(articleUrl)}" class="share-btn facebook">
+                    <i class="fab fa-facebook"></i> Facebook
+                </a>
+            </div>
+            
+            <div class="comments">
+                <h3>Commentaires</h3>
+                <div id="comments-list"></div>
+            </div>
+        </div>
+        
+        <aside class="sidebar">
+            <div class="sidebar-card">
+                <h4>Articles Similaires</h4>
+                <div id="related"></div>
+            </div>
+        </aside>
+    </article>
+    
+    <script>
+        // Chargement des articles similaires
+        async function loadRelatedArticles() {
+            try {
+                const response = await fetch('/articles.json?t=' + Date.now());
+                const data = await response.json();
+                const articles = Object.values(data.articles || {})
+                    .filter(a => a.categorie === '${articleData.categorie}' && a.id !== '${articleId}')
+                    .slice(0, 5);
+                
+                const relatedDiv = document.getElementById('related');
+                if (articles.length > 0) {
+                    relatedDiv.innerHTML = articles.map(article => {
+                        const articleUrl = article.slug 
+                            ? \`/article/\${article.slug}.html\`
+                            : \`/article-detail.html?id=\${article.id}\`;
+                        return \`
+                            <div style="margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1);">
+                                <a href="\${articleUrl}" style="color: #fff; text-decoration: none; font-weight: 600; display: block; margin-bottom: 8px; line-height: 1.4;">
+                                    \${article.titre}
+                                </a>
+                                <div style="font-size: 0.85rem; color: #64748b;">
+                                    <i class="fas fa-calendar"></i> \${new Date(article.date).toLocaleDateString('fr-FR')}
+                                </div>
+                            </div>
+                        \`;
+                    }).join('');
+                } else {
+                    relatedDiv.innerHTML = '<p style="color: #64748b;">Aucun article similaire pour le moment.</p>';
+                }
+            } catch (error) {
+                console.error('Erreur chargement articles similaires:', error);
+                document.getElementById('related').innerHTML = '<p style="color: #64748b;">Impossible de charger les articles similaires.</p>';
+            }
+        }
+        
+        // Charger au démarrage
+        window.addEventListener('DOMContentLoaded', loadRelatedArticles);
+        
+        console.log('✅ Article chargé: ${articleData.titre}');
+    </script>
 </body>
 </html>`;
 }
 
 function extractYouTubeId(url) {
     if (!url) return null;
-    const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&]+)/);
-    return match ? match[1] : null;
+    const patterns = [
+        /(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&]+)/,
+        /youtube\.com\/embed\/([^?]+)/,
+        /youtube\.com\/v\/([^?]+)/
+    ];
+    
+    for (let pattern of patterns) {
+        const match = url.match(pattern);
+        if (match && match[1]) {
+            return match[1];
+        }
+    }
+    return null;
 }
