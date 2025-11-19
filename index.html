@@ -1,10 +1,76 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
+    
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Abu Media Group - Votre source d'information au Cameroun</title>
-    <meta name="description" content="Suivez l'actualité camerounaise et internationale en temps réel avec Abu Media Group">
+    <title>Camer Flash Infos - Actualités du Cameroun en temps réel | Camerflashinfos</title>
+    <meta name="description" content="Camer Flash Infos - Votre source d'information fiable au Cameroun. Actualités, politique, sports, économie et société. Suivez l'actualité camerounaise en temps réel avec Camerflashinfos.">
+    <meta name="keywords" content="camer flash infos, camerflashinfos, camerflash infos, actualités cameroun, news cameroun, informations cameroun, journal cameroun, cameroun news">
+    <meta name="author" content="Camer Flash Infos">
+    <meta name="robots" content="index, follow">
+    <meta name="googlebot" content="index, follow">
+    
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://camerflashinfos.com/">
+    <meta property="og:title" content="Camer Flash Infos - Actualités du Cameroun en temps réel">
+    <meta property="og:description" content="Votre source d'information fiable au Cameroun. Actualités, politique, sports, économie et société.">
+    <meta property="og:image" content="https://camerflashinfos.com/images/og-image.jpg">
+    
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://camerflashinfos.com/">
+    <meta property="twitter:title" content="Camer Flash Infos - Actualités du Cameroun en temps réel">
+    <meta property="twitter:description" content="Votre source d'information fiable au Cameroun. Actualités, politique, sports, économie et société.">
+    <meta property="twitter:image" content="https://camerflashinfos.com/images/twitter-image.jpg">
+    
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://camerflashinfos.com/">
+    
+
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="img/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="img/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="img/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="img/favicon-16x16.png">
+    
+
+    <!-- Schema.org structured data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "NewsMediaOrganization",
+      "name": "Camer Flash Infos",
+      "alternateName": ["Camerflashinfos", "Camer Flash Infos"],
+      "url": "https://camerflashinfos.com",
+      "logo": "https://camerflashinfos.com/img/logo.png",
+      "sameAs": [
+        "https://www.facebook.com/camerflashinfos",
+        "https://www.youtube.com/@CamerFlashInfos"
+      ],
+      "description": "Votre source d'information fiable au Cameroun. Actualités, politique, sports, économie et société.",
+      "address": {
+        "@type": "PostalAddress",
+        "addressCountry": "CM",
+        "addressLocality": "Douala",
+        "addressRegion": "Littoral"
+      },
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "telephone": "+237-697-691-984",
+        "contactType": "customer service",
+        "email": "contact@camerflashinfos.com"
+      }
+    }
+    </script>
+    
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -31,7 +97,7 @@
             background: #fff;
         }
         
-  
+    
         /* Container */
         .container {
             max-width: 1400px;
@@ -1943,18 +2009,27 @@
             transform: translateY(-2px);
         }
         
-        .logo-icon {
-            width: 50px;
-            height: 50px;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4);
-        }
-        
+        /* Modification du style pour la photo du logo */
+.logo-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4);
+    flex-shrink: 0;
+}
+
+.logo-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* Supprimer l'ancien style d'icône si nécessaire */
+.logo-icon i {
+    display: none;
+}
         .logo-text {
             display: flex;
             flex-direction: column;
@@ -2842,7 +2917,21 @@
     </style>
 </head>
 <body>
-   <!-- Top Bar -->
+
+   <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [{
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Accueil",
+        "item": "https://camerflashinfos.com"
+      }]
+    }
+    </script>
+
+
     <div class="top-bar">
         <div class="top-bar-container">
             <div class="top-bar-left">
@@ -2856,104 +2945,104 @@
                 </div>
             </div>
             <div class="social-links-top">
-                <a href="#" title="Facebook"><i class="fab fa-facebook"></i></a>
-                <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
-                <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
-                <a href="#" title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
-                <a href="#" title="YouTube"><i class="fab fa-youtube"></i></a>
+                <a href="https://www.facebook.com/camerflashinfos" title="Facebook Camer Flash Infos"><i class="fab fa-facebook"></i></a>
+                <a href="https://wa.me/237697691984" title="WhatsApp Camer Flash Infos"><i class="fab fa-whatsapp"></i></a>
+                <a href="https://www.youtube.com/@CamerFlashInfos" title="YouTube Camer Flash Infos"><i class="fab fa-youtube"></i></a>
             </div>
         </div>
     </div>
 
-    <!-- Main Header -->
-    <header class="main-header">
+    <!-- Main Header avec optimisation sémantique -->
+    <header class="main-header" role="banner">
         <div class="header-container">
-            <!-- Logo -->
-            <a href="index.html" class="logo">
-                <div class="logo-icon">
-                    <i class="fas fa-newspaper"></i>
-                </div>
-                <div class="logo-text">
-                    <div class="logo-title">Abu Media</div>
-                    <div class="logo-subtitle">Actualités Cameroun</div>
-                </div>
-            </a>
+            <!-- Logo avec balises sémantiques -->
+           <!-- Logo avec photo au lieu d'icône -->
+<a href="https://camerflashinfos.com" class="logo" aria-label="Camer Flash Infos - Accueil">
+    <div class="logo-icon">
+        <img src="img/logo-camerflashinfos.jpg" alt="Logo Camer Flash Infos" width="50" height="50">
+    </div>
+    <div class="logo-text">
+        <div class="logo-title">Camer Flash Infos</div>
+        <div class="logo-subtitle">Actualités Cameroun</div>
+    </div>
+</a>
 
-            <!-- Search Bar -->
+            <!-- Search Bar avec aria-label -->
             <div class="header-search">
                 <div class="search-wrapper">
-                    <i class="fas fa-search search-icon"></i>
+                    <i class="fas fa-search search-icon" aria-hidden="true"></i>
                     <input 
                         type="text" 
                         id="headerSearchInput" 
                         class="search-input"
                         placeholder="Rechercher des articles, vidéos, actualités..."
                         autocomplete="off"
+                        aria-label="Rechercher sur Camer Flash Infos"
                     >
-                    <button class="search-btn" onclick="performSearch()">
-                        <i class="fas fa-arrow-right"></i>
+                    <button class="search-btn" onclick="performSearch()" aria-label="Lancer la recherche">
+                        <i class="fas fa-arrow-right" aria-hidden="true"></i>
                     </button>
                 </div>
                 
                 <!-- Autocomplete Results -->
-                <div class="search-results" id="searchResults"></div>
+                <div class="search-results" id="searchResults" role="listbox"></div>
             </div>
 
             <!-- Header Actions -->
             <div class="header-actions">
                 <a href="articles.html" class="action-btn btn-articles">
-                    <i class="fas fa-th-large"></i>
+                    <i class="fas fa-th-large" aria-hidden="true"></i>
                     <span>Tous les Articles</span>
                 </a>
                 <a href="admin-dashboard-xyz789.html" class="action-btn btn-admin">
-                    <i class="fas fa-shield-alt"></i>
+                    <i class="fas fa-shield-alt" aria-hidden="true"></i>
                     <span>Admin</span>
                 </a>
             </div>
 
-            <!-- Mobile Menu Button -->
-            <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
-                <i class="fas fa-bars"></i>
+            <!-- Mobile Menu Button avec aria-label -->
+            <button class="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="Menu mobile">
+                <i class="fas fa-bars" aria-hidden="true"></i>
             </button>
         </div>
     </header>
 
-    <!-- Navigation Bar -->
-    <nav class="nav-bar">
+    <!-- Navigation avec balise nav sémantique -->
+    <nav class="nav-bar" role="navigation" aria-label="Navigation principale">
         <div class="nav-container">
             <ul class="nav-menu">
                 <li><a href="index.html">
-                    <i class="fas fa-home"></i>
+                    <i class="fas fa-home" aria-hidden="true"></i>
                     Accueil
                 </a></li>
                 <li><a href="articles.html?category=Politique">
-                    <i class="fas fa-landmark"></i>
+                    <i class="fas fa-landmark" aria-hidden="true"></i>
                     Politique
                 </a></li>
                 <li><a href="articles.html?category=Sports">
-                    <i class="fas fa-futbol"></i>
+                    <i class="fas fa-futbol" aria-hidden="true"></i>
                     Sports
                 </a></li>
                 <li><a href="articles.html?category=Économie">
-                    <i class="fas fa-chart-line"></i>
+                    <i class="fas fa-chart-line" aria-hidden="true"></i>
                     Économie
                 </a></li>
                 <li><a href="articles.html?category=Société">
-                    <i class="fas fa-users"></i>
+                    <i class="fas fa-users" aria-hidden="true"></i>
                     Société
                 </a></li>
                 <li><a href="articles.html?category=International">
-                    <i class="fas fa-globe"></i>
+                    <i class="fas fa-globe" aria-hidden="true"></i>
                     International
                 </a></li>
                 <li><a href="articles.html?type=video">
-                    <i class="fas fa-video"></i>
+                    <i class="fas fa-video" aria-hidden="true"></i>
                     Vidéos
                 </a></li>
             </ul>
             
-            <div class="breaking-news" onclick="openBreakingNews()">
-                <i class="fas fa-bolt"></i>
+            <div class="breaking-news" onclick="openBreakingNews()" role="button" aria-label="Voir les dernières nouvelles">
+                <i class="fas fa-bolt" aria-hidden="true"></i>
                 <span>BREAKING NEWS</span>
             </div>
         </div>
@@ -3427,37 +3516,26 @@
 </section>
 
 
-<section id="contactRedaction" class="section-contact py-10">
-  <div class="container">
-    <h2 class="section-title">📩 Contact Rédaction</h2>
-    <form id="contactForm" class="contact-form">
-      <input type="text" id="nom" placeholder="Votre nom" required>
-      <input type="email" id="email" placeholder="Votre email" required>
-      <textarea id="message" rows="4" placeholder="Votre message..." required></textarea>
-      <button type="submit" class="btn-main">Envoyer le message</button>
-    </form>
-  </div>
-</section>
+
     <!-- Footer -->
-    <footer class="footer">
+     <footer class="footer" role="contentinfo">
         <div class="container">
             <div class="footer-content">
                 <div class="footer-section">
-                    <h3>Abu Media Group</h3>
-                    <p>Votre source d'information fiable au Cameroun. Suivez l'actualité en temps réel.</p>
+                    <h3>Camer Flash Infos</h3>
+                    <p>Votre source d'information fiable au Cameroun. Suivez l'actualité en temps réel avec Camerflashinfos.</p>
                     <div class="social-links" style="margin-top: 1rem;">
-                        <a href="#"><i class="fab fa-facebook"></i></a>
-                        <a href="#"><i class="fab fa-twitter"></i></a>
-                        <a href="#"><i class="fab fa-instagram"></i></a>
-                        <a href="#"><i class="fab fa-whatsapp"></i></a>
+                        <a href="https://www.facebook.com/camerflashinfos" aria-label="Facebook Camer Flash Infos"><i class="fab fa-facebook"></i></a>
+                       <a href="https://www.youtube.com/@CamerFlashInfos" aria-label="Youtube Camer Flash Infos"><i class="fab fa-youtube"></i></a>
+                        <a href="https://wa.me/237697691984" aria-label="WhatsApp Camer Flash Infos"><i class="fab fa-whatsapp"></i></a>
                     </div>
                 </div>
                 <div class="footer-section">
                     <h3>Navigation</h3>
                     <ul class="footer-links">
-                        <li><a href="#accueil">Accueil</a></li>
-                        <li><a href="#actualites">Actualités</a></li>
-                        <li><a href="#videos">Vidéos</a></li>
+                        <li><a href="index.html">Accueil</a></li>
+                        <li><a href="articles.html">Actualités</a></li>
+                        <li><a href="articles.html?type=video">Vidéos</a></li>
                         <li><a href="#societe">Société</a></li>
                         <li><a href="#contact">Contact</a></li>
                     </ul>
@@ -3465,24 +3543,24 @@
                 <div class="footer-section">
                     <h3>Catégories</h3>
                     <ul class="footer-links">
-                        <li><a href="#">Politique</a></li>
-                        <li><a href="#">Économie</a></li>
-                        <li><a href="#">Sports</a></li>
-                        <li><a href="#">Culture</a></li>
-                        <li><a href="#">International</a></li>
+                        <li><a href="articles.html?category=Politique">Politique</a></li>
+                        <li><a href="articles.html?category=Économie">Économie</a></li>
+                        <li><a href="articles.html?category=Sports">Sports</a></li>
+                        <li><a href="articles.html?category=Culture">Culture</a></li>
+                        <li><a href="articles.html?category=International">International</a></li>
                     </ul>
                 </div>
                 <div class="footer-section">
                     <h3>Contact</h3>
                     <ul class="footer-links">
-                        <li><i class="fas fa-envelope"></i> contact@abumedia.cm</li>
-                        <li><i class="fas fa-phone"></i> +237 6XX XX XX XX</li>
-                        <li><i class="fas fa-map-marker-alt"></i> Douala, Cameroun</li>
+                        <li><i class="fas fa-envelope" aria-hidden="true"></i> contact@camerflashinfos.com</li>
+                        <li><i class="fas fa-phone" aria-hidden="true"></i> +237 697691984</li>
+                        <li><i class="fas fa-map-marker-alt" aria-hidden="true"></i> Douala, Cameroun</li>
                     </ul>
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2025 Abu Media Group. Tous droits réservés.</p>
+                <p>&copy; 2025 Camer Flash Infos. Tous droits réservés.</p>
             </div>
         </div>
     </footer>
@@ -4434,6 +4512,18 @@
     }
 
     console.log('✅ Script JavaScript corrigé et initialisé');
+
+     window.addEventListener('load', function() {
+            // Envoyer les données de performance à Google Analytics (si utilisé)
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'page_view', {
+                    'page_title': document.title,
+                    'page_location': window.location.href
+                });
+            }
+            
+            console.log('✅ Camer Flash Infos - Page chargée avec optimisations SEO');
+        });
 </script>
 </body>
 </html>
