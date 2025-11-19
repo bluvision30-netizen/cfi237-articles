@@ -279,8 +279,28 @@
       "date": "2025-11-18T21:16:10.216Z",
       "vues": 0,
       "likes": 0
+    },
+    "art_1763533124291_wct16e4w8": {
+      "id": "art_1763533124291_wct16e4w8",
+      "slug": "afrobiz-universal-awards",
+      "titre": "AFROBIZ UNIVERSAL AWARDS",
+      "categorie": "Société",
+      "sections": [
+        "main",
+        "societe"
+      ],
+      "image": "https://res.cloudinary.com/dkuciagop/image/upload/v1763533114/e2n1dmklcqzyo5k2pcgv.png",
+      "images": "[\"https://res.cloudinary.com/dkuciagop/image/upload/v1763533114/e2n1dmklcqzyo5k2pcgv.png\"]",
+      "extrait": "AFROBIZ UNIVERSAL AWARDS",
+      "contenu": "AFROBIZ UNIVERSAL AWARDS",
+      "auteur": "Orlus Fosso",
+      "contentType": "article",
+      "video_url": null,
+      "date": "2025-11-19T06:18:44.671Z",
+      "vues": 0,
+      "likes": 0
     }
   },
-  "lastUpdate": "2025-11-19T06:15:09.007Z",
-  "totalArticles": 14
+  "lastUpdate": "2025-11-19T06:18:44.671Z",
+  "totalArticles": 15
 }
