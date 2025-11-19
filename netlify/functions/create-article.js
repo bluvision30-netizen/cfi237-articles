@@ -377,18 +377,17 @@ async function createArticlePage(articleData, articleId, slug, GITHUB_TOKEN) {
 }
 
 // ==========================================
-// GÉNÉRER HTML MODERNE (VERSION COMPLÈTE INLINE)
+// GÉNÉRER HTML MODERNE AMÉLIORÉ (VERSION JOURNAL)
 // ==========================================
 function generateModernArticleHTML(articleData, articleId, slug, images) {
     const firstImage = images[0] || articleData.image;
     const articleUrl = `https://cfiupload.netlify.app/article/${slug}.html`;
-    const currentDate = new Date();
-    const formattedDate = currentDate.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+    const currentDate = new Date().toISOString();
     
     // Déterminer si c'est une vidéo ou un article
     const isVideo = articleData.contentType === 'video' && articleData.video_url;
     const videoId = isVideo ? extractYouTubeId(articleData.video_url) : null;
-    const videoThumbnail = isVideo ? `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg` : null;
+    const videoThumbnail = isVideo ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg` : null;
     
     // Générer le contenu principal selon le type
     let mainContent = '';
@@ -405,42 +404,41 @@ function generateModernArticleHTML(articleData, articleId, slug, images) {
                         allowfullscreen>
                     </iframe>
                 </div>
-                <div class="video-meta">
-                    <div class="meta-item">
-                        <i class="fas fa-user"></i>
-                        <span>${articleData.auteur || 'Auteur'}</span>
-                    </div>
-                    <div class="meta-item">
-                        <i class="fas fa-calendar"></i>
-                        <span>${formattedDate}</span>
-                    </div>
-                    <div class="meta-item">
-                        <i class="fas fa-eye"></i>
-                        <span id="viewCount">0 vues</span>
-                    </div>
-                </div>
             </div>
             
-            <div class="excerpt">${articleData.extrait}</div>
-            <div class="body">
-                ${articleData.contenu.split('\n\n').map(p => `<p>${p.replace(/\n/g, '<br>')}</p>`).join('')}
+            <div class="article-description">
+                <div class="excerpt">${articleData.extrait}</div>
+                <div class="body">
+                    ${articleData.contenu.split('\n\n').map(p => `<p>${p}</p>`).join('')}
+                </div>
             </div>
         `;
     } else {
-        // STRUCTURE POUR ARTICLE
+        // STRUCTURE POUR ARTICLE AVEC DROP CAP
+        const firstParagraph = articleData.contenu.split('\n\n')[0];
+        const otherParagraphs = articleData.contenu.split('\n\n').slice(1);
+        
         mainContent = `
-            <div class="excerpt">${articleData.extrait}</div>
-            <div class="body">
-                ${articleData.contenu.split('\n\n').map(p => `<p>${p.replace(/\n/g, '<br>')}</p>`).join('')}
-            </div>
-            
-            ${images.length > 1 ? `
-                <div class="gallery">
-                    ${images.slice(1).map(img => `
-                        <img src="${img}" alt="Photo" loading="lazy">
-                    `).join('')}
+            <div class="article-content">
+                <div class="excerpt">${articleData.extrait}</div>
+                <div class="body">
+                    <p class="first-paragraph">${firstParagraph}</p>
+                    ${otherParagraphs.map(p => `<p>${p}</p>`).join('')}
                 </div>
-            ` : ''}
+                
+                ${images.length > 1 ? `
+                    <div class="gallery">
+                        <h3>Galerie photos</h3>
+                        <div class="gallery-grid">
+                            ${images.slice(1).map(img => `
+                                <div class="gallery-item">
+                                    <img src="${img}" alt="Photo" loading="lazy">
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                ` : ''}
+            </div>
         `;
     }
     
@@ -476,19 +474,19 @@ function generateModernArticleHTML(articleData, articleId, slug, images) {
         }
         
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: #0f172a;
-            color: #f1f5f9;
-            line-height: 1.6;
+            font-family: 'Georgia', 'Times New Roman', serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #1a1a1a;
+            line-height: 1.8;
+            min-height: 100vh;
         }
         
+        /* TOP BAR */
         .top-bar {
-            background: #1e293b;
+            background: rgba(255, 255, 255, 0.95);
             padding: 1rem 0;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            position: sticky;
-            top: 0;
-            z-index: 100;
+            border-bottom: 3px solid #667eea;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
         
         .container {
@@ -501,22 +499,18 @@ function generateModernArticleHTML(articleData, articleId, slug, images) {
         }
         
         .logo {
-            color: #fff;
-            font-size: 1.5rem;
+            color: #667eea;
+            font-size: 1.8rem;
             font-weight: 700;
             text-decoration: none;
             display: flex;
             align-items: center;
             gap: 10px;
-            transition: opacity 0.3s;
-        }
-        
-        .logo:hover {
-            opacity: 0.8;
+            font-family: 'Arial', sans-serif;
         }
         
         .back-btn {
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            background: #667eea;
             color: white;
             padding: 10px 20px;
             border-radius: 8px;
@@ -525,14 +519,15 @@ function generateModernArticleHTML(articleData, articleId, slug, images) {
             align-items: center;
             gap: 8px;
             transition: all 0.3s ease;
-            font-weight: 600;
+            font-family: 'Arial', sans-serif;
         }
         
         .back-btn:hover {
+            background: #5a6fd8;
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
         }
         
+        /* ARTICLE CONTAINER */
         .article-container {
             max-width: 1200px;
             margin: 30px auto;
@@ -542,16 +537,16 @@ function generateModernArticleHTML(articleData, articleId, slug, images) {
             gap: 40px;
         }
         
+        /* ARTICLE HERO - MÉTADONNÉES EN BAS DE L'IMAGE */
         .article-hero {
             grid-column: 1 / -1;
             height: 500px;
-            background-size: cover;
-            background-position: center;
             border-radius: 20px;
             overflow: hidden;
             position: relative;
             margin-bottom: 30px;
             box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            ${!isVideo ? `background-image: url('${firstImage}'); background-size: cover; background-position: center;` : 'background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);'}
         }
         
         .hero-overlay {
@@ -559,29 +554,29 @@ function generateModernArticleHTML(articleData, articleId, slug, images) {
             bottom: 0;
             left: 0;
             right: 0;
-            background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.5) 50%, transparent 100%);
-            padding: 50px 40px;
+            background: linear-gradient(transparent, rgba(0,0,0,0.95));
+            padding: 60px 40px 30px 40px;
             color: white;
         }
         
         .category {
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            background: #667eea;
             color: white;
-            padding: 8px 20px;
+            padding: 8px 16px;
             border-radius: 20px;
             font-size: 0.9rem;
-            font-weight: 700;
+            font-weight: 600;
             margin-bottom: 15px;
             display: inline-block;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            font-family: 'Arial', sans-serif;
         }
         
         .article-hero h1 {
-            font-size: 3rem;
+            font-size: 2.8rem;
             margin-bottom: 20px;
             line-height: 1.2;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
         }
         
         .meta {
@@ -589,6 +584,7 @@ function generateModernArticleHTML(articleData, articleId, slug, images) {
             gap: 25px;
             font-size: 1rem;
             opacity: 0.95;
+            font-family: 'Arial', sans-serif;
         }
         
         .meta span {
@@ -601,65 +597,20 @@ function generateModernArticleHTML(articleData, articleId, slug, images) {
             color: #667eea;
         }
         
-        /* ARTICLE CONTENT */
-        .article-content {
-            background: #1e293b;
-            padding: 40px;
+        /* MAIN CONTENT */
+        .article-main {
+            background: white;
             border-radius: 20px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-        }
-        
-        .excerpt {
-            font-size: 1.3rem;
-            color: #e2e8f0;
-            margin-bottom: 30px;
-            padding-bottom: 30px;
-            border-bottom: 2px solid rgba(102, 126, 234, 0.3);
-            line-height: 1.8;
-            font-weight: 500;
-        }
-        
-        .body {
-            font-size: 1.1rem;
-            line-height: 1.9;
-            color: #cbd5e1;
-        }
-        
-        .body p {
-            margin-bottom: 25px;
-        }
-        
-        .body p:last-child {
-            margin-bottom: 0;
-        }
-        
-        /* GALERIE */
-        .gallery {
-            margin-top: 40px;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-        }
-        
-        .gallery img {
-            width: 100%;
-            border-radius: 15px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
-            transition: transform 0.3s ease;
-            cursor: pointer;
-        }
-        
-        .gallery img:hover {
-            transform: scale(1.03);
+            padding: 50px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
         }
         
         /* VIDÉO */
         .video-container {
-            margin-bottom: 30px;
-            background: #0f172a;
+            background: #f8f9fa;
             border-radius: 15px;
             overflow: hidden;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            margin-bottom: 30px;
         }
         
         .video-wrapper {
@@ -677,45 +628,167 @@ function generateModernArticleHTML(articleData, articleId, slug, images) {
             border: none;
         }
         
-        .video-meta {
-            padding: 20px;
-            display: flex;
-            gap: 25px;
-            background: rgba(255,255,255,0.03);
-            border-top: 1px solid rgba(255,255,255,0.1);
+        /* ARTICLE CONTENT */
+        .article-content {
+            padding: 0;
         }
         
-        .meta-item {
+        .excerpt {
+            font-size: 1.3rem;
+            color: #333;
+            margin-bottom: 30px;
+            padding-bottom: 30px;
+            border-bottom: 3px solid #667eea;
+            line-height: 1.7;
+            font-style: italic;
+            font-weight: 500;
+        }
+        
+        .body {
+            font-size: 1.15rem;
+            line-height: 1.9;
+            color: #2d2d2d;
+        }
+        
+        .body p {
+            margin-bottom: 25px;
+            text-align: justify;
+        }
+        
+        /* DROP CAP - PREMIÈRE LETTRE STYLE JOURNAL */
+        .first-paragraph::first-letter {
+            float: left;
+            font-size: 5.5rem;
+            line-height: 0.85;
+            font-weight: bold;
+            margin: 0.05em 0.1em 0 0;
+            color: #667eea;
+            font-family: 'Georgia', serif;
+            text-shadow: 2px 2px 4px rgba(102, 126, 234, 0.3);
+        }
+        
+        /* GALERIE */
+        .gallery {
+            margin-top: 50px;
+            padding-top: 40px;
+            border-top: 2px solid #e5e7eb;
+        }
+        
+        .gallery h3 {
+            color: #1a1a1a;
+            margin-bottom: 25px;
+            font-size: 1.5rem;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .gallery-item {
+            border-radius: 12px;
+            overflow: hidden;
+            aspect-ratio: 4/3;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .gallery-item:hover {
+            transform: scale(1.05);
+        }
+        
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        /* SIDEBAR */
+        .sidebar {
+            position: sticky;
+            top: 20px;
+            height: fit-content;
+        }
+        
+        .sidebar-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .sidebar-card h4 {
+            color: #1a1a1a;
+            margin-bottom: 20px;
+            font-size: 1.2rem;
             display: flex;
             align-items: center;
-            gap: 8px;
-            color: #cbd5e1;
-            font-size: 0.95rem;
+            gap: 10px;
+            font-family: 'Arial', sans-serif;
         }
         
-        .meta-item i {
-            color: #667eea;
+        .related-item {
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            margin-bottom: 12px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border-left: 3px solid transparent;
+        }
+        
+        .related-item:hover {
+            background: #e9ecef;
+            border-left-color: #667eea;
+            transform: translateX(5px);
+        }
+        
+        .related-item h5 {
+            color: #1a1a1a;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+            line-height: 1.4;
+        }
+        
+        .related-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: #6c757d;
         }
         
         /* PARTAGE */
         .share {
             margin-top: 50px;
             padding-top: 40px;
-            border-top: 2px solid rgba(255,255,255,0.1);
+            border-top: 2px solid #e5e7eb;
+        }
+        
+        .share h3 {
+            color: #1a1a1a;
+            margin-bottom: 20px;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        .share-buttons {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
         }
         
         .share-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            padding: 15px 30px;
-            border-radius: 12px;
+            padding: 12px 25px;
+            border-radius: 10px;
             text-decoration: none;
             font-weight: 600;
-            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
             transition: all 0.3s ease;
-            margin-right: 15px;
-            margin-bottom: 15px;
+            font-family: 'Arial', sans-serif;
         }
         
         .share-btn.whatsapp {
@@ -729,62 +802,125 @@ function generateModernArticleHTML(articleData, articleId, slug, images) {
         }
         
         .share-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 7px 20px rgba(0,0,0,0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
         }
         
         /* COMMENTAIRES */
         .comments {
             margin-top: 50px;
-            padding-top: 40px;
-            border-top: 2px solid rgba(255,255,255,0.1);
+            background: #f8f9fa;
+            padding: 40px;
+            border-radius: 15px;
         }
         
         .comments h3 {
-            color: #fff;
-            margin-bottom: 25px;
+            color: #1a1a1a;
+            margin-bottom: 30px;
             font-size: 1.5rem;
+            font-family: 'Arial', sans-serif;
         }
         
-        #comments-list {
-            min-height: 100px;
+        .comment-form {
+            margin-bottom: 40px;
         }
         
-        /* SIDEBAR */
-        .sidebar {
-            position: sticky;
-            top: 100px;
-            height: fit-content;
+        .form-group {
+            margin-bottom: 20px;
         }
         
-        .sidebar-card {
-            background: #1e293b;
-            padding: 30px;
-            border-radius: 20px;
-            margin-bottom: 25px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            color: #495057;
+            font-weight: 600;
+            font-family: 'Arial', sans-serif;
         }
         
-        .sidebar-card h4 {
-            color: #fff;
-            margin-bottom: 25px;
-            font-size: 1.3rem;
+        .form-input {
+            width: 100%;
+            padding: 15px;
+            background: white;
+            border: 2px solid #dee2e6;
+            border-radius: 10px;
+            color: #495057;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        textarea.form-input {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        .submit-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        .submit-btn:hover {
+            background: #5a6fd8;
+            transform: translateY(-2px);
+        }
+        
+        .comment {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border-left: 4px solid #667eea;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        .comment-header {
             display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
             align-items: center;
-            gap: 12px;
         }
         
-        #related {
-            color: #94a3b8;
-            font-size: 0.95rem;
-            line-height: 1.6;
+        .comment-author {
+            font-weight: 700;
+            color: #667eea;
+            font-size: 1.05rem;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        .comment-date {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+        
+        .comment-text {
+            color: #495057;
+            line-height: 1.7;
+            font-size: 1rem;
+        }
+        
+        .comments-list {
+            max-height: 600px;
+            overflow-y: auto;
         }
         
         /* RESPONSIVE */
         @media (max-width: 1024px) {
             .article-container {
                 grid-template-columns: 1fr;
-                gap: 30px;
+                gap: 20px;
             }
             
             .sidebar {
@@ -794,17 +930,20 @@ function generateModernArticleHTML(articleData, articleId, slug, images) {
             .article-hero h1 {
                 font-size: 2.2rem;
             }
+            
+            .article-main {
+                padding: 30px;
+            }
         }
         
         @media (max-width: 768px) {
             .container {
                 flex-direction: column;
                 gap: 15px;
-                align-items: flex-start;
             }
             
-            .back-btn {
-                margin-top: 10px;
+            .share-buttons {
+                flex-direction: column;
             }
             
             .article-hero {
@@ -816,43 +955,19 @@ function generateModernArticleHTML(articleData, articleId, slug, images) {
             }
             
             .hero-overlay {
-                padding: 30px 25px;
+                padding: 40px 20px 20px 20px;
             }
             
-            .article-content {
+            .article-main {
+                padding: 20px;
+            }
+            
+            .first-paragraph::first-letter {
+                font-size: 4rem;
+            }
+            
+            .comments {
                 padding: 25px;
-            }
-            
-            .excerpt {
-                font-size: 1.1rem;
-            }
-            
-            .body {
-                font-size: 1rem;
-            }
-            
-            .video-meta {
-                flex-direction: column;
-                gap: 15px;
-            }
-            
-            .gallery {
-                grid-template-columns: 1fr;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .article-hero {
-                height: 250px;
-            }
-            
-            .article-hero h1 {
-                font-size: 1.4rem;
-            }
-            
-            .meta {
-                flex-direction: column;
-                gap: 10px;
             }
         }
     </style>
@@ -866,103 +981,219 @@ function generateModernArticleHTML(articleData, articleId, slug, images) {
     </div>
     
     <article class="article-container">
-        <header class="article-hero" style="background-image: url('${firstImage}')">
+        <header class="article-hero">
             <div class="hero-overlay">
                 <span class="category">${articleData.categorie}</span>
                 <h1>${articleData.titre}</h1>
-                ${!isVideo ? `
-                    <div class="meta">
-                        <span><i class="fas fa-user"></i> ${articleData.auteur || 'Admin'}</span>
-                        <span><i class="fas fa-calendar"></i> ${formattedDate}</span>
-                    </div>
-                ` : ''}
+                <div class="meta">
+                    <span><i class="fas fa-user"></i> ${articleData.auteur}</span>
+                    <span><i class="fas fa-calendar"></i> ${new Date().toLocaleDateString('fr-FR')}</span>
+                </div>
             </div>
         </header>
         
-        <div class="article-content">
+        <main class="article-main">
             ${mainContent}
             
             <div class="share">
-                <a href="https://wa.me/?text=${encodeURIComponent(articleData.titre + ' - ' + articleUrl)}" class="share-btn whatsapp">
-                    <i class="fab fa-whatsapp"></i> WhatsApp
-                </a>
-                <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(articleUrl)}" class="share-btn facebook">
-                    <i class="fab fa-facebook"></i> Facebook
-                </a>
+                <h3>Partager cet ${isVideo ? 'vidéo' : 'article'}</h3>
+                <div class="share-buttons">
+                    <a href="https://wa.me/?text=${encodeURIComponent(articleData.titre + ' - ' + articleUrl)}" class="share-btn whatsapp">
+                        <i class="fab fa-whatsapp"></i> WhatsApp
+                    </a>
+                    <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(articleUrl)}" class="share-btn facebook">
+                        <i class="fab fa-facebook-f"></i> Facebook
+                    </a>
+                </div>
             </div>
             
             <div class="comments">
-                <h3>Commentaires</h3>
-                <div id="comments-list"></div>
+                <h3><i class="fas fa-comments"></i> Commentaires</h3>
+                
+                <form class="comment-form" id="commentForm">
+                    <div class="form-group">
+                        <label class="form-label" for="commentAuthor">Votre nom</label>
+                        <input type="text" class="form-input" placeholder="Ex: Jean Dupont" required id="commentAuthor">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="commentText">Votre commentaire</label>
+                        <textarea class="form-input" placeholder="Partagez votre opinion..." required id="commentText"></textarea>
+                    </div>
+                    <button type="submit" class="submit-btn">
+                        <i class="fas fa-paper-plane"></i> Publier le commentaire
+                    </button>
+                </form>
+                
+                <div class="comments-list" id="commentsList">
+                    <div class="comment">
+                        <div class="comment-header">
+                            <span class="comment-author">Rédaction Abu Media</span>
+                            <span class="comment-date">${new Date().toLocaleDateString('fr-FR')}</span>
+                        </div>
+                        <p class="comment-text">Soyez le premier à commenter cet ${isVideo ? 'vidéo' : 'article'} ! Partagez votre opinion avec notre communauté.</p>
+                    </div>
+                </div>
             </div>
-        </div>
+        </main>
         
         <aside class="sidebar">
             <div class="sidebar-card">
-                <h4>Articles Similaires</h4>
-                <div id="related"></div>
+                <h4><i class="fas fa-fire"></i> Articles Populaires</h4>
+                <div id="relatedArticles">
+                    <div class="related-item" onclick="window.location.href='/'">
+                        <h5>Découvrez nos dernières actualités</h5>
+                        <div class="related-meta">
+                            <span>Abu Media</span>
+                            <span>${new Date().getFullYear()}</span>
+                        </div>
+                    </div>
+                    <div class="related-item" onclick="window.location.href='/'">
+                        <h5>Informations en temps réel</h5>
+                        <div class="related-meta">
+                            <span>Abu Media</span>
+                            <span>${new Date().getFullYear()}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="sidebar-card">
+                <h4><i class="fas fa-info-circle"></i> À propos</h4>
+                <p style="color: #6c757d; line-height: 1.7; font-size: 0.95rem;">
+                    <strong style="color: #667eea;">Abu Media Group</strong> - Votre source d'information fiable et actualisée. 
+                    ${isVideo ? 'Retrouvez nos meilleures vidéos et reportages.' : 'Découvrez nos articles exclusifs et analyses approfondies.'}
+                </p>
             </div>
         </aside>
     </article>
     
     <script>
-        // Chargement des articles similaires
-        async function loadRelatedArticles() {
+        // Gestion des commentaires avec stockage local
+        const ARTICLE_ID = '${articleId}';
+        const STORAGE_KEY = 'comments_' + ARTICLE_ID;
+        
+        // Charger les commentaires existants
+        function loadComments() {
             try {
-                const response = await fetch('/articles.json?t=' + Date.now());
-                const data = await response.json();
-                const articles = Object.values(data.articles || {})
-                    .filter(a => a.categorie === '${articleData.categorie}' && a.id !== '${articleId}')
-                    .slice(0, 5);
-                
-                const relatedDiv = document.getElementById('related');
-                if (articles.length > 0) {
-                    relatedDiv.innerHTML = articles.map(article => {
-                        const articleUrl = article.slug 
-                            ? \`/article/\${article.slug}.html\`
-                            : \`/article-detail.html?id=\${article.id}\`;
-                        return \`
-                            <div style="margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1);">
-                                <a href="\${articleUrl}" style="color: #fff; text-decoration: none; font-weight: 600; display: block; margin-bottom: 8px; line-height: 1.4;">
-                                    \${article.titre}
-                                </a>
-                                <div style="font-size: 0.85rem; color: #64748b;">
-                                    <i class="fas fa-calendar"></i> \${new Date(article.date).toLocaleDateString('fr-FR')}
-                                </div>
-                            </div>
-                        \`;
-                    }).join('');
-                } else {
-                    relatedDiv.innerHTML = '<p style="color: #64748b;">Aucun article similaire pour le moment.</p>';
+                const savedComments = localStorage.getItem(STORAGE_KEY);
+                if (savedComments) {
+                    const comments = JSON.parse(savedComments);
+                    const commentsList = document.getElementById('commentsList');
+                    
+                    // Effacer les commentaires par défaut
+                    commentsList.innerHTML = '';
+                    
+                    // Afficher les commentaires sauvegardés
+                    comments.forEach(comment => {
+                        addCommentToDOM(comment.author, comment.text, comment.date);
+                    });
+                    
+                    // Si aucun commentaire, afficher le message par défaut
+                    if (comments.length === 0) {
+                        showDefaultComment();
+                    }
                 }
-            } catch (error) {
-                console.error('Erreur chargement articles similaires:', error);
-                document.getElementById('related').innerHTML = '<p style="color: #64748b;">Impossible de charger les articles similaires.</p>';
+            } catch (e) {
+                console.error('Erreur chargement commentaires:', e);
             }
         }
         
-        // Charger au démarrage
-        window.addEventListener('DOMContentLoaded', loadRelatedArticles);
+        // Afficher le commentaire par défaut
+        function showDefaultComment() {
+            const commentsList = document.getElementById('commentsList');
+            commentsList.innerHTML = \`
+                <div class="comment">
+                    <div class="comment-header">
+                        <span class="comment-author">Rédaction Abu Media</span>
+                        <span class="comment-date">\${new Date().toLocaleDateString('fr-FR')}</span>
+                    </div>
+                    <p class="comment-text">Soyez le premier à commenter cet ${isVideo ? 'vidéo' : 'article'} ! Partagez votre opinion avec notre communauté.</p>
+                </div>
+            \`;
+        }
         
-        console.log('✅ Article chargé: ${articleData.titre}');
+        // Ajouter un commentaire au DOM
+        function addCommentToDOM(author, text, date) {
+            const commentsList = document.getElementById('commentsList');
+            const newComment = document.createElement('div');
+            newComment.className = 'comment';
+            newComment.innerHTML = \`
+                <div class="comment-header">
+                    <span class="comment-author">\${author}</span>
+                    <span class="comment-date">\${date}</span>
+                </div>
+                <p class="comment-text">\${text}</p>
+            \`;
+            
+            commentsList.insertBefore(newComment, commentsList.firstChild);
+        }
+        
+        // Sauvegarder les commentaires
+        function saveComment(author, text) {
+            try {
+                const savedComments = localStorage.getItem(STORAGE_KEY);
+                const comments = savedComments ? JSON.parse(savedComments) : [];
+                
+                const newComment = {
+                    author: author,
+                    text: text,
+                    date: new Date().toLocaleDateString('fr-FR'),
+                    timestamp: Date.now()
+                };
+                
+                comments.unshift(newComment);
+                
+                // Limiter à 50 commentaires
+                if (comments.length > 50) {
+                    comments.pop();
+                }
+                
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(comments));
+                return true;
+            } catch (e) {
+                console.error('Erreur sauvegarde commentaire:', e);
+                return false;
+            }
+        }
+        
+        // Gestion du formulaire
+        document.getElementById('commentForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const author = document.getElementById('commentAuthor').value.trim();
+            const text = document.getElementById('commentText').value.trim();
+            
+            if (author && text) {
+                const date = new Date().toLocaleDateString('fr-FR');
+                
+                // Ajouter au DOM
+                addCommentToDOM(author, text, date);
+                
+                // Sauvegarder
+                saveComment(author, text);
+                
+                // Réinitialiser le formulaire
+                this.reset();
+                
+                // Message de confirmation
+                alert('✅ Votre commentaire a été publié avec succès !');
+            }
+        });
+        
+        // Charger les commentaires au chargement de la page
+        window.addEventListener('load', loadComments);
+        
+        console.log('✅ Page ${isVideo ? 'vidéo' : 'article'} chargée avec succès');
+        console.log('📝 Système de commentaires activé');
     </script>
 </body>
 </html>`;
 }
 
+// Fonction utilitaire pour extraire l'ID YouTube
 function extractYouTubeId(url) {
     if (!url) return null;
-    const patterns = [
-        /(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&]+)/,
-        /youtube\.com\/embed\/([^?]+)/,
-        /youtube\.com\/v\/([^?]+)/
-    ];
-    
-    for (let pattern of patterns) {
-        const match = url.match(pattern);
-        if (match && match[1]) {
-            return match[1];
-        }
-    }
-    return null;
+    const regExp = /^.*((youtu.be\/)|(v\/)|(\/.+\/))([^#\&\?]*).*/;
+    const match = url.match(regExp);
+    return (match && match[5].length === 11) ? match[5] : null;
 }
