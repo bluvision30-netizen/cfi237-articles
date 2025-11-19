@@ -176,26 +176,6 @@
       "vues": 0,
       "likes": 0
     },
-    "art_1763533124291_wct16e4w8": {
-      "id": "art_1763533124291_wct16e4w8",
-      "slug": "afrobiz-universal-awards",
-      "titre": "AFROBIZ UNIVERSAL AWARDS",
-      "categorie": "Société",
-      "sections": [
-        "main",
-        "societe"
-      ],
-      "image": "https://res.cloudinary.com/dkuciagop/image/upload/v1763533114/e2n1dmklcqzyo5k2pcgv.png",
-      "images": "[\"https://res.cloudinary.com/dkuciagop/image/upload/v1763533114/e2n1dmklcqzyo5k2pcgv.png\"]",
-      "extrait": "AFROBIZ UNIVERSAL AWARDS",
-      "contenu": "AFROBIZ UNIVERSAL AWARDS",
-      "auteur": "Orlus Fosso",
-      "contentType": "article",
-      "video_url": null,
-      "date": "2025-11-19T06:18:44.671Z",
-      "vues": 0,
-      "likes": 0
-    },
     "art_1763533705146_ajlgwboul": {
       "id": "art_1763533705146_ajlgwboul",
       "slug": "cameroun-investiture-du-president-paul-biya-le-6-novembre-de",
@@ -301,6 +281,6 @@
       "likes": 0
     }
   },
-  "lastUpdate": "2025-11-19T14:09:46.222Z",
-  "totalArticles": 15
+  "lastUpdate": "2025-11-19T14:10:31.057Z",
+  "totalArticles": 14
 }
