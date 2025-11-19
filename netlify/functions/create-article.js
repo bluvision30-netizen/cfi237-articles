@@ -12,21 +12,110 @@ exports.handler = async function(event, context) {
   }
 
   try {
-    console.log('📥 Début création article...');
+    console.log('🔥 Début création article...');
     
-    const articleData = JSON.parse(event.body);
+    // ✅ VALIDATION GITHUB_TOKEN
+    const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
+    if (!GITHUB_TOKEN) {
+        console.error('❌ GITHUB_TOKEN manquant dans les variables Netlify');
+        return {
+            statusCode: 500,
+            headers,
+            body: JSON.stringify({ 
+                success: false,
+                error: 'Configuration serveur manquante',
+                details: 'GITHUB_TOKEN non défini dans Netlify Environment Variables'
+            })
+        };
+    }
     
-    // Validation stricte
-    if (!articleData.titre || !articleData.categorie || !articleData.image) {
-      console.error('❌ Données manquantes:', { titre: !!articleData.titre, categorie: !!articleData.categorie, image: !!articleData.image });
-      return {
-        statusCode: 400,
-        headers,
-        body: JSON.stringify({ 
-          success: false, 
-          error: 'Champs requis manquants: titre, catégorie, image' 
-        })
-      };
+    // ✅ VALIDATION BODY
+    if (!event.body) {
+        return {
+            statusCode: 400,
+            headers,
+            body: JSON.stringify({ 
+                success: false, 
+                error: 'Corps de requête vide' 
+            })
+        };
+    }
+    
+    let articleData;
+    try {
+        articleData = JSON.parse(event.body);
+    } catch (parseError) {
+        console.error('❌ Erreur parsing JSON:', parseError);
+        return {
+            statusCode: 400,
+            headers,
+            body: JSON.stringify({ 
+                success: false, 
+                error: 'JSON invalide',
+                details: parseError.message
+            })
+        };
+    }
+    
+    // ✅ VALIDATION DONNÉES
+    if (!articleData || typeof articleData !== 'object') {
+        return {
+            statusCode: 400,
+            headers,
+            body: JSON.stringify({ 
+                success: false, 
+                error: 'Données invalides - Objet attendu' 
+            })
+        };
+    }
+    
+    // ✅ VALIDATION CHAMPS REQUIS
+    const requiredFields = ['titre', 'categorie', 'image', 'extrait', 'contenu'];
+    const missingFields = requiredFields.filter(field => !articleData[field]);
+    
+    if (missingFields.length > 0) {
+        console.error('❌ Champs manquants:', missingFields);
+        return {
+            statusCode: 400,
+            headers,
+            body: JSON.stringify({ 
+                success: false, 
+                error: `Champs requis manquants: ${missingFields.join(', ')}`,
+                missingFields: missingFields
+            })
+        };
+    }
+    
+    // ✅ VALIDATION IMAGES
+    let images = [];
+    try {
+        if (articleData.images) {
+            images = typeof articleData.images === 'string' 
+                ? JSON.parse(articleData.images) 
+                : articleData.images;
+            
+            if (!Array.isArray(images)) {
+                console.error('❌ Format images invalide:', articleData.images);
+                return {
+                    statusCode: 400,
+                    headers,
+                    body: JSON.stringify({ 
+                        success: false, 
+                        error: 'Le champ "images" doit être un tableau JSON' 
+                    })
+                };
+            }
+        }
+    } catch (imagesError) {
+        console.error('❌ Erreur parsing images:', imagesError);
+        return {
+            statusCode: 400,
+            headers,
+            body: JSON.stringify({ 
+                success: false, 
+                error: 'Format du champ "images" invalide' 
+            })
+        };
     }
 
     // Générer ID et slug SEO
@@ -38,12 +127,12 @@ exports.handler = async function(event, context) {
     
     // 1. Sauvegarder dans articles.json
     console.log('💾 Sauvegarde articles.json...');
-    await saveToGitHub(articleData, articleId, slug);
+    await saveToGitHub(articleData, articleId, slug, GITHUB_TOKEN);
     console.log('✅ articles.json sauvegardé');
     
     // 2. Créer page article statique SEO
     console.log('📄 Création page SEO...');
-    await createArticlePage(articleData, articleId, slug);
+    await createArticlePage(articleData, articleId, slug, images, GITHUB_TOKEN);
     console.log('✅ Page SEO créée');
 
     const articleUrl = `https://cfiupload.netlify.app/article/${slug}.html`;
@@ -58,6 +147,10 @@ exports.handler = async function(event, context) {
         articleId: articleId,
         slug: slug,
         articleUrl: articleUrl,
+        articleData: {
+            titre: articleData.titre,
+            categorie: articleData.categorie
+        },
         shareUrls: {
           whatsapp: `https://wa.me/?text=${encodeURIComponent(articleData.titre + ' - ' + articleUrl)}`,
           facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(articleUrl)}`,
@@ -76,7 +169,7 @@ exports.handler = async function(event, context) {
       headers,
       body: JSON.stringify({ 
         success: false,
-        error: error.message || 'Erreur serveur',
+        error: error.message || 'Erreur serveur interne',
         details: error.stack
       })
     };
