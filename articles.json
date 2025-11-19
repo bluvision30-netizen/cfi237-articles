@@ -136,26 +136,6 @@
       "vues": 0,
       "likes": 0
     },
-    "art_1763494780739_bieckhxpl": {
-      "id": "art_1763494780739_bieckhxpl",
-      "slug": "le-film-des-presidentielles-2025-au-cameroun",
-      "titre": "LE FILM DES PRESIDENTIELLES 2025 AU CAMEROUN",
-      "categorie": "Société",
-      "sections": [
-        "main",
-        "videos"
-      ],
-      "image": "https://res.cloudinary.com/dkuciagop/image/upload/v1763494768/p7o9onwlcykwlwdmzin0.jpg",
-      "images": "[\"https://res.cloudinary.com/dkuciagop/image/upload/v1763494768/p7o9onwlcykwlwdmzin0.jpg\",\"https://res.cloudinary.com/dkuciagop/image/upload/v1763494768/hdwpcnuu43p0sdhdyfal.jpg\"]",
-      "extrait": "LE FILM DES PRESIDENTIELLES 2025 AU CAMEROUN",
-      "contenu": "Ce Reportage retrace les grands moments d’une élection décisive pour l’avenir politique du pays. De l’annonce des candidatures à la campagne électorale, en passant ples débats et les réactions du peuple.\nTranscriptio",
-      "auteur": "Orlus Fosso",
-      "contentType": "video",
-      "video_url": "https://youtu.be/IXac9cfHZbQ",
-      "date": "2025-11-18T19:39:40.956Z",
-      "vues": 0,
-      "likes": 0
-    },
     "art_1763500570019_qfpkj4auh": {
       "id": "art_1763500570019_qfpkj4auh",
       "slug": "bahebeck-vs-elimbi-lobe",
@@ -219,6 +199,6 @@
       "likes": 0
     }
   },
-  "lastUpdate": "2025-11-19T14:12:09.070Z",
-  "totalArticles": 11
+  "lastUpdate": "2025-11-19T14:12:12.118Z",
+  "totalArticles": 10
 }
