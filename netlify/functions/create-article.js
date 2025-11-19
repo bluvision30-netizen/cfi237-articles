@@ -104,13 +104,34 @@ function generateSlug(titre) {
 // ==========================================
 async function saveToGitHub(articleData, articleId, slug) {
   try {
-    const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
-    
-    if (!GITHUB_TOKEN) {
-      console.warn('⚠️ GITHUB_TOKEN manquant - Mode simulation');
-      return { success: true, simulated: true };
-    }
+   const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
+if (!GITHUB_TOKEN) {
+    console.error('❌ GITHUB_TOKEN manquant');
+    // Ajoutez ce retour d'erreur clair :
+    return {
+        statusCode: 500,
+        headers,
+        body: JSON.stringify({ 
+            success: false,
+            error: 'Configuration serveur manquante - GITHUB_TOKEN non défini'
+        })
+    };
+}
 
+// 2. Validation des données améliorée
+const articleData = JSON.parse(event.body);
+
+// Validation plus robuste
+if (!articleData || typeof articleData !== 'object') {
+    return {
+        statusCode: 400,
+        headers,
+        body: JSON.stringify({ 
+            success: false, 
+            error: 'Données JSON invalides' 
+        })
+    };
+}
     const REPO = 'bluvision30-netizen/cfi237-articles';
     const articlesUrl = `https://api.github.com/repos/${REPO}/contents/articles.json`;
     
@@ -206,6 +227,17 @@ async function createArticlePage(articleData, articleId, slug) {
 
     const REPO = 'bluvision30-netizen/cfi237-articles';
     const images = JSON.parse(articleData.images || '[]');
+if (!Array.isArray(images)) {
+    console.error('❌ Format images invalide:', articleData.images);
+    return {
+        statusCode: 400,
+        headers,
+        body: JSON.stringify({ 
+            success: false, 
+            error: 'Format des images invalide' 
+        })
+    };
+}
     
     // Générer HTML moderne
     console.log('🎨 Génération HTML...');
