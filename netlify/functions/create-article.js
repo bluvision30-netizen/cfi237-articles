@@ -420,9 +420,6 @@ async function createArticlePage(articleData, articleId, slug, GITHUB_TOKEN) {
   }
 }
 
-// ==========================================
-// GÉNÉRER HTML MODERNE AMÉLIORÉ (VERSION CORRIGÉE)
-// ==========================================
 function generateModernArticleHTML(articleData, articleId, slug, images, relatedArticles = []) {
     const firstImage = images[0] || articleData.image;
     const articleUrl = `https://cfiupload.netlify.app/article/${slug}.html`;
@@ -486,30 +483,35 @@ function generateModernArticleHTML(articleData, articleId, slug, images, related
         `;
     }
     
-    // GÉNÉRATION DES ARTICLES SIMILAIRES
+    // GÉNÉRATION DES ARTICLES SIMILAIRES - CORRIGÉE
     let relatedHTML = '';
-    
+
     if (relatedArticles.length > 0) {
         relatedArticles.forEach(article => {
+            const articleFullUrl = `https://cfiupload.netlify.app/article/${article.slug}.html`;
             relatedHTML += `
-                <div class="related-item" onclick="window.location.href='/article/${article.slug}.html'">
-                    <h5>${article.titre}</h5>
-                    <div class="related-meta">
-                        <span>${article.auteur}</span>
-                        <span>${new Date(article.date).toLocaleDateString('fr-FR')}</span>
+                <a href="${articleFullUrl}" target="_blank" style="text-decoration: none; color: inherit;">
+                    <div class="related-item">
+                        <h5>${article.titre}</h5>
+                        <div class="related-meta">
+                            <span>${article.auteur}</span>
+                            <span>${new Date(article.date).toLocaleDateString('fr-FR')}</span>
+                        </div>
                     </div>
-                </div>
+                </a>
             `;
         });
     } else {
         relatedHTML = `
-            <div class="related-item" onclick="window.location.href='/'">
-                <h5>Découvrez nos autres articles</h5>
-                <div class="related-meta">
-                    <span>Abu Media</span>
-                    <span>${new Date().getFullYear()}</span>
+            <a href="https://cfiupload.netlify.app/" target="_blank" style="text-decoration: none; color: inherit;">
+                <div class="related-item">
+                    <h5>Découvrez nos autres articles</h5>
+                    <div class="related-meta">
+                        <span>Abu Media</span>
+                        <span>${new Date().getFullYear()}</span>
+                    </div>
                 </div>
-            </div>
+            </a>
         `;
     }
     
