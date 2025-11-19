@@ -1,6 +1,7 @@
+
 // ==========================================
 // NETLIFY FUNCTION - CREATE ARTICLE
-// Version corrigée complète (Erreur 500 fixée)
+// Version corrigée complète
 // ==========================================
 
 exports.handler = async function(event, context) {
@@ -212,7 +213,7 @@ function generateSlug(titre) {
       .normalize('NFD').replace(/[\u0300-\u036f]/g, '') // Enlever accents
       .replace(/[^a-z0-9 -]/g, '') // Caractères spéciaux
       .replace(/\s+/g, '-') // Espaces -> tirets
-      .replace(/-+/g, '-') // Tirets multiples
+      .replace(/-+/g, '-') // Tireds multiples
       .replace(/^-+|-+$/g, '') // Tirets début/fin
       .substring(0, 60) || 'article-' + Date.now();
   } catch (error) {
@@ -319,6 +320,44 @@ async function saveToGitHub(articleData, articleId, slug, GITHUB_TOKEN) {
 }
 
 // ==========================================
+// RÉCUPÉRER ARTICLES SIMILAIRES
+// ==========================================
+async function getRelatedArticles(categorie, currentArticleId, GITHUB_TOKEN) {
+  try {
+    const REPO = 'bluvision30-netizen/cfi237-articles';
+    const articlesUrl = `https://api.github.com/repos/${REPO}/contents/articles.json`;
+    
+    const response = await fetch(articlesUrl, {
+      headers: { 
+        'Authorization': `token ${GITHUB_TOKEN}`,
+        'Accept': 'application/vnd.github.v3+json',
+        'User-Agent': 'Abu-Media-Dashboard'
+      }
+    });
+    
+    if (response.ok) {
+      const fileData = await response.json();
+      const content = Buffer.from(fileData.content, 'base64').toString('utf8');
+      const articlesData = JSON.parse(content);
+      
+      // Filtrer les articles de même catégorie (exclure l'article actuel)
+      const related = Object.values(articlesData.articles || {})
+        .filter(article => 
+          article.categorie === categorie && 
+          article.id !== currentArticleId
+        )
+        .slice(0, 3); // Maximum 3 articles
+      
+      return related;
+    }
+    return [];
+  } catch (error) {
+    console.error('Erreur récupération articles similaires:', error);
+    return [];
+  }
+}
+
+// ==========================================
 // CRÉER PAGE ARTICLE STATIQUE
 // ==========================================
 async function createArticlePage(articleData, articleId, slug, GITHUB_TOKEN) {
@@ -341,8 +380,13 @@ async function createArticlePage(articleData, articleId, slug, GITHUB_TOKEN) {
       console.warn('⚠️ Erreur parsing images, utilisation image principale');
     }
     
+    // Récupérer les articles similaires
+    console.log('🔍 Récupération articles similaires...');
+    const relatedArticles = await getRelatedArticles(articleData.categorie, articleId, GITHUB_TOKEN);
+    console.log(`📚 ${relatedArticles.length} articles similaires trouvés`);
+    
     console.log('🎨 Génération HTML...');
-    const articleHTML = generateModernArticleHTML(articleData, articleId, slug, images);
+    const articleHTML = generateModernArticleHTML(articleData, articleId, slug, images, relatedArticles);
     
     const articleUrl = `https://api.github.com/repos/${REPO}/contents/article/${slug}.html`;
     
@@ -375,10 +419,11 @@ async function createArticlePage(articleData, articleId, slug, GITHUB_TOKEN) {
     return { success: false, error: error.message };
   }
 }
+
 // ==========================================
-// GÉNÉRER HTML MODERNE AMÉLIORÉ (VERSION JOURNAL)
+// GÉNÉRER HTML MODERNE AMÉLIORÉ (VERSION CORRIGÉE)
 // ==========================================
-function generateModernArticleHTML(articleData, articleId, slug, images) {
+function generateModernArticleHTML(articleData, articleId, slug, images, relatedArticles = []) {
     const firstImage = images[0] || articleData.image;
     const articleUrl = `https://cfiupload.netlify.app/article/${slug}.html`;
     const currentDate = new Date().toISOString();
@@ -441,6 +486,33 @@ function generateModernArticleHTML(articleData, articleId, slug, images) {
         `;
     }
     
+    // GÉNÉRATION DES ARTICLES SIMILAIRES
+    let relatedHTML = '';
+    
+    if (relatedArticles.length > 0) {
+        relatedArticles.forEach(article => {
+            relatedHTML += `
+                <div class="related-item" onclick="window.location.href='/article/${article.slug}.html'">
+                    <h5>${article.titre}</h5>
+                    <div class="related-meta">
+                        <span>${article.auteur}</span>
+                        <span>${new Date(article.date).toLocaleDateString('fr-FR')}</span>
+                    </div>
+                </div>
+            `;
+        });
+    } else {
+        relatedHTML = `
+            <div class="related-item" onclick="window.location.href='/'">
+                <h5>Découvrez nos autres articles</h5>
+                <div class="related-meta">
+                    <span>Abu Media</span>
+                    <span>${new Date().getFullYear()}</span>
+                </div>
+            </div>
+        `;
+    }
+    
     return `<!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -472,14 +544,14 @@ function generateModernArticleHTML(articleData, articleId, slug, images) {
             box-sizing: border-box;
         }
         
-     body {
-    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-    background: linear-gradient(135deg,rgb(0, 47, 255) 0%,rgb(2, 32, 88) 100%);
-    color: #2d3748;
-    line-height: 1.6;
-    min-height: 100vh;
-    font-weight: 400;
-}
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, rgb(0, 47, 255) 0%, rgb(2, 32, 88) 100%);
+            color: #2d3748;
+            line-height: 1.6;
+            min-height: 100vh;
+            font-weight: 400;
+        }
         
         /* TOP BAR */
         .top-bar {
@@ -506,7 +578,6 @@ function generateModernArticleHTML(articleData, articleId, slug, images) {
             display: flex;
             align-items: center;
             gap: 10px;
-            font-family: 'Arial', sans-serif;
         }
         
         .back-btn {
@@ -519,7 +590,6 @@ function generateModernArticleHTML(articleData, articleId, slug, images) {
             align-items: center;
             gap: 8px;
             transition: all 0.3s ease;
-            font-family: 'Arial', sans-serif;
         }
         
         .back-btn:hover {
@@ -537,16 +607,16 @@ function generateModernArticleHTML(articleData, articleId, slug, images) {
             gap: 40px;
         }
         
-        /* ARTICLE HERO - MÉTADONNÉES EN BAS DE L'IMAGE */
+        /* ARTICLE HERO - AMÉLIORÉ POUR MOBILE */
         .article-hero {
             grid-column: 1 / -1;
-            height: 500px;
+            height: 400px;
             border-radius: 20px;
             overflow: hidden;
             position: relative;
             margin-bottom: 30px;
             box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-            ${!isVideo ? `background-image: url('${firstImage}'); background-size: cover; background-position: center;` : 'background: linear-gradient(135deg, #667eea 0%,rgb(75, 98, 162) 100%);'}
+            ${!isVideo ? `background-image: url('${firstImage}'); background-size: cover; background-position: center;` : 'background: linear-gradient(135deg, #667eea 0%, rgb(75, 98, 162) 100%);'}
         }
         
         .hero-overlay {
@@ -555,8 +625,9 @@ function generateModernArticleHTML(articleData, articleId, slug, images) {
             left: 0;
             right: 0;
             background: linear-gradient(transparent, rgba(0,0,0,0.95));
-            padding: 60px 40px 30px 40px;
+            padding: 40px 20px 20px 20px;
             color: white;
+            min-height: 50%;
         }
         
         .category {
@@ -568,26 +639,21 @@ function generateModernArticleHTML(articleData, articleId, slug, images) {
             font-weight: 600;
             margin-bottom: 15px;
             display: inline-block;
-            font-family: 'Arial', sans-serif;
         }
         
         .article-hero h1 {
-            font-size: 2.8rem;
-            margin-bottom: 20px;
+            font-size: 2.2rem;
+            margin-bottom: 15px;
             line-height: 1.2;
             font-weight: 700;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
         }
-        .article-hero h1 {
-    font-family: 'Segoe UI', system-ui, sans-serif;
-    font-weight: 700;
-}
+        
         .meta {
             display: flex;
             gap: 25px;
             font-size: 1rem;
             opacity: 0.95;
-            font-family: 'Arial', sans-serif;
         }
         
         .meta span {
@@ -601,21 +667,15 @@ function generateModernArticleHTML(articleData, articleId, slug, images) {
         }
         
         /* MAIN CONTENT */
-    .article-main {
-    background: white;
-    border-radius: 20px;
-    padding: 50px;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.1);
-    font-size: 1.1rem;
-    font-weight: 400;
-}
-    .body {
-    font-size: 1.1rem;
-    line-height: 1.7;
-    color: #4a5568;
-    font-weight: 400;
-}
-
+        .article-main {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            font-size: 1.1rem;
+            font-weight: 400;
+        }
+        
         /* VIDÉO */
         .video-container {
             background: #f8f9fa;
@@ -656,9 +716,10 @@ function generateModernArticleHTML(articleData, articleId, slug, images) {
         }
         
         .body {
-            font-size: 1.15rem;
-            line-height: 1.9;
-            color: #2d2d2d;
+            font-size: 1.1rem;
+            line-height: 1.7;
+            color: #4a5568;
+            font-weight: 400;
         }
         
         .body p {
@@ -669,7 +730,7 @@ function generateModernArticleHTML(articleData, articleId, slug, images) {
         /* DROP CAP - PREMIÈRE LETTRE STYLE JOURNAL */
         .first-paragraph::first-letter {
             float: left;
-            font-size: 5.5rem;
+            font-size: 4.5rem;
             line-height: 0.85;
             font-weight: bold;
             margin: 0.05em 0.1em 0 0;
@@ -689,7 +750,6 @@ function generateModernArticleHTML(articleData, articleId, slug, images) {
             color: #1a1a1a;
             margin-bottom: 25px;
             font-size: 1.5rem;
-            font-family: 'Arial', sans-serif;
         }
         
         .gallery-grid {
@@ -738,7 +798,6 @@ function generateModernArticleHTML(articleData, articleId, slug, images) {
             display: flex;
             align-items: center;
             gap: 10px;
-            font-family: 'Arial', sans-serif;
         }
         
         .related-item {
@@ -781,7 +840,6 @@ function generateModernArticleHTML(articleData, articleId, slug, images) {
         .share h3 {
             color: #1a1a1a;
             margin-bottom: 20px;
-            font-family: 'Arial', sans-serif;
         }
         
         .share-buttons {
@@ -799,7 +857,6 @@ function generateModernArticleHTML(articleData, articleId, slug, images) {
             align-items: center;
             gap: 10px;
             transition: all 0.3s ease;
-            font-family: 'Arial', sans-serif;
         }
         
         .share-btn.whatsapp {
@@ -829,7 +886,6 @@ function generateModernArticleHTML(articleData, articleId, slug, images) {
             color: #1a1a1a;
             margin-bottom: 30px;
             font-size: 1.5rem;
-            font-family: 'Arial', sans-serif;
         }
         
         .comment-form {
@@ -845,7 +901,6 @@ function generateModernArticleHTML(articleData, articleId, slug, images) {
             margin-bottom: 8px;
             color: #495057;
             font-weight: 600;
-            font-family: 'Arial', sans-serif;
         }
         
         .form-input {
@@ -880,7 +935,6 @@ function generateModernArticleHTML(articleData, articleId, slug, images) {
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
-            font-family: 'Arial', sans-serif;
         }
         
         .submit-btn:hover {
@@ -908,7 +962,6 @@ function generateModernArticleHTML(articleData, articleId, slug, images) {
             font-weight: 700;
             color: #667eea;
             font-size: 1.05rem;
-            font-family: 'Arial', sans-serif;
         }
         
         .comment-date {
@@ -939,7 +992,7 @@ function generateModernArticleHTML(articleData, articleId, slug, images) {
             }
             
             .article-hero h1 {
-                font-size: 2.2rem;
+                font-size: 2rem;
             }
             
             .article-main {
@@ -958,15 +1011,21 @@ function generateModernArticleHTML(articleData, articleId, slug, images) {
             }
             
             .article-hero {
-                height: 350px;
+                height: 300px;
             }
             
             .article-hero h1 {
-                font-size: 1.8rem;
+                font-size: 1.5rem;
             }
             
             .hero-overlay {
-                padding: 40px 20px 20px 20px;
+                padding: 30px 15px 15px 15px;
+            }
+            
+            .meta {
+                flex-direction: column;
+                gap: 8px;
+                font-size: 0.9rem;
             }
             
             .article-main {
@@ -974,7 +1033,7 @@ function generateModernArticleHTML(articleData, articleId, slug, images) {
             }
             
             .first-paragraph::first-letter {
-                font-size: 4rem;
+                font-size: 3.5rem;
             }
             
             .comments {
@@ -1049,22 +1108,9 @@ function generateModernArticleHTML(articleData, articleId, slug, images) {
         
         <aside class="sidebar">
             <div class="sidebar-card">
-                <h4><i class="fas fa-fire"></i> Articles Populaires</h4>
+                <h4><i class="fas fa-fire"></i> Articles Similaires</h4>
                 <div id="relatedArticles">
-                    <div class="related-item" onclick="window.location.href='/'">
-                        <h5>Découvrez nos dernières actualités</h5>
-                        <div class="related-meta">
-                            <span>Abu Media</span>
-                            <span>${new Date().getFullYear()}</span>
-                        </div>
-                    </div>
-                    <div class="related-item" onclick="window.location.href='/'">
-                        <h5>Informations en temps réel</h5>
-                        <div class="related-meta">
-                            <span>Abu Media</span>
-                            <span>${new Date().getFullYear()}</span>
-                        </div>
-                    </div>
+                    ${relatedHTML}
                 </div>
             </div>
             
@@ -1200,39 +1246,6 @@ function generateModernArticleHTML(articleData, articleId, slug, images) {
 </body>
 </html>`;
 }
-    let relatedHTML = '';
-    
-    if (relatedArticles.length > 0) {
-        relatedArticles.forEach(article => {
-            relatedHTML += `
-                <div class="related-item" onclick="window.location.href='/article/${article.slug}.html'">
-                    <h5>${article.titre}</h5>
-                    <div class="related-meta">
-                        <span>${article.auteur}</span>
-                        <span>${new Date(article.date).toLocaleDateString('fr-FR')}</span>
-                    </div>
-                </div>
-            `;
-        });
-    } else {
-        relatedHTML = `
-            <div class="related-item" onclick="window.location.href='/'">
-                <h5>Découvrez nos autres articles</h5>
-                <div class="related-meta">
-                    <span>Abu Media</span>
-                    <span>${new Date().getFullYear()}</span>
-                </div>
-            </div>
-        `;
-    }
-    
-    // Dans le HTML, remplacez la section sidebar :
-    <div class="sidebar-card">
-        <h4><i class="fas fa-fire"></i> Articles Similaires</h4>
-        <div id="relatedArticles">
-            ${relatedHTML}
-        </div>
-    </div>
 
 // Fonction utilitaire pour extraire l'ID YouTube
 function extractYouTubeId(url) {
