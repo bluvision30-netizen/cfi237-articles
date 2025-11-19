@@ -1,6 +1,22 @@
 [build]
   publish = "."
+# Redirections SEO - Forcer les nouvelles URLs
+[[redirects]]
+  from = "/article-detail.html"
+  to = "/article/:slug.html"
+  status = 301
+  force = true
 
+[[redirects]]
+  from = "/article-detail.html?id=*"
+  to = "/article/:splat.html"
+  status = 301
+
+# Servir les pages SEO existantes
+[[redirects]]
+  from = "/article/*"
+  to = "/article/:splat"
+  status = 200
 [[redirects]]
   from = "/share/*"
   to = "/share/:splat"
