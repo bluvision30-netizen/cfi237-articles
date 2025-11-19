@@ -20,8 +20,28 @@
       "date": "2025-11-19T13:48:20.450Z",
       "vues": 0,
       "likes": 0
+    },
+    "art_1763561843679_6rgcvwna2": {
+      "id": "art_1763561843679_6rgcvwna2",
+      "slug": "l-homme-lion-a-encore-gagne",
+      "titre": "L' HOMME LION A ENCORE GAGNE!",
+      "categorie": "Politique",
+      "sections": [
+        "main",
+        "hero"
+      ],
+      "image": "https://res.cloudinary.com/dkuciagop/image/upload/v1763561777/ly5qabqgljracjvogcrk.jpg",
+      "images": "[\"https://res.cloudinary.com/dkuciagop/image/upload/v1763561777/ly5qabqgljracjvogcrk.jpg\"]",
+      "extrait": "En marge des élections présidentielles 2025 au Cameroun, le Conseil Constitutionnel a déclaré le Président Biya Vainqueur à l'issue du scrutin du 12 Octobre dernier avec 53,66 % des voix",
+      "contenu": "Son principal adversaire, Issa Tchiroma Bakary, a obtenu 35,19 % selon les résultats officiels. On parle d'un taux de participation de 57,7%. Une élection Présidentielle qui aura bien donné du fil a retordre au RDPC, qui a du redoubler d'ardeur pour maintenir sa place de leader. On note l'échec du RDPC dans certaines zones stratégiques comme Douala, Bafoussam ou encore la diaspora entre autre. Le parti des flammes dans son habileté politique habituel a mis toutes les chances de son côtés pour gagner face à une opposition encore plus déterminée. Le Président Elu a placé son nouveau mandat au service des jeunes et des femmes qui seront sa priorité. Dans quelques villes du pays on a assisté à des mouvements d'humeur orchestré dans le but de contester la victoire du candidat du RDPC mais les Forces de Maintien de l'Ordre ont encadré les manifestants et procédé à l'arrestation des délinquants qui ont profité de l'occasion pour piller et casser. Même si le gouvernement se bat contre un mot d'ordre de ville morte en ce moment, il n'en demeure pas moins que le Cameroun traverse une véritable crise politique",
+      "auteur": "Orlus Fosso",
+      "contentType": "article",
+      "video_url": null,
+      "date": "2025-11-19T14:17:24.071Z",
+      "vues": 0,
+      "likes": 0
     }
   },
-  "lastUpdate": "2025-11-19T14:15:29.688Z",
-  "totalArticles": 1
+  "lastUpdate": "2025-11-19T14:17:24.071Z",
+  "totalArticles": 2
 }
