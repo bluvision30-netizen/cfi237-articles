@@ -1,9 +1,11 @@
 {
   "name": "cfi237-articles",
   "version": "1.0.0",
-  "description": "Système de gestion d'articles avec galerie photos",
-  "type": "module",
+  "description": "Abu Media Group - Site d'actualités",
+  "dependencies": {
+    "node-fetch": "^2.6.7"
+  },
   "engines": {
-    "node": ">=18"
+    "node": "18.x"
   }
 }
