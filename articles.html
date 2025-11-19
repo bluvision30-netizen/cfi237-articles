@@ -1,11 +1,103 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
+      <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Articles - Abu Media Group</title>
-    <meta name="description" content="Tous les articles d'Abu Media Group - Filtrez par catégorie, type et popularité">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Meta Tags Essentiels -->
+    <title>Camer Flash Infos - Tous les Articles | Actualités Cameroun | Camerflashinfos</title>
+    <meta name="description" content="Consultez tous les articles de Camer Flash Infos. Actualités, politique, sports, économie, société au Cameroun. Filtrez par catégorie, type et popularité.">
+    <meta name="keywords" content="camer flash infos articles, camerflashinfos actualités, news cameroun, journal camerounais, informations cameroun, articles cameroun, presse camerounaise">
+    <meta name="author" content="Camer Flash Infos">
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+    <meta name="googlebot" content="index, follow">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://camerflashinfos.com/articles.html">
+    <meta property="og:title" content="Camer Flash Infos - Tous les Articles | Actualités Cameroun">
+    <meta property="og:description" content="Consultez tous les articles de Camer Flash Infos. Actualités, politique, sports, économie, société au Cameroun.">
+    <meta property="og:image" content="https://camerflashinfos.com/images/articles-og-image.jpg">
+    <meta property="og:site_name" content="Camer Flash Infos">
+    <meta property="og:locale" content="fr_CM">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://camerflashinfos.com/articles.html">
+    <meta property="twitter:title" content="Camer Flash Infos - Tous les Articles | Actualités Cameroun">
+    <meta property="twitter:description" content="Consultez tous les articles de Camer Flash Infos. Actualités, politique, sports, économie, société au Cameroun.">
+    <meta property="twitter:image" content="https://camerflashinfos.com/images/articles-twitter-image.jpg">
+    <meta property="twitter:site" content="@camerflashinfos">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://camerflashinfos.com/articles.html">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    
+    <!-- Preload des ressources critiques -->
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
+    
+    <!-- Schema.org structured data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "CollectionPage",
+      "name": "Tous les Articles - Camer Flash Infos",
+      "description": "Collection complète de tous les articles d'actualité du Cameroun par Camer Flash Infos",
+      "url": "https://camerflashinfos.com/articles.html",
+      "mainEntity": {
+        "@type": "ItemList",
+        "numberOfItems": 100,
+        "itemListOrder": "https://schema.org/ItemListOrderDescending",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "item": {
+              "@type": "Article",
+              "headline": "Actualités récentes du Cameroun",
+              "description": "Dernières actualités politiques, économiques et sociales du Cameroun"
+            }
+          }
+        ]
+      },
+      "publisher": {
+        "@type": "NewsMediaOrganization",
+        "name": "Camer Flash Infos",
+        "alternateName": ["Camerflashinfos", "Camer Flash Infos"],
+        "url": "https://camerflashinfos.com",
+        "logo": "https://camerflashinfos.com/images/logo.png",
+        "sameAs": [
+          "https://www.facebook.com/camerflashinfos",
+          "https://twitter.com/camerflashinfos",
+          "https://www.instagram.com/camerflashinfos"
+        ]
+      },
+      "breadcrumb": {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Accueil",
+            "item": "https://camerflashinfos.com"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Tous les Articles",
+            "item": "https://camerflashinfos.com/articles.html"
+          }
+        ]
+      }
+    }
+    </script>
     <style>
         * {
             margin: 0;
@@ -50,7 +142,71 @@
             align-items: center;
             gap: 2rem;
         }
+           /* Améliorations SEO pour le contenu */
+        .breadcrumb {
+            background: var(--light-gray);
+            padding: 1rem 0;
+            font-size: 0.9rem;
+            margin-bottom: 2rem;
+        }
         
+        .breadcrumb ol {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            gap: 0.5rem;
+            list-style: none;
+        }
+        
+        .breadcrumb li:not(:last-child)::after {
+            content: "›";
+            margin-left: 0.5rem;
+            color: var(--gray);
+        }
+        
+        .breadcrumb a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+        
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+        
+        /* Amélioration de l'accessibilité */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+        
+        /* Optimisation des images pour le SEO */
+        .article-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            background-color: #f8fafc;
+        }
+        
+        /* Amélioration de la sémantique */
+        .category-badge {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 0.35rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            text-transform: uppercase;
+        }
         .logo {
             font-size: 1.5rem;
             font-weight: 700;
@@ -580,95 +736,124 @@
         }
     </style>
 </head>
-<body>
-    <header class="header">
+<body itemscope itemtype="https://schema.org/WebPage">
+    <!-- Breadcrumb Navigation -->
+    <nav class="breadcrumb" aria-label="Fil d'Ariane">
+        <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+            <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+                <a href="https://camerflashinfos.com" itemprop="item">
+                    <span itemprop="name">Accueil</span>
+                </a>
+                <meta itemprop="position" content="1">
+            </li>
+            <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+                <span itemprop="name">Tous les Articles</span>
+                <meta itemprop="position" content="2">
+            </li>
+        </ol>
+    </nav>
+
+    <header class="header" role="banner">
         <div class="header-container">
-            <a href="index.html" class="logo">
-                <i class="fas fa-newspaper"></i>
-                <span>Abu Media</span>
+            <!-- Logo avec photo -->
+            <a href="https://camerflashinfos.com" class="logo" aria-label="Camer Flash Infos - Accueil">
+                <div class="logo-icon">
+                    <img src="img/logo-camerflashinfos.jpg" alt="Logo Camer Flash Infos" width="40" height="40" loading="lazy">
+                </div>
+                <div class="logo-text">
+                    <div class="logo-title">Camer Flash Infos</div>
+                    <div class="logo-subtitle">Actualités Cameroun</div>
+                </div>
             </a>
             
+            <!-- Search avec aria-label -->
             <div class="header-search">
                 <input 
                     type="text" 
                     id="headerSearchInput" 
                     placeholder="🔍 Rechercher un article..."
                     autocomplete="off"
+                    aria-label="Rechercher dans tous les articles"
                 >
-                <button class="header-search-btn">
-                    <i class="fas fa-search"></i>
+                <button class="header-search-btn" aria-label="Lancer la recherche">
+                    <i class="fas fa-search" aria-hidden="true"></i>
                 </button>
-                <div class="search-results" id="headerSearchResults"></div>
+                <div class="search-results" id="headerSearchResults" role="listbox"></div>
             </div>
             
-            <a href="index.html" class="nav-back">
-                <i class="fas fa-home"></i>
+            <!-- Navigation retour -->
+            <a href="index.html" class="nav-back" aria-label="Retour à l'accueil">
+                <i class="fas fa-home" aria-hidden="true"></i>
                 <span>Accueil</span>
             </a>
         </div>
     </header>
 
     <div class="container">
-        <div class="page-header">
-            <h1 class="page-title">📰 Tous les Articles</h1>
-            <p class="page-subtitle">Explorez notre collection complète d'articles et vidéos</p>
-        </div>
+        <!-- En-tête de page optimisé -->
+        <header class="page-header">
+            <h1 class="page-title" itemprop="headline">📰 Tous les Articles Camer Flash Infos</h1>
+            <p class="page-subtitle">Découvrez notre collection complète d'<strong>actualités du Cameroun</strong> - Politique, Économie, Sports, Société et International</p>
+        </header>
 
-        <div class="filters-section">
+        <!-- Section de filtres avec balises sémantiques -->
+        <section class="filters-section" aria-labelledby="filters-title">
+            <h2 id="filters-title" class="sr-only">Filtres de recherche</h2>
+            
             <div class="filters-grid">
                 <div class="filter-group">
-                    <label class="filter-label">
-                        <i class="fas fa-layer-group"></i>
+                    <label for="filterType" class="filter-label">
+                        <i class="fas fa-layer-group" aria-hidden="true"></i>
                         Type de contenu
                     </label>
-                    <select id="filterType" class="filter-select">
-                        <option value="">Tous</option>
-                        <option value="article">📄 Articles</option>
+                    <select id="filterType" class="filter-select" aria-label="Filtrer par type de contenu">
+                        <option value="">Tous les contenus</option>
+                        <option value="article">📄 Articles écrits</option>
                         <option value="video">🎥 Vidéos</option>
                     </select>
                 </div>
 
                 <div class="filter-group">
-                    <label class="filter-label">
-                        <i class="fas fa-tags"></i>
+                    <label for="filterCategory" class="filter-label">
+                        <i class="fas fa-tags" aria-hidden="true"></i>
                         Catégorie
                     </label>
-                    <select id="filterCategory" class="filter-select">
-                        <option value="">Toutes</option>
-                        <option value="Politique">Politique</option>
-                        <option value="Économie">Économie</option>
-                        <option value="Sports">Sports</option>
-                        <option value="Société">Société</option>
-                        <option value="Culture">Culture</option>
-                        <option value="Santé">Santé</option>
-                        <option value="Technologie">Technologie</option>
+                    <select id="filterCategory" class="filter-select" aria-label="Filtrer par catégorie">
+                        <option value="">Toutes les catégories</option>
+                        <option value="Politique">Politique Camerounaise</option>
+                        <option value="Économie">Économie Cameroun</option>
+                        <option value="Sports">Sports Cameroun</option>
+                        <option value="Société">Société Camerounaise</option>
+                        <option value="Culture">Culture Cameroun</option>
+                        <option value="Santé">Santé Cameroun</option>
+                        <option value="Technologie">Technologie Cameroun</option>
                         <option value="International">International</option>
                     </select>
                 </div>
 
                 <div class="filter-group">
-                    <label class="filter-label">
-                        <i class="fas fa-sort"></i>
+                    <label for="filterSort" class="filter-label">
+                        <i class="fas fa-sort" aria-hidden="true"></i>
                         Trier par
                     </label>
-                    <select id="filterSort" class="filter-select">
+                    <select id="filterSort" class="filter-select" aria-label="Trier les articles">
                         <option value="recent">Plus récents</option>
-                        <option value="popular">Populaires (vues)</option>
-                        <option value="trending">Trending (likes)</option>
+                        <option value="popular">Plus populaires</option>
+                        <option value="trending">Tendances</option>
                     </select>
                 </div>
 
                 <div class="filter-group">
-                    <label class="filter-label">
-                        <i class="fas fa-bookmark"></i>
+                    <label for="filterSection" class="filter-label">
+                        <i class="fas fa-bookmark" aria-hidden="true"></i>
                         Section
                     </label>
-                    <select id="filterSection" class="filter-select">
-                        <option value="">Toutes</option>
-                        <option value="hero">🌟 À la une (Slider)</option>
-                        <option value="a-la-une">🔥 Carousel</option>
-                        <option value="featured">⭐ À ne pas manquer</option>
-                        <option value="trending">📈 Trending</option>
+                    <select id="filterSection" class="filter-select" aria-label="Filtrer par section">
+                        <option value="">Toutes les sections</option>
+                        <option value="hero">🌟 À la une</option>
+                        <option value="a-la-une">🔥 En vedette</option>
+                        <option value="featured">⭐ Importants</option>
+                        <option value="trending">📈 Tendances</option>
                         <option value="videos">🎥 Vidéos</option>
                         <option value="societe">👥 Société</option>
                         <option value="events">📅 Événements</option>
@@ -676,37 +861,47 @@
                 </div>
             </div>
 
+            <!-- Barre de recherche principale -->
             <div class="search-bar">
                 <input 
                     type="text" 
                     id="searchInput" 
                     class="search-input" 
                     placeholder="🔍 Rechercher par titre, auteur ou contenu..."
+                    aria-label="Recherche dans tous les articles"
                 >
-                <button class="search-btn" onclick="applyFilters()">
-                    <i class="fas fa-search"></i>
+                <button class="search-btn" onclick="applyFilters()" aria-label="Appliquer la recherche">
+                    <i class="fas fa-search" aria-hidden="true"></i>
                 </button>
             </div>
 
-            <div class="active-filters" id="activeFilters"></div>
-        </div>
+            <!-- Filtres actifs -->
+            <div class="active-filters" id="activeFilters" aria-live="polite"></div>
+        </section>
 
+        <!-- Informations des résultats -->
         <div class="results-info">
             <div class="results-count">
-                <span id="resultsCount">0</span> articles trouvés
+                <span id="resultsCount">0</span> articles trouvés sur Camer Flash Infos
             </div>
             <div class="page-info" id="pageInfo"></div>
         </div>
 
-        <div class="articles-grid" id="articlesGrid">
-            <div class="loading">
-                <i class="fas fa-spinner"></i>
-                <p style="margin-top: 1rem;">Chargement des articles...</p>
+        <!-- Grille d'articles avec balises sémantiques -->
+        <main id="main-content">
+            <div class="articles-grid" id="articlesGrid" role="list" aria-label="Liste des articles">
+                <div class="loading">
+                    <i class="fas fa-spinner" aria-hidden="true"></i>
+                    <p>Chargement des articles Camer Flash Infos...</p>
+                </div>
             </div>
-        </div>
+        </main>
 
-        <div class="pagination" id="pagination"></div>
+        <!-- Pagination -->
+        <nav class="pagination" id="pagination" aria-label="Navigation des pages"></nav>
     </div>
+
+    <!-- Schema.org pour les articles (dynamique) -->
 
     <script>
         const ARTICLES_PER_PAGE = 20;
@@ -783,6 +978,7 @@ function openArticle(articleId) {
             }
         }
 
+
         function readUrlParams() {
             const params = new URLSearchParams(window.location.search);
             
@@ -825,7 +1021,7 @@ function openArticle(articleId) {
             window.history.replaceState({}, '', newUrl);
         }
 
-        function applyFilters() {
+          function applyFilters() {
             currentFilters.type = document.getElementById('filterType').value;
             currentFilters.category = document.getElementById('filterCategory').value;
             currentFilters.sort = document.getElementById('filterSort').value;
@@ -833,22 +1029,26 @@ function openArticle(articleId) {
             currentFilters.search = document.getElementById('searchInput').value.toLowerCase();
             
             filteredArticles = allArticles.filter(article => {
+                // Filtrage par type
                 if (currentFilters.type) {
                     const isVideo = article.contentType === 'video' || article.video_url;
                     if (currentFilters.type === 'video' && !isVideo) return false;
                     if (currentFilters.type === 'article' && isVideo) return false;
                 }
                 
+                // Filtrage par catégorie
                 if (currentFilters.category && article.categorie !== currentFilters.category) {
                     return false;
                 }
                 
+                // Filtrage par section
                 if (currentFilters.section) {
                     if (!article.sections || !article.sections.includes(currentFilters.section)) {
                         return false;
                     }
                 }
                 
+                // Filtrage par recherche
                 if (currentFilters.search) {
                     const searchLower = currentFilters.search;
                     const matchTitle = article.titre.toLowerCase().includes(searchLower);
@@ -868,6 +1068,8 @@ function openArticle(articleId) {
             updateActiveFilters();
             displayArticles();
             updateUrl();
+            updateMetaDescription();
+            updateArticlesSchema();
         }
 
     function sortArticles() {
@@ -953,57 +1155,60 @@ function openArticle(articleId) {
         }
 
         function displayArticles() {
-    const grid = document.getElementById('articlesGrid');
-    const totalPages = Math.ceil(filteredArticles.length / ARTICLES_PER_PAGE);
-    
-    document.getElementById('resultsCount').textContent = filteredArticles.length;
-    
-    if (filteredArticles.length === 0) {
-        grid.innerHTML = `
-            <div class="empty-state">
-                <i class="fas fa-inbox"></i>
-                <h3>Aucun article trouvé</h3>
-                <p>Essayez de modifier vos filtres</p>
-            </div>
-        `;
-        document.getElementById('pagination').innerHTML = '';
-        return;
-    }
-    
-    const startIndex = (currentPage - 1) * ARTICLES_PER_PAGE;
-    const endIndex = startIndex + ARTICLES_PER_PAGE;
-    const pageArticles = filteredArticles.slice(startIndex, endIndex);
-    
-    grid.innerHTML = pageArticles.map(article => {
-        const isVideo = article.contentType === 'video' || article.video_url;
-        const realViews = getArticleViews(article.id); // ✅ VUES RÉELLES
-        
-        return `
-            <article class="article-card" onclick="openArticle('${article.id}')">
-                <div class="article-image-wrapper">
-                    <img src="${article.image}" alt="${article.titre}" class="article-image" loading="lazy">
-                    ${isVideo ? '<div class="video-badge"><i class="fas fa-play"></i> VIDÉO</div>' : ''}
-                </div>
-                <div class="article-content">
-                    <span class="category-badge">${article.categorie}</span>
-                    <h3 class="article-title">${article.titre}</h3>
-                    <p class="article-excerpt">${article.extrait}</p>
-                    <div class="article-meta">
-                        <div>
-                            <i class="fas fa-user"></i> ${article.auteur}
-                        </div>
-                        <div class="article-stats">
-                            <span class="stat"><i class="fas fa-eye"></i> ${getArticleViews(article.id)}</span>
-                            <span class="stat"><i class="fas fa-heart"></i> ${article.likes || 0}</span>
-                        </div>
+            const grid = document.getElementById('articlesGrid');
+            const totalPages = Math.ceil(filteredArticles.length / ARTICLES_PER_PAGE);
+            
+            document.getElementById('resultsCount').textContent = filteredArticles.length;
+            
+            if (filteredArticles.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-inbox"></i>
+                        <h2>Aucun article trouvé</h2>
+                        <p>Essayez de modifier vos filtres de recherche</p>
                     </div>
-                </div>
-            </article>
-        `;
-    }).join('');
-    
-    updatePagination(totalPages);
-}
+                `;
+                document.getElementById('pagination').innerHTML = '';
+                return;
+            }
+            
+            const startIndex = (currentPage - 1) * ARTICLES_PER_PAGE;
+            const endIndex = startIndex + ARTICLES_PER_PAGE;
+            const pageArticles = filteredArticles.slice(startIndex, endIndex);
+            
+            grid.innerHTML = pageArticles.map(article => {
+                const isVideo = article.contentType === 'video' || article.video_url;
+                const realViews = getArticleViews(article.id);
+                
+                return `
+                    <article class="article-card" onclick="openArticle('${article.id}')" itemscope itemtype="https://schema.org/Article">
+                        <div class="article-image-wrapper">
+                            <img src="${article.image}" alt="${article.titre} - Camer Flash Infos" class="article-image" loading="lazy" itemprop="image">
+                            ${isVideo ? '<div class="video-badge"><i class="fas fa-play"></i> VIDÉO</div>' : ''}
+                        </div>
+                        <div class="article-content">
+                            <span class="category-badge" itemprop="articleSection">${article.categorie}</span>
+                            <h3 class="article-title" itemprop="headline">${article.titre}</h3>
+                            <p class="article-excerpt" itemprop="description">${article.extrait}</p>
+                            <div class="article-meta">
+                                <div itemprop="author" itemscope itemtype="https://schema.org/Person">
+                                    <i class="fas fa-user"></i> 
+                                    <span itemprop="name">${article.auteur}</span>
+                                </div>
+                                <div class="article-stats">
+                                    <span class="stat"><i class="fas fa-eye"></i> ${realViews}</span>
+                                    <span class="stat"><i class="fas fa-heart"></i> ${article.likes || 0}</span>
+                                </div>
+                            </div>
+                            <meta itemprop="datePublished" content="${article.date}">
+                            <meta itemprop="publisher" content="Camer Flash Infos">
+                        </div>
+                    </article>
+                `;
+            }).join('');
+            
+            updatePagination(totalPages);
+        }
 
         function updatePagination(totalPages) {
             const pagination = document.getElementById('pagination');
@@ -1293,6 +1498,84 @@ function exportArticleStats() {
 }
 
 window.exportArticleStats = exportArticleStats;
+
+ // Fonction pour mettre à jour le Schema.org des articles
+        function updateArticlesSchema() {
+            const schemaScript = document.getElementById('articlesSchema');
+            const articlesToShow = filteredArticles.slice(0, 10); // Limiter aux 10 premiers
+            
+            const articleSchema = {
+                "@context": "https://schema.org",
+                "@type": "ItemList",
+                "name": "Articles Récents - Camer Flash Infos",
+                "description": "Liste des articles d'actualité les plus récents du Cameroun",
+                "url": "https://camerflashinfos.com/articles.html",
+                "numberOfItems": filteredArticles.length,
+                "itemListOrder": "https://schema.org/ItemListOrderDescending",
+                "itemListElement": articlesToShow.map((article, index) => ({
+                    "@type": "ListItem",
+                    "position": index + 1,
+                    "item": {
+                        "@type": "Article",
+                        "headline": article.titre,
+                        "description": article.extrait,
+                        "image": article.image,
+                        "datePublished": article.date,
+                        "author": {
+                            "@type": "Person",
+                            "name": article.auteur
+                        },
+                        "publisher": {
+                            "@type": "NewsMediaOrganization",
+                            "name": "Camer Flash Infos",
+                            "url": "https://camerflashinfos.com"
+                        }
+                    }
+                }))
+            };
+            
+            schemaScript.textContent = JSON.stringify(articleSchema);
+        }
+
+        // Fonction pour mettre à jour la meta description dynamique
+        function updateMetaDescription() {
+            const count = filteredArticles.length;
+            const category = currentFilters.category ? ` dans ${currentFilters.category}` : '';
+            const search = currentFilters.search ? ` pour "${currentFilters.search}"` : '';
+            
+            let description = `Découvrez ${count} articles d'actualité du Cameroun${category}${search}. `;
+            description += `Actualités politiques, économiques, sportives et sociales avec Camer Flash Infos.`;
+            
+            // Mettre à jour la meta description
+            const metaDesc = document.querySelector('meta[name="description"]');
+            if (metaDesc) {
+                metaDesc.setAttribute('content', description);
+            }
+            
+            // Mettre à jour le titre de la page
+            let title = `Camer Flash Infos - ${count} Articles`;
+            if (currentFilters.category) title += ` ${currentFilters.category}`;
+            if (currentFilters.search) title += ` - "${currentFilters.search}"`;
+            title += ` | Actualités Cameroun`;
+            
+            document.title = title;
+        }
+
+        // Fonction pour charger les articles
+       
+ document.addEventListener('DOMContentLoaded', function() {
+            loadArticles();
+            
+            // Track Google Analytics (si utilisé)
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'page_view', {
+                    'page_title': 'Tous les Articles - Camer Flash Infos',
+                    'page_location': window.location.href
+                });
+            }
+            
+            console.log('✅ Page Articles Camer Flash Infos avec SEO surpuissant chargée');
+        });
     </script>
 </body>
 </html>
