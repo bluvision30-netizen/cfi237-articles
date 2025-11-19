@@ -375,7 +375,6 @@ async function createArticlePage(articleData, articleId, slug, GITHUB_TOKEN) {
     return { success: false, error: error.message };
   }
 }
-
 // ==========================================
 // GÉNÉRER HTML MODERNE AMÉLIORÉ (VERSION JOURNAL)
 // ==========================================
@@ -473,13 +472,14 @@ function generateModernArticleHTML(articleData, articleId, slug, images) {
             box-sizing: border-box;
         }
         
-        body {
-            font-family: 'Georgia', 'Times New Roman', serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: #1a1a1a;
-            line-height: 1.8;
-            min-height: 100vh;
-        }
+     body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: linear-gradient(135deg,rgb(0, 47, 255) 0%,rgb(2, 32, 88) 100%);
+    color: #2d3748;
+    line-height: 1.6;
+    min-height: 100vh;
+    font-weight: 400;
+}
         
         /* TOP BAR */
         .top-bar {
@@ -546,7 +546,7 @@ function generateModernArticleHTML(articleData, articleId, slug, images) {
             position: relative;
             margin-bottom: 30px;
             box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-            ${!isVideo ? `background-image: url('${firstImage}'); background-size: cover; background-position: center;` : 'background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);'}
+            ${!isVideo ? `background-image: url('${firstImage}'); background-size: cover; background-position: center;` : 'background: linear-gradient(135deg, #667eea 0%,rgb(75, 98, 162) 100%);'}
         }
         
         .hero-overlay {
@@ -578,7 +578,10 @@ function generateModernArticleHTML(articleData, articleId, slug, images) {
             font-weight: 700;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
         }
-        
+        .article-hero h1 {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    font-weight: 700;
+}
         .meta {
             display: flex;
             gap: 25px;
@@ -598,13 +601,21 @@ function generateModernArticleHTML(articleData, articleId, slug, images) {
         }
         
         /* MAIN CONTENT */
-        .article-main {
-            background: white;
-            border-radius: 20px;
-            padding: 50px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
-        }
-        
+    .article-main {
+    background: white;
+    border-radius: 20px;
+    padding: 50px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+    font-size: 1.1rem;
+    font-weight: 400;
+}
+    .body {
+    font-size: 1.1rem;
+    line-height: 1.7;
+    color: #4a5568;
+    font-weight: 400;
+}
+
         /* VIDÉO */
         .video-container {
             background: #f8f9fa;
@@ -1189,6 +1200,39 @@ function generateModernArticleHTML(articleData, articleId, slug, images) {
 </body>
 </html>`;
 }
+    let relatedHTML = '';
+    
+    if (relatedArticles.length > 0) {
+        relatedArticles.forEach(article => {
+            relatedHTML += `
+                <div class="related-item" onclick="window.location.href='/article/${article.slug}.html'">
+                    <h5>${article.titre}</h5>
+                    <div class="related-meta">
+                        <span>${article.auteur}</span>
+                        <span>${new Date(article.date).toLocaleDateString('fr-FR')}</span>
+                    </div>
+                </div>
+            `;
+        });
+    } else {
+        relatedHTML = `
+            <div class="related-item" onclick="window.location.href='/'">
+                <h5>Découvrez nos autres articles</h5>
+                <div class="related-meta">
+                    <span>Abu Media</span>
+                    <span>${new Date().getFullYear()}</span>
+                </div>
+            </div>
+        `;
+    }
+    
+    // Dans le HTML, remplacez la section sidebar :
+    <div class="sidebar-card">
+        <h4><i class="fas fa-fire"></i> Articles Similaires</h4>
+        <div id="relatedArticles">
+            ${relatedHTML}
+        </div>
+    </div>
 
 // Fonction utilitaire pour extraire l'ID YouTube
 function extractYouTubeId(url) {
