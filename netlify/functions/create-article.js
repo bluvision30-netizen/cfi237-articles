@@ -1,4 +1,4 @@
-const fetch = require('node-fetch');
+
 
 exports.handler = async function(event, context) {
   const headers = {
@@ -246,12 +246,21 @@ async function createArticlePage(articleData, articleId, slug) {
 // GÉNÉRER HTML MODERNE (VERSION SIMPLIFIÉE)
 // ==========================================
 function generateModernArticleHTML(articleData, articleId, slug, images) {
-  const firstImage = images[0] || articleData.image;
-  const articleUrl = `https://cfiupload.netlify.app/article/${slug}.html`;
-  const currentDate = new Date().toISOString();
-  
-  const escapeJson = (str) => str.replace(/"/g, '\\"').replace(/\n/g, ' ');
-  
+    // UTILISER LA MINIATURE YOUTUBE SI C'EST UNE VIDÉO
+    let firstImage = images[0] || articleData.image;
+    
+    if (articleData.contentType === 'video' && articleData.video_url) {
+        const videoId = extractYouTubeId(articleData.video_url);
+        if (videoId) {
+            firstImage = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+        }
+    }
+    
+    // Le reste du code reste identique...
+    const articleUrl = `https://cfiupload.netlify.app/article/${slug}.html`;
+    const isVideo = articleData.contentType === 'video' && articleData.video_url;
+    const videoId = isVideo ? extractYouTubeId(articleData.video_url) : null;
+    
   // HTML simplifié pour éviter dépassement de taille
   return `<!DOCTYPE html>
 <html lang="fr">
