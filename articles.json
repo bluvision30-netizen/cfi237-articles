@@ -1,26 +1,5 @@
 {
   "articles": {
-    "art_1762863921372_p3plj67ko": {
-      "id": "art_1762863921372_p3plj67ko",
-      "titre": "Réélu avec 53,66 % des voix, le chef de l’État prête serment le 6 novembre, tandis que l’appel à la « ville morte » lancé par l’opposant Issa Tchiroma Bakary provoque un ralentissement et un arrêt qua",
-      "categorie": "Société",
-      "sections": [
-        "main",
-        "hero",
-        "a-la-une",
-        "societe"
-      ],
-      "image": "https://res.cloudinary.com/dkuciagop/image/upload/v1762863469/zslbxyptyjumdqsdqwi7.jpg",
-      "images": "[\"https://res.cloudinary.com/dkuciagop/image/upload/v1762863469/zslbxyptyjumdqsdqwi7.jpg\"]",
-      "extrait": "Le 27 octobre 2025, le Conseil constitutionnel du Cameroun a officiellement proclamé la réélection de Paul Biya à l’issue du scrutin présidentiel du 12 octobre.",
-      "contenu": "Le 27 octobre 2025, le Conseil constitutionnel du Cameroun a officiellement proclamé la réélection de Paul Biya à l’issue du scrutin présidentiel du 12 octobre. Selon les chiffres officiels, il a obtenu 53,66 % des voix, contre 35,19 % pour Issa Tchiroma Bakary. La prestation de serment est fixée au 6 novembre au palais des verres PAUL BIYA, siège de l’Assemblée nationale du Cameroun. L’annonce de cette victoire n’a pas apaisé les tensions. Des manifestations ont éclaté à l’annonce des résultats, notamment à Douala, Bafoussam, Bafang, Garoua, Mbouda entre autre où les forces de sécurité ont affronté pendant 02 des manifestants tantôt pacifiques, tantôt agressifs et livré à la casse et au pillage. Par ailleurs, l’opposant Issa Tchiroma Bakary, qui conteste les résultats et se déclare vainqueur selon ses propres sources, a lancé un mot d’ordre de ville morte répandu dans plusieurs cités. Depuis le 27 octobre, le transport urbain est à l’arrêt dans de nombreuses villes. Plusieurs commerces ont baissé rideau, tandis que dans de nombreuses localités, les enfants ne vont plus à l’école. Les populations vivent une situation très difficile : mobilité réduite, activités interrompues, incertitude, anxiété. Nombreux citoyens observent la date fatidique du 6 novembre comme un seuil d’espoir, espérant que la prestation de serment mette fin à ce qu’ils qualifient de cauchemar quotidien. Alors que l’ombre d’une crise majeure plane, le Cameroun est à la croisée des chemins. Le 6 novembre pourra-t-il marquer un retour à la stabilité ? Ou bien la ville morte et les tensions persistantes annoncent-elles un nouveau cycle d’incertitude ? Les Cameroonnais attendent, entre espoir et inquiétude.",
-      "auteur": "Orlus Fosso",
-      "date": "2025-11-11T12:25:21.595Z",
-      "vues": 0,
-      "likes": 0,
-      "contentType": "article",
-      "video_url": null
-    },
     "art_1763027724108_hyrq772rp": {
       "id": "art_1763027724108_hyrq772rp",
       "titre": "Relance du transport : Jean Ernest Masséna Ngallè BIBEHE annonce des mesures fortes pour restaurer la sécurité et la mobilité",
@@ -384,6 +363,6 @@
       "likes": 0
     }
   },
-  "lastUpdate": "2025-11-19T13:24:54.020Z",
-  "totalArticles": 19
+  "lastUpdate": "2025-11-19T13:26:25.871Z",
+  "totalArticles": 18
 }
