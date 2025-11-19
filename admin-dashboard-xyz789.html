@@ -925,19 +925,78 @@
         }
 
         async function uploadToCloudinary(file) {
-            const formData = new FormData();
-            formData.append('file', file);
-            formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
-            
-            const response = await fetch(
-                `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`,
-                { method: 'POST', body: formData }
-            );
-            
-            const data = await response.json();
-            return data.secure_url;
+    try {
+        // ✅ VALIDATION STRICTE
+        if (!file || !file.type.startsWith('image/')) {
+            throw new Error('Fichier invalide - Seules les images sont acceptées');
         }
-
+        
+        if (file.size > 10 * 1024 * 1024) {
+            throw new Error('Fichier trop volumineux - Maximum 10MB');
+        }
+        
+        // ✅ VÉRIFICATION CONFIG CLOUDINARY
+        if (!CLOUDINARY_CLOUD_NAME || !CLOUDINARY_UPLOAD_PRESET) {
+            throw new Error('Configuration Cloudinary manquante');
+        }
+        
+        console.log(`📤 Upload: ${file.name} (${(file.size/1024).toFixed(0)}KB)`);
+        
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+        
+        // ✅ TIMEOUT + RETRY
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 60000); // 60s
+        
+        const cloudinaryUrl = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`;
+        
+        const response = await fetch(cloudinaryUrl, { 
+            method: 'POST', 
+            body: formData,
+            signal: controller.signal
+        });
+        
+        clearTimeout(timeoutId);
+        
+        // ✅ GESTION ERREURS DÉTAILLÉE
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error('❌ Cloudinary response:', response.status, errorText);
+            
+            if (response.status === 401) {
+                throw new Error('Cloudinary: Clé API invalide ou preset non configuré');
+            } else if (response.status === 403) {
+                throw new Error('Cloudinary: Compte désactivé ou quota dépassé');
+            } else if (response.status === 404) {
+                throw new Error('Cloudinary: Cloud name invalide');
+            } else {
+                throw new Error(`Cloudinary erreur ${response.status}: ${errorText}`);
+            }
+        }
+        
+        const data = await response.json();
+        
+        // ✅ VALIDATION RÉPONSE
+        if (!data.secure_url) {
+            console.error('❌ Réponse Cloudinary:', data);
+            throw new Error('URL manquante dans la réponse Cloudinary');
+        }
+        
+        console.log('✅ Upload réussi:', data.secure_url);
+        return data.secure_url;
+        
+    } catch (error) {
+        console.error('❌ Erreur upload Cloudinary:', error);
+        
+        if (error.name === 'AbortError') {
+            throw new Error('Timeout - Upload trop long (>60s)');
+        }
+        
+        throw error;
+    }
+}
         function updateImageFields() {
             if (uploadedImages.length > 0) {
                 const imageUrls = uploadedImages.map(img => img.url);
@@ -1987,3 +2046,4 @@ loadArticles().then(() => {
     </script>
 </body>
 </html>
+
