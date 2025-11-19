@@ -339,8 +339,29 @@
       "date": "2025-11-19T11:20:04.545Z",
       "vues": 0,
       "likes": 0
+    },
+    "art_1763560100044_e67bzfn01": {
+      "id": "art_1763560100044_e67bzfn01",
+      "slug": "alice-nkom-denonce-la-dictature-au-cameroun-verite-crue-cont",
+      "titre": "Alice Nkom Dénonce la Dictature au Cameroun : Vérité Crue Contre Impunité du Régime Biya :: CAMEROON",
+      "categorie": "International",
+      "sections": [
+        "main",
+        "hero",
+        "societe"
+      ],
+      "image": "https://res.cloudinary.com/dkuciagop/image/upload/v1763560069/h3en13hj8sczehlfyohh.jpg",
+      "images": "[\"https://res.cloudinary.com/dkuciagop/image/upload/v1763560069/h3en13hj8sczehlfyohh.jpg\"]",
+      "extrait": "Le ralliement de Me Alice Nkom, figure emblématique du barreau et défenseure historique de la dignité humaine, à la cause d'Issa Tchiroma Bakary, autoproclamé Président-élu du Cameroun, a donné une nouvelle dimension à la contestation post-électorale. Nommée porte-parole officielle, l'avocate a livr",
+      "contenu": "S'appuyant sur son serment d'avocat prononcé cinquante-six ans auparavant, Me Nkom s'adresse aux \"filles et fils du Cameroun\" pour dénoncer le \"vrai aftermath\" des élections : des dizaines de morts et des centaines d'arrestations. Elle tranche net avec le débat médiatique : « Y a-t-il deux présidents ? La réponse est NON. Il y a un président élu : ISSA TCHIROMA BAKARY, et un dictateur entouré d'un petit cercle ». Cette dichotomie radicale est le cœur de son message, visant à démolir la légitimité du pouvoir en place.",
+      "auteur": "Orlus Fosso",
+      "contentType": "article",
+      "video_url": null,
+      "date": "2025-11-19T13:48:20.450Z",
+      "vues": 0,
+      "likes": 0
     }
   },
-  "lastUpdate": "2025-11-19T13:26:33.664Z",
-  "totalArticles": 17
+  "lastUpdate": "2025-11-19T13:48:20.450Z",
+  "totalArticles": 18
 }
