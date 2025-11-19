@@ -1204,48 +1204,47 @@ function extractYouTubeId(url) {
 
        
 // NOUVELLE FONCTION POUR AFFICHER LES URLS
+// NOUVELLE FONCTION POUR AFFICHER LES URLS SEO
 function showSuccessWithUrls(result) {
     const successAlert = document.getElementById('successAlert');
+    
+    // URL SEO optimisée
+    const articleUrl = `https://cfiupload.netlify.app/article/${result.slug}.html`;
     
     successAlert.innerHTML = `
         <i class="fas fa-check-circle" style="font-size:1.5rem; color:#22c55e;"></i>
         <div style="flex: 1;">
-            <strong style="color:#22c55e;">✅ Article publié avec succès!</strong>
+            <strong style="color:#22c55e;">✅ Article publié avec page SEO!</strong>
             
             <div style="margin-top: 16px; padding: 16px; background: rgba(34, 197, 94, 0.1); border-radius: 8px;">
                 <p style="margin: 8px 0; font-weight: 600; color: #fff;">
-                    🔗 URL de l'article:
+                    🔗 URL SEO optimisée:
                 </p>
-                <a href="${result.articleUrl}" 
+                <a href="${articleUrl}" 
                    target="_blank" 
                    style="display: block; color: #22c55e; text-decoration: underline; word-break: break-all; margin-bottom: 16px;">
-                    ${result.articleUrl}
+                    ${articleUrl}
                 </a>
                 
                 <p style="margin: 8px 0; font-weight: 600; color: #fff;">
-                    📱 Liens de partage:
+                    📱 Partage avec URL SEO:
                 </p>
                 <div style="display: grid; gap: 8px;">
-                    <a href="${result.shareUrls.whatsapp}" 
+                    <a href="https://wa.me/?text=${encodeURIComponent(result.articleData.titre + ' - ' + articleUrl)}" 
                        target="_blank"
                        style="display: flex; align-items: center; gap: 8px; padding: 8px 12px; background: rgba(37, 211, 102, 0.2); border-radius: 6px; color: #25D366; text-decoration: none; font-weight: 600;">
-                        <i class="fab fa-whatsapp"></i> Partager sur WhatsApp
+                        <i class="fab fa-whatsapp"></i> WhatsApp SEO
                     </a>
-                    <a href="${result.shareUrls.facebook}" 
+                    <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(articleUrl)}" 
                        target="_blank"
                        style="display: flex; align-items: center; gap: 8px; padding: 8px 12px; background: rgba(59, 89, 152, 0.2); border-radius: 6px; color: #3b5998; text-decoration: none; font-weight: 600;">
-                        <i class="fab fa-facebook-f"></i> Partager sur Facebook
-                    </a>
-                    <a href="${result.shareUrls.twitter}" 
-                       target="_blank"
-                       style="display: flex; align-items: center; gap: 8px; padding: 8px 12px; background: rgba(29, 161, 242, 0.2); border-radius: 6px; color: #1DA1F2; text-decoration: none; font-weight: 600;">
-                        <i class="fab fa-twitter"></i> Partager sur Twitter
+                        <i class="fab fa-facebook-f"></i> Facebook SEO
                     </a>
                 </div>
             </div>
             
             <p style="margin-top: 12px; font-size: 0.9rem; opacity: 0.8;">
-                ID: ${result.articleId} | Slug: ${result.slug}
+                ✅ Page SEO créée: /article/${result.slug}.html
             </p>
         </div>
     `;
@@ -1266,10 +1265,15 @@ async function loadArticles() {
         
         const container = document.getElementById('articlesContainer');
         container.innerHTML = allArticles.map(article => {
-            // Générer l'URL SEO
+            // ✅ TOUJOURS utiliser l'URL SEO si slug existe
             const articleUrl = article.slug 
                 ? `https://cfiupload.netlify.app/article/${article.slug}.html`
                 : `https://cfiupload.netlify.app/article-detail.html?id=${article.id}`;
+            
+            // Badge pour identifier les articles sans SEO
+            const seoBadge = article.slug 
+                ? '<span class="badge" style="background:rgba(34,197,94,0.2);color:#22c55e;">SEO</span>'
+                : '<span class="badge" style="background:rgba(251,191,36,0.2);color:#fbbf24;">Ancien</span>';
             
             return `
                 <div class="article-item">
@@ -1277,19 +1281,18 @@ async function loadArticles() {
                     <div class="article-info">
                         <h3>${article.titre}</h3>
                         <div class="article-meta">
+                            ${seoBadge}
                             <span class="badge">${article.categorie}</span>
                             <span><i class="fas fa-eye"></i> ${article.vues || 0}</span>
                             <span><i class="fas fa-calendar"></i> ${new Date(article.date).toLocaleDateString('fr-FR')}</span>
                         </div>
-                        ${article.slug ? `
-                            <div style="margin-top: 8px;">
-                                <a href="${articleUrl}" 
-                                   target="_blank" 
-                                   style="color: #667eea; font-size: 0.85rem; text-decoration: none;">
-                                    <i class="fas fa-external-link-alt"></i> Voir l'article SEO
-                                </a>
-                            </div>
-                        ` : ''}
+                        <div style="margin-top: 8px;">
+                            <a href="${articleUrl}" 
+                               target="_blank" 
+                               style="color: #667eea; font-size: 0.85rem; text-decoration: none;">
+                                <i class="fas fa-external-link-alt"></i> ${article.slug ? 'Voir page SEO' : 'Voir ancienne page'}
+                            </a>
+                        </div>
                     </div>
                     <div class="article-actions">
                         <button class="btn btn-secondary btn-sm" onclick="shareArticle('${article.id}', '${article.slug || ''}')">
@@ -1305,6 +1308,10 @@ async function loadArticles() {
                 </div>
             `;
         }).join('');
+        
+        // Mettre à jour les stats du dashboard
+        updateDashboardStats();
+        
     } catch (error) {
         console.error('Erreur chargement articles:', error);
         showAlert('error', 'Impossible de charger les articles');
@@ -1316,12 +1323,12 @@ function shareArticle(articleId, slug) {
     const article = allArticles.find(a => a.id === articleId);
     if (!article) return;
     
-    // Utiliser le slug si disponible, sinon l'ancien système
+    // ✅ TOUJOURS prioriser l'URL SEO
     const articleUrl = slug 
         ? `https://cfiupload.netlify.app/article/${slug}.html`
         : `https://cfiupload.netlify.app/article-detail.html?id=${articleId}`;
     
-    // Créer modal de partage
+    // Créer modal de partage SEO
     const modal = document.createElement('div');
     modal.className = 'modal show';
     modal.innerHTML = `
@@ -1335,13 +1342,15 @@ function shareArticle(articleId, slug) {
             </h2>
             
             <div style="margin-bottom: 20px;">
-                <label style="display: block; margin-bottom: 8px; color: #e2e8f0;">URL de l'article:</label>
+                <label style="display: block; margin-bottom: 8px; color: #e2e8f0;">
+                    ${slug ? '🔗 URL SEO optimisée:' : '⚠️ URL ancienne (non-SEO):'}
+                </label>
                 <div style="display: flex; gap: 8px;">
                     <input type="text" 
                            value="${articleUrl}" 
                            readonly
                            id="shareUrlInput"
-                           style="flex: 1; padding: 12px; background: #0f172a; border: 2px solid rgba(255,255,255,0.1); border-radius: 8px; color: #fff;">
+                           style="flex: 1; padding: 12px; background: #0f172a; border: 2px solid ${slug ? '#22c55e' : '#fbbf24'}; border-radius: 8px; color: #fff;">
                     <button onclick="copyShareUrl()" 
                             class="btn btn-secondary">
                         <i class="fas fa-copy"></i> Copier
@@ -1372,11 +1381,11 @@ function shareArticle(articleId, slug) {
             
             ${slug ? `
                 <p style="margin-top: 16px; padding: 12px; background: rgba(34, 197, 94, 0.1); border-radius: 8px; color: #22c55e; font-size: 0.9rem;">
-                    <i class="fas fa-check-circle"></i> Page SEO optimisée disponible
+                    <i class="fas fa-check-circle"></i> ✅ Page SEO optimisée disponible
                 </p>
             ` : `
                 <p style="margin-top: 16px; padding: 12px; background: rgba(251, 191, 36, 0.1); border-radius: 8px; color: #fbbf24; font-size: 0.9rem;">
-                    <i class="fas fa-info-circle"></i> Ancien article - Pas de page SEO
+                    <i class="fas fa-exclamation-triangle"></i> ⚠️ Ancien article - URL non optimisée pour le SEO
                 </p>
             `}
         </div>
@@ -1948,6 +1957,33 @@ function initContentTypeToggle() {
         console.log('  • Ctrl/Cmd + S : Sauvegarder');
         console.log('  • Échap : Fermer modal/menu');
         console.log('  • Auto-save : Brouillon sauvegardé toutes les 3 secondes');
+
+// Identifier les articles sans slugs (anciens)
+function findArticlesWithoutSeo() {
+    const articlesWithoutSeo = allArticles.filter(a => !a.slug);
+    
+    if (articlesWithoutSeo.length > 0) {
+        console.warn('⚠️ Articles sans SEO:', articlesWithoutSeo.length);
+        articlesWithoutSeo.forEach(article => {
+            console.log(`- ${article.titre} (${article.id})`);
+        });
+        
+        // Option: Afficher une alerte dans le dashboard
+        showAlert('error', 
+            `${articlesWithoutSeo.length} articles sans SEO`, 
+            'Certains articles utilisent encore les anciennes URLs'
+        );
+    }
+    
+    return articlesWithoutSeo;
+}
+
+// Appeler après le chargement des articles
+loadArticles().then(() => {
+    updateDashboardStats();
+    findArticlesWithoutSeo();
+});
+
     </script>
 </body>
 </html>
