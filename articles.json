@@ -360,8 +360,30 @@
       "date": "2025-11-19T11:20:04.545Z",
       "vues": 0,
       "likes": 0
+    },
+    "art_1763558693650_tih4li7z2": {
+      "id": "art_1763558693650_tih4li7z2",
+      "slug": "les-croquettes-chin-chin",
+      "titre": "Les croquettes chin chin",
+      "categorie": "Société",
+      "sections": [
+        "main",
+        "hero",
+        "a-la-une",
+        "societe"
+      ],
+      "image": "https://res.cloudinary.com/dkuciagop/image/upload/v1763558649/rvri4ekfxfljn1d3ujz8.jpg",
+      "images": "[\"https://res.cloudinary.com/dkuciagop/image/upload/v1763558649/rvri4ekfxfljn1d3ujz8.jpg\"]",
+      "extrait": "Les croquettes chin chin",
+      "contenu": "Les croquettes chin chin",
+      "auteur": "Franky Fossi",
+      "contentType": "article",
+      "video_url": null,
+      "date": "2025-11-19T13:24:54.019Z",
+      "vues": 0,
+      "likes": 0
     }
   },
-  "lastUpdate": "2025-11-19T11:20:04.545Z",
-  "totalArticles": 18
+  "lastUpdate": "2025-11-19T13:24:54.020Z",
+  "totalArticles": 19
 }
