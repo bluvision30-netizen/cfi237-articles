@@ -390,7 +390,40 @@ async function createArticlePage(articleData, articleId, slug, GITHUB_TOKEN) {
     
     const articleUrl = `https://api.github.com/repos/${REPO}/contents/article/${slug}.html`;
     
+    // ✅ VÉRIFIER SI LE FICHIER EXISTE DÉJÀ
+    let existingSha = null;
+    try {
+      console.log(`🔍 Vérification existence /article/${slug}.html...`);
+      const checkResponse = await fetch(articleUrl, {
+        headers: { 
+          'Authorization': `token ${GITHUB_TOKEN}`,
+          'Accept': 'application/vnd.github.v3+json',
+          'User-Agent': 'Abu-Media-Dashboard'
+        }
+      });
+      
+      if (checkResponse.ok) {
+        const existingFile = await checkResponse.json();
+        existingSha = existingFile.sha;
+        console.log('⚠️ Fichier existe déjà, sera écrasé avec nouveau contenu');
+      } else {
+        console.log('✅ Nouveau fichier, création...');
+      }
+    } catch (checkError) {
+      console.log('✅ Fichier inexistant, création...');
+    }
+    
     console.log(`📤 Upload vers /article/${slug}.html...`);
+    
+    // ✅ ENVOYER LE SHA SI LE FICHIER EXISTE
+    const requestBody = {
+      message: `🌐 Page SEO: ${articleData.titre}`,
+      content: Buffer.from(articleHTML).toString('base64')
+    };
+    
+    if (existingSha) {
+      requestBody.sha = existingSha; // ✅ AJOUT DU SHA POUR ÉCRASER
+    }
     
     const response = await fetch(articleUrl, {
       method: 'PUT',
@@ -400,10 +433,7 @@ async function createArticlePage(articleData, articleId, slug, GITHUB_TOKEN) {
         'Accept': 'application/vnd.github.v3+json',
         'User-Agent': 'Abu-Media-Dashboard'
       },
-      body: JSON.stringify({
-        message: `🌐 Page SEO: ${articleData.titre}`,
-        content: Buffer.from(articleHTML).toString('base64')
-      })
+      body: JSON.stringify(requestBody)
     });
 
     if (!response.ok) {
@@ -411,7 +441,7 @@ async function createArticlePage(articleData, articleId, slug, GITHUB_TOKEN) {
       throw new Error(`GitHub API error: ${response.status} - ${errorText}`);
     }
 
-    console.log(`✅ Page créée: /article/${slug}.html`);
+    console.log(`✅ Page ${existingSha ? 'mise à jour' : 'créée'}: /article/${slug}.html`);
     return { success: true };
 
   } catch (error) {
@@ -419,7 +449,6 @@ async function createArticlePage(articleData, articleId, slug, GITHUB_TOKEN) {
     return { success: false, error: error.message };
   }
 }
-
 function generateModernArticleHTML(articleData, articleId, slug, images, relatedArticles = []) {
     const firstImage = images[0] || articleData.image;
     const articleUrl = `https://cfiupload.netlify.app/article/${slug}.html`;
