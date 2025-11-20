@@ -1,7 +1,6 @@
-
 // ==========================================
 // NETLIFY FUNCTION - CREATE ARTICLE
-// Version corrigée complète
+// Version SEO optimisée complète
 // ==========================================
 
 exports.handler = async function(event, context) {
@@ -129,18 +128,18 @@ exports.handler = async function(event, context) {
     console.log('📝 Titre:', articleData.titre);
     console.log('📂 Catégorie:', articleData.categorie);
 
-    // ✅ 6. GÉNÉRATION ID ET SLUG SEO (NOM DE FONCTION GARDÉ)
+    // ✅ 6. GÉNÉRATION ID ET SLUG SEO
     const articleId = 'art_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-    const slug = generateSlug(articleData.titre); // ✅ NOM GARDÉ
+    const slug = generateSlug(articleData.titre);
     
     console.log('🆔 ID généré:', articleId);
     console.log('🔗 Slug généré:', slug);
     
-    // ✅ 7. GÉNÉRATION META DESCRIPTION OPTIMISÉE (NOUVELLE FONCTION)
+    // ✅ 7. GÉNÉRATION META DESCRIPTION OPTIMISÉE
     const metaDescription = generateMetaDescription(articleData.extrait, articleData.categorie);
     console.log('📄 Meta description générée:', metaDescription);
     
-    // ✅ 8. GÉNÉRATION KEYWORDS SEO (NOUVELLE FONCTION)
+    // ✅ 8. GÉNÉRATION KEYWORDS SEO
     const seoKeywords = generateSEOKeywords(articleData.titre, articleData.categorie, articleData.contenu);
     console.log('🔑 Keywords SEO:', seoKeywords);
     
@@ -153,9 +152,9 @@ exports.handler = async function(event, context) {
     }
     console.log('✅ articles.json sauvegardé');
     
-    // ✅ 10. CRÉATION PAGE SEO (NOM DE FONCTION GARDÉ)
+    // ✅ 10. CRÉATION PAGE SEO
     console.log('📄 === DÉBUT CRÉATION PAGE SEO ===');
-    const pageResult = await createArticlePage(articleData, articleId, slug, GITHUB_TOKEN); // ✅ NOM GARDÉ
+    const pageResult = await createArticlePage(articleData, articleId, slug, GITHUB_TOKEN);
     
     if (!pageResult.success) {
         console.warn('⚠️ Page SEO non créée:', pageResult.error);
@@ -180,7 +179,7 @@ exports.handler = async function(event, context) {
         seoData: {
             metaDescription: metaDescription,
             keywords: seoKeywords,
-            title: generateSEOTitle(articleData.titre, articleData.categorie) // NOUVELLE FONCTION
+            title: generateSEOTitle(articleData.titre, articleData.categorie)
         },
         articleData: {
             titre: articleData.titre,
@@ -213,9 +212,8 @@ exports.handler = async function(event, context) {
   }
 };
 
-
 // ==========================================
-// GÉNÉRER SLUG SEO
+// GÉNÉRER SLUG SEO AVANCÉ
 // ==========================================
 function generateSlug(titre) {
   if (!titre || typeof titre !== 'string') {
@@ -244,7 +242,12 @@ function generateSlug(titre) {
     return 'article-cameroun-' + Date.now();
   }
 }
-// ✅ NOUVELLE FONCTION: Générer meta description optimisée
+
+// ==========================================
+// FONCTIONS SEO NOUVELLES
+// ==========================================
+
+// ✅ GÉNÉRER META DESCRIPTION OPTIMISÉE
 function generateMetaDescription(extrait, categorie) {
   const baseDescription = extrait || '';
   const categoryContext = categorie ? ` | ${categorie} Cameroun` : ' | Actualités Cameroun';
@@ -267,7 +270,7 @@ function generateMetaDescription(extrait, categorie) {
   return description;
 }
 
-// ✅ NOUVELLE FONCTION: Générer titre SEO
+// ✅ GÉNÉRER TITRE SEO
 function generateSEOTitle(titre, categorie) {
   const baseTitle = titre || '';
   const categoryContext = categorie ? ` | ${categorie}` : '';
@@ -289,7 +292,7 @@ function generateSEOTitle(titre, categorie) {
   return seoTitle;
 }
 
-// ✅ NOUVELLE FONCTION: Générer keywords SEO
+// ✅ GÉNÉRER KEYWORDS SEO
 function generateSEOKeywords(titre, categorie, contenu) {
   const baseKeywords = [];
   
@@ -322,7 +325,7 @@ function generateSEOKeywords(titre, categorie, contenu) {
 }
 
 // ==========================================
-// SAUVEGARDER DANS GITHUB
+// SAUVEGARDER DANS GITHUB AVEC SEO
 // ==========================================
 async function saveToGitHub(articleData, articleId, slug, metaDescription, seoKeywords, GITHUB_TOKEN) {
   try {
@@ -379,7 +382,7 @@ async function saveToGitHub(articleData, articleId, slug, metaDescription, seoKe
       date: new Date().toISOString(),
       vues: 0,
       likes: 0,
-      // ✅ NOUVEAUX CHAMPS SEO (AJOUTÉS SANS SUPPRIMER L'EXISTANT)
+      // ✅ NOUVEAUX CHAMPS SEO
       seo_title: generateSEOTitle(articleData.titre, articleData.categorie),
       seo_description: metaDescription,
       seo_keywords: seoKeywords,
@@ -496,14 +499,13 @@ async function createArticlePage(articleData, articleId, slug, GITHUB_TOKEN) {
     
     console.log('🎨 Génération HTML avec SEO...');
     
-    // ✅ APPEL DE LA FONCTION EXISTANTE generateModernArticleHTML
+    // ✅ APPEL DE LA FONCTION EXISTANTE AVEC PARAMÈTRES SEO
     const articleHTML = generateModernArticleHTML(
       articleData, 
       articleId, 
       slug, 
       images, 
       relatedArticles,
-      // ✅ PASSAGE DES DONNÉES SEO EN PARAMÈTRES SUPPLEMENTAIRES
       metaDescription,
       seoKeywords,
       seoTitle
@@ -511,7 +513,7 @@ async function createArticlePage(articleData, articleId, slug, GITHUB_TOKEN) {
     
     const articleUrl = `https://api.github.com/repos/${REPO}/contents/article/${slug}.html`;
     
-    // Vérifier si le fichier existe déjà
+    // ✅ VÉRIFIER SI LE FICHIER EXISTE DÉJÀ
     let existingSha = null;
     try {
       console.log(`🔍 Vérification existence /article/${slug}.html...`);
@@ -528,21 +530,22 @@ async function createArticlePage(articleData, articleId, slug, GITHUB_TOKEN) {
         existingSha = existingFile.sha;
         console.log('⚠️ Fichier existe déjà, sera écrasé avec nouveau contenu SEO');
       } else {
-        console.log('✅ Nouveau fichier, création...');
+        console.log('✅ Nouveau fichier, création SEO...');
       }
     } catch (checkError) {
-      console.log('✅ Fichier inexistant, création...');
+      console.log('✅ Fichier inexistant, création SEO...');
     }
     
     console.log(`📤 Upload vers /article/${slug}.html...`);
     
+    // ✅ ENVOYER LE SHA SI LE FICHIER EXISTE
     const requestBody = {
       message: `🌐 Page SEO: ${articleData.titre}`,
       content: Buffer.from(articleHTML).toString('base64')
     };
     
     if (existingSha) {
-      requestBody.sha = existingSha;
+      requestBody.sha = existingSha; // ✅ AJOUT DU SHA POUR ÉCRASER
     }
     
     const response = await fetch(articleUrl, {
@@ -561,7 +564,7 @@ async function createArticlePage(articleData, articleId, slug, GITHUB_TOKEN) {
       throw new Error(`GitHub API error: ${response.status} - ${errorText}`);
     }
 
-    console.log(`✅ Page ${existingSha ? 'mise à jour' : 'créée'}: /article/${slug}.html`);
+    console.log(`✅ Page SEO ${existingSha ? 'mise à jour' : 'créée'}: /article/${slug}.html`);
     return { success: true };
 
   } catch (error) {
@@ -570,6 +573,9 @@ async function createArticlePage(articleData, articleId, slug, GITHUB_TOKEN) {
   }
 }
 
+// ==========================================
+// GÉNÉRER HTML MODERNE AVEC SEO
+// ==========================================
 function generateModernArticleHTML(articleData, articleId, slug, images, relatedArticles = [], metaDescription, seoKeywords, seoTitle) {
     // ✅ UTILISATION DES PARAMÈTRES SEO SI FOURNIS, SINON GÉNÉRATION
     const finalMetaDescription = metaDescription || generateMetaDescription(articleData.extrait, articleData.categorie);
@@ -585,91 +591,7 @@ function generateModernArticleHTML(articleData, articleId, slug, images, related
     const videoId = isVideo ? extractYouTubeId(articleData.video_url) : null;
     const videoThumbnail = isVideo ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg` : null;
     
-    // ✅ SCHEMA.ORG STRUCTURED DATA
-    const structuredData = {
-        "@context": "https://schema.org",
-        "@type": isVideo ? "VideoObject" : "Article",
-        "headline": articleData.titre,
-        "description": finalMetaDescription,
-        "image": isVideo ? videoThumbnail : firstImage,
-        "datePublished": currentDate,
-        "dateModified": currentDate,
-        "author": {
-            "@type": "Person",
-            "name": articleData.auteur || "Camer Flash Infos"
-        },
-        "publisher": {
-            "@type": "NewsMediaOrganization",
-            "name": "Camer Flash Infos",
-            "alternateName": "Camerflashinfos",
-            "url": "https://cfiupload.netlify.app",
-            "logo": {
-                "@type": "ImageObject",
-                "url": "https://cfiupload.netlify.app/images/logo-camerflashinfos.jpg"
-            }
-        },
-        "mainEntityOfPage": {
-            "@type": "WebPage",
-            "@id": articleUrl
-        }
-    };
-    
-    if (isVideo) {
-        structuredData["embedUrl"] = `https://www.youtube.com/embed/${videoId}`;
-        structuredData["thumbnailUrl"] = videoThumbnail;
-        structuredData["uploadDate"] = currentDate;
-    }
-    
-    // ✅ AJOUT DU HEADER SEO OPTIMISÉ AU DÉBUT DU HTML
-    const seoHeader = `
-    <!-- === SEO SURPUISSANT CAMER FLASH INFOS === -->
-    <title>${finalSeoTitle}</title>
-    <meta name="description" content="${finalMetaDescription}">
-    <meta name="keywords" content="${finalSeoKeywords}">
-    <meta name="author" content="Camer Flash Infos">
-    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
-    <meta name="googlebot" content="index, follow">
-    
-    <!-- Canonical URL -->
-    <link rel="canonical" href="${articleUrl}">
-    
-    <!-- Open Graph -->
-    <meta property="og:type" content="${isVideo ? 'video.other' : 'article'}">
-    <meta property="og:title" content="${finalSeoTitle}">
-    <meta property="og:description" content="${finalMetaDescription}">
-    <meta property="og:image" content="${isVideo ? videoThumbnail : firstImage}">
-    <meta property="og:url" content="${articleUrl}">
-    <meta property="og:site_name" content="Camer Flash Infos">
-    <meta property="og:locale" content="fr_CM">
-    ${isVideo ? `
-    <meta property="og:video" content="${articleData.video_url}">
-    <meta property="og:video:type" content="text/html">
-    <meta property="og:video:width" content="1280">
-    <meta property="og:video:height" content="720">
-    ` : ''}
-    
-    <!-- Twitter Card -->
-    <meta name="twitter:card" content="${isVideo ? 'player' : 'summary_large_image'}">
-    <meta name="twitter:title" content="${finalSeoTitle}">
-    <meta name="twitter:description" content="${finalMetaDescription}">
-    <meta name="twitter:image" content="${isVideo ? videoThumbnail : firstImage}">
-    <meta name="twitter:site" content="@camerflashinfos">
-    
-    <!-- Structured Data -->
-    <script type="application/ld+json">
-    ${JSON.stringify(structuredData, null, 2)}
-    </script>
-    
-    <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="/favicon.ico">
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-    
-    <!-- Preload CSS -->
-    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
-    `;
+    // Générer le contenu principal selon le type
     let mainContent = '';
     
     if (isVideo) {
@@ -722,7 +644,7 @@ function generateModernArticleHTML(articleData, articleId, slug, images, related
         `;
     }
     
-    // GÉNÉRATION DES ARTICLES SIMILAIRES - CORRIGÉE
+    // GÉNÉRATION DES ARTICLES SIMILAIRES
     let relatedHTML = '';
 
     if (relatedArticles.length > 0) {
@@ -754,30 +676,99 @@ function generateModernArticleHTML(articleData, articleId, slug, images, related
         `;
     }
     
-    return `<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>${articleData.titre} - Abu Media Group</title>
-    <meta name="description" content="${articleData.extrait}">
+    // ✅ SCHEMA.ORG STRUCTURED DATA
+    const structuredData = {
+        "@context": "https://schema.org",
+        "@type": isVideo ? "VideoObject" : "Article",
+        "headline": articleData.titre,
+        "description": finalMetaDescription,
+        "image": isVideo ? videoThumbnail : firstImage,
+        "datePublished": currentDate,
+        "dateModified": currentDate,
+        "author": {
+            "@type": "Person",
+            "name": articleData.auteur || "Camer Flash Infos"
+        },
+        "publisher": {
+            "@type": "NewsMediaOrganization",
+            "name": "Camer Flash Infos",
+            "alternateName": "Camerflashinfos",
+            "url": "https://cfiupload.netlify.app",
+            "logo": {
+                "@type": "ImageObject",
+                "url": "https://cfiupload.netlify.app/images/logo-camerflashinfos.jpg"
+            }
+        },
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": articleUrl
+        }
+    };
+    
+    if (isVideo) {
+        structuredData["embedUrl"] = `https://www.youtube.com/embed/${videoId}`;
+        structuredData["thumbnailUrl"] = videoThumbnail;
+        structuredData["uploadDate"] = currentDate;
+    }
+    
+    // ✅ HEADER SEO OPTIMISÉ
+    const seoHeader = `
+    <!-- === SEO SURPUISSANT CAMER FLASH INFOS === -->
+    <title>${finalSeoTitle}</title>
+    <meta name="description" content="${finalMetaDescription}">
+    <meta name="keywords" content="${finalSeoKeywords}">
+    <meta name="author" content="Camer Flash Infos">
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+    <meta name="googlebot" content="index, follow">
+    
+    <!-- Canonical URL -->
     <link rel="canonical" href="${articleUrl}">
     
     <!-- Open Graph -->
     <meta property="og:type" content="${isVideo ? 'video.other' : 'article'}">
-    <meta property="og:title" content="${articleData.titre}">
-    <meta property="og:description" content="${articleData.extrait}">
+    <meta property="og:title" content="${finalSeoTitle}">
+    <meta property="og:description" content="${finalMetaDescription}">
     <meta property="og:image" content="${isVideo ? videoThumbnail : firstImage}">
     <meta property="og:url" content="${articleUrl}">
-    ${isVideo ? `<meta property="og:video" content="${articleData.video_url}">` : ''}
+    <meta property="og:site_name" content="Camer Flash Infos">
+    <meta property="og:locale" content="fr_CM">
+    ${isVideo ? `
+    <meta property="og:video" content="${articleData.video_url}">
+    <meta property="og:video:type" content="text/html">
+    <meta property="og:video:width" content="1280">
+    <meta property="og:video:height" content="720">
+    ` : ''}
     
     <!-- Twitter Card -->
     <meta name="twitter:card" content="${isVideo ? 'player' : 'summary_large_image'}">
-    <meta name="twitter:title" content="${articleData.titre}">
-    <meta name="twitter:description" content="${articleData.extrait}">
+    <meta name="twitter:title" content="${finalSeoTitle}">
+    <meta name="twitter:description" content="${finalMetaDescription}">
     <meta name="twitter:image" content="${isVideo ? videoThumbnail : firstImage}">
+    <meta name="twitter:site" content="@camerflashinfos">
     
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    ${JSON.stringify(structuredData, null, 2)}
+    </script>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    
+    <!-- Preload CSS -->
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
+    `;
+    
+    return `<!DOCTYPE html>
+<html lang="fr-CM" itemscope itemtype="https://schema.org/WebPage">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    ${seoHeader}
+    
     <style>
         * {
             margin: 0;
@@ -848,7 +839,7 @@ function generateModernArticleHTML(articleData, articleId, slug, images, related
             gap: 40px;
         }
         
-        /* ARTICLE HERO - AMÉLIORÉ POUR MOBILE */
+        /* ARTICLE HERO */
         .article-hero {
             grid-column: 1 / -1;
             height: 400px;
@@ -968,7 +959,7 @@ function generateModernArticleHTML(articleData, articleId, slug, images, related
             text-align: justify;
         }
         
-        /* DROP CAP - PREMIÈRE LETTRE STYLE JOURNAL */
+        /* DROP CAP */
         .first-paragraph::first-letter {
             float: left;
             font-size: 4.5rem;
@@ -1284,21 +1275,42 @@ function generateModernArticleHTML(articleData, articleId, slug, images, related
     </style>
 </head>
 <body>
+    <!-- Breadcrumb Navigation -->
+    <nav class="breadcrumb" aria-label="Fil d'Ariane" style="background: #f8f9fa; padding: 1rem 0; font-size: 0.9rem;">
+        <ol style="max-width: 1200px; margin: 0 auto; padding: 0 20px; display: flex; gap: 0.5rem; list-style: none;">
+            <li><a href="https://cfiupload.netlify.app" style="color: #667eea; text-decoration: none;">Accueil</a></li>
+            <li style="color: #6c757d;">></li>
+            <li><a href="https://cfiupload.netlify.app/articles.html?category=${encodeURIComponent(articleData.categorie)}" style="color: #667eea; text-decoration: none;">${articleData.categorie}</a></li>
+            <li style="color: #6c757d;">></li>
+            <li style="color: #495057;">${articleData.titre}</li>
+        </ol>
+    </nav>
+
     <div class="top-bar">
         <div class="container">
-            <a href="/" class="logo"><i class="fas fa-newspaper"></i> Abu Media</a>
-            <a href="/" class="back-btn"><i class="fas fa-arrow-left"></i> Retour</a>
+            <a href="/" class="logo" aria-label="Camer Flash Infos - Accueil">
+                <i class="fas fa-newspaper" aria-hidden="true"></i> 
+                <span>Camer Flash Infos</span>
+            </a>
+            <a href="/" class="back-btn" aria-label="Retour à l'accueil">
+                <i class="fas fa-arrow-left" aria-hidden="true"></i> Retour
+            </a>
         </div>
     </div>
     
-    <article class="article-container">
+    <article class="article-container" itemscope itemtype="${isVideo ? 'https://schema.org/VideoObject' : 'https://schema.org/Article'}">
         <header class="article-hero">
             <div class="hero-overlay">
-                <span class="category">${articleData.categorie}</span>
-                <h1>${articleData.titre}</h1>
+                <span class="category" itemprop="articleSection">${articleData.categorie}</span>
+                <h1 itemprop="headline">${articleData.titre}</h1>
                 <div class="meta">
-                    <span><i class="fas fa-user"></i> ${articleData.auteur}</span>
-                    <span><i class="fas fa-calendar"></i> ${new Date().toLocaleDateString('fr-FR')}</span>
+                    <span itemprop="author" itemscope itemtype="https://schema.org/Person">
+                        <i class="fas fa-user" aria-hidden="true"></i> 
+                        <span itemprop="name">${articleData.auteur}</span>
+                    </span>
+                    <span><i class="fas fa-calendar" aria-hidden="true"></i> 
+                        <time itemprop="datePublished" datetime="${currentDate}">${new Date().toLocaleDateString('fr-FR')}</time>
+                    </span>
                 </div>
             </div>
         </header>
@@ -1309,11 +1321,14 @@ function generateModernArticleHTML(articleData, articleId, slug, images, related
             <div class="share">
                 <h3>Partager cet ${isVideo ? 'vidéo' : 'article'}</h3>
                 <div class="share-buttons">
-                    <a href="https://wa.me/?text=${encodeURIComponent(articleData.titre + ' - ' + articleUrl)}" class="share-btn whatsapp">
-                        <i class="fab fa-whatsapp"></i> WhatsApp
+                    <a href="https://wa.me/?text=${encodeURIComponent(articleData.titre + ' - ' + articleUrl)}" class="share-btn whatsapp" aria-label="Partager sur WhatsApp">
+                        <i class="fab fa-whatsapp" aria-hidden="true"></i> WhatsApp
                     </a>
-                    <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(articleUrl)}" class="share-btn facebook">
-                        <i class="fab fa-facebook-f"></i> Facebook
+                    <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(articleUrl)}" class="share-btn facebook" aria-label="Partager sur Facebook">
+                        <i class="fab fa-facebook-f" aria-hidden="true"></i> Facebook
+                    </a>
+                    <a href="https://twitter.com/intent/tweet?text=${encodeURIComponent(articleData.titre)}&url=${encodeURIComponent(articleUrl)}" class="share-btn twitter" aria-label="Partager sur Twitter" style="background: #1DA1F2; color: white;">
+                        <i class="fab fa-twitter" aria-hidden="true"></i> Twitter
                     </a>
                 </div>
             </div>
@@ -1338,7 +1353,7 @@ function generateModernArticleHTML(articleData, articleId, slug, images, related
                 <div class="comments-list" id="commentsList">
                     <div class="comment">
                         <div class="comment-header">
-                            <span class="comment-author">Rédaction Abu Media</span>
+                            <span class="comment-author">Rédaction Camer Flash Infos</span>
                             <span class="comment-date">${new Date().toLocaleDateString('fr-FR')}</span>
                         </div>
                         <p class="comment-text">Soyez le premier à commenter cet ${isVideo ? 'vidéo' : 'article'} ! Partagez votre opinion avec notre communauté.</p>
@@ -1358,7 +1373,7 @@ function generateModernArticleHTML(articleData, articleId, slug, images, related
             <div class="sidebar-card">
                 <h4><i class="fas fa-info-circle"></i> À propos</h4>
                 <p style="color: #6c757d; line-height: 1.7; font-size: 0.95rem;">
-                    <strong style="color: #667eea;">Abu Media Group</strong> - Votre source d'information fiable et actualisée. 
+                    <strong style="color: #667eea;">Camer Flash Infos</strong> - Votre source d'information fiable au Cameroun. 
                     ${isVideo ? 'Retrouvez nos meilleures vidéos et reportages.' : 'Découvrez nos articles exclusifs et analyses approfondies.'}
                 </p>
             </div>
@@ -1402,7 +1417,7 @@ function generateModernArticleHTML(articleData, articleId, slug, images, related
             commentsList.innerHTML = \`
                 <div class="comment">
                     <div class="comment-header">
-                        <span class="comment-author">Rédaction Abu Media</span>
+                        <span class="comment-author">Rédaction Camer Flash Infos</span>
                         <span class="comment-date">\${new Date().toLocaleDateString('fr-FR')}</span>
                     </div>
                     <p class="comment-text">Soyez le premier à commenter cet ${isVideo ? 'vidéo' : 'article'} ! Partagez votre opinion avec notre communauté.</p>
@@ -1481,14 +1496,24 @@ function generateModernArticleHTML(articleData, articleId, slug, images, related
         // Charger les commentaires au chargement de la page
         window.addEventListener('load', loadComments);
         
-        console.log('✅ Page ${isVideo ? 'vidéo' : 'article'} chargée avec succès');
+        // Google Analytics (si utilisé)
+        if (typeof gtag !== 'undefined') {
+            gtag('event', 'page_view', {
+                'page_title': '${finalSeoTitle}',
+                'page_location': '${articleUrl}'
+            });
+        }
+        
+        console.log('✅ Page ${isVideo ? 'vidéo' : 'article'} SEO chargée avec succès');
         console.log('📝 Système de commentaires activé');
     </script>
 </body>
 </html>`;
 }
 
-// Fonction utilitaire pour extraire l'ID YouTube
+// ==========================================
+// FONCTION UTILITAIRE EXISTANTE
+// ==========================================
 function extractYouTubeId(url) {
     if (!url) return null;
     const regExp = /^.*((youtu.be\/)|(v\/)|(\/.+\/))([^#\&\?]*).*/;
