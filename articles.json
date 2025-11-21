@@ -1,28 +1,5 @@
 {
     "articles": {
-        "art_1763633063_2b8169f4c6": {
-            "id": "art_1763633063_2b8169f4c6",
-            "slug": "l-homme-lion-a-encore-gagne-au-cameroun",
-            "titre": "L' HOMME LION A  ENCORE GAGNE AU CAMEROUN!",
-            "categorie": "Société",
-            "sections": [
-                "main"
-            ],
-            "image": "https:\/\/res.cloudinary.com\/dkuciagop\/image\/upload\/v1763632976\/ik1daoqyddeefvdgszov.jpg",
-            "images": "[\"https:\/\/res.cloudinary.com\/dkuciagop\/image\/upload\/v1763632976\/ik1daoqyddeefvdgszov.jpg\"]",
-            "extrait": "L' HOMME LION A  ENCORE GAGNE AU CAMEROUN!",
-            "contenu": "L' HOMME LION A  ENCORE GAGNE AU CAMEROUN!",
-            "auteur": "Orlus Fosso",
-            "contentType": "article",
-            "video_url": null,
-            "date": "2025-11-20T10:04:24+00:00",
-            "vues": 0,
-            "likes": 0,
-            "seo_title": "L' HOMME LION A  ENCORE GAGNE AU CAMEROUN! - Cameroun | S...",
-            "seo_description": "L' HOMME LION A  ENCORE GAGNE AU CAMEROUN! | Société Cameroun",
-            "seo_keywords": "Cameroun, Actualités Cameroun, Camer Flash Infos, Camerflashinfos, Société, Société Cameroun, homme, lion, encore, gagne, cameroun!, Douala, Yaoundé, Afrique, Camerounaise",
-            "last_updated": "2025-11-20T10:04:24+00:00"
-        },
         "art_1763633105_fb8c2f9acf": {
             "id": "art_1763633105_fb8c2f9acf",
             "slug": "l-homme-lion-a-encore-gagne-au-cameroun",
@@ -116,6 +93,6 @@
             "last_updated": "2025-11-20T10:08:10+00:00"
         }
     },
-    "lastUpdate": "2025-11-21T06:06:37+00:00",
-    "totalArticles": 5
+    "lastUpdate": "2025-11-21T06:06:39+00:00",
+    "totalArticles": 4
 }
